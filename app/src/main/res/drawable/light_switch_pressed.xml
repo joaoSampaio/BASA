@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape  android:shape="rectangle">
+            <gradient
+                android:startColor="#FFF7F7F7"
+                android:centerColor="#FFCECFCE"
+                android:endColor="#FFBEBEBE"
+                android:angle="270"/>
+            <!--<solid android:color="#FF7AC943" />-->
+            <corners android:radius="10dp" />
+            <stroke
+                android:width="2dp"
+                android:color="#000000" />
+
+        </shape>
+    </item>
+
+    <item android:bottom="8dp" android:right="8dp" android:left="8dp" android:top="8dp">
+        <shape  android:shape="rectangle">
+            <corners android:radius="5dp" />
+            <stroke
+                android:width="2dp"
+                android:color="#000000" />
+
+        </shape>
+    </item>
+
+    <!--sombra-->
+    <!--<item android:bottom="9dp" android:right="9dp" android:left="9dp" android:top="9dp">-->
+        <!--<shape  android:shape="rectangle">-->
+            <!--<corners android:radius="5dp" />-->
+            <!--<solid android:color="#797979" />-->
+
+
+        <!--</shape>-->
+    <!--</item>-->
+
+    <item android:bottom="11dp" android:right="11dp" android:left="9dp" android:top="9dp">
+        <shape  android:shape="rectangle">
+            <corners android:radius="2dp" />
+            <!--<solid android:color="#E6E6E6" />-->
+            <gradient
+                android:startColor="#FFF7F7F7"
+                android:centerColor="#FFCECFCE"
+                android:endColor="#FFBEBEBE"
+                android:angle="270"/>
+
+        </shape>
+    </item>
+
+
+
+    <!--<item android:right="0dp" android:left="0dp" android:top="0dp" >-->
+        <!--<bitmap android:src="@drawable/top2" />-->
+    <!--</item>-->
+
+</layer-list>

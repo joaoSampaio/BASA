@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Lighting and Switches">
+
+        <ListPreference
+            android:key="light_number"
+            android:title="Lights"
+            android:summary="Number of available Lights"
+            android:dialogTitle="Pick the number of available Lights"
+            android:entries="@array/light_number"
+            android:entryValues="@array/light_number">
+        </ListPreference>
+
+        <ListPreference
+            android:key="custom_button_number"
+            android:title="Custom Switches"
+            android:summary="Number of Custom Switches"
+            android:dialogTitle="Pick the number of available custom switches"
+            android:entries="@array/custom_switches_number"
+            android:entryValues="@array/custom_switches_number">
+        </ListPreference>
+
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:title="Beacon">
+
+        <ListPreference
+            android:key="beacon_type"
+            android:title="Beacon Type"
+            android:summary="AltBeacon"
+            android:dialogTitle="Pick the beacon type"
+            android:entries="@array/beacon_type"
+            android:entryValues="@array/beacon_type">
+        </ListPreference>
+
+        <!--<MultiSelectListPreference-->
+            <!--android:key="list_beacons"-->
+            <!--android:title="My beacons"-->
+            <!--android:summary="Notifies the web server if you are near one of the beacons"-->
+            <!--android:dialogTitle="dialog title"-->
+            <!--android:entries="@array/beacon_ids"-->
+            <!--android:entryValues="@array/beacon_ids" />-->
+
+
+        <EditTextPreference
+            android:key="custom_beacon"
+            android:title="Custom Beacon identifier"
+            android:summary="Custom id if beacon not in the list above."
+            android:dialogTitle="Beacon identifier"
+            android:inputType="textNoSuggestions"
+            android:maxLength="36"
+            android:hint="de305d54-75b4-431b-adb2-eb6b9e546014"
+             />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Occupant Detection">
+
+
+        <ListPreference
+            android:key="cam_accuracy"
+            android:title="Detection Threshold (%)"
+            android:summary="Percentage of different pixels to determine movement (less is more sensitive)"
+            android:entries="@array/threshold"
+            android:entryValues="@array/threshold"/>
+
+        <ListPreference
+            android:key="cam_time"
+            android:title="Camera detection period (seconds)"
+            android:summary="Time between consecutive motion detections"
+            android:entries="@array/cam_time"
+            android:entryValues="@array/cam_time"/>
+
+
+
+        <Preference android:title="Advanced option"
+            android:key="btn_camera_advanced"
+            android:summary="Specify a camera zone where detection will not be used"/>
+
+
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Bluetooth background service">
+        <EditTextPreference
+            android:key="notification_url"
+            android:title="WebSite notification url"
+            android:summary="Site to be notified on beacon discovery"
+            android:dialogTitle="Website url to notify if beacon is detected"
+            />
+
+        <EditTextPreference
+            android:key="frequency_beacon"
+            android:title="Scanner Frequency"
+            android:summary="The time between scans of advertisements."
+            android:dialogTitle="Scan frequency (seconds)"
+            android:inputType="number"
+            android:maxLength="36"
+            android:hint="15"
+            />
+
+
+
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Kiosk Mode">
+        <Preference android:title="Exit App"
+            android:key="btn_kiosk"
+            android:summary="Introduce the PIN to close the app"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

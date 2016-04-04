@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature"
+        android:id="@+id/textTemperature"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="35dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speak"
+        android:id="@+id/btnSpeak"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="tap the mic"
+        android:textColor="@color/black_overlay"
+        android:textSize="25dp"
+        android:textStyle="normal"
+        android:id="@+id/txtSpeechInput"
+        android:layout_below="@+id/btnSpeak" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/sensitivity"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="0" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sensitivity"
+        android:id="@+id/textView"
+        android:layout_above="@+id/sensitivity"
+        android:layout_alignParentStart="true"
+        android:textSize="25dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/threshold"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/sensitivity"
+        android:layout_marginStart="73dp"
+        android:text="0"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="threshold"
+        android:id="@+id/textView3"
+        android:textSize="25dp"
+        android:layout_above="@+id/threshold"
+        android:layout_alignStart="@+id/threshold" />
+</RelativeLayout>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BASA</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="say">say\n blblal</string>
+
+    <string-array name="beacon_type">
+        <item >iBeacon</item>
+        <item >AltBeacon</item>
+    </string-array>
+
+</resources>

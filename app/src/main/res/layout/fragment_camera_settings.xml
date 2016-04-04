@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+    <!--<include-->
+        <!--android:id="@+id/topbar"-->
+        <!--layout="@layout/layout_topbar_dialog"-->
+        <!--/>-->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/actions">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept changes"
+            android:id="@+id/action_accept" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/action_cancel" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/actions">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/img_camera"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter" />
+
+        <pt.ulisboa.tecnico.basa.camera.RectangleView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rect"
+            android:layout_alignTop="@+id/img_camera"
+            android:layout_alignBottom="@+id/img_camera"
+            android:layout_alignLeft="@+id/img_camera"
+            android:layout_alignRight="@+id/img_camera" />
+
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
