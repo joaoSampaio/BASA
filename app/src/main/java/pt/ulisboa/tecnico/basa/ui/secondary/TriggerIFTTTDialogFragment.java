@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,10 +98,11 @@ public class TriggerIFTTTDialogFragment extends DialogFragment {
 
         mAdapter = new TriggerAdapter(getActivity(), data, new ViewClicked() {
             @Override
-            public void onClick(final int id) {
+            public void onClick(final int triggerOrActionId) {
 
 
-                if(id == TriggerAction.LIGHT_ON){
+                if(type == TRIGGER_ACTION && triggerOrActionId == TriggerAction.LIGHT_ON){
+                    Log.d("log", "TriggerAction.LIGHT_ON:");
                     new DialogMultiSelect(getActivity(), getLights(), getLightsSelected(), "Select the Lights", new DialogMultiSelect.DialogMultiSelectResponse() {
                         @Override
                         public void onSucess(boolean[] checkedValues) {
@@ -111,24 +113,25 @@ public class TriggerIFTTTDialogFragment extends DialogFragment {
                                     selectedMulti.add(i);
                             }
 
-                            listener.onTriggerSelected(id, type, selectedMulti);
+                            listener.onTriggerSelected(triggerOrActionId, type, selectedMulti);
                             getDialog().dismiss();
                         }
                     }).show();
-                }else if(id == Trigger.SWITCH){
+                }else if(type == TRIGGER && triggerOrActionId == Trigger.SWITCH){
+                    Log.d("log", "Trigger.SWITCH:");
                     new DialogOneChoiceSelect(getActivity(), getCustomSwitches(), "Pick one switch", new DialogOneChoiceSelect.DialogOneSelectResponse() {
                         @Override
                         public void onSucess(int id, int type) {
                             List<Integer> selected = new ArrayList<Integer>();
                             //the id is the position of the switch
                             selected.add(id);
-                            listener.onTriggerSelected(id, type, selected);
+                            listener.onTriggerSelected(triggerOrActionId, type, selected);
                             getDialog().dismiss();
                         }
                     }, type).show();
                 }
                 else {
-                    listener.onTriggerSelected(id, type, null);
+                    listener.onTriggerSelected(triggerOrActionId, type, null);
                     getDialog().dismiss();
                 }
 

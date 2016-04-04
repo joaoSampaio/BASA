@@ -94,7 +94,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        eventManager = new EventManager();
+        eventManager = new EventManager(this);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -312,118 +312,124 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
 //        new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
 
 
-        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadModel(new TypeToken<List<Recipe>>(){}.getType(), Global.OFFLINE_RECIPES);
-        if(recipes == null)
-            recipes = new ArrayList<>();
+        getEventManager().reloadSavedRecipes();
 
-        for(Recipe re: recipes){
-            final Recipe recipeFinal = re;
-            switch (re.getTriggerId()){
-                case Trigger.CLAP:
-                    getEventManager().registerInterest(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
-                        @Override
-                        public void onRegisteredEventTriggered(Event event) {
-                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
-                            if(event instanceof EventClap){
-
-                                doAction(recipeFinal);
-
-
-
-                            }
-                        }
-                    }, 0));
-                    break;
-                case Trigger.TEMPERATURE:
-
-                    getEventManager().registerInterest(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
-                        @Override
-                        public void onRegisteredEventTriggered(Event event) {
-                            if(event instanceof EventTemperature){
-                                double temp = ((EventTemperature)event).getTemperature();
-
-                                if(recipeFinal.isTriggerConditionBigger()){
-                                    //Temp ≥ 25
-                                    if(temp >= Integer.parseInt(recipeFinal.getConditionTrigger())){
-                                        doAction(recipeFinal);
-                                    }
-
-                                }
-                                if(recipeFinal.isTriggerConditionLess()){
-                                    //Temp ≤ 25
-                                    if(temp <= Integer.parseInt(recipeFinal.getConditionTrigger())){
-                                        doAction(recipeFinal);
-                                    }
-
-                                }
-                            }
-                        }
-                    }, 0));
-
-                    break;
-                case Trigger.SWITCH:
-                    Log.d("initSavedValues", "SWITCH ");
-
-                    getEventManager().registerInterest(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
-                        @Override
-                        public void onRegisteredEventTriggered(Event event) {
-                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
-                            if(event instanceof EventCustomSwitchPressed){
-                                int id = ((EventCustomSwitchPressed)event).getId();
-
-                                //se for o switch pretendido
-                                if(recipeFinal.getSelectedMulti().get(0) == id){
-                                    doAction(recipeFinal);
-                                }
-                            }
-                        }
-                    }, 0));
-                    break;
-                case Trigger.VOICE:
-
-                    break;
-                case Trigger.EMAIL:
-
-                    break;
-
-            }
-        }
+//        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadModel(new TypeToken<List<Recipe>>(){}.getType(), Global.OFFLINE_RECIPES);
+//        if(recipes == null)
+//            recipes = new ArrayList<>();
+//
+//        for(Recipe re: recipes){
+//            final Recipe recipeFinal = re;
+//            switch (re.getTriggerId()){
+//                case Trigger.CLAP:
+//                    getEventManager().registerInterest(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
+//                        @Override
+//                        public void onRegisteredEventTriggered(Event event) {
+//                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
+//                            if(event instanceof EventClap){
+//
+//                                doAction(recipeFinal);
+//
+//
+//
+//                            }
+//                        }
+//                    }, 0));
+//                    break;
+//                case Trigger.TEMPERATURE:
+//
+//                    getEventManager().registerInterest(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
+//                        @Override
+//                        public void onRegisteredEventTriggered(Event event) {
+//                            if(event instanceof EventTemperature){
+//                                double temp = ((EventTemperature)event).getTemperature();
+//
+//                                if(recipeFinal.isTriggerConditionBigger()){
+//                                    //Temp ≥ 25
+//                                    if(temp >= Integer.parseInt(recipeFinal.getConditionTrigger())){
+//                                        doAction(recipeFinal);
+//                                    }
+//
+//                                }
+//                                if(recipeFinal.isTriggerConditionLess()){
+//                                    //Temp ≤ 25
+//                                    if(temp <= Integer.parseInt(recipeFinal.getConditionTrigger())){
+//                                        doAction(recipeFinal);
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }, 0));
+//
+//                    break;
+//                case Trigger.SWITCH:
+//                    Log.d("initSavedValues", "SWITCH ");
+//
+//                    getEventManager().registerInterest(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
+//                        @Override
+//                        public void onRegisteredEventTriggered(Event event) {
+//                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
+//                            if(event instanceof EventCustomSwitchPressed){
+//                                int id = ((EventCustomSwitchPressed)event).getId();
+//
+//                                //se for o switch pretendido
+//                                if(recipeFinal.getSelectedTrigger().get(0) == id){
+//                                    doAction(recipeFinal);
+//                                }
+//                            }
+//                        }
+//                    }, 0));
+//                    break;
+//                case Trigger.VOICE:
+//
+//                    break;
+//                case Trigger.EMAIL:
+//
+//                    break;
+//
+//            }
+//        }
     }
 
-    public void doAction(Recipe re){
-        int lightId;
-        switch (re.getActionId()){
+//    public void doAction(Recipe re){
+//        int lightId;
+//        switch (re.getActionId()){
+//
+//            case TriggerAction.TEMPERATURE:
+//
+//                break;
+//            case TriggerAction.LIGHT_ON:
+//
+//
+//                for(int id: re.getSelectedAction()){
+//                    if(getLightingManager() != null)
+//                        getLightingManager().turnONLight(id);
+//                }
+//
+//                break;
+//            case TriggerAction.LIGHT_OFF:
+//                for(int id: re.getSelectedAction()){
+//                    if(getLightingManager() != null)
+//                        getLightingManager().turnOFFLight(id);
+//                }
+//                break;
+//
+//            case TriggerAction.VOICE:
+//
+//                String say = re.getConditionEventValue();
+//                getmTextToSpeechManager().speak(say);
+//
+//
+//                break;
+//            case TriggerAction.EMAIL:
+//
+//                break;
+//        }
+//    }
 
-            case TriggerAction.TEMPERATURE:
-
-                break;
-            case TriggerAction.LIGHT_ON:
 
 
-                for(int id: re.getSelectedMulti()){
-                    if(getLightingManager() != null)
-                        getLightingManager().turnONLight(id);
-                }
-
-
-
-
-                break;
-            case TriggerAction.LIGHT_OFF:
-                for(int id: re.getSelectedMulti()){
-                    if(getLightingManager() != null)
-                        getLightingManager().turnOFFLight(id);
-                }
-                break;
-
-            case TriggerAction.VOICE:
-
-                break;
-            case TriggerAction.EMAIL:
-
-                break;
-        }
-    }
 
 
     public void openFragment(){
@@ -437,7 +443,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
 
     public EventManager getEventManager() {
         if (eventManager == null)
-            eventManager = new EventManager();
+            eventManager = new EventManager(this);
         return eventManager;
     }
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.Trigger;
 import pt.ulisboa.tecnico.basa.model.TriggerAction;
+import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
@@ -40,11 +42,10 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     private ImageView action_trigger, action_event;
     private TextView action_condition, action_condition_value, action_event_condition, action_event_condition_value;
     private Spinner condition_spinner;
-    int selectedTriggerId, selectedActionId;
-    private String conditionTriggerValue, conditionEventValue, conditionTrigger, conditionEvent;
     private Button action_save_recipe;
     private IFTTTDialogFragment.NewRecipeCreated listener;
-    private List<Integer> selectedMulti;
+
+    Recipe recipe;
 
     public AddNewIFTTTDialogFragment() {
         // Required empty public constructor
@@ -72,12 +73,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     }
 
     public void loadUI(){
-        conditionTriggerValue = "23";
-        conditionEventValue = "23";
-        selectedTriggerId = -1;
-        selectedActionId = -1;
-        conditionTrigger = "≥";
-        conditionEvent = "≥";
+        recipe = new Recipe();
 
         action_save_recipe = (Button)rootView.findViewById(R.id.action_save_recipe);
         TextView textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
@@ -139,6 +135,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     }
 
     private void setTrigger(int triggerId){
+        Log.d("log", "setTrigger:"+triggerId);
         int resId = Trigger.getResId(triggerId);
 
         if(Trigger.isTriggerComplex(triggerId)){
@@ -247,29 +244,29 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 break;
             case R.id.action_save_recipe:
 
-                if(selectedTriggerId >= 0 && selectedActionId >= 0) {
-                    Recipe recipe = new Recipe(selectedTriggerId, selectedActionId);
-                    if (Trigger.isTriggerComplex(selectedTriggerId)) {
-                        recipe.setConditionTrigger(conditionTrigger);
-                        recipe.setConditionTriggerValue(conditionTriggerValue);
-                    } else if (Trigger.isTriggerSimple(selectedTriggerId)) {
-                        recipe.setConditionTriggerValue(conditionTriggerValue);
+                if(recipe.getTriggerId() >= 0 && recipe.getActionId() >= 0) {
+//                    Recipe recipe = new Recipe(selectedTriggerId, selectedActionId);
+                    if (Trigger.isTriggerComplex(recipe.getTriggerId())) {
+//                        recipe.setConditionTrigger(conditionTrigger);
+//                        recipe.setConditionTriggerValue(conditionTriggerValue);
+                    } else if (Trigger.isTriggerSimple(recipe.getTriggerId())) {
+//                        recipe.setConditionTriggerValue(conditionTriggerValue);
                     } else {
 
                     }
 
-                    if (TriggerAction.isTriggerComplex(selectedActionId)) {
-                        recipe.setConditionEvent(conditionEvent);
-                        recipe.setConditionEventValue(conditionEventValue);
-                    } else if (TriggerAction.isTriggerSimple(selectedActionId)) {
-                        recipe.setConditionEventValue(conditionEventValue);
+                    if (TriggerAction.isTriggerComplex(recipe.getActionId())) {
+//                        recipe.setConditionEvent(conditionEvent);
+//                        recipe.setConditionEventValue(conditionEventValue);
+                    } else if (TriggerAction.isTriggerSimple(recipe.getActionId())) {
+//                        recipe.setConditionEventValue(conditionEventValue);
                     } else {
 
                     }
 
-                    if(selectedActionId == TriggerAction.LIGHT_ON || selectedTriggerId == Trigger.SWITCH){
-                        recipe.setSelectedMulti(selectedMulti);
-                    }
+//                    if(recipe.getActionId() == TriggerAction.LIGHT_ON || recipe.getTriggerId() == Trigger.SWITCH){
+//                        recipe.setSelectedMulti(selectedMulti);
+//                    }
 
 
 
@@ -280,6 +277,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     new ModelCache<List<Recipe>>().saveModel(recipes, Global.OFFLINE_RECIPES);
                     if(listener != null)
                         listener.onNewRecipe();
+                    ((MainActivity)getActivity()).getEventManager().reloadSavedRecipes();
                     getDialog().dismiss();
 
                 }else{
@@ -306,13 +304,14 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
             @Override
             public void onTriggerSelected(int triggerOrActionId, int type, List<Integer> selected) {
                 if (type == TriggerIFTTTDialogFragment.TRIGGER) {
-                    selectedTriggerId = triggerOrActionId;
+                    recipe.setTriggerId(triggerOrActionId);
                     setTrigger(triggerOrActionId);
+                    recipe.setSelectedTrigger(selected);
                     setClickListener(action_event);
                 } else {
-                    selectedActionId = triggerOrActionId;
-                    selectedMulti = selected;
-                    setAction(triggerOrActionId, selectedMulti);
+                    recipe.setActionId(triggerOrActionId);
+                    recipe.setSelectedAction(selected);
+                    setAction(triggerOrActionId, selected);
 
                 }
 
@@ -354,10 +353,10 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     public void onClick(DialogInterface dialog, int pos) {
                         if(type == TriggerIFTTTDialogFragment.TRIGGER) {
                             action_condition.setText(arrayAdapter.getItem(pos));
-                            conditionTrigger = arrayAdapter.getItem(pos);
+                            recipe.setConditionTrigger(arrayAdapter.getItem(pos));
                         }else{
                             action_event_condition.setText(arrayAdapter.getItem(pos));
-                            conditionEvent = arrayAdapter.getItem(pos);
+                            recipe.setConditionEvent(arrayAdapter.getItem(pos));
                         }
                     }
                 });
@@ -372,14 +371,14 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
         final EditText edt = (EditText) dialogView.findViewById(R.id.edit1);
         if(type == TriggerIFTTTDialogFragment.TRIGGER) {
-            edt.setText(conditionTriggerValue);
+            edt.setText(recipe.getConditionTriggerValue());
             dialogBuilder.setTitle("Trigger Value");
         }else{
-            edt.setText(conditionEventValue);
+            edt.setText( recipe.getConditionEventValue());
             dialogBuilder.setTitle("Event Value");
         }
 
-        dialogBuilder.setMessage(Trigger.getLabelFromId(selectedTriggerId));
+        dialogBuilder.setMessage(Trigger.getLabelFromId(recipe.getTriggerId()));
         dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //do something with edt.getText().toString();
@@ -387,10 +386,10 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
                 if(type == TriggerIFTTTDialogFragment.TRIGGER) {
                     action_condition_value.setText(edt.getText().toString());
-                    conditionTriggerValue = edt.getText().toString();
+                    recipe.setConditionTriggerValue(edt.getText().toString());
                 }else{
                     action_event_condition_value.setText(edt.getText().toString());
-                    conditionEventValue = edt.getText().toString();
+                    recipe.setConditionEventValue(edt.getText().toString());
                 }
 
             }

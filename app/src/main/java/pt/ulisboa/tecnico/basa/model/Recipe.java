@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.basa.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,15 +10,22 @@ public class Recipe {
 
     private int triggerId;
     private int actionId;
-    private String conditionTriggerValue;
-    private String conditionEventValue;
-    private String conditionTrigger;
-    private String conditionEvent;
-    private List<Integer> selectedMulti;
+    private String conditionTriggerValue = "";
+    private String conditionEventValue = "";
+    private String conditionTrigger = "";
+    private String conditionEvent = "";
+    private List<Integer> selectedTrigger, selectedAction;
 
+    public Recipe() {
+        triggerId = -1;
+        actionId = -1;
+
+    }
     public Recipe(int triggerId, int actionId) {
         this.triggerId = triggerId;
         this.actionId = actionId;
+        this.selectedTrigger = new ArrayList<>();
+        this.selectedAction = new ArrayList<>();
     }
 
     public Recipe(int triggerId, int actionId, String conditionTriggerValue, String conditionEventValue) {
@@ -84,12 +92,20 @@ public class Recipe {
         this.conditionEvent = conditionEvent;
     }
 
-    public List<Integer> getSelectedMulti() {
-        return selectedMulti;
+    public List<Integer> getSelectedTrigger() {
+        return selectedTrigger;
     }
 
-    public void setSelectedMulti(List<Integer> selectedMulti) {
-        this.selectedMulti = selectedMulti;
+    public void setSelectedTrigger(List<Integer> selectedTrigger) {
+        this.selectedTrigger = selectedTrigger;
+    }
+
+    public List<Integer> getSelectedAction() {
+        return selectedAction;
+    }
+
+    public void setSelectedAction(List<Integer> selectedAction) {
+        this.selectedAction = selectedAction;
     }
 
     public boolean isTriggerConditionBigger(){

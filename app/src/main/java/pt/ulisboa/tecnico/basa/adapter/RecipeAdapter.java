@@ -120,12 +120,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeItem
         }else {
             //all other
             Log.d("app", "chegou");
-            if(actionId == TriggerAction.LIGHT_ON && data.get(position).getSelectedMulti() != null){
+            if(actionId == TriggerAction.LIGHT_ON && data.get(position).getSelectedAction() != null){
                 Log.d("app", "chegou1");
                 holder.action_event_condition.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
                 holder.action_event_condition.setVisibility(View.VISIBLE);
                 String str = "[";
-                for (Integer i: data.get(position).getSelectedMulti())
+                for (Integer i: data.get(position).getSelectedAction())
                     str+=(i+1)+",";
                 str = str.substring(0, str.length()-1);
                 str+="]";
