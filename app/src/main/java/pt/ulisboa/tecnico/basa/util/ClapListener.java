@@ -33,7 +33,7 @@ public class ClapListener implements OnsetHandler {
     private boolean mIsRecording;
     private byte[] buffer;
     private AudioRecord recorder;
-    private long timeOld = 0;
+    private long timeOld = 0, stopTime = 0;
     private MainActivity activity;
 
 
@@ -90,7 +90,9 @@ public class ClapListener implements OnsetHandler {
 
     @Override
     public void handleOnset(double time, double salience) {
-
+        Log.d("Percussion", "claplistenner called: time:"+time + " stopTime:"+stopTime);
+        if((long)time < stopTime)
+            return;
 
         if(timeOld == 0){
             timeOld = (long)time;
@@ -103,10 +105,11 @@ public class ClapListener implements OnsetHandler {
             clap = 1;
         }
 
-        Log.d("Percussion", "salience: " + salience);
+        Log.d("Percussion", "salience: " + salience + "  cap num:"+clap);
         // have we detected a pitch?
         if (clap == 2) {
             clap = 0;
+            stopTime = (long)time + 5;
             activity.getEventManager().addEvent(new EventClap());
 
             // handlePitch will be run from a background thread

@@ -32,6 +32,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.code.gson:gson:2.5'
     compile files('libs/pocketsphinx-android-5prealpha-nolib.jar')
+//    compile 'com.ivona:ivona-speechcloud-sdk-java:1.0.0'
 
 }
 
