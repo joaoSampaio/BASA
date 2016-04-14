@@ -25,22 +25,22 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
         if (status == TextToSpeech.SUCCESS) {
             //Setting speech Language
             isInitialized = true;
-            for (Locale loc : tts.getAvailableLanguages()){
-                Log.d("locale", "getCountry:"+loc.getCountry() + " toLanguageTag:" + loc.toLanguageTag());
-            }
-//            tts.setLanguage(Locale.US);
-            Log.d("locale", "language available PT-pt:" + tts.isLanguageAvailable(new Locale("PT", "pt")));
-            Log.d("locale", "language available pt-PT:" + tts.isLanguageAvailable(new Locale("pt", "PT")));
-            Log.d("locale", "language available pt-pt:" + tts.isLanguageAvailable(new Locale("pt", "pt")));
-            Log.d("locale", "language available PT:" + tts.isLanguageAvailable(new Locale( "PT")));
-            Log.d("locale", "language available pt:" + tts.isLanguageAvailable(new Locale( "pt")));
-            Log.d("locale", "language available pt--PT:" + tts.isLanguageAvailable(new Locale( "pt-PT")));
-            Log.d("locale", "language available pt-POR:" + tts.isLanguageAvailable(new Locale("pt", "PT")));
+//            for (Locale loc : tts.getAvailableLanguages()){
+//                Log.d("locale", "getCountry:"+loc.getCountry() + " toLanguageTag:" + loc.toLanguageTag());
+//            }
+////            tts.setLanguage(Locale.US);
+//            Log.d("locale", "language available PT-pt:" + tts.isLanguageAvailable(new Locale("PT", "pt")));
+//            Log.d("locale", "language available pt-PT:" + tts.isLanguageAvailable(new Locale("pt", "PT")));
+//            Log.d("locale", "language available pt-pt:" + tts.isLanguageAvailable(new Locale("pt", "pt")));
+//            Log.d("locale", "language available PT:" + tts.isLanguageAvailable(new Locale( "PT")));
+//            Log.d("locale", "language available pt:" + tts.isLanguageAvailable(new Locale( "pt")));
+//            Log.d("locale", "language available pt--PT:" + tts.isLanguageAvailable(new Locale( "pt-PT")));
+//            Log.d("locale", "language available pt-POR:" + tts.isLanguageAvailable(new Locale("pt", "PT")));
             int res = tts.setLanguage(new Locale("pt","PT"));
             Log.d("locale", "res:"+res);
-            if (res >= TextToSpeech.LANG_AVAILABLE) {
-                tts.speak("Muito obrigado a todos!", TextToSpeech.QUEUE_FLUSH, null);
-            }
+//            if (res >= TextToSpeech.LANG_AVAILABLE) {
+//                tts.speak("Muito obrigado a todos!", TextToSpeech.QUEUE_FLUSH, null, null);
+//            }
 //            engine.setLanguage(new Locale("pt", "PT"));
                 tts.setPitch(1);
         }

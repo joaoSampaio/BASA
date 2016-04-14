@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
             mHelper = new CameraHelper(this);
 
         start_camera();
-        clapListener = new ClapListener(this);
+        //clapListener = new ClapListener(this);
         this.lightingManager = new LightingManager(this);
         this.mTextToSpeechManager = new TextToSpeechManager(this);
 
@@ -194,7 +194,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
 
         AppController.getInstance().setInterfaceToActivity(null);
         AppController.getInstance().beaconDisconect();
-        clapListener.stop();
+        //clapListener.stop();
     }
 
     @Override

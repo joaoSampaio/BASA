@@ -54,7 +54,7 @@ public class SpeechRecognizerManager {
     private static final String KWS_SEARCH = "wakeup";
     /* Keyword we are looking for to activate menu */
 //    private static final String KEYPHRASE = "ok office";
-    private static final String KEYPHRASE = "ok light";
+    private static final String KEYPHRASE = "ok big boss";
     private edu.cmu.pocketsphinx.SpeechRecognizer mPocketSphinxRecognizer;
     private static final String TAG = SpeechRecognizerManager.class.getSimpleName();
     protected Intent mSpeechRecognizerIntent;

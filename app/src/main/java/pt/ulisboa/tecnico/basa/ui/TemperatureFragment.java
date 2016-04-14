@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.basa.model.Event;
 import pt.ulisboa.tecnico.basa.model.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
+import pt.ulisboa.tecnico.basa.util.SeekArc;
 
 
 public class TemperatureFragment extends Fragment {
@@ -25,13 +26,10 @@ public class TemperatureFragment extends Fragment {
     View rootView;
     private TextView textTemperature;
     private InterestEventAssociation interest;
+    private TextView mSeekArcProgress;
+    private SeekArc mSeekArc;
 
-    private TextView txtSpeechInput;
-    private Button btnSpeak;
-    private EditText sensitivity, threshold;
-    ClapListener clap;
-
-    public TemperatureFragment() {
+      public TemperatureFragment() {
         // Required empty public constructor
 
     }
@@ -44,25 +42,29 @@ public class TemperatureFragment extends Fragment {
 
         textTemperature = (TextView)rootView.findViewById(R.id.textTemperature);
         textTemperature.setText("Waiting...: ");
+        mSeekArcProgress = (TextView) rootView.findViewById(R.id.seekArcProgress);
+        mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
 
-        threshold = (EditText)rootView.findViewById(R.id.threshold);
-        sensitivity = (EditText)rootView.findViewById(R.id.sensitivity);
 
-        txtSpeechInput = (TextView) rootView.findViewById(R.id.txtSpeechInput);
-        btnSpeak = (Button) rootView.findViewById(R.id.btnSpeak);
-        btnSpeak.setOnClickListener(new View.OnClickListener() {
+        mSeekArc.setOnSeekArcChangeListener(new SeekArc.OnSeekArcChangeListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onStopTrackingTouch(SeekArc seekArc) {
+            }
 
-                double threshold_app = Double.parseDouble(threshold.getText().toString());
-                double sensitivity_app = Double.parseDouble(sensitivity.getText().toString());
-                clap.setUpNew(sensitivity_app, threshold_app);
-                //((MainActivity) getActivity()).promptSpeechInput();
+            @Override
+            public void onStartTrackingTouch(SeekArc seekArc) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekArc seekArc, int progress,
+                                          boolean fromUser) {
+                mSeekArcProgress.setText(String.valueOf(progress));
             }
         });
 
-        //clap = new ClapListener();
+
+
         return rootView;
     }
 

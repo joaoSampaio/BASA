@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
 
@@ -10,65 +11,79 @@
         android:layout_height="wrap_content"
         android:text="Temperature"
         android:id="@+id/textTemperature"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:textSize="35dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Speak"
-        android:id="@+id/btnSpeak"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="tap the mic"
-        android:textColor="@color/black_overlay"
-        android:textSize="25dp"
-        android:textStyle="normal"
-        android:id="@+id/txtSpeechInput"
-        android:layout_below="@+id/btnSpeak" />
+        <ImageView
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:id="@+id/imageView"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/thermostat_outside"
+            android:visibility="gone" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/sensitivity"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:text="0" />
+        <FrameLayout
+            android:id="@+id/seekArcContainer"
+            android:layout_width="600dp"
+            android:layout_height="500dp"
+            android:layout_weight="1"
+            android:layout_centerInParent="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sensitivity"
-        android:id="@+id/textView"
-        android:layout_above="@+id/sensitivity"
-        android:layout_alignParentStart="true"
-        android:textSize="25dp" />
+            <pt.ulisboa.tecnico.basa.util.SeekArc
+                android:id="@+id/seekArc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:padding="50dp"
+                seekarc:clockwise="true"
+                seekarc:max="35"
+                seekarc:progressWidth="10dp"
+                seekarc:rotation="180"
+                seekarc:startAngle="60"
+                seekarc:sweepAngle="240"
+                seekarc:thumb="@drawable/ic_temperature"
+                seekarc:touchInside="true"
+                android:layout_marginBottom="-50dp" />
+            <!--seekarc:thumb="@drawable/custom_seek_arc_control_selector"-->
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/threshold"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/sensitivity"
-        android:layout_marginStart="73dp"
-        android:text="0"
-        android:inputType="numberDecimal" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:gravity="center_horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="threshold"
-        android:id="@+id/textView3"
-        android:textSize="25dp"
-        android:layout_above="@+id/threshold"
-        android:layout_alignStart="@+id/threshold" />
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/imageView4"
+                    android:src="@drawable/ic_keyboard_arrow_up" />
+
+                <TextView
+                    android:id="@+id/seekArcProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0"
+                    android:textSize="120dp"
+                    android:layout_marginTop="-50dp" />
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/imageView5"
+                    android:src="@drawable/ic_keyboard_arrow_down"
+                    android:layout_marginTop="-50dp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+    </RelativeLayout>
+
 </RelativeLayout>
