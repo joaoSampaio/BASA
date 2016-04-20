@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.basa.ui;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,11 +21,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.google.gson.reflect.TypeToken;
+import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import pt.ulisboa.tecnico.basa.Global;
@@ -34,23 +32,12 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.MainPagerAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
-import pt.ulisboa.tecnico.basa.manager.EventManager;
-import pt.ulisboa.tecnico.basa.manager.LightingManager;
-import pt.ulisboa.tecnico.basa.manager.SpeechRecognizerManager;
-import pt.ulisboa.tecnico.basa.manager.TextToSpeechManager;
+import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventClap;
-import pt.ulisboa.tecnico.basa.model.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.EventTemperature;
-import pt.ulisboa.tecnico.basa.model.EventVoice;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.model.Recipe;
-import pt.ulisboa.tecnico.basa.model.Trigger;
-import pt.ulisboa.tecnico.basa.model.TriggerAction;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class MainActivity extends FragmentActivity {
 
@@ -63,16 +50,17 @@ public class MainActivity extends FragmentActivity {
 
     private CameraHelper mHelper;
     private FrameLayout camera_preview;
-    private EventManager eventManager;
+//    private EventManager eventManager;
     public final static int REQ_CODE_SPEECH_INPUT = 100;
 
     private ClapListener clapListener;
-    private LightingManager lightingManager;
+//    private LightingManager lightingManager;
     private VideoManager videoManager;
 
     private SpeechRecognizer mSpeechRecognizer;
-    private SpeechRecognizerManager mSpeechRecognizerManager;
-    private TextToSpeechManager mTextToSpeechManager;
+
+    private BasaManager basaManager;
+
 
     //handler to post changes to progress bar
     private Handler mHandler = new Handler();
@@ -93,16 +81,13 @@ public class MainActivity extends FragmentActivity {
      */
     private PagerAdapter mPagerAdapter;
 
-
-    boolean isInitialized = false;
-    TextToSpeech tts;
+    TextToSpeech t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        eventManager = new EventManager(this);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -146,39 +131,38 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.d("myapp2", "**--onPageScrollStateChanged inBoxFragment:" + state);
+
             }
 
         });
 
-//        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+
+//       t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
 //            @Override
 //            public void onInit(int status) {
-//                Log.d("TextToSpeechManager", "onInit:"+status);
-//                if (status == TextToSpeech.SUCCESS) {
-//                    isInitialized = true;
-//
-//                    tts.setLanguage(Locale.US);
-//
-//                    tts.setPitch(1);
+//                Log.d("activity", "activity onInit:" + status);
+//                if(status != TextToSpeech.ERROR) {
+//                    t1.setLanguage(Locale.UK);
+//                    t1.speak("hello all", TextToSpeech.QUEUE_FLUSH, null);
 //                }
 //            }
 //        });
 
-        this.mTextToSpeechManager = new TextToSpeechManager(this);
-        mSpeechRecognizerManager =new SpeechRecognizerManager(this, this);
-//        mTextToSpeechManager.setTts(tts);
-//        mSpeechRecognizerManager.setOnResultListner(this);
     }
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d("myapp_new", "****onResume onResume onResume: ");
-        initSavedValues();
+
         if(mHelper == null)
             mHelper = new CameraHelper(this);
-        this.lightingManager = new LightingManager(this);
+
+        this.basaManager = new BasaManager(this);
+        this.basaManager.start();
+        initSavedValues();
+
+
 
 
         start_camera();
@@ -188,17 +172,17 @@ public class MainActivity extends FragmentActivity {
 
         getVideoManager().start();
 
-//        SystemRequirementsChecker.checkWithDefaultDialogs(this);
-//
-//        AppController.getInstance().setInterfaceToActivity(new InterfaceToActivity() {
-//
-//            @Override
-//            public void updateTemperature(double temperature) {
-//                getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
-//            }
-//        });
-//
-//        AppController.getInstance().beaconStart();
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+
+        AppController.getInstance().setInterfaceToActivity(new InterfaceToActivity() {
+
+            @Override
+            public void updateTemperature(double temperature) {
+                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
+            }
+        });
+
+        AppController.getInstance().beaconStart();
     }
 
     @Override
@@ -223,6 +207,9 @@ public class MainActivity extends FragmentActivity {
 
         AppController.getInstance().setInterfaceToActivity(null);
         AppController.getInstance().beaconDisconect();
+
+        this.basaManager.stop();
+
         //clapListener.stop();
     }
 
@@ -341,121 +328,12 @@ public class MainActivity extends FragmentActivity {
 //        new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
 
 
-        getEventManager().reloadSavedRecipes();
+        getBasaManager().getEventManager().reloadSavedRecipes();
 
-//        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadModel(new TypeToken<List<Recipe>>(){}.getType(), Global.OFFLINE_RECIPES);
-//        if(recipes == null)
-//            recipes = new ArrayList<>();
-//
-//        for(Recipe re: recipes){
-//            final Recipe recipeFinal = re;
-//            switch (re.getTriggerId()){
-//                case Trigger.CLAP:
-//                    getEventManager().registerInterest(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
-//                            if(event instanceof EventClap){
-//
-//                                doAction(recipeFinal);
-//
-//
-//
-//                            }
-//                        }
-//                    }, 0));
-//                    break;
-//                case Trigger.TEMPERATURE:
-//
-//                    getEventManager().registerInterest(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            if(event instanceof EventTemperature){
-//                                double temp = ((EventTemperature)event).getTemperature();
-//
-//                                if(recipeFinal.isTriggerConditionBigger()){
-//                                    //Temp ≥ 25
-//                                    if(temp >= Integer.parseInt(recipeFinal.getConditionTrigger())){
-//                                        doAction(recipeFinal);
-//                                    }
-//
-//                                }
-//                                if(recipeFinal.isTriggerConditionLess()){
-//                                    //Temp ≤ 25
-//                                    if(temp <= Integer.parseInt(recipeFinal.getConditionTrigger())){
-//                                        doAction(recipeFinal);
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                    }, 0));
-//
-//                    break;
-//                case Trigger.SWITCH:
-//                    Log.d("initSavedValues", "SWITCH ");
-//
-//                    getEventManager().registerInterest(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
-//                            if(event instanceof EventCustomSwitchPressed){
-//                                int id = ((EventCustomSwitchPressed)event).getId();
-//
-//                                //se for o switch pretendido
-//                                if(recipeFinal.getSelectedTrigger().get(0) == id){
-//                                    doAction(recipeFinal);
-//                                }
-//                            }
-//                        }
-//                    }, 0));
-//                    break;
-//                case Trigger.VOICE:
-//
-//                    break;
-//                case Trigger.EMAIL:
-//
-//                    break;
-//
-//            }
-//        }
+
     }
 
-//    public void doAction(Recipe re){
-//        int lightId;
-//        switch (re.getActionId()){
-//
-//            case TriggerAction.TEMPERATURE:
-//
-//                break;
-//            case TriggerAction.LIGHT_ON:
-//
-//
-//                for(int id: re.getSelectedAction()){
-//                    if(getLightingManager() != null)
-//                        getLightingManager().turnONLight(id);
-//                }
-//
-//                break;
-//            case TriggerAction.LIGHT_OFF:
-//                for(int id: re.getSelectedAction()){
-//                    if(getLightingManager() != null)
-//                        getLightingManager().turnOFFLight(id);
-//                }
-//                break;
-//
-//            case TriggerAction.VOICE:
-//
-//                String say = re.getConditionEventValue();
-//                getmTextToSpeechManager().speak(say);
-//
-//
-//                break;
-//            case TriggerAction.EMAIL:
-//
-//                break;
-//        }
-//    }
+
 
 
 
@@ -470,11 +348,6 @@ public class MainActivity extends FragmentActivity {
 
 
 
-    public EventManager getEventManager() {
-        if (eventManager == null)
-            eventManager = new EventManager(this);
-        return eventManager;
-    }
 
 
     public interface InterfaceToActivity {
@@ -547,31 +420,7 @@ public class MainActivity extends FragmentActivity {
 //        }
     }
 
-    /**
-     * Receiving speech input
-     * */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("onActivityResult", "**requestCode:"+requestCode);
-        Log.d("onActivityResult", "**chegou--**:"+ (null != data) + "   :"+ (resultCode == Activity.RESULT_OK));
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                if (resultCode == Activity.RESULT_OK && null != data) {
 
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
-                    getEventManager().addEvent(new EventVoice( result.get(0)));
-                    for(String s : result)
-                        Log.d("onActivityResult", "****" + s + "****: ");
-//                    txtSpeechInput.setText(result.get(0));
-                }
-                break;
-            }
-
-        }
-    }
 
     public class SpeechListener2 implements RecognitionListener {
         String TAG = "SpeechListener";
@@ -680,14 +529,9 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public LightingManager getLightingManager() {
-        return lightingManager;
+    public BasaManager getBasaManager() {
+        return basaManager;
     }
-
-    public TextToSpeechManager getmTextToSpeechManager() {
-        return mTextToSpeechManager;
-    }
-
 
     public VideoManager getVideoManager() {
         return videoManager;

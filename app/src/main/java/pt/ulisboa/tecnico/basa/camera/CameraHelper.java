@@ -333,7 +333,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    getActivity().getEventManager().addEvent(new EventOccupantDetected(Event.OCCUPANT_DETECTED, isDetected));
+                    getActivity().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(Event.OCCUPANT_DETECTED, isDetected));
                 }
             });
 

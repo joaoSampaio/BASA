@@ -1,11 +1,18 @@
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Set;
+
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 /**
  * Created by joaosampaio on 29-03-2016.
@@ -14,10 +21,11 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
 
     private TextToSpeech tts;
     private boolean isInitialized;
+    public static final int RESULT_SPEECH = 1;
 
-    public TextToSpeechManager(Context ctx) {
+    public TextToSpeechManager(MainActivity activity) {
         isInitialized = false;
-        tts = new TextToSpeech(ctx, this);
+        tts = new TextToSpeech(AppController.getAppContext(), this);
         Log.d("TextToSpeechManager", "constructor:");
     }
 
@@ -50,7 +58,7 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
 
 
     public boolean speak(String text){
-        Log.d("locale", "speak22:"+isInitialized);
+        Log.d("TextToSpeechManager", "speak22:"+isInitialized);
         if(isInitialized){
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         }

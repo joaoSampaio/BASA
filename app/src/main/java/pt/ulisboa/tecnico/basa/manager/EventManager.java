@@ -192,22 +192,22 @@ public class EventManager {
 
 
                 for(int id: re.getSelectedAction()){
-                    if(activity.getLightingManager() != null)
-                        activity.getLightingManager().turnONLight(id);
+                    if(activity.getBasaManager().getLightingManager() != null)
+                        activity.getBasaManager().getLightingManager().turnONLight(id);
                 }
 
                 break;
             case TriggerAction.LIGHT_OFF:
                 for(int id: re.getSelectedAction()){
-                    if(activity.getLightingManager() != null)
-                        activity.getLightingManager().turnOFFLight(id);
+                    if(activity.getBasaManager().getLightingManager() != null)
+                        activity.getBasaManager().getLightingManager().turnOFFLight(id);
                 }
                 break;
 
             case TriggerAction.VOICE:
 
                 String say = re.getConditionEventValue();
-                activity.getmTextToSpeechManager().speak(say);
+                activity.getBasaManager().getTextToSpeechManager().speak(say);
 
 
                 break;

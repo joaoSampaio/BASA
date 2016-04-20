@@ -280,7 +280,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     new ModelCache<List<Recipe>>().saveModel(recipes, Global.OFFLINE_RECIPES);
                     if(listener != null)
                         listener.onNewRecipe();
-                    ((MainActivity)getActivity()).getEventManager().reloadSavedRecipes();
+                    ((MainActivity)getActivity()).getBasaManager().getEventManager().reloadSavedRecipes();
                     getDialog().dismiss();
 
                 }else{

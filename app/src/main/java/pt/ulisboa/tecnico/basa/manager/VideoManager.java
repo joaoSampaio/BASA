@@ -50,8 +50,14 @@ public class VideoManager {
 
     public void start(){
         buffer = new ByteArrayOutputStream();
-        if(!running)
-            new ServerASYNC().execute();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!running)
+                    new ServerASYNC().execute();
+            }
+        },500);
+
     }
 
 
@@ -64,8 +70,8 @@ public class VideoManager {
                 running = true;
                 WifiManager wm = (WifiManager) getActivity().getSystemService(Activity.WIFI_SERVICE);
                 String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-                Log.i(TAG, "The server is running in -> " + ip + ":8080");
-                ServerSocket server = new ServerSocket(8080);
+                Log.i(TAG, "The server is running in -> " + ip + ":5001");
+                ServerSocket server = new ServerSocket(5001);
 
 
                 socket = server.accept();

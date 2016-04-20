@@ -55,7 +55,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity)getActivity()).getLightingManager().setLightChangedListener(new LightingManager.LightChanged() {
+        ((MainActivity)getActivity()).getBasaManager().getLightingManager().setLightChangedListener(new LightingManager.LightChanged() {
             @Override
             public void onLightON(final int lightId) {
                 Handler refresh = new Handler(Looper.getMainLooper());
@@ -95,7 +95,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
         @Override
     public void onPause(){
         super.onPause();
-        ((MainActivity)getActivity()).getLightingManager().setLightChangedListener(null);
+        ((MainActivity)getActivity()).getBasaManager().getLightingManager().setLightChangedListener(null);
     }
 
 
@@ -123,7 +123,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
             lightsIds.put(id, img_light_state.getId());
             btn_light.setTag(img_light_state);
 
-            if(((MainActivity)getActivity()).getLightingManager() != null &&  ((MainActivity)getActivity()).getLightingManager().getLightState(id)){
+            if(((MainActivity)getActivity()).getBasaManager().getLightingManager() != null &&  ((MainActivity)getActivity()).getBasaManager().getLightingManager().getLightState(id)){
                 ((ImageView) img_light_state).setImageResource(R.drawable.power_button);
             }
             //containerSwitch.addView(view);
@@ -131,7 +131,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     Log.d("EVENT", "onclick2:");
-                    ((MainActivity) getActivity()).getLightingManager().toggleLight(lightId);
+                    ((MainActivity) getActivity()).getBasaManager().getLightingManager().toggleLight(lightId);
                 }
             });
         }
@@ -155,7 +155,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     Log.d("EVENT", "onclick2:");
-                    ((MainActivity) getActivity()).getEventManager().addEvent(new EventCustomSwitchPressed(lightId));
+                    ((MainActivity) getActivity()).getBasaManager().getEventManager().addEvent(new EventCustomSwitchPressed(lightId));
                 }
             });
         }
@@ -175,7 +175,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
             if(lightsIds.containsKey(v.getId())){
                 int lightId = lightsIds.get(v.getId());
 
-                ((MainActivity)getActivity()).getEventManager().addEvent(new EventCustomSwitchPressed(lightId));
+                ((MainActivity)getActivity()).getBasaManager().getEventManager().addEvent(new EventCustomSwitchPressed(lightId));
 
             }
         }

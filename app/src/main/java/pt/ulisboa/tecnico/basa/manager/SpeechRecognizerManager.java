@@ -190,11 +190,7 @@ public class SpeechRecognizerManager {
         public void onPartialResult(Hypothesis hypothesis) {
             if (hypothesis == null)
             {
-                Log.d(TAG, "null1");
-
-
                 return;
-
             }
 
 
@@ -292,7 +288,7 @@ public class SpeechRecognizerManager {
 
                 }
 
-                getActivity().getEventManager().addEvent(new EventVoice(heard.get(0)));
+                getActivity().getBasaManager().getEventManager().addEvent(new EventVoice(heard.get(0)));
 
                 //send list of words to activity
                 if (mOnResultListener!=null){

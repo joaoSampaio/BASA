@@ -64,26 +64,6 @@ public class TemperatureFragment extends Fragment {
             }
         });
 
-
-//        SeekCircle seekCircle = (SeekCircle)rootView.findViewById(R.id.seekCircle);
-//        seekCircle.setOnSeekCircleChangeListener(new SeekCircle.OnSeekCircleChangeListener() {
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekCircle seekCircle)
-//            {}
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekCircle seekCircle)
-//            {}
-//
-//            @Override
-//            public void onProgressChanged(SeekCircle seekCircle, int progress, boolean fromUser)
-//            {
-//                mSeekArcProgress.setText(String.valueOf(progress));
-//            }
-//        });
-
-
         return rootView;
     }
 
@@ -104,9 +84,6 @@ public class TemperatureFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        SystemRequirementsChecker.checkWithDefaultDialogs(getActivity());
-
-
         interest = new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {
@@ -115,7 +92,7 @@ public class TemperatureFragment extends Fragment {
                 }
             }
         }, 0);
-        ((MainActivity)getActivity()).getEventManager().registerInterest(interest);
+        ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
 
 
     }
@@ -125,7 +102,7 @@ public class TemperatureFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        ((MainActivity)getActivity()).getEventManager().removeInterest(interest);
+        ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
         interest = null;
     }
 

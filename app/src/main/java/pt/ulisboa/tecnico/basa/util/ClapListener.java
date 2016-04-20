@@ -110,7 +110,7 @@ public class ClapListener implements OnsetHandler {
         if (clap == 2) {
             clap = 0;
             stopTime = (long)time + 5;
-            activity.getEventManager().addEvent(new EventClap());
+            activity.getBasaManager().getEventManager().addEvent(new EventClap());
 
             // handlePitch will be run from a background thread
             // so we need to run it on the UI thread

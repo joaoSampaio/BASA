@@ -20,7 +20,7 @@ public class BasaManager {
     public void start(){
         this.eventManager = new EventManager(getActivity());
         this.lightingManager = new LightingManager(getActivity());
-        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
+//        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
         this.textToSpeechManager = new TextToSpeechManager(getActivity());
     }
 
