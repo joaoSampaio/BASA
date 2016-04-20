@@ -57,5 +57,12 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
         return isInitialized;
     }
 
+    public void destroy(){
+        tts.stop();
+        tts.shutdown();
+        tts = null;
+        isInitialized = false;
+    }
+
 
 }

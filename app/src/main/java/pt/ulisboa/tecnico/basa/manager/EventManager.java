@@ -218,6 +218,11 @@ public class EventManager {
     }
 
 
+    public void stop(){
+        interests.clear();
+        interests = null;
+        activity = null;
+    }
 
 
 }
