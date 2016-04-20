@@ -7,8 +7,8 @@ public class EventVoice extends Event {
     private String voice;
 
 
-    public EventVoice(int type, String voice) {
-        super(type);
+    public EventVoice(String voice) {
+        super(Event.VOICE);
         this.voice = voice;
     }
 

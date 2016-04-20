@@ -27,8 +27,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -120,12 +122,17 @@ public class SeekArc extends View {
 	private float mProgressSweep = 0;
 	private RectF mArcRect = new RectF();
 	private Paint mArcPaint;
+	private Paint mArcPaintBackground;
 	private Paint mProgressPaint;
 	private int mTranslateX;
 	private int mTranslateY;
 	private int mThumbXPos;
 	private int mThumbYPos;
+	private int mTextXPos;
+	private int mTextYPos;
 	private double mTouchAngle;
+	private Paint paintText;
+	private int mSelectedTemperature = 0;
 	private float mTouchIgnoreRadius;
 	private OnSeekArcChangeListener mOnSeekArcChangeListener;
 
@@ -208,6 +215,17 @@ public class SeekArc extends View {
 				mThumb = thumb;
 			}
 
+			paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+			// text color - #3D3D3D
+			paintText.setColor(Color.parseColor("#FF383838"));
+			// text size in pixels
+			paintText.setTextSize((int) (22 * density));
+
+			paintText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+			// text shadow
+			paintText.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
 			
 			
 			thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
@@ -250,6 +268,11 @@ public class SeekArc extends View {
 		mStartAngle = (mStartAngle > 360) ? 0 : mStartAngle;
 		mStartAngle = (mStartAngle < 0) ? 0 : mStartAngle;
 
+		mArcPaintBackground = new Paint();
+		mArcPaintBackground.setColor(Color.parseColor("#F57F17"));
+		mArcPaintBackground.setAntiAlias(true);
+		mArcPaintBackground.setStyle(Paint.Style.FILL);
+
 		mArcPaint = new Paint();
 		mArcPaint.setColor(arcColor);
 		mArcPaint.setAntiAlias(true);
@@ -279,30 +302,112 @@ public class SeekArc extends View {
 		final int arcStart = mStartAngle + mAngleOffset + mRotation;
 		final int arcSweep = mSweepAngle;
 
-
 		if (mProgress == 0) {
+
+			canvas.drawArc(mArcRect, 0, 360, false, mArcPaintBackground);
+
 			canvas.drawArc(mArcRect, arcStart, arcSweep, false, mArcPaint);
 
 		} else {
+
+			canvas.drawArc(mArcRect, 0, 360, false, mArcPaintBackground);
 			canvas.drawArc(mArcRect, arcStart, arcSweep, false, mArcPaint);
+
+			float bias = (float) mProgressSweep / (float) (arcSweep - 1);
+			int mColor1 =  Color.parseColor("#ff33b5e5");
+			int mColor2 =  Color.parseColor("#ffe2231a");
+			int color = interpolateColor(mColor1, mColor2, bias);
+			mProgressPaint.setColor(color);
+
+
 			canvas.drawArc(mArcRect, arcStart, mProgressSweep, false, mProgressPaint);
 
 		}
+//		canvas.drawText("22", mTranslateX ,  mTranslateY , paintText);
+		canvas.drawText(""+mSelectedTemperature, mTranslateX - mTextXPos  ,  mTranslateY - mTextYPos  , paintText);
 // Draw the thumb nail
 		canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
-		mThumb.draw(canvas);
 
-//		canvas.drawArc(mArcRect, arcStart, arcSweep, false, mArcPaint);
-//		canvas.drawArc(mArcRect, arcStart, mProgressSweep, false,
-//				mProgressPaint);
+
+		//mThumb.draw(canvas);
+
+
+
+		canvas.save(Canvas.MATRIX_SAVE_FLAG); //Saving the canvas and later restoring it so only this image will be rotated.
+		canvas.rotate(mProgressSweep+mStartAngle);
+		mThumb.draw(canvas);
+		canvas.restore();
+
+//		canvas.drawText("22", mTextXPos - mThumbXPos ,  mTextYPos - mThumbYPos , paintText);
+
+//		canvas.save();
+////		canvas.rotate(mProgressSweep,  mTranslateX - mThumbXPos,  mTranslateY - mThumbYPos);
+//		canvas.drawText("22", mTranslateX ,  mTranslateY , paintText);
+////		canvas.drawText(text, x, y, paint);
+//		canvas.restore();
+
+
 //
-//		if(mEnabled) {
-//			// Draw the thumb nail
-//			canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
-//			mThumb.draw(canvas);
+//		Log.d("arc", "bias:"+bias);
+//		Log.d("arc", "mColor1:"+mColor1);
+//		Log.d("arc", "mColor2:"+mColor2);
+//		Log.d("arc", "color:"+color);
+
+
+//		int relativeProgress = mProgress - arcStart;
+//		int relativeMax = arcSweep - arcStart;
+//		float rotation = 360.0f / (float) relativeMax;
+//		for (int i = 0; i < relativeMax; ++i) {
+//			canvas.save();
+//
+//			canvas.rotate((float) i * rotation);
+//			canvas.translate(0, -mRadius);
+//
+//			if (i < relativeProgress) {
+//				float bias = (float) mProgressSweep / (float) (arcSweep - 1);
+//				int mColor1 =  Color.parseColor("#ff33b5e5");
+//				int mColor2 =  Color.parseColor("#689F38");
+//				int color = interpolateColor(mColor1, mColor2, bias);
+//				mProgressPaint.setColor(color);
+//			} else {
+//				int mInactiveColor =  Color.parseColor("#FFD8D8D8");
+//				canvas.scale(0.7f, 0.7f);
+//				mProgressPaint.setColor(mInactiveColor);
+//			}
+//
+//			canvas.drawRect(mSectionRect, mProgressPaint);
+//			canvas.restore();
 //		}
+
+
+
+
+
+
+
 	}
 
+	private int interpolateColor(int colorA, int colorB, float bias) {
+		float[] hsvColorA = new float[3];
+		Color.colorToHSV(colorA, hsvColorA);
+
+		float[] hsvColorB = new float[3];
+		Color.colorToHSV(colorB, hsvColorB);
+
+		hsvColorB[0] = interpolate(hsvColorA[0], hsvColorB[0], bias);
+		hsvColorB[1] = interpolate(hsvColorA[1], hsvColorB[1], bias);
+		hsvColorB[2] = interpolate(hsvColorA[2], hsvColorB[2], bias);
+
+		// NOTE For some reason the method HSVToColor fail in edit mode. Just use the start color for now
+		if (isInEditMode())
+			return colorA;
+
+		return Color.HSVToColor(hsvColorB);
+	}
+
+	private float interpolate(float a, float b, float bias) {
+		return (a + ((b - a) * bias));
+	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -328,6 +433,10 @@ public class SeekArc extends View {
 		int arcStart = (int)mProgressSweep + mStartAngle  + mRotation + 90;
 		mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart)));
 		mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
+
+		mTextXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart+10)));
+		mTextYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart+10)));
+
 		
 		setTouchInSide(mTouchInside);
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -444,6 +553,8 @@ public class SeekArc extends View {
 		int thumbAngle = (int) (mStartAngle + mProgressSweep + mRotation + 90);
 		mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(thumbAngle)));
 		mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
+		mTextXPos = (int) (mArcRadius * Math.cos(Math.toRadians(thumbAngle+10)));
+		mTextYPos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle+10)));
 	}
 	
 	private void updateProgress(int progress, boolean fromUser) {
@@ -464,7 +575,7 @@ public class SeekArc extends View {
 		mProgressSweep = (float) progress / mMax * mSweepAngle;
 
 		updateThumbPosition();
-
+		mSelectedTemperature = progress;
 		invalidate();
 	}
 

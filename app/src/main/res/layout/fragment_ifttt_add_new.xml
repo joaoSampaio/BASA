@@ -10,17 +10,26 @@
         android:layout_height="wrap_content"
         android:id="@+id/topbar"></include>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/topbar">
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topbar"
+        android:layout_centerInParent="true"
+        android:id="@+id/scroll"
+        android:layout_above="@+id/action_save_recipe">
 
 
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
                 android:id="@+id/container">
 
                 <LinearLayout
@@ -29,11 +38,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:id="@+id/linearLayout2"
-                    android:layout_alignParentStart="false"
                     android:layout_alignParentLeft="true"
                     android:padding="15dp"
                     android:background="#df0000"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="10dp"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -135,15 +144,35 @@
 
             </RelativeLayout>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:text="Add New Recipe"
-            android:id="@+id/action_save_recipe"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true" />
+            <EditText
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextShort"
+                android:layout_below="@+id/container"
+                android:layout_alignParentStart="true"
+                android:imeOptions="actionDone"
+                android:hint="Recipe short name:" />
 
-    </RelativeLayout>
+            <EditText
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextDescription"
+                android:layout_below="@+id/editTextShort"
+                android:layout_alignParentStart="true"
+                android:imeOptions="actionDone"
+                android:hint="Recipe description:" />
 
+        </RelativeLayout>
+
+
+    </HorizontalScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="Add New Recipe"
+        android:id="@+id/action_save_recipe"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

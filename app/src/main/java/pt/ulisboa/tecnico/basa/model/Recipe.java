@@ -15,6 +15,8 @@ public class Recipe {
     private String conditionTrigger = "";
     private String conditionEvent = "";
     private List<Integer> selectedTrigger, selectedAction;
+    private String shortName;
+    private String description;
 
     public Recipe() {
         triggerId = -1;
@@ -114,5 +116,21 @@ public class Recipe {
 
     public boolean isTriggerConditionLess(){
         return conditionTrigger.equals("≤");
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

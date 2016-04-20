@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:seekcircle="http://schemas.android.com/tools"
     android:background="@color/white">
 
 
@@ -31,26 +32,41 @@
         <FrameLayout
             android:id="@+id/seekArcContainer"
             android:layout_width="600dp"
-            android:layout_height="500dp"
+            android:layout_height="450dp"
             android:layout_weight="1"
-            android:layout_centerInParent="true">
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true">
+
+
+            <!--<pt.ulisboa.tecnico.basa.util.SeekCircle-->
+                <!--android:id="@+id/seekCircle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--seekcircle:min="0"-->
+                <!--seekcircle:max="100"-->
+                <!--seekcircle:progress="25"/>-->
+
 
             <pt.ulisboa.tecnico.basa.util.SeekArc
                 android:id="@+id/seekArc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="500dp"
+                android:layout_height="500dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:padding="50dp"
                 seekarc:clockwise="true"
                 seekarc:max="35"
                 seekarc:progressWidth="10dp"
+                seekarc:thumb="@drawable/bar_temperature"
+                seekarc:arcWidth="5dp"
                 seekarc:rotation="180"
                 seekarc:startAngle="60"
                 seekarc:sweepAngle="240"
-                seekarc:thumb="@drawable/ic_temperature"
-                seekarc:touchInside="true"
+                seekarc:touchInside="false"
+                android:paddingLeft="60dp"
                 android:layout_marginBottom="-50dp" />
             <!--seekarc:thumb="@drawable/custom_seek_arc_control_selector"-->
+            <!--seekarc:thumb="@drawable/ic_temperature"-->
 
             <LinearLayout
                 android:orientation="vertical"
@@ -66,13 +82,22 @@
                     android:src="@drawable/ic_keyboard_arrow_up" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Current"
+                    android:textSize="20dp"
+                    android:layout_marginTop="-50dp"
+                    android:textColor="@color/grey" />
+
+                <TextView
                     android:id="@+id/seekArcProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="0"
                     android:textSize="120dp"
-                    android:layout_marginTop="-50dp" />
+                    android:textColor="@color/grey" />
 
                 <ImageView
                     android:layout_width="200dp"

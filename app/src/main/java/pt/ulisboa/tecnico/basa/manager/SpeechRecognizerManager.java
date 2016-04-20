@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+import pt.ulisboa.tecnico.basa.model.EventVoice;
+import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -61,10 +63,12 @@ public class SpeechRecognizerManager {
     protected android.speech.SpeechRecognizer mGoogleSpeechRecognizer;
     private Context mContext;
     private OnResultListener mOnResultListener;
+    private MainActivity activity;
 
 
-    public SpeechRecognizerManager(Context context) {
+    public SpeechRecognizerManager(Context context, MainActivity activity) {
         this.mContext = context;
+        this.activity = activity;
         Log.d(TAG, "SpeechRecognizerManager:");
         initPockerSphinx();
         initGoogleSpeechRecognizer();
@@ -120,6 +124,10 @@ public class SpeechRecognizerManager {
 
     }
 
+    public MainActivity getActivity() {
+        return activity;
+    }
+
     private void initGoogleSpeechRecognizer() {
 
         mGoogleSpeechRecognizer = android.speech.SpeechRecognizer
@@ -128,6 +136,9 @@ public class SpeechRecognizerManager {
         mGoogleSpeechRecognizer.setRecognitionListener(new GoogleRecognitionListener());
 
         mSpeechRecognizerIntent = new Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"com.androiddev101.ep8");
 
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
@@ -161,6 +172,7 @@ public class SpeechRecognizerManager {
     }
 
 
+
     protected class PocketSphinxRecognitionListener implements edu.cmu.pocketsphinx.RecognitionListener {
 
         @Override
@@ -189,6 +201,7 @@ public class SpeechRecognizerManager {
             String text = hypothesis.getHypstr();
             Log.d(TAG, "onPartialResult:" + text);
             if (text.equals(KEYPHRASE)) {
+
                 mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                 mPocketSphinxRecognizer.cancel();
                 Toast.makeText(mContext, "You said: " + text, Toast.LENGTH_SHORT).show();
@@ -251,7 +264,7 @@ public class SpeechRecognizerManager {
         @Override
         public void onError(int error) {
             Log.e(TAG, "onError:" + error);
-
+            mGoogleSpeechRecognizer.cancel();
             mPocketSphinxRecognizer.startListening(KWS_SEARCH);
 
 
@@ -273,12 +286,13 @@ public class SpeechRecognizerManager {
                 float[] scores = results
                         .getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
 
-//                for (int i = 0; i < heard.size(); i++) {
-//                    Log.d(TAG, "onResultsheard:" + heard.get(i)
-//                            + " confidence:" + scores[i]);
-//
-//                }
+                for (int i = 0; i < heard.size(); i++) {
+                    Log.d(TAG, "onResultsheard:" + heard.get(i)
+                            + " confidence:" + scores[i]);
 
+                }
+
+                getActivity().getEventManager().addEvent(new EventVoice(heard.get(0)));
 
                 //send list of words to activity
                 if (mOnResultListener!=null){
@@ -303,6 +317,8 @@ public class SpeechRecognizerManager {
     public void setOnResultListner(OnResultListener onResultListener){
         mOnResultListener=onResultListener;
     }
+
+
 
     public interface OnResultListener
     {

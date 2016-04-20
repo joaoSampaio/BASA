@@ -41,7 +41,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
         rootView = inflater.inflate(R.layout.fragment_lights, container, false);
         containerLightSwitch = (LinearLayout)rootView.findViewById(R.id.containerLightSwitch);
         containerCustomSwitch = (LinearLayout)rootView.findViewById(R.id.containerCustomSwitch);
-        refreshLightLayout();
+
         return rootView;
     }
 
@@ -88,7 +88,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
                 });
             }
         });
-
+        refreshLightLayout();
 
         }
 
@@ -123,7 +123,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
             lightsIds.put(id, img_light_state.getId());
             btn_light.setTag(img_light_state);
 
-            if(((MainActivity)getActivity()).getLightingManager().getLightState(id)){
+            if(((MainActivity)getActivity()).getLightingManager() != null &&  ((MainActivity)getActivity()).getLightingManager().getLightState(id)){
                 ((ImageView) img_light_state).setImageResource(R.drawable.power_button);
             }
             //containerSwitch.addView(view);

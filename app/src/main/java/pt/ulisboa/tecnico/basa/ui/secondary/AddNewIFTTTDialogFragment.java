@@ -44,7 +44,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     private Spinner condition_spinner;
     private Button action_save_recipe;
     private IFTTTDialogFragment.NewRecipeCreated listener;
-
+    private EditText editTextDescription, editTextShort;
     Recipe recipe;
 
     public AddNewIFTTTDialogFragment() {
@@ -102,6 +102,9 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
         action_condition_value = (TextView)rootView.findViewById(R.id.action_condition_value);
         action_event_condition = (TextView)rootView.findViewById(R.id.action_event_condition);
         action_event_condition_value = (TextView)rootView.findViewById(R.id.action_event_condition_value);
+
+        editTextDescription = (EditText)rootView.findViewById(R.id.editTextDescription);
+        editTextShort = (EditText)rootView.findViewById(R.id.editTextShort);
         action_trigger.setOnClickListener(this);
         action_save_recipe.setOnClickListener(this);
 
@@ -244,7 +247,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 break;
             case R.id.action_save_recipe:
 
-                if(recipe.getTriggerId() >= 0 && recipe.getActionId() >= 0) {
+                if(recipe.getTriggerId() >= 0 && recipe.getActionId() >= 0 && !editTextShort.getText().toString().isEmpty()) {
 //                    Recipe recipe = new Recipe(selectedTriggerId, selectedActionId);
                     if (Trigger.isTriggerComplex(recipe.getTriggerId())) {
 //                        recipe.setConditionTrigger(conditionTrigger);
@@ -267,8 +270,8 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 //                    if(recipe.getActionId() == TriggerAction.LIGHT_ON || recipe.getTriggerId() == Trigger.SWITCH){
 //                        recipe.setSelectedMulti(selectedMulti);
 //                    }
-
-
+                    recipe.setDescription(editTextDescription.getText().toString());
+                    recipe.setShortName(editTextShort.getText().toString());
 
                     List<Recipe> recipes = new ModelCache<List<Recipe>>().loadModel(new TypeToken<List<Recipe>>(){}.getType(), Global.OFFLINE_RECIPES);
                     if(recipes == null)
@@ -281,7 +284,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     getDialog().dismiss();
 
                 }else{
-                    Toast.makeText(getActivity(), "Please select both the trigger and action", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please select both the trigger/ action, and finally a short name", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

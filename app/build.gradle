@@ -25,7 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:preference-v7:23.2.1'
     //    compile 'net.xpece.android:support-preference:0.5.11'
-    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v4:23.2.1'
     compile 'com.estimote:sdk:0.9.4@aar'
     compile 'com.koushikdutta.async:androidasync:2.+'
     compile files('libs/TarsosDSP-Android-2.3.jar')

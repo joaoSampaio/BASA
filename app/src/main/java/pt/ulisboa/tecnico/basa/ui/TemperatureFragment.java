@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.basa.model.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.SeekArc;
+import pt.ulisboa.tecnico.basa.util.SeekCircle;
 
 
 public class TemperatureFragment extends Fragment {
@@ -63,6 +64,24 @@ public class TemperatureFragment extends Fragment {
             }
         });
 
+
+//        SeekCircle seekCircle = (SeekCircle)rootView.findViewById(R.id.seekCircle);
+//        seekCircle.setOnSeekCircleChangeListener(new SeekCircle.OnSeekCircleChangeListener() {
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekCircle seekCircle)
+//            {}
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekCircle seekCircle)
+//            {}
+//
+//            @Override
+//            public void onProgressChanged(SeekCircle seekCircle, int progress, boolean fromUser)
+//            {
+//                mSeekArcProgress.setText(String.valueOf(progress));
+//            }
+//        });
 
 
         return rootView;

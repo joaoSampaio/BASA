@@ -209,6 +209,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
 //            if (!GlobalData.isPhoneInMotion()) {
                 DetectionThread thread = new DetectionThread(data, size.width, size.height);
                 thread.start();
+
+                getActivity().getVideoManager().sendImagePacket(data);
+
 //            }
             }
         }

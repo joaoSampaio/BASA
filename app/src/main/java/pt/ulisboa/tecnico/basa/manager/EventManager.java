@@ -152,6 +152,24 @@ public class EventManager {
                     }, 0));
                     break;
                 case Trigger.VOICE:
+                    Log.d("initSavedValues", "VOICE ");
+                    registerInterest(new InterestEventAssociation(Event.VOICE, new RegisterInterestEvent() {
+                        @Override
+                        public void onRegisteredEventTriggered(Event event) {
+                            if (event instanceof EventVoice) {
+                                String voice = ((EventVoice) event).getVoice();
+
+                                Log.d("voice", "VOICE: "+voice);
+                                Log.d("voice", "getConditionTriggerValue: "+recipeFinal.getConditionTriggerValue());
+                                //se for o switch pretendido
+                                if (recipeFinal.getConditionTriggerValue().equals(voice)) {
+                                    Log.d("voice", "VOICE: correct voice ");
+                                    doAction(recipeFinal);
+                                }
+                            }
+
+                        }
+                    },0));
 
                     break;
                 case Trigger.EMAIL:

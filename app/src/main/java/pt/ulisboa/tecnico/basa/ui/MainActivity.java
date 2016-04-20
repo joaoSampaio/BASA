@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -26,6 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
@@ -36,6 +38,7 @@ import pt.ulisboa.tecnico.basa.manager.EventManager;
 import pt.ulisboa.tecnico.basa.manager.LightingManager;
 import pt.ulisboa.tecnico.basa.manager.SpeechRecognizerManager;
 import pt.ulisboa.tecnico.basa.manager.TextToSpeechManager;
+import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.model.Event;
 import pt.ulisboa.tecnico.basa.model.EventClap;
 import pt.ulisboa.tecnico.basa.model.EventCustomSwitchPressed;
@@ -49,7 +52,7 @@ import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
-public class MainActivity extends FragmentActivity implements SpeechRecognizerManager.OnResultListener {
+public class MainActivity extends FragmentActivity {
 
     private final static int[] CLICKABLE = {R.id.action_gogo_lights, R.id.action_gogo_temperature, R.id.action_gogo_option};
 
@@ -65,6 +68,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
 
     private ClapListener clapListener;
     private LightingManager lightingManager;
+    private VideoManager videoManager;
 
     private SpeechRecognizer mSpeechRecognizer;
     private SpeechRecognizerManager mSpeechRecognizerManager;
@@ -89,6 +93,10 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
      */
     private PagerAdapter mPagerAdapter;
 
+
+    boolean isInitialized = false;
+    TextToSpeech tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +112,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
         camera_preview = (FrameLayout)findViewById(R.id.camera_preview);
         preview_img = (ImageView)findViewById(R.id.preview_img);
         handler = new Handler();
-        initSavedValues();
+
         View.OnClickListener click = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,22 +150,43 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
             }
 
         });
-        mSpeechRecognizerManager =new SpeechRecognizerManager(this);
-        mSpeechRecognizerManager.setOnResultListner(this);
+
+//        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+//            @Override
+//            public void onInit(int status) {
+//                Log.d("TextToSpeechManager", "onInit:"+status);
+//                if (status == TextToSpeech.SUCCESS) {
+//                    isInitialized = true;
+//
+//                    tts.setLanguage(Locale.US);
+//
+//                    tts.setPitch(1);
+//                }
+//            }
+//        });
+
+        this.mTextToSpeechManager = new TextToSpeechManager(this);
+        mSpeechRecognizerManager =new SpeechRecognizerManager(this, this);
+//        mTextToSpeechManager.setTts(tts);
+//        mSpeechRecognizerManager.setOnResultListner(this);
     }
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d("myapp_new", "****onResume onResume onResume: ");
-
+        initSavedValues();
         if(mHelper == null)
             mHelper = new CameraHelper(this);
+        this.lightingManager = new LightingManager(this);
+
 
         start_camera();
+        this.videoManager = new VideoManager(this);
         //clapListener = new ClapListener(this);
-        this.lightingManager = new LightingManager(this);
-        this.mTextToSpeechManager = new TextToSpeechManager(this);
+
+
+        getVideoManager().start();
 
 //        SystemRequirementsChecker.checkWithDefaultDialogs(this);
 //
@@ -447,16 +476,6 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
         return eventManager;
     }
 
-    @Override
-    public void OnResult(ArrayList<String> commands) {
-
-        for(String cmd: commands)
-            Log.d("speak", "said: " + cmd);
-
-
-
-    }
-
 
     public interface InterfaceToActivity {
         void updateTemperature(double temperature);
@@ -543,7 +562,7 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
-                    getEventManager().addEvent(new EventVoice(Event.VOICE, result.get(0)));
+                    getEventManager().addEvent(new EventVoice( result.get(0)));
                     for(String s : result)
                         Log.d("onActivityResult", "****" + s + "****: ");
 //                    txtSpeechInput.setText(result.get(0));
@@ -667,5 +686,10 @@ public class MainActivity extends FragmentActivity implements SpeechRecognizerMa
 
     public TextToSpeechManager getmTextToSpeechManager() {
         return mTextToSpeechManager;
+    }
+
+
+    public VideoManager getVideoManager() {
+        return videoManager;
     }
 }
