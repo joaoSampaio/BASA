@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.widget.Toast;
@@ -190,6 +191,7 @@ public class SpeechRecognizerManager {
         public void onPartialResult(Hypothesis hypothesis) {
             if (hypothesis == null)
             {
+                Log.d(TAG, "hypothesis == null:");
                 return;
             }
 
@@ -197,9 +199,17 @@ public class SpeechRecognizerManager {
             String text = hypothesis.getHypstr();
             Log.d(TAG, "onPartialResult:" + text);
             if (text.equals(KEYPHRASE)) {
-
-                mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                 mPocketSphinxRecognizer.cancel();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+                    }
+                },300);
+
+
+
                 Toast.makeText(mContext, "You said: " + text, Toast.LENGTH_SHORT).show();
 
             }
@@ -261,6 +271,7 @@ public class SpeechRecognizerManager {
         public void onError(int error) {
             Log.e(TAG, "onError:" + error);
             mGoogleSpeechRecognizer.cancel();
+            getActivity().getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
             mPocketSphinxRecognizer.startListening(KWS_SEARCH);
 
 
@@ -288,7 +299,7 @@ public class SpeechRecognizerManager {
 
                 }
 
-                getActivity().getBasaManager().getEventManager().addEvent(new EventVoice(heard.get(0)));
+                getActivity().getBasaManager().getEventManager().addEvent(new EventVoice(heard));
 
                 //send list of words to activity
                 if (mOnResultListener!=null){

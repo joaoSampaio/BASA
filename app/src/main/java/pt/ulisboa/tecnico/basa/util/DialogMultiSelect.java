@@ -99,8 +99,6 @@ public class DialogMultiSelect {
                     Toast.makeText(ctx, "Select at least one value.", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
 

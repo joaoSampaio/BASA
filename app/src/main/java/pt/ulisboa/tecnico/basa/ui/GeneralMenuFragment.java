@@ -14,13 +14,14 @@ import android.view.ViewGroup;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.IFTTTDialogFragment;
+import pt.ulisboa.tecnico.basa.ui.secondary.SettingsTemperatureFragment;
 
 
 public class GeneralMenuFragment extends Fragment implements View.OnClickListener {
 
 
     View rootView;
-    private static final int[] CLICK = {R.id.action_ifttt, R.id.action_settings};
+    private static final int[] CLICK = {R.id.action_ifttt, R.id.action_settings, R.id.action_settings_temperature};
 
     public GeneralMenuFragment() {
         // Required empty public constructor
@@ -67,6 +68,10 @@ public class GeneralMenuFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.action_settings:
                 ((MainActivity)getActivity()).openFragment();
+                break;
+            case R.id.action_settings_temperature:
+                newFragment = SettingsTemperatureFragment.newInstance();
+                tag = "SettingsTemperatureFragment";
                 break;
         }
 

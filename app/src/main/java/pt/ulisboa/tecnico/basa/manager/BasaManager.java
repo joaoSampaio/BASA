@@ -11,6 +11,7 @@ public class BasaManager {
     private LightingManager lightingManager;
     private SpeechRecognizerManager speechRecognizerManager;
     private TextToSpeechManager textToSpeechManager;
+    private TemperatureManager temperatureManager;
     private MainActivity activity;
 
     public BasaManager(MainActivity activity) {
@@ -20,8 +21,9 @@ public class BasaManager {
     public void start(){
         this.eventManager = new EventManager(getActivity());
         this.lightingManager = new LightingManager(getActivity());
-//        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
+        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
         this.textToSpeechManager = new TextToSpeechManager(getActivity());
+        this.temperatureManager = new TemperatureManager(getActivity());
     }
 
     public void stop(){
@@ -37,6 +39,11 @@ public class BasaManager {
         if(textToSpeechManager != null){
             textToSpeechManager.destroy();
         }
+
+        if(temperatureManager != null){
+            temperatureManager.destroy();
+        }
+
     }
 
 
@@ -54,6 +61,10 @@ public class BasaManager {
 
     public TextToSpeechManager getTextToSpeechManager() {
         return textToSpeechManager;
+    }
+
+    public TemperatureManager getTemperatureManager() {
+        return temperatureManager;
     }
 
     public MainActivity getActivity() {

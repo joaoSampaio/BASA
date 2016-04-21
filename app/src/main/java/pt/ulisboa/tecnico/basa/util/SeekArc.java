@@ -37,6 +37,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 
 /**
@@ -56,6 +57,8 @@ public class SeekArc extends View {
 	// The initial rotational offset -90 means we start at 12 o'clock
 	private final int mAngleOffset = -90;
 
+	private int colorBackground = Global.COLOR_COLD;
+
 	/**
 	 * The Drawable for the seek arc thumbnail
 	 */
@@ -65,6 +68,11 @@ public class SeekArc extends View {
 	 * The Maximum value that this SeekArc can be set to
 	 */
 	private int mMax = 100;
+
+	/**
+	 * The Minimum value that this SeekArc can be set to
+	 */
+	private int mMin = 0;
 	
 	/**
 	 * The Current value that the SeekArc is set to
@@ -234,6 +242,8 @@ public class SeekArc extends View {
 					thumbHalfheight);
 
 			mMax = a.getInteger(R.styleable.SeekArc_max, mMax);
+			mMin= a.getInteger(R.styleable.SeekArc_min, mMin);
+			mMax = mMax-mMin;
 			mProgress = a.getInteger(R.styleable.SeekArc_progress, mProgress);
 			mProgressWidth = (int) a.getDimension(
 					R.styleable.SeekArc_progressWidth, mProgressWidth);
@@ -269,7 +279,7 @@ public class SeekArc extends View {
 		mStartAngle = (mStartAngle < 0) ? 0 : mStartAngle;
 
 		mArcPaintBackground = new Paint();
-		mArcPaintBackground.setColor(Color.parseColor("#F57F17"));
+		mArcPaintBackground.setColor(colorBackground);
 		mArcPaintBackground.setAntiAlias(true);
 		mArcPaintBackground.setStyle(Paint.Style.FILL);
 
@@ -324,7 +334,7 @@ public class SeekArc extends View {
 
 		}
 //		canvas.drawText("22", mTranslateX ,  mTranslateY , paintText);
-		canvas.drawText(""+mSelectedTemperature, mTranslateX - mTextXPos  ,  mTranslateY - mTextYPos  , paintText);
+		canvas.drawText(""+(mSelectedTemperature+mMin), mTranslateX - mTextXPos  ,  mTranslateY - mTextYPos  , paintText);
 // Draw the thumb nail
 		canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
 
@@ -569,7 +579,7 @@ public class SeekArc extends View {
 
 		if (mOnSeekArcChangeListener != null) {
 			mOnSeekArcChangeListener
-					.onProgressChanged(this, progress, fromUser);
+					.onProgressChanged(this, progress+mMin, fromUser);
 		}
 
 		mProgressSweep = (float) progress / mMax * mSweepAngle;
@@ -578,6 +588,13 @@ public class SeekArc extends View {
 		mSelectedTemperature = progress;
 		invalidate();
 	}
+
+	public void setBackgroundColor(int color){
+		colorBackground = color;
+		mArcPaintBackground.setColor(color);
+		invalidate();
+	}
+
 
 	/**
 	 * Sets a listener to receive notifications of changes to the SeekArc's
@@ -703,10 +720,18 @@ public class SeekArc extends View {
 	}
 
 	public int getMax() {
-		return mMax;
+		return mMax+mMin;
 	}
 
 	public void setMax(int mMax) {
-		this.mMax = mMax;
+		this.mMax = mMax-mMin;
+	}
+
+	public int getMin() {
+		return mMin;
+	}
+
+	public void setMin(int mMin) {
+		this.mMin = mMin;
 	}
 }

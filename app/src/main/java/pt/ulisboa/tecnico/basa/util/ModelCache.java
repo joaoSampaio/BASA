@@ -22,11 +22,15 @@ public class ModelCache<T> {
     }
 
     public T loadModel(Type type, String TAG){
+        return loadModel( type, TAG, "");
+    }
+
+    public T loadModel(Type type, String TAG, String defaultValue){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
 
         String contacts = "";
         try {
-            contacts = sp.getString(TAG, "");
+            contacts = sp.getString(TAG, defaultValue);
         }catch (Exception e){
             Log.d("myapp", "error:" + e.getMessage());
         }
@@ -37,7 +41,6 @@ public class ModelCache<T> {
             T contactsList = new Gson().fromJson(contacts, type);
             return contactsList;
         }
-
     }
 
 }

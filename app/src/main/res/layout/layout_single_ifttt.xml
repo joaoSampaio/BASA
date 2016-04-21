@@ -21,56 +21,6 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="if"
-                android:id="@+id/textView11"
-                android:textSize="50dp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/action_trigger"
-                    android:src="@drawable/ic_placeholder_trigger"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="≥"
-                    android:id="@+id/action_condition"
-                    android:textSize="50dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="23º"
-                    android:id="@+id/action_condition_value"
-                    android:textSize="50dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -84,66 +34,41 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="then"
-                android:id="@+id/textView12"
-                android:textSize="50dp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/action_event"
-                    android:src="@drawable/ic_light_on"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="[1,2,3]"
-                    android:id="@+id/action_event_condition"
-                    android:textSize="50dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="23º"
-                    android:id="@+id/action_event_condition_value"
-                    android:textSize="50dp"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-            </LinearLayout>
-
         </LinearLayout>
 
-        <Switch
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/action_info"
+        android:src="@drawable/ic_info"
+        android:layout_alignRight="@+id/linearLayout3"
+        android:tint="@color/white"
+        android:layout_alignBottom="@+id/linearLayout3"
+        android:layout_alignTop="@+id/linearLayout3"
+        android:layout_marginRight="15dp" />
+
+    <Switch
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/switch1"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="if"
+        android:id="@+id/textViewShortName"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignLeft="@+id/linearLayout2"
+        android:layout_alignRight="@+id/action_info"
+        android:layout_alignBottom="@+id/linearLayout2"
+        android:layout_alignTop="@+id/linearLayout2"
+        android:gravity="center" />
 
 
 </RelativeLayout>

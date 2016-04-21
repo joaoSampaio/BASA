@@ -1,22 +1,20 @@
 package pt.ulisboa.tecnico.basa.model;
 
 
+import java.util.List;
 
 public class EventVoice extends Event {
 
-    private String voice;
+    private List<String> voice;
 
 
-    public EventVoice(String voice) {
+    public EventVoice(List<String> voice) {
         super(Event.VOICE);
         this.voice = voice;
     }
 
-    public String getVoice() {
+    public List<String> getVoice() {
         return voice;
     }
 
-    public void setVoice(String voice) {
-        this.voice = voice;
-    }
 }
