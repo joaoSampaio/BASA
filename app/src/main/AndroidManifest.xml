@@ -77,6 +77,8 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".BroadcastReceiver.TimeBroadcastReceiver">
+        </receiver>
         <!--<action android:name="android.net.wifi.WIFI_STATE_CHANGED" >-->
 
     </application>

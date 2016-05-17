@@ -5,15 +5,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.eddystone.Eddystone;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import pt.ulisboa.tecnico.basa.TemperatureActivity;
+import pt.ulisboa.tecnico.basa.model.EventTime;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 
@@ -45,6 +48,7 @@ public class AppController extends Application {
 
         mInstance = this;
         AppController.context = getApplicationContext();
+        EstimoteSDK.enableDebugLogging(true);
 
 //long scanPeriodMillis, long waitTimeMillis
 //        scanPeriodMillis - How long to perform Bluetooth Low Energy scanning?
@@ -57,7 +61,7 @@ public class AppController extends Application {
         Log.d("temp", "beaconStart:" );
         beaconManager = new BeaconManager(getApplicationContext());
         beaconManager.setBackgroundScanPeriod(13000, 25000);
-        beaconManager.setForegroundScanPeriod(2000,5000);
+        beaconManager.setForegroundScanPeriod(14000,0);
         beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
             @Override
             public void onEddystonesFound(List<Eddystone> list) {
@@ -125,4 +129,12 @@ public class AppController extends Application {
     public void setServer(AsyncHttpServer server) {
         this.server = server;
     }
+
+
+    public void onTimerIntent(){
+        if(interfaceToActivity != null){
+            interfaceToActivity.getManager().getEventManager().addEvent(new EventTime(new Date()));
+        }
+    }
+
 }

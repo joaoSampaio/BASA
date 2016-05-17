@@ -26,8 +26,8 @@ public class Global {
 
 
     public static final String OFFLINE_RECIPES = "OFFLINE_RECIPES";
-
-
+    public static final String OFFLINE_LOCATION = "OFFLINE_LOCATION";
+    public static final String OFFLINE_WEATHER = "OFFLINE_WEATHER";
     public static final String OFFLINE_TEMPERATURE_OUTPUT = "OFFLINE_TEMPERATURE_OUTPUT";
 
 

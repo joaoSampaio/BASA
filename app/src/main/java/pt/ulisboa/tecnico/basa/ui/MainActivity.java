@@ -180,6 +180,11 @@ public class MainActivity extends FragmentActivity {
             public void updateTemperature(double temperature) {
                 getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
             }
+
+            @Override
+            public BasaManager getManager() {
+                return getBasaManager();
+            }
         });
 
         AppController.getInstance().beaconStart();
@@ -352,6 +357,8 @@ public class MainActivity extends FragmentActivity {
 
     public interface InterfaceToActivity {
         void updateTemperature(double temperature);
+
+        BasaManager getManager();
     }
 
     /**

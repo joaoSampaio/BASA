@@ -1,10 +1,14 @@
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
@@ -29,6 +33,7 @@ public class EventManager {
     public EventManager(MainActivity activity) {
         interests = new ArrayList<>();
         this.activity = activity;
+        this.setUpCalender();
     }
 
     public void addEvent(Event event){
@@ -223,6 +228,37 @@ public class EventManager {
         interests.clear();
         interests = null;
         activity = null;
+    }
+
+    public MainActivity getActivity() {
+        return activity;
+    }
+
+    public void setUpCalender(){
+
+        Calendar midnightCalendar = Calendar.getInstance();
+
+        //set the time to midnight tonight
+
+        midnightCalendar.set(Calendar.HOUR_OF_DAY, 21);
+
+        midnightCalendar.set(Calendar.MINUTE, 0);
+
+        midnightCalendar.set(Calendar.SECOND, 0);
+
+        AlarmManager am = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+
+        //create a pending intent to be called at midnight
+
+        PendingIntent midnightPI = PendingIntent.getService(getActivity(), 0, new Intent("pt.ulisboa.tecnico.basa.BroadcastReceiver.TimeBroadcastReceiver"), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
+
+        am.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, midnightPI);
+
+
+
+
     }
 
 

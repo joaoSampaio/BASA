@@ -3,12 +3,17 @@ package pt.ulisboa.tecnico.basa.manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import pt.ulisboa.tecnico.basa.util.LightingControl;
+import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
 
 public class LightingManager {
 
     private boolean[] lights;
     private Context ctx;
     private LightChanged lightChangedListener;
+    private LightingControl lightingControl;
 
     public LightingManager(Context ctx){
         this.ctx = ctx;
@@ -17,6 +22,8 @@ public class LightingManager {
         this.lights = new boolean[numLights];
         for (int i=0;i<numLights;i++)
             this.lights[i]=false;
+
+        lightingControl = new LightingControlEDUP();
     }
 
     public boolean getLightState(int lightId){
@@ -27,29 +34,37 @@ public class LightingManager {
     }
 
     public void toggleLight(int lightId){
+        Log.d("light", "toggleLight");
         if(this.lights != null && lightId < this.lights.length){
-            this.lights[lightId] = !this.lights[lightId];
-            if(this.getLightChangedListener() != null)
-                if(this.lights[lightId])
-                    this.getLightChangedListener().onLightON(lightId);
-                else
-                    this.getLightChangedListener().onLightOFF(lightId);
+
+            this.lights[lightId] = ! this.lights[lightId];
+            if (this.lights[lightId])
+                turnONLight(lightId);
+            else
+                turnOFFLight(lightId);
+
         }
     }
 
     public void turnONLight(int lightId){
+        Log.d("light", "turnONLight");
         if(lightId < this.lights.length){
             this.lights[lightId] = true;
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightON(lightId);
+
+            lightingControl.sendLightCommand(lights);
         }
     }
 
     public void turnOFFLight(int lightId){
+        Log.d("light", "turnOFFLight");
         if(lightId < this.lights.length){
             this.lights[lightId] = false;
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightOFF(lightId);
+
+            lightingControl.sendLightCommand(lights);
         }
     }
 
@@ -61,6 +76,11 @@ public class LightingManager {
     public void setLightChangedListener(LightChanged lightChangedListener) {
         this.lightChangedListener = lightChangedListener;
     }
+
+
+
+
+
 
     public interface LightChanged{
         void onLightON(int lightId);

@@ -130,7 +130,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
             btn_light.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("EVENT", "onclick2:");
+                    Log.d("EVENT", "onclick : light "+ lightId);
                     ((MainActivity) getActivity()).getBasaManager().getLightingManager().toggleLight(lightId);
                 }
             });
