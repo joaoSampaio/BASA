@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.model.BasaLocation;
 import pt.ulisboa.tecnico.basa.model.Event;
+import pt.ulisboa.tecnico.basa.model.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.EventTime;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.Recipe;
@@ -24,6 +26,7 @@ import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
+import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.RestClient;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
@@ -38,6 +41,7 @@ public class TemperatureManager {
     private GlobalTemperatureForecast globalTemperatureForecast;
     SharedPreferences preferences;
     private MainActivity activity;
+    Handler handler;
 
     public TemperatureManager(MainActivity ctx){
         this.activity = ctx;
@@ -85,6 +89,33 @@ public class TemperatureManager {
                 }
             }
         },0));
+
+
+
+
+        handler = new Handler();
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                new GetTemperatureOfficeService(new CallbackMultiple<Double, String>() {
+//                    @Override
+//                    public void success(Double response) {
+//                        if(response != null && activity != null && response > 0 && response < 50){
+//                            activity.getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void failed(String error) {
+//
+//                    }
+//
+//                }).execute();
+//                handler.postDelayed(this, 30 * 1000);
+//            }
+//        });
+
+
     }
 
     public interface ActionTemperatureManager{
@@ -117,9 +148,10 @@ public class TemperatureManager {
             public void success(WeatherForecast forecast) {
                 Log.d("web", "Deu:");
 
+                HourlyForecast hourlyOld = null;
                 WeatherForecast old = WeatherForecast.load();
-                HourlyForecast hourlyOld = old.getCurrent();
-                Log.d("web", "hourlyOld:"+(hourlyOld != null));
+                if(old != null)
+                    hourlyOld = old.getCurrent();
                 if(hourlyOld != null){
 
                     forecast.getHourly_forecast().add(0, hourlyOld);

@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.basa.model.weather;
 /**
  * Created by Sampaio on 26/04/2016.
  */
-public class FCTTime {
+public class FCTTIME {
 
     private int hour;
     private String hour_padded;

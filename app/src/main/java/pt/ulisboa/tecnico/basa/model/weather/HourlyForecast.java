@@ -5,18 +5,18 @@ package pt.ulisboa.tecnico.basa.model.weather;
  */
 public class HourlyForecast {
 
-    private FCTTime FCTTIME;
+    private pt.ulisboa.tecnico.basa.model.weather.FCTTIME FCTTIME;
     private Temp temp;
     private String condition;
     private String icon;
     private int humidity;
 
 
-    public FCTTime getFCTTIME() {
+    public pt.ulisboa.tecnico.basa.model.weather.FCTTIME getFCTTIME() {
         return FCTTIME;
     }
 
-    public void setFCTTIME(FCTTime FCTTIME) {
+    public void setFCTTIME(pt.ulisboa.tecnico.basa.model.weather.FCTTIME FCTTIME) {
         this.FCTTIME = FCTTIME;
     }
 
