@@ -18,13 +18,15 @@
 #include <pins_arduino.h>
 #include <DHT.h>
  
-const char* ssid     = "JoaoWifi";
-const char* password = "sam1234567!";
+const char* ssid     = "Connectify-tese";
+const char* password = "poiuyt54321";
 #define DHTPIN D2     // what digital pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 // the IP address for the shield:
-IPAddress ip(192, 168, 0, 200); 
-IPAddress gateway(192,168,0,1);
+//IPAddress ip(192, 168, 0, 200); 
+IPAddress ip(192, 168, 215, 200); 
+IPAddress gateway(192,215,0,1);
+//IPAddress gateway(192,168,0,1);
 IPAddress subnet(255,255,255,0); 
 ESP8266WebServer server(80);
 
