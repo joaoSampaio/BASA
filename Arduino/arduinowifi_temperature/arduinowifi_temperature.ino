@@ -10,7 +10,7 @@
 //#include <DHT.h>
 //#define DHTTYPE DHT22
 //#define DHTPIN  2
-
+#include <ESP8266SSDP.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -96,16 +96,7 @@ void setup(void)
   server.on("/action", [](){  // if you add this subdirectory to your webserver call, you get text below :)
     
       String message = "";
-//      message += "URI: ";
-//      message += server.uri();
-//      message += "\nMethod: ";
-//      message += (server.method() == HTTP_GET)?"GET":"POST";
-//      message += "\nArguments: ";
-//      message += server.args();
-//      message += "\n";
-//      for (uint8_t i=0; i<server.args(); i++){
-//        message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-//      }
+
 
       if(server.args() == 1 ){
         StaticJsonBuffer<200> jsonBuffer;
@@ -142,6 +133,32 @@ void setup(void)
   
   server.begin();
   updateLights();
+
+
+
+
+
+    Serial.printf("Starting SSDP...\n");
+    SSDP.setSchemaURL("description.xml");
+    SSDP.setHTTPPort(80);
+    SSDP.setName("Philips hue clone");
+    SSDP.setSerialNumber("001788102201");
+    SSDP.setURL("index.html");
+    SSDP.setModelName("Philips hue bridge 2012");
+    SSDP.setModelNumber("929000226503");
+    SSDP.setModelURL("http://www.meethue.com");
+    SSDP.setManufacturer("Royal Philips Electronics");
+    SSDP.setManufacturerURL("http://www.philips.com");
+    SSDP.begin();
+
+    Serial.printf("Ready!\n");
+
+
+
+
+
+
+  
 }
 
 
