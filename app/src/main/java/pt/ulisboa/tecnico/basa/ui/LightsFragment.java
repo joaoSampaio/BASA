@@ -159,6 +159,9 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+        if(numCustomSwitches > 0){
+            rootView.findViewById(R.id.custom_switches).setVisibility(View.VISIBLE);
+        }
 
 
 

@@ -26,6 +26,9 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+
     <application
         android:name=".app.AppController"
         android:allowBackup="true"

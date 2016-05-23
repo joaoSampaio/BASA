@@ -20,6 +20,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
+import pt.ulisboa.tecnico.basa.ui.secondary.ScanHVAVDialogFragment;
 
 
 public class PreferencesFragment extends PreferenceFragment implements
@@ -74,6 +75,13 @@ public class PreferencesFragment extends PreferenceFragment implements
             button.setOnPreferenceClickListener(new PreferenceListener());
         }
 
+        button = findPreference("btn_scan_hvac");
+        if(button != null) {
+            button.setOnPreferenceClickListener(new PreferenceListener());
+        }
+
+
+
 
     }
 
@@ -89,13 +97,14 @@ public class PreferencesFragment extends PreferenceFragment implements
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-
+            String tag;
+            DialogFragment newFragment;
             String key = preference.getKey();
             switch (key){
                 case "btn_camera_advanced":
 
-                    String tag = "CameraSettingsDialogFragment";
-                    DialogFragment newFragment = CameraSettingsDialogFragment.newInstance();
+                    tag = "CameraSettingsDialogFragment";
+                    newFragment = CameraSettingsDialogFragment.newInstance();
 
                     if(newFragment != null) {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -110,6 +119,21 @@ public class PreferencesFragment extends PreferenceFragment implements
                 case "start_service":
 
 
+                    break;
+
+                case "btn_scan_hvac":
+                    tag = "ScanHVAVDialogFragment";
+                    newFragment = ScanHVAVDialogFragment.newInstance();
+
+                    if(newFragment != null) {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        Fragment prev = getFragmentManager().findFragmentByTag(tag);
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+                        ft.addToBackStack(null);
+                        newFragment.show(ft, tag);
+                    }
                     break;
 
             }

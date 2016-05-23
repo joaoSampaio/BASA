@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+    <!--<include-->
+        <!--android:id="@+id/topbar"-->
+        <!--layout="@layout/layout_topbar_dialog"-->
+        <!--/>-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="false"
+        android:id="@+id/actions"
+        android:layout_alignParentLeft="true"
+        android:padding="20dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextUrl"
+            android:hint="HVAC url:" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accept changes"
+            android:id="@+id/action_accept" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/action_cancel" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/actions">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/list">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scanContainer">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scan for available HVAC"
+                android:id="@+id/buttonScan"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                 />
+
+            <TextView
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="If you don&apos;t know the IP address of thr HVAC system, scan for compatible devices."
+                android:id="@+id/textView"
+                android:layout_above="@+id/buttonScan"
+                android:layout_centerHorizontal="true"
+                android:textSize="18dp" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar"
+                android:max="5"
+                android:progress="0"
+                android:layout_below="@+id/buttonScan"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
+
+        </RelativeLayout>
+
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

@@ -15,7 +15,8 @@
         android:id="@+id/custom_switches"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/light_switches"
-        android:layout_marginLeft="15dp">
+        android:layout_marginLeft="15dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"

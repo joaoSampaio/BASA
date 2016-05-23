@@ -3,7 +3,19 @@ package pt.ulisboa.tecnico.basa.util;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
+import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceRequest;
+import android.os.Handler;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NsdHelper {
     Context mContext;
@@ -13,7 +25,10 @@ public class NsdHelper {
     NsdManager.DiscoveryListener mDiscoveryListener;
     NsdManager.RegistrationListener mRegistrationListener;
 
-    public static final String SERVICE_TYPE = "_http._tcp.";
+
+    WifiP2pManager mManager;
+    WifiP2pManager.Channel mChannel;
+    public static final String SERVICE_TYPE = "urn:schemas-basa-pt:service:climate:1";
 
     public static final String TAG = "NsdHelper";
     public String mServiceName = "NsdChat";
@@ -23,15 +38,95 @@ public class NsdHelper {
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+
+
+        mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
+
+
     }
 
     public void initializeNsd() {
-        initializeResolveListener();
-        initializeDiscoveryListener();
-        initializeRegistrationListener();
+//        initializeResolveListener();
+//        initializeDiscoveryListener();
+//        initializeRegistrationListener();
 
-        //mNsdManager.init(mContext.getMainLooper(), this);
+        mChannel = mManager.initialize(mContext, mContext.getMainLooper(), null);
+//        mManager.connect(mChannel, new WifiP2pConfig(), new WifiP2pManager.ActionListener() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d(TAG, "onSuccess3");
+//            }
+//
+//            @Override
+//            public void onFailure(int reason) {
+//                Log.d(TAG, "onFailure3");
+//            }
+//        });
+        mManager.setUpnpServiceResponseListener(mChannel, new WifiP2pManager.UpnpServiceResponseListener() {
+            @Override
+            public void onUpnpServiceAvailable(List<String> uniqueServiceNames, WifiP2pDevice srcDevice) {
+                Log.d(TAG, "onUpnpServiceAvailable:" + uniqueServiceNames.size());
+                for (String s : uniqueServiceNames)
+                    Log.d(TAG, "s:" + s);
 
+                Log.d(TAG, "describeContents:" + srcDevice.describeContents());
+            }
+        });
+        mManager.setServiceResponseListener(mChannel, new WifiP2pManager.ServiceResponseListener() {
+            @Override
+            public void onServiceAvailable(int protocolType, byte[] responseData, WifiP2pDevice srcDevice) {
+                Log.d(TAG, "onServiceAvailable:" + srcDevice.describeContents());
+                Log.d(TAG, "protocolType:" + protocolType);
+                Log.d(TAG, "responseData:" + new String(responseData));
+            }
+        });
+        mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess4");
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "onFailure4:"+reason);
+            }
+        });
+        mManager.addLocalService(mChannel, WifiP2pUpnpServiceInfo.newInstance("11111111-fca6-4070-85f4-1fbfb9add62c", "urn:schemas-basa-pt:service:climate:1", new ArrayList<String>()), new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess5");
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "onFailure5:"+reason);
+            }
+        });
+        mManager.addServiceRequest(mChannel, WifiP2pUpnpServiceRequest.newInstance("ssdp:all"), new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess");
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "onFailure:"+reason);
+            }
+        });
+        mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess2");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "onFailure:"+reason);
+            }
+        });
     }
 
     public void initializeDiscoveryListener() {
@@ -137,8 +232,24 @@ public class NsdHelper {
     }
 
     public void discoverServices() {
-        mNsdManager.discoverServices(
-                SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+//        mNsdManager.discoverServices(
+//                SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener() {
+                    @Override
+                    public void onPeersAvailable(WifiP2pDeviceList peers) {
+                        Log.d(TAG, "onPeersAvailable:" + peers.getDeviceList().size());
+                        for (WifiP2pDevice device : peers.getDeviceList())
+                            Log.d(TAG, "device:" + device.toString());
+
+                        Log.d(TAG, "describeContents:" + peers.describeContents());
+                    }
+                });
+            }
+        },2000);
     }
 
     public void stopDiscovery() {

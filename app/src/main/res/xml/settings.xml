@@ -27,38 +27,7 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory
-        android:title="Beacon">
 
-        <ListPreference
-            android:key="beacon_type"
-            android:title="Beacon Type"
-            android:summary="AltBeacon"
-            android:dialogTitle="Pick the beacon type"
-            android:entries="@array/beacon_type"
-            android:entryValues="@array/beacon_type">
-        </ListPreference>
-
-        <!--<MultiSelectListPreference-->
-            <!--android:key="list_beacons"-->
-            <!--android:title="My beacons"-->
-            <!--android:summary="Notifies the web server if you are near one of the beacons"-->
-            <!--android:dialogTitle="dialog title"-->
-            <!--android:entries="@array/beacon_ids"-->
-            <!--android:entryValues="@array/beacon_ids" />-->
-
-
-        <EditTextPreference
-            android:key="custom_beacon"
-            android:title="Custom Beacon identifier"
-            android:summary="Custom id if beacon not in the list above."
-            android:dialogTitle="Beacon identifier"
-            android:inputType="textNoSuggestions"
-            android:maxLength="36"
-            android:hint="de305d54-75b4-431b-adb2-eb6b9e546014"
-             />
-
-    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="Occupant Detection">
@@ -89,30 +58,18 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="Bluetooth background service">
-        <EditTextPreference
-            android:key="notification_url"
-            android:title="WebSite notification url"
-            android:summary="Site to be notified on beacon discovery"
-            android:dialogTitle="Website url to notify if beacon is detected"
-            />
+    <PreferenceCategory
+        android:title="Temperature and HVAC ">
 
-        <EditTextPreference
-            android:key="frequency_beacon"
-            android:title="Scanner Frequency"
-            android:summary="The time between scans of advertisements."
-            android:dialogTitle="Scan frequency (seconds)"
-            android:inputType="number"
-            android:maxLength="36"
-            android:hint="15"
-            />
-
-
-
+        <Preference android:title="Scan for HVAC"
+            android:key="btn_scan_hvac"
+            android:summary="Scan for compatible HVAC in local network"/>
 
 
 
     </PreferenceCategory>
+
+
 
     <PreferenceCategory android:title="Kiosk Mode">
         <Preference android:title="Exit App"
