@@ -4,13 +4,10 @@
  
    Version 1.0  5/3/2014  Version 1.0   Mike Barela for Adafruit Industries
 */
-//#include <ESP8266WiFi.h>
-//#include <WiFiClient.h>
-//#include <ESP8266WebServer.h>
 //#include <DHT.h>
 //#define DHTTYPE DHT22
 //#define DHTPIN  2
-#include <ESP8266SSDP.h>
+#include "lib/ESP8266SSDP2.h"
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -18,8 +15,10 @@
 #include <pins_arduino.h>
 #include <DHT.h>
  
-const char* ssid     = "Connectify-tese";
-const char* password = "poiuyt54321";
+//const char* ssid     = "Connectify-tese";
+//const char* password = "poiuyt54321";
+const char* ssid     = "JoaoWifi";
+const char* password = "sam1234567!";
 #define DHTPIN D2     // what digital pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 // the IP address for the shield:
@@ -54,13 +53,13 @@ void setup(void)
   
   // You can open the Arduino IDE Serial Monitor window to see what the code is doing
   Serial.begin(9600);  // Serial connection from ESP-01 via 3.3v console cable
-//  dht.begin();           // initialize temperature sensor
+  dht.begin();           // initialize temperature sensor
 
   WiFi.disconnect(true);
   delay(500);
   // Connect to WiFi network
   WiFi.begin(ssid, password);
-  WiFi.config(ip, gateway, subnet);
+  //WiFi.config(ip, gateway, subnet);
  
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
@@ -85,70 +84,45 @@ void setup(void)
     webString="Temperature: "+String((int)temp_f)+" F";   // Arduino has a hard time with float to string
     server.send(200, "text/plain", webString);            // send to someones browser when asked
   });
- 
+
+   server.on("/index.html", HTTP_GET, [](){
+        server.send(200, "text/plain", "Hello World!");
+      });
+      
+  server.on("/description.xml", [](){  // if you add this subdirectory to your webserver call, you get text below :)
+    SSDP.schema(server.client());
+  });
+
   server.on("/humidity", [](){  // if you add this subdirectory to your webserver call, you get text below :)
-    gettemperature();           // read sensor
-    webString="Humidity: "+String((int)humidity)+"%";
-    server.send(200, "text/plain", webString);               // send to someones browser when asked
-  });
+      gettemperature();           // read sensor
+      webString="Humidity: "+String((int)humidity)+"%";
+      server.send(200, "text/plain", webString);               // send to someones browser when asked
+    });
 
-
-  server.on("/action", [](){  // if you add this subdirectory to your webserver call, you get text below :)
-    
-      String message = "";
-
-
-      if(server.args() == 1 ){
-        StaticJsonBuffer<200> jsonBuffer;
-        JsonObject& root = jsonBuffer.parseObject(server.arg(0));
-
-
-        for(JsonObject::iterator it=root.begin(); it!=root.end(); ++it) 
-        {
-            // *it contains the key/value pair
-            const char* key = it->key;
-        
-            // it->value contains the JsonVariant which can be casted as usual
-            const char* value = it->value;
-        
-            if(String(key) == "light1")
-              light1 = it->value;
-
-            if(String(key) == "light2")
-              light2 = it->value;
-        
-        }
-
-        
-        updateLights();    
-//        int light1    = root["light1"];
-        
-      }
-      message += "{"+String(" \"light1\":") + light1 + String(", \"light2\":") + light2 +  String(", \"temperature\":") + temp_f+"}";
-      
-      server.send(200, "application/javascript", message);
-      
-     
-  });
+  //server.on("/action", action);
   
   server.begin();
   updateLights();
 
 
-
+    
 
 
     Serial.printf("Starting SSDP...\n");
     SSDP.setSchemaURL("description.xml");
     SSDP.setHTTPPort(80);
+    //SSDP.setDeviceType("joao:1");
     SSDP.setName("Philips hue clone");
     SSDP.setSerialNumber("001788102201");
+    //SSDP.setSchemaURL("schemas-joao2-org");
     SSDP.setURL("index.html");
     SSDP.setModelName("Philips hue bridge 2012");
     SSDP.setModelNumber("929000226503");
     SSDP.setModelURL("http://www.meethue.com");
     SSDP.setManufacturer("Royal Philips Electronics");
     SSDP.setManufacturerURL("http://www.philips.com");
+    SSDP.setUUID("11111111-fca6-4070-85f4-1fbfb9add62c");
+    SSDP.setDeviceType("urn:schemas-basa-pt:service:climate:1");
     SSDP.begin();
 
     Serial.printf("Ready!\n");
@@ -189,6 +163,35 @@ void loop(void)
   gettemperature();
 } 
 
+
+void action(){
+      String message = "";
+      if(server.args() == 1 ){
+        StaticJsonBuffer<200> jsonBuffer;
+        JsonObject& root = jsonBuffer.parseObject(server.arg(0));
+
+        for(JsonObject::iterator it=root.begin(); it!=root.end(); ++it) 
+        {
+            // *it contains the key/value pair
+            const char* key = it->key;
+        
+            // it->value contains the JsonVariant which can be casted as usual
+            const char* value = it->value;
+        
+            if(String(key) == "light1")
+              light1 = it->value;
+
+            if(String(key) == "light2")
+              light2 = it->value;
+        
+        }       
+        updateLights();    
+//        int light1    = root["light1"];       
+      }
+      //message += "{"+String(" \"light1\":") + light1 + String(", \"light2\":") + light2 +  String(", \"temperature\":") + temp_f+"}";
+      
+      server.send(200, "application/javascript", message);    
+}
 
 void home(){
 
@@ -263,13 +266,13 @@ void gettemperature() {
     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
     humidity = dht.readHumidity();          // Read humidity (percent)
     temp_f = dht.readTemperature();     // Read temperature as Fahrenheit
-    Serial.print("temp: ");
-    Serial.println(temp_f);
-    Serial.print("Humidity: ");
-    Serial.println(humidity);
+    //Serial.print("temp: ");
+    //Serial.println(temp_f);
+    //Serial.print("Humidity: ");
+    //Serial.println(humidity);
     // Check if any reads failed and exit early (to try again).
     if (isnan(humidity) || isnan(temp_f)) {
-      Serial.println("Failed to read from DHT sensor!");
+      //Serial.println("Failed to read from DHT sensor!");
       return;
     }
   }
