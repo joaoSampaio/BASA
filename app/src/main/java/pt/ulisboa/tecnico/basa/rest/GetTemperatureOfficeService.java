@@ -9,49 +9,40 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
+import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class GetTemperatureOfficeService extends ServerCommunicationService {
 
     private CallbackMultiple callback;
-    public GetTemperatureOfficeService(CallbackMultiple callback){
+    private String url;
+    public GetTemperatureOfficeService(String url, CallbackMultiple callback){
         this.callback = callback;
+        this.url = url.replace("\"", "");
     }
 
     @Override
     public void execute() {
 
-            Call<JsonElement> call = RestClient.getService().requestTemperature();
-            call.enqueue(new retrofit2.Callback<JsonElement>() {
+        Call<Temperature> call = RestClient.getService().requestTemperatureOffice(url);
+            call.enqueue(new retrofit2.Callback<Temperature>() {
+
+
                 @Override
-                public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                public void onResponse(Call<Temperature> call, Response<Temperature> response) {
 
                     Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
                     if (response.isSuccessful()) {
-                        JsonElement json = response.body();
-                        if (json != null) {
-                            Gson gson = new Gson();
-                            JsonObject obj = json.getAsJsonObject();
+                        callback.success(response.body());
 
-                            Log.d("temperature", ""+obj.getAsString());
-                            double temperature = 0;
-                            if(obj.get("temperature") != null)
-                                temperature = obj.get("temperature").getAsDouble();
-
-
-
-
-
-
-                            callback.success(temperature);
-                        } else {
-                            callback.success(null);
-                        }
+                    } else {
+                        callback.failed(null);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JsonElement> call, Throwable t) {
+                public void onFailure(Call<Temperature> call, Throwable t) {
                     callback.failed("network problem");
                 }
             });

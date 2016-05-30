@@ -1,20 +1,14 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.rest.Pojo;
 
-
-
-public class EventTemperature extends Event {
+/**
+ * Created by Sampaio on 27/05/2016.
+ */
+public class Temperature {
 
     private double temperature;
     private double humidity;
 
-
-    public EventTemperature(int type, double temperature) {
-        super(type);
-        this.temperature = temperature;
-    }
-
-    public EventTemperature(int type, double temperature, double humidity) {
-        super(type);
+    public Temperature(double temperature, double humidity) {
         this.temperature = temperature;
         this.humidity = humidity;
     }
@@ -33,5 +27,9 @@ public class EventTemperature extends Event {
 
     public void setHumidity(double humidity) {
         this.humidity = humidity;
+    }
+
+    public boolean isValid(){
+        return (temperature > 0 && temperature < 60) && (humidity >= 0 && humidity <= 100 );
     }
 }

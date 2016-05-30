@@ -13,6 +13,7 @@ public class BasaManager {
     private TextToSpeechManager textToSpeechManager;
     private TemperatureManager temperatureManager;
     private DeviceDiscoveryManager deviceDiscoveryManager;
+    private WebServerManager webServerManager;
     private MainActivity activity;
 
     public BasaManager(MainActivity activity) {
@@ -26,6 +27,7 @@ public class BasaManager {
         this.textToSpeechManager = new TextToSpeechManager(getActivity());
         this.temperatureManager = new TemperatureManager(getActivity());
         this.deviceDiscoveryManager = new DeviceDiscoveryManager(getActivity());
+        this.webServerManager = new WebServerManager(getActivity());
     }
 
     public void stop(){
@@ -48,6 +50,10 @@ public class BasaManager {
 
         if(deviceDiscoveryManager != null){
             deviceDiscoveryManager.destroy();
+        }
+
+        if(webServerManager != null){
+            webServerManager.destroy();
         }
 
     }

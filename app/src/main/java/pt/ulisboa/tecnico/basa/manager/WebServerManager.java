@@ -14,6 +14,7 @@ import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.Status;
 import pt.ulisboa.tecnico.basa.model.User;
+import pt.ulisboa.tecnico.basa.rest.ServerHi;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 /**
@@ -28,6 +29,8 @@ public class WebServerManager {
 
     public WebServerManager(MainActivity activity) {
         this.activity = activity;
+        launchServer();
+        new ServerHi();
     }
 
     public void launchServer(){
@@ -74,6 +77,27 @@ public class WebServerManager {
                 }
             });
 
+            server.post("/broadcast", new HttpServerRequestCallback() {
+                @Override
+                public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
+                    try {
+                        Log.d("webserver", "request.getBody().length():" + request.getBody().length());
+                        String received = request.getBody().get().toString();
+
+                        Log.d("webserver", "post received:" + received);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("webserver", "Exception:");
+
+                    }
+
+
+                    response.send("ok");
+                }
+            });
+
             // listen on port 5000
             server.listen(5000);
 
@@ -89,7 +113,7 @@ public class WebServerManager {
 
     }
 
-    public void stopServer(){
+    public void destroy(){
         AppController app = AppController.getInstance();
         if(app.getServer() != null) {
             app.getServer().stop();

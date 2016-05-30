@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.basa.util;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.util.Log;
@@ -9,12 +11,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 /**
  * Created by Sampaio on 16/05/2016.
  */
 public class LightingControlEDUP implements LightingControl {
+
+    private MainActivity activity;
+
+    public LightingControlEDUP(MainActivity activity) {
+        this.activity = activity;
+
+        new Thread(new ListenEDUPMulticast(activity)).start();
+    }
+
     @Override
     public void sendLightCommand(boolean[] lighting) {
 
@@ -27,8 +47,6 @@ public class LightingControlEDUP implements LightingControl {
 //        new ContactEDUP(lights).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         new Thread(new ContactEDUPRunnable(lights)).start();
-//        new ContactEDUPRunnable(lights).run();
-
     }
 
 
@@ -38,7 +56,6 @@ public class LightingControlEDUP implements LightingControl {
         byte[] start = hexStringToByteArray("7e7e001c0001");
         byte[] data = content.getBytes();
         byte[] end = hexStringToByteArray("7f7f");
-
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
         try {
@@ -50,9 +67,6 @@ public class LightingControlEDUP implements LightingControl {
         }
 
         return outputStream.toByteArray( );
-
-
-
     }
 
     private static byte[] hexStringToByteArray(String s) {
@@ -111,9 +125,75 @@ public class LightingControlEDUP implements LightingControl {
                 exc.printStackTrace();
 
             }
+        }
+    }
+
+    private class ListenEDUPMulticast implements Runnable {
+        /*
+         * Defines the code to run for this task.
+         */
+
+        private Context ctx;
+
+        public ListenEDUPMulticast(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void run() {
+            // Moves the current Thread into the background
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+            Log.d("ListenEDUPMulticast", "ListenEDUPMulticast");
+            MulticastLockSingleton multicastLockSingleton;
+            WifiManager wifi = (WifiManager)ctx.getSystemService( ctx.getApplicationContext().WIFI_SERVICE );
+
+            if(wifi != null) {
+
+//                multicastLockSingleton = MulticastLockSingleton.getInstance(ctx);
+//                multicastLockSingleton.acquireLock();
+                WifiManager.MulticastLock lock = wifi.createMulticastLock("TheLock");
+                lock.acquire();
+
+                try {
+
+                    InetAddress IPAddress =  InetAddress.getByName("255.255.255.255");
+                    DatagramSocket socket = new DatagramSocket(8089);
+                    socket.setBroadcast(true);
+                    socket.setReuseAddress(true);
+                    byte[] buf = new byte[1024];
+
+                    String str = "ola";
+                    byte[] send_data = str.getBytes();
+                    DatagramPacket send_packet = new DatagramPacket(send_data,str.length(), IPAddress, 8089);
+                    socket.send(send_packet);
 
 
 
+
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    while (true) {
+                        Log.d("ListenEDUPMulticast", "Waiting for data + " + lock.isHeld());
+                        try {
+
+                            socket.receive(packet);
+
+                            String s = new String(packet.getData(), 0, packet.getLength());
+
+                            Log.d("ListenEDUPMulticast", "receive:-> " + s);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d("ListenEDUPMulticast", "IOException:-> ");
+                        }
+                        Log.d("ListenEDUPMulticast", "Data received");
+                    }
+
+                } catch (SocketException  e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -163,11 +243,11 @@ public class LightingControlEDUP implements LightingControl {
             {
                 exc.printStackTrace();
             }
-
-
-
             return null;
         }
     }
 
+    public MainActivity getActivity() {
+        return activity;
+    }
 }

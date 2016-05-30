@@ -21,13 +21,12 @@ import pt.ulisboa.tecnico.basa.model.Event;
 import pt.ulisboa.tecnico.basa.model.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.EventTime;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
-import pt.ulisboa.tecnico.basa.rest.RestClient;
+import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
@@ -42,11 +41,13 @@ public class TemperatureManager {
     SharedPreferences preferences;
     private MainActivity activity;
     Handler handler;
+    private String urlTemperature;
 
     public TemperatureManager(MainActivity ctx){
         this.activity = ctx;
         actionTemperatureManagerList = new ArrayList<>();
         preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
+        handler = new Handler();
         int numLights = Integer.parseInt(preferences.getString("light_number", "1"));
 
         preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -91,29 +92,8 @@ public class TemperatureManager {
         },0));
 
 
+        requestUpdateTemperature();
 
-
-        handler = new Handler();
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                new GetTemperatureOfficeService(new CallbackMultiple<Double, String>() {
-//                    @Override
-//                    public void success(Double response) {
-//                        if(response != null && activity != null && response > 0 && response < 50){
-//                            activity.getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void failed(String error) {
-//
-//                    }
-//
-//                }).execute();
-//                handler.postDelayed(this, 30 * 1000);
-//            }
-//        });
 
 
     }
@@ -132,6 +112,9 @@ public class TemperatureManager {
             actionTemperatureManagerList.clear();
             actionTemperatureManagerList = null;
         }
+        if(handler != null)
+            handler.removeCallbacksAndMessages(null);
+
         preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
         this.activity = null;
     }
@@ -139,6 +122,36 @@ public class TemperatureManager {
     public MainActivity getActivity() {
         return activity;
     }
+
+    public void requestUpdateTemperature(){
+
+        urlTemperature = preferences.getString(Global.OFFLINE_IP_TEMPERATURE, "");
+        handler.removeCallbacksAndMessages(null);
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
+                    @Override
+                    public void success(Temperature response) {
+                        if(response != null && activity != null && response.isValid()){
+                            activity.getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response.getTemperature(), response.getHumidity()));
+                        }
+                    }
+
+                    @Override
+                    public void failed(String error) {
+
+                    }
+
+                }).execute();
+                handler.postDelayed(this, 30 * 1000);
+            }
+        });
+
+
+    }
+
 
     private void updateLocation(){
 
@@ -161,27 +174,10 @@ public class TemperatureManager {
                 if(forecast != null && forecast.getCurrent() != null){
                     HourlyForecast hourlyForecast = forecast.getCurrent();
 
-                    for(HourlyForecast hour: forecast.getHourly_forecast()){
-                        Log.d("web", "day:"+hour.getFCTTIME().getMday());
-                        Log.d("web", "Hour:"+hour.getFCTTIME().getHour());
-                        Log.d("web", "Temperature:"+hour.getTemp().getTemperature());
-                        Log.d("web", "Summay:"+hour.getCondition());
-                    }
-
-
-
-                    if(hourlyForecast != null){
-                        Log.d("web", "Current day:"+hourlyForecast.getFCTTIME().getMday());
-                        Log.d("web", "Current Hour:"+hourlyForecast.getFCTTIME().getHour());
-                        Log.d("web", "Current Temperature:"+hourlyForecast.getTemp().getTemperature());
-                        Log.d("web", "Current Summay:"+hourlyForecast.getCondition());
+                    if(hourlyForecast != null && getGlobalTemperatureForecast() != null){
                         getGlobalTemperatureForecast().onChangeForecast(hourlyForecast.getTemp().getTemperature(), hourlyForecast.getIcon(), hourlyForecast.getCondition());
                     }
-
                 }
-
-
-
             }
 
             @Override
@@ -190,9 +186,12 @@ public class TemperatureManager {
             }
         }).execute();
 
+
+    }
+
+    private void getLongitude(){
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-// Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 // Called when a new location is found by the network location provider.
@@ -200,8 +199,6 @@ public class TemperatureManager {
                 Log.d("updateLocation", "getLongitude:" + location.getLongitude());
                 BasaLocation basaLocation = new BasaLocation(location.getLatitude(), location.getLongitude());
                 basaLocation.save();
-//                makeUseOfNewLocation(location);
-                //http://api.wunderground.com/api/d46d181594664567/hourly/lang:BR/q/autoip.json
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -214,6 +211,7 @@ public class TemperatureManager {
 // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
+
 
 
     public GlobalTemperatureForecast getGlobalTemperatureForecast() {

@@ -21,6 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +34,10 @@ import pt.ulisboa.tecnico.basa.adapter.RecipeAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.RectangleView;
 import pt.ulisboa.tecnico.basa.manager.DeviceDiscoveryManager;
+import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.SSDP;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
 public class ScanHVAVDialogFragment extends DialogFragment {
@@ -41,7 +46,7 @@ public class ScanHVAVDialogFragment extends DialogFragment {
     RecyclerView mRecyclerView;
     DiscoveryServiceAdapter mAdapter;
     List<SSDP> data;
-    private Button buttonScan;
+    private Button buttonScan, action_accept;
     private EditText editTextUrl;
     private RelativeLayout scanContainer;
     private ProgressBar mProgressBar;
@@ -84,6 +89,9 @@ public class ScanHVAVDialogFragment extends DialogFragment {
         });
         scanContainer = (RelativeLayout)rootView.findViewById(R.id.scanContainer);
         editTextUrl = (EditText)rootView.findViewById(R.id.editTextUrl);
+
+        String locationIp = new ModelCache<String>().loadModel(new TypeToken<String>(){}.getType(), Global.OFFLINE_IP_TEMPERATURE, "");
+        editTextUrl.setText(locationIp);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.GONE);
         data = new ArrayList<>();
@@ -96,7 +104,24 @@ public class ScanHVAVDialogFragment extends DialogFragment {
         mAdapter = new DiscoveryServiceAdapter(getActivity(), data, new DiscoveryServiceAdapter.SelectSSDP() {
             @Override
             public void onSSDPSelected(String location) {
+                location = location.trim();
+
+                if(!location.startsWith("http")) {
+                    Log.d("ssdp", "!location.startsWith(\"http\") :" + location);
+                    location = "http://" + location;
+
+                }
+
+
+//                location = location.replace(":80/data/", "");
+//                if(!location.endsWith("/")){
+//                    location = location + "/";
+//                }
+
+
                 editTextUrl.setText(location);
+                //new ModelCache<String>().saveModel(location, Global.OFFLINE_IP_TEMPERATURE);
+                //((MainActivity)getActivity()).getBasaManager().getTemperatureManager().requestUpdateTemperature();
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -151,6 +176,16 @@ public class ScanHVAVDialogFragment extends DialogFragment {
             }
         });
 
+        action_accept = (Button)rootView.findViewById(R.id.action_accept);
+        action_accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ssdp", "action_accept");
+                String location = editTextUrl.getText().toString();
+                new ModelCache<String>().saveModel(location, Global.OFFLINE_IP_TEMPERATURE);
+                ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().requestUpdateTemperature();
+            }
+        });
 
     }
 

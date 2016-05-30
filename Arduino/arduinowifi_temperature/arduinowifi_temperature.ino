@@ -7,6 +7,8 @@
 //#include <DHT.h>
 //#define DHTTYPE DHT22
 //#define DHTPIN  2
+#include <WiFiManager.h>
+#include <DNSServer.h>   
 #include "lib/ESP8266SSDP2.h"
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
@@ -14,21 +16,17 @@
 #include <ESP8266WebServer.h>
 #include <pins_arduino.h>
 #include <DHT.h>
- 
-//const char* ssid     = "Connectify-tese";
-//const char* password = "poiuyt54321";
-const char* ssid     = "JoaoWifi";
-const char* password = "sam1234567!";
+//#include <ESP8266HTTPClient.h>
+#include <ESP8266HTTPClient.h>
+
+char packetBuffer[255]; //buffer to hold incoming packet
+WiFiUDP Udp;
+HTTPClient http;
 #define DHTPIN D2     // what digital pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
-// the IP address for the shield:
-//IPAddress ip(192, 168, 0, 200); 
-IPAddress ip(192, 168, 215, 200); 
-IPAddress gateway(192,215,0,1);
-//IPAddress gateway(192,168,0,1);
-IPAddress subnet(255,255,255,0); 
 ESP8266WebServer server(80);
-
+WiFiManager wifiManager;
+WiFiClient client;
 DHT dht(DHTPIN, DHTTYPE);
  
 float humidity, temp_f;  // Values read from sensor
@@ -47,33 +45,17 @@ void handle_root() {
 void setup(void)
 {
 
-//  pinMode(DHTPIN, OUTPUT);
-//  pinMode(BUILTIN_LED, OUTPUT);  // initialize onboard LED as output
+
+  humidity = 50;
+  temp_f = 20;
   pinMode(BUILTIN_LED, OUTPUT);  // initialize onboard LED as output
   
   // You can open the Arduino IDE Serial Monitor window to see what the code is doing
   Serial.begin(9600);  // Serial connection from ESP-01 via 3.3v console cable
   dht.begin();           // initialize temperature sensor
+//  wifiManager.resetSettings();
+  wifiManager.autoConnect("AutoConnectAP");
 
-  WiFi.disconnect(true);
-  delay(500);
-  // Connect to WiFi network
-  WiFi.begin(ssid, password);
-  //WiFi.config(ip, gateway, subnet);
- 
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.println("");
-    Serial.print("status ");
-    Serial.println(WiFi.status());
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("DHT Weather Reading Server");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
    
@@ -85,12 +67,12 @@ void setup(void)
     server.send(200, "text/plain", webString);            // send to someones browser when asked
   });
 
-   server.on("/index.html", HTTP_GET, [](){
-        server.send(200, "text/plain", "Hello World!");
-      });
-      
   server.on("/description.xml", [](){  // if you add this subdirectory to your webserver call, you get text below :)
     SSDP.schema(server.client());
+  });
+
+  server.on("/reset", [](){  // if you add this subdirectory to your webserver call, you get text below :)
+    wifiManager.resetSettings();
   });
 
   server.on("/humidity", [](){  // if you add this subdirectory to your webserver call, you get text below :)
@@ -99,42 +81,123 @@ void setup(void)
       server.send(200, "text/plain", webString);               // send to someones browser when asked
     });
 
-  //server.on("/action", action);
+  server.on("/data", action);
   
   server.begin();
   updateLights();
 
+  Serial.printf("Starting SSDP...\n");
+  SSDP.setSchemaURL("data");
+  SSDP.setHTTPPort(80);
+  SSDP.setName("Philips hue clone");
+  SSDP.setSerialNumber("001788102201");
+  SSDP.setURL("index.html");
+  SSDP.setModelName("Philips hue bridge 2012");
+  SSDP.setModelNumber("929000226503");
+  SSDP.setModelURL("http://www.meethue.com");
+  SSDP.setManufacturer("Royal Philips Electronics");
+  SSDP.setManufacturerURL("http://www.philips.com");
+  SSDP.setUUID("11111111-fca6-4070-85f4-1fbfb9add62c");
+  SSDP.setDeviceType("urn:schemas-basa-pt:service:climate:1");
+  SSDP.begin();
 
-    
+  Udp.begin(8089);
 
-
-    Serial.printf("Starting SSDP...\n");
-    SSDP.setSchemaURL("description.xml");
-    SSDP.setHTTPPort(80);
-    //SSDP.setDeviceType("joao:1");
-    SSDP.setName("Philips hue clone");
-    SSDP.setSerialNumber("001788102201");
-    //SSDP.setSchemaURL("schemas-joao2-org");
-    SSDP.setURL("index.html");
-    SSDP.setModelName("Philips hue bridge 2012");
-    SSDP.setModelNumber("929000226503");
-    SSDP.setModelURL("http://www.meethue.com");
-    SSDP.setManufacturer("Royal Philips Electronics");
-    SSDP.setManufacturerURL("http://www.philips.com");
-    SSDP.setUUID("11111111-fca6-4070-85f4-1fbfb9add62c");
-    SSDP.setDeviceType("urn:schemas-basa-pt:service:climate:1");
-    SSDP.begin();
-
-    Serial.printf("Ready!\n");
-
-
-
-
-
-
-  
+  Serial.printf("Ready!\n");
 }
 
+
+
+
+void receiveUDPBroadcast(){
+  
+  int packetSize = Udp.parsePacket();
+  if (packetSize) {
+    Serial.print("Received packet of size ");
+    Serial.println(packetSize);
+    Serial.print("From ");
+    IPAddress remoteIp = Udp.remoteIP();
+    Serial.print(remoteIp);
+    Serial.print(", port ");
+    Serial.println(Udp.remotePort());
+
+    // read the packet into packetBufffer
+    int len = Udp.read(packetBuffer, 255);
+    if (len > 0) {
+      packetBuffer[len] = 0;
+    }
+    Serial.println("Contents:");
+    Serial.println(packetBuffer);
+
+    String s = String(packetBuffer);
+    retransmitUDPToServer(s);
+
+    // send a reply, to the IP address and port that sent us the packet we received
+//    Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+//    Udp.write(ReplyBuffer);
+//    Udp.endPacket();
+  }
+}
+
+
+
+void retransmitUDPToServer(String message){
+    
+//    http.begin("http://192.168.137.18:5000/broadcast");
+//    http.addHeader("Content-Type", "text/html");
+//
+//    String payload = "teste1";
+//    int httpCode = http.POST((uint8_t *) payload.c_str(), payload.length());
+////    int httpCode = http.POST("teste");
+//    Serial.println(message);
+//    if (httpCode != 200) {
+//      Serial.println("not successful");
+//      } else {
+//      String returnvalue = http.getString();
+//      Serial.println("successful:" + returnvalue);   
+//      }
+//    http.end();
+
+
+
+
+  // Combine yourdatacolumn header (yourdata=) with the data recorded from your arduino
+  // (yourarduinodata) and package them into the String yourdata which is what will be
+  // sent in your POST request
+  String yourdata = "teste2";
+
+  // If there's a successful connection, send the HTTP POST request
+  if (client.connect("192.168.137.18", 5000)) {
+    Serial.println("connecting...");
+
+    // EDIT: The POST 'URL' to the location of your insert_mysql.php on your web-host
+    client.println("POST /broadcast HTTP/1.1");
+
+    // EDIT: 'Host' to match your domain
+    client.println("Host: 192.168.137.18:5000");
+    client.println("User-Agent: Arduino/1.0");
+    client.println("Connection: close");
+    client.println("Content-Type: application/x-www-form-urlencoded;");
+    client.print("Content-Length: ");
+    client.println(yourdata.length());
+//    client.println();
+    client.println(yourdata); 
+
+    Serial.println("sent...");
+  } 
+  else {
+    // If you couldn't make a connection:
+    Serial.println("Connection failed");
+    Serial.println("Disconnecting.");
+    client.stop();
+  }
+
+
+
+
+    
+  
+}
 
   
  
@@ -161,6 +224,7 @@ void loop(void)
 
   server.handleClient();
   gettemperature();
+  receiveUDPBroadcast();
 } 
 
 
@@ -188,47 +252,48 @@ void action(){
         updateLights();    
 //        int light1    = root["light1"];       
       }
-      //message += "{"+String(" \"light1\":") + light1 + String(", \"light2\":") + light2 +  String(", \"temperature\":") + temp_f+"}";
+      message += "{" + String("\"humidity\":") + humidity +  String(", \"temperature\":") + temp_f+"}";
       
       server.send(200, "application/javascript", message);    
 }
 
 void home(){
 
-//  server.sendHeader("Content-Type", "text/html");
-  server.sendHeader("Connection", "close");
-//  server.sendHeader("Refresh", "5");
-  String message = "";
-
-  gettemperature();
-  
-  message += "<body>";
-  message += "";
-  message += "<table style=\"width:100%\">";
-  message += "  <tr>";
-  message += "    <td>Light 1</td>";
-  message += "    <td>Light 2</td>    ";
-  message += "    <td>Temperature</td>";
-  message += "  </tr>";
-  message += "  <tr>";
-  message += "    <td>"+ String(light1) +"</td>";
-  message += "    <td>"+ String(light2) +"</td>   ";
-  message += "    <td>"+ String((int)temp_f) +"</td>";
-  message += "  </tr>";
-  message += "  ";
-  message += "</table>";
-  message += "";
-  message += "<br>";
-  message += "Send a json post to \/action";
-  message += "<br>";
-  message += "example {\"light1\": 0, \"light2\": 1}";
-  message += "</body>";
-  
-  
-  message += "</html>\n";
+SSDP.schema(server.client());
 
 
-  server.send(200, "text/html", message);
+//  server.sendHeader("Connection", "close");
+//  String message = "";
+//
+//  gettemperature();
+//  
+//  message += "<body>";
+//  message += "";
+//  message += "<table style=\"width:100%\">";
+//  message += "  <tr>";
+//  message += "    <td>Light 1</td>";
+//  message += "    <td>Light 2</td>    ";
+//  message += "    <td>Temperature</td>";
+//  message += "  </tr>";
+//  message += "  <tr>";
+//  message += "    <td>"+ String(light1) +"</td>";
+//  message += "    <td>"+ String(light2) +"</td>   ";
+//  message += "    <td>"+ String((int)temp_f) +"</td>";
+//  message += "  </tr>";
+//  message += "  ";
+//  message += "</table>";
+//  message += "";
+//  message += "<br>";
+//  message += "Send a json post to \/action";
+//  message += "<br>";
+//  message += "example {\"light1\": 0, \"light2\": 1}";
+//  message += "</body>";
+//  
+//  
+//  message += "</html>\n";
+//
+//
+//  server.send(200, "text/html", message);
 
 
   
@@ -248,8 +313,6 @@ void updateLights(){
  
 void gettemperature() {
 
-//  humidity = 25;
-//  temp_f = 20;
   
   // Wait at least 2 seconds seconds between measurements.
   // if the difference between the current time and last time you read
@@ -261,16 +324,21 @@ void gettemperature() {
     // save the last time you read the sensor 
     previousMillis = currentMillis;   
 
+    float humidity_temp, temperature_temp;
+
 
     // Reading temperature for humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
-    humidity = dht.readHumidity();          // Read humidity (percent)
-    temp_f = dht.readTemperature();     // Read temperature as Fahrenheit
-    //Serial.print("temp: ");
-    //Serial.println(temp_f);
-    //Serial.print("Humidity: ");
-    //Serial.println(humidity);
+    humidity_temp = dht.readHumidity();          // Read humidity (percent)
+    temperature_temp = dht.readTemperature();     // Read temperature as Fahrenheit
+    
     // Check if any reads failed and exit early (to try again).
+    if(!isnan(humidity_temp))
+      humidity = humidity_temp;
+
+    if(!isnan(temperature_temp))
+      temp_f = temperature_temp;
+    
     if (isnan(humidity) || isnan(temp_f)) {
       //Serial.println("Failed to read from DHT sensor!");
       return;

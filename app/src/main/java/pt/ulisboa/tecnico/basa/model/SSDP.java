@@ -24,13 +24,13 @@ public class SSDP {
         String[] values = parse.split("\r\n");
         for (String v : values){
             if(v.startsWith(LOCATION)){
-                this.location = v.split(LOCATION)[1];
+                setLocation(v.split(LOCATION)[1]);
             } else if(v.startsWith(SERVER)){
-                this.server = v.split(SERVER)[1];
+                setServer(v.split(SERVER)[1]);
             }else if(v.startsWith(ST)){
-                this.st = v.split(ST)[1];
+                setSt(v.split(ST)[1]);
             }else if(v.startsWith(USN)){
-                this.usn = v.split(USN)[1];
+                setUsn(v.split(USN)[1]);
             }
 
             Log.d("ssdp", "v: " + v);
@@ -53,5 +53,21 @@ public class SSDP {
 
     public String getUsn() {
         return usn;
+    }
+
+    public void setLocation(String location) {
+        this.location = location.trim();
+    }
+
+    public void setServer(String server) {
+        this.server = server.trim();
+    }
+
+    public void setSt(String st) {
+        this.st = st.trim();;
+    }
+
+    public void setUsn(String usn) {
+        this.usn = usn.trim();
     }
 }

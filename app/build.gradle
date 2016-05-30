@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-
+//apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "pt.ulisboa.tecnico.basa"
@@ -10,13 +10,21 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+//        jackOptions {
+//            enabled true
+//        }
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
 }
 
 dependencies {
@@ -29,17 +37,22 @@ dependencies {
     compile 'com.estimote:sdk:0.9.4@aar'
     compile 'com.koushikdutta.async:androidasync:2.+'
     compile files('libs/TarsosDSP-Android-2.3.jar')
+    compile files('libs/spark-core-1.1.2-jar-with-dependencies.jar')
+
+//    compile files('libs/spark-core-1.1.2.jar')
+//    compile files('libs/slf4j-simple-1.7.21.jar')
+
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.code.gson:gson:2.5'
     compile files('libs/pocketsphinx-android-5prealpha-nolib.jar')
-//    compile 'com.ivona:ivona-speechcloud-sdk-java:1.0.0'
-
-
+    //    compile 'com.ivona:ivona-speechcloud-sdk-java:1.0.0'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
-
+    //    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+//    compile 'com.sparkjava:spark-core:2.5'
 }
 
 ant.importBuild 'assets.xml'
