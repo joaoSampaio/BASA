@@ -34,38 +34,52 @@ public class LightingManager {
         return false;
     }
 
+    public void setLightState(boolean[] values){
+        Log.d("webserver", "setLightState");
+        for(int i= 0; i< this.lights.length; i++){
+            Log.d("webserver", "values[i]:"+values[i]);
+            if(values[i]){
+                turnONLight(i, false);
+            }else{
+                turnOFFLight(i, false);
+            }
+
+        }
+    }
+
     public void toggleLight(int lightId){
         Log.d("light", "toggleLight");
         if(this.lights != null && lightId < this.lights.length){
 
             this.lights[lightId] = ! this.lights[lightId];
             if (this.lights[lightId])
-                turnONLight(lightId);
+                turnONLight(lightId, true);
             else
-                turnOFFLight(lightId);
+                turnOFFLight(lightId, true);
 
         }
     }
 
-    public void turnONLight(int lightId){
+    public void turnONLight(int lightId, boolean sendServer){
         Log.d("light", "turnONLight");
         if(lightId < this.lights.length){
             this.lights[lightId] = true;
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightON(lightId);
 
-            lightingControl.sendLightCommand(lights);
+            if(sendServer)
+                lightingControl.sendLightCommand(lights);
         }
     }
 
-    public void turnOFFLight(int lightId){
+    public void turnOFFLight(int lightId, boolean sendServer){
         Log.d("light", "turnOFFLight");
         if(lightId < this.lights.length){
             this.lights[lightId] = false;
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightOFF(lightId);
-
-            lightingControl.sendLightCommand(lights);
+            if(sendServer)
+                lightingControl.sendLightCommand(lights);
         }
     }
 

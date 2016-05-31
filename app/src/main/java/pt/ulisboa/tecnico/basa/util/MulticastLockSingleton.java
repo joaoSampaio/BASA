@@ -31,7 +31,7 @@ public class MulticastLockSingleton {
     public void acquireLock( ) {
         if(instance.getReferences() == 0 || lock == null) {
             Log.d("ListenEDUPMulticast", "acquireLock");
-            WifiManager.MulticastLock lock = wifi.createMulticastLock("The Lock");
+            lock = wifi.createMulticastLock("The Lock");
             lock.acquire();
         }
         references++;

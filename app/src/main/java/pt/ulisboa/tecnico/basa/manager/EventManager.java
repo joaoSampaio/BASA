@@ -199,14 +199,14 @@ public class EventManager {
 
                 for(int id: re.getSelectedAction()){
                     if(activity.getBasaManager().getLightingManager() != null)
-                        activity.getBasaManager().getLightingManager().turnONLight(id);
+                        activity.getBasaManager().getLightingManager().turnONLight(id, true);
                 }
 
                 break;
             case TriggerAction.LIGHT_OFF:
                 for(int id: re.getSelectedAction()){
                     if(activity.getBasaManager().getLightingManager() != null)
-                        activity.getBasaManager().getLightingManager().turnOFFLight(id);
+                        activity.getBasaManager().getLightingManager().turnOFFLight(id, true);
                 }
                 break;
 

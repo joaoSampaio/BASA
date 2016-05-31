@@ -5,11 +5,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,9 @@ import pt.ulisboa.tecnico.basa.camera.RectangleView;
 import pt.ulisboa.tecnico.basa.manager.DeviceDiscoveryManager;
 import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.SSDP;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
+import pt.ulisboa.tecnico.basa.rest.PostServerLocationService;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
@@ -184,6 +189,23 @@ public class ScanHVAVDialogFragment extends DialogFragment {
                 String location = editTextUrl.getText().toString();
                 new ModelCache<String>().saveModel(location, Global.OFFLINE_IP_TEMPERATURE);
                 ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().requestUpdateTemperature();
+
+                WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
+                String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                String server =  "http://" + ip + ":5001/broadcast";
+
+                new PostServerLocationService(location.replace("data", "setserver"), new ServerLocation(server), new CallbackMultiple() {
+                    @Override
+                    public void success(Object response) {
+
+                    }
+
+                    @Override
+                    public void failed(Object error) {
+
+                    }
+                }).execute();
+
             }
         });
 
