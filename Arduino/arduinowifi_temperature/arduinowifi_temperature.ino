@@ -28,10 +28,11 @@ ESP8266WebServer server(80);
 WiFiManager wifiManager;
 WiFiClient client;
 DHT dht(DHTPIN, DHTTYPE);
- 
+
+String serverUrls[10] = {};
+
 float humidity, temp_f;  // Values read from sensor
 String webString="";     // String to display
-// Generally, you should use "unsigned long" for variables that hold time
 unsigned long previousMillis = 0;        // will store last temp was read
 const long interval = 2000;              // interval at which to read sensor
 
@@ -82,6 +83,9 @@ void setup(void)
     });
 
   server.on("/data", action);
+
+  server.on("/setserver", setServerBASA);
+
   
   server.begin();
   updateLights();
@@ -128,9 +132,15 @@ void receiveUDPBroadcast(){
     }
     Serial.println("Contents:");
     Serial.println(packetBuffer);
-
+    
+    Serial.println("ContentsHEX:");
+    String hexValue = "";
+    for(int i = 0; i< len; i++){
+      Serial.print(String(packetBuffer[i], (unsigned char)HEX));
+      hexValue = hexValue + String(packetBuffer[i], (unsigned char)HEX);
+    }
     String s = String(packetBuffer);
-    retransmitUDPToServer(s);
+    retransmitUDPToServer(hexValue);
 
     // send a reply, to the IP address and port that sent us the packet we received
 //    Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
@@ -142,13 +152,33 @@ void receiveUDPBroadcast(){
 
 
 void retransmitUDPToServer(String message){
+    //
+
+    for(int i = 0; i< 10 ; i++){
+      if(serverUrls[i] != NULL){
+        Serial.println(serverUrls[i]);        
+        http.begin(serverUrls[i]);
+        http.addHeader("Content-Type", "text/html");
     
-//    http.begin("http://192.168.137.18:5000/broadcast");
+        String payload = "teste1";
+        int httpCode = http.POST(message);
+        Serial.println(message);
+        if (httpCode != 200) {
+          Serial.println("not successful");
+          } else {
+          String returnvalue = http.getString();
+          Serial.println("successful:" + returnvalue);   
+          }
+        http.end();
+
+      }
+    }
+    
+//    http.begin("http://192.168.137.180:5001/broadcast");
 //    http.addHeader("Content-Type", "text/html");
 //
 //    String payload = "teste1";
-//    int httpCode = http.POST((uint8_t *) payload.c_str(), payload.length());
-////    int httpCode = http.POST("teste");
+//    int httpCode = http.POST(message);
 //    Serial.println(message);
 //    if (httpCode != 200) {
 //      Serial.println("not successful");
@@ -158,45 +188,6 @@ void retransmitUDPToServer(String message){
 //      }
 //    http.end();
 
-
-
-
-  // Combine yourdatacolumn header (yourdata=) with the data recorded from your arduino
-  // (yourarduinodata) and package them into the String yourdata which is what will be
-  // sent in your POST request
-  String yourdata = "teste2";
-
-  // If there's a successful connection, send the HTTP POST request
-  if (client.connect("192.168.137.18", 5000)) {
-    Serial.println("connecting...");
-
-    // EDIT: The POST 'URL' to the location of your insert_mysql.php on your web-host
-    client.println("POST /broadcast HTTP/1.1");
-
-    // EDIT: 'Host' to match your domain
-    client.println("Host: 192.168.137.18:5000");
-    client.println("User-Agent: Arduino/1.0");
-    client.println("Connection: close");
-    client.println("Content-Type: application/x-www-form-urlencoded;");
-    client.print("Content-Length: ");
-    client.println(yourdata.length());
-//    client.println();
-    client.println(yourdata); 
-
-    Serial.println("sent...");
-  } 
-  else {
-    // If you couldn't make a connection:
-    Serial.println("Connection failed");
-    Serial.println("Disconnecting.");
-    client.stop();
-  }
-
-
-
-
-    
-  
 }
 
   
@@ -256,47 +247,46 @@ void action(){
       
       server.send(200, "application/javascript", message);    
 }
+//preciso de guardar offline
+void setServerBASA(){
+      Serial.println("setServerBASA");
+      String message = "ok";
+      if(server.args() == 1 ){
+        StaticJsonBuffer<200> jsonBuffer;
+        JsonObject& root = jsonBuffer.parseObject(server.arg(0));
+        String url;
+        for(JsonObject::iterator it=root.begin(); it!=root.end(); ++it) 
+        {
+            // *it contains the key/value pair
+            const char* key = it->key;        
+            const char* value = it->value;
+            if(String(key) == "server")
+              url = String(value);
+        }       
+
+        for(int i = 0; i< 10 ; i++){
+          if(serverUrls[i] == NULL){
+            serverUrls[i] = url;
+            Serial.println("saving url");
+            Serial.println(serverUrls[i]);
+            break;
+          }
+          //se ja existir o url
+          if(serverUrls[i].equals(url)){
+            Serial.println("Already knew url");
+            break;
+          }
+
+          Serial.println(i);
+        }
+      
+      server.send(200, "application/javascript", message);    
+    }
+}
+
 
 void home(){
-
-SSDP.schema(server.client());
-
-
-//  server.sendHeader("Connection", "close");
-//  String message = "";
-//
-//  gettemperature();
-//  
-//  message += "<body>";
-//  message += "";
-//  message += "<table style=\"width:100%\">";
-//  message += "  <tr>";
-//  message += "    <td>Light 1</td>";
-//  message += "    <td>Light 2</td>    ";
-//  message += "    <td>Temperature</td>";
-//  message += "  </tr>";
-//  message += "  <tr>";
-//  message += "    <td>"+ String(light1) +"</td>";
-//  message += "    <td>"+ String(light2) +"</td>   ";
-//  message += "    <td>"+ String((int)temp_f) +"</td>";
-//  message += "  </tr>";
-//  message += "  ";
-//  message += "</table>";
-//  message += "";
-//  message += "<br>";
-//  message += "Send a json post to \/action";
-//  message += "<br>";
-//  message += "example {\"light1\": 0, \"light2\": 1}";
-//  message += "</body>";
-//  
-//  
-//  message += "</html>\n";
-//
-//
-//  server.send(200, "text/html", message);
-
-
-  
+  SSDP.schema(server.client());
 }
 
 void updateLights(){
@@ -306,18 +296,11 @@ void updateLights(){
     digitalWrite(BUILTIN_LED, LOW);
   else
     digitalWrite(BUILTIN_LED, HIGH);
-
-  
 }
 
  
 void gettemperature() {
 
-  
-  // Wait at least 2 seconds seconds between measurements.
-  // if the difference between the current time and last time you read
-  // the sensor is bigger than the interval you set, read the sensor
-  // Works better than delay for things happening elsewhere also
   unsigned long currentMillis = millis();
 // 
   if(currentMillis - previousMillis >= interval) {
