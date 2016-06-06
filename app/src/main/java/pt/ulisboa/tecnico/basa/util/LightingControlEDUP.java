@@ -1,9 +1,13 @@
 package pt.ulisboa.tecnico.basa.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -19,7 +23,9 @@ import java.net.MulticastSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 /**
@@ -27,6 +33,9 @@ import pt.ulisboa.tecnico.basa.ui.MainActivity;
  */
 public class LightingControlEDUP implements LightingControl {
 
+    private final static String STARTING_TEXT = "7e7e000d0002";
+    //7E7E000D0002
+    private final static String ENDING_TEXT = "7f7f";
     private MainActivity activity;
 
     public LightingControlEDUP(MainActivity activity) {
@@ -128,6 +137,30 @@ public class LightingControlEDUP implements LightingControl {
         }
     }
 
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes) {
+        Log.d("ListenEDUPMulticast", "bytes:"+bytes.length);
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+    private static String hexToASCII(String hexValue)
+    {
+        StringBuilder output = new StringBuilder("");
+        for (int i = 0; i < hexValue.length(); i += 2)
+        {
+            String str = hexValue.substring(i, i + 2);
+            output.append((char) Integer.parseInt(str, 16));
+        }
+        return output.toString();
+    }
+
+
     private class ListenEDUPMulticast implements Runnable {
         /*
          * Defines the code to run for this task.
@@ -156,16 +189,33 @@ public class LightingControlEDUP implements LightingControl {
 
                 try {
 
-                    InetAddress IPAddress =  InetAddress.getByName("255.255.255.255");
-                    DatagramSocket socket = new DatagramSocket(8089);
-                    socket.setBroadcast(true);
-                    socket.setReuseAddress(true);
+
+                    WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
+                    String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                    Log.d("ListenEDUPMulticast", "ListenEDUPMulticast -> " + ip);
+                    InetAddress IPAddress =  InetAddress.getByName(ip);
+
+//                    InetAddress IPAddress =  InetAddress.getByName("255.255.255.255");
+//                    DatagramSocket socket = new DatagramSocket(8089);
+//                    socket.setBroadcast(true);
+//                    socket.setReuseAddress(true);
                     byte[] buf = new byte[1024];
 
-                    String str = "ola";
-                    byte[] send_data = str.getBytes();
-                    DatagramPacket send_packet = new DatagramPacket(send_data,str.length(), IPAddress, 8089);
-                    socket.send(send_packet);
+
+                    DatagramSocket socket = new DatagramSocket(null);
+                    InetSocketAddress address = new InetSocketAddress("0.0.0.0", 8089);
+//                    InetSocketAddress address = new InetSocketAddress(ip, 8089);
+                    socket.setReuseAddress(true);
+//                    socket.setBroadcast(true);
+                    socket.bind(address);
+
+
+
+
+//                    String str = "ola";
+//                    byte[] send_data = str.getBytes();
+//                    DatagramPacket send_packet = new DatagramPacket(send_data,str.length(), IPAddress, 8089);
+//                    socket.send(send_packet);
 
 
 
@@ -176,16 +226,42 @@ public class LightingControlEDUP implements LightingControl {
                         try {
 
                             socket.receive(packet);
+                            Log.d("ListenEDUPMulticast", "Data received");
+                            String s = new String(packet.getData(), 0, packet.getLength(), "US-ASCII");
 
-                            String s = new String(packet.getData(), 0, packet.getLength());
+                            Log.d("ListenEDUPMulticast", " packet.getLength():-> " +  packet.getLength());
+                            Log.d("ListenEDUPMulticast", "packet.getData():-> " + packet.getData());
+                            byte[] content = Arrays.copyOfRange(packet.getData(),0,packet.getLength());
+                            String broadcast = bytesToHex(content);
+                            Log.d("ListenEDUPMulticast", "bytesToHex:-> " + broadcast);
+                            Log.d("ListenEDUPMulticast", "bytesToHex:-> " + broadcast.length());
 
                             Log.d("ListenEDUPMulticast", "receive:-> " + s);
+                            Log.d("ListenEDUPMulticast", "length:-> " + s.length());
+                            broadcast = broadcast.toLowerCase();
+                            if(broadcast.startsWith(STARTING_TEXT) && broadcast.endsWith(ENDING_TEXT)){
+                                String valuableContent = broadcast.replace(STARTING_TEXT, "").replace(ENDING_TEXT, "");
+
+                                String hexString = hexToASCII(valuableContent);
+                                Log.d("webserver", "hexString:"+hexString);
+
+                                char[] c = hexString.toCharArray();
+                                final boolean[] values = {c[1] == '1', c[2] == '1', c[3] == '1'};
+
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("webserver", "values:"+values.toString());
+                                        getActivity().getBasaManager().getLightingManager().setLightState(values);
+                                    }
+                                });
+                            }
 
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.d("ListenEDUPMulticast", "IOException:-> ");
                         }
-                        Log.d("ListenEDUPMulticast", "Data received");
+
                     }
 
                 } catch (SocketException  e) {

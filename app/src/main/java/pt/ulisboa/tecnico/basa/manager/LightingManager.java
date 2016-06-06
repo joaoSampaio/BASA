@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.LightingControl;
 import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
@@ -15,6 +16,8 @@ public class LightingManager {
     private Context ctx;
     private LightChanged lightChangedListener;
     private LightingControl lightingControl;
+    private long timeOld = 0;
+    private long timeCurrent = 0;
 
     public LightingManager(MainActivity ctx){
         this.ctx = ctx;
@@ -36,18 +39,29 @@ public class LightingManager {
 
     public void setLightState(boolean[] values){
         Log.d("webserver", "setLightState");
-        for(int i= 0; i< this.lights.length; i++){
-            Log.d("webserver", "values[i]:"+values[i]);
-            if(values[i]){
-                turnONLight(i, false);
-            }else{
-                turnOFFLight(i, false);
-            }
 
+
+        timeCurrent = System.currentTimeMillis();
+        long elapsedTimeNs = timeCurrent - timeOld;
+        if (elapsedTimeNs >= 4) {
+            //timeOld = timeCurrent;
+
+            for (int i = 0; i < this.lights.length; i++) {
+                Log.d("webserver", "values[i]:" + values[i]);
+                if (values[i]) {
+                    turnONLight(i, false);
+                } else {
+                    turnOFFLight(i, false);
+                }
+
+            }
+        }else {
+            Log.d("webserver", "setlight too close in time");
         }
     }
 
     public void toggleLight(int lightId){
+        timeOld = System.currentTimeMillis();
         Log.d("light", "toggleLight");
         if(this.lights != null && lightId < this.lights.length){
 
