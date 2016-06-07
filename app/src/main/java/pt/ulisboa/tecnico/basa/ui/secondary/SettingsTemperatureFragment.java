@@ -4,27 +4,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
-import pt.ulisboa.tecnico.basa.adapter.RecipeAdapter;
 import pt.ulisboa.tecnico.basa.manager.TemperatureManager;
-import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 

@@ -25,6 +25,7 @@ import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import pt.ulisboa.tecnico.basa.Global;
@@ -36,8 +37,10 @@ import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.model.Event;
 import pt.ulisboa.tecnico.basa.model.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class MainActivity extends FragmentActivity {
 
@@ -326,15 +329,20 @@ public class MainActivity extends FragmentActivity {
     private void initSavedValues(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+
+
+
         AppController.getInstance().mThreshold = Float.parseFloat(preferences.getString("cam_accuracy", "0.5"));
         AppController.getInstance().mThreshold = AppController.getInstance().mThreshold /100;
 
         AppController.getInstance().timeScanPeriod = Integer.parseInt(preferences.getString("cam_time", "2"));
 //        new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
 
-
         getBasaManager().getEventManager().reloadSavedRecipes();
 
+        if(!ModelCache.keyExists(Global.OFFLINE_USERS)){
+            new ModelCache<>().saveModel(new ArrayList<>(), Global.OFFLINE_USERS);
+        }
 
     }
 

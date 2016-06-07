@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.IFTTTDialogFragment;
+import pt.ulisboa.tecnico.basa.ui.secondary.RegisterUserDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.SettingsTemperatureFragment;
 
 
@@ -21,7 +23,8 @@ public class GeneralMenuFragment extends Fragment implements View.OnClickListene
 
 
     View rootView;
-    private static final int[] CLICK = {R.id.action_ifttt, R.id.action_settings, R.id.action_settings_temperature};
+    private static final int[] CLICK = {R.id.action_ifttt, R.id.action_settings,
+            R.id.action_settings_temperature, R.id.action_user};
 
     public GeneralMenuFragment() {
         // Required empty public constructor
@@ -72,6 +75,11 @@ public class GeneralMenuFragment extends Fragment implements View.OnClickListene
             case R.id.action_settings_temperature:
                 newFragment = SettingsTemperatureFragment.newInstance();
                 tag = "SettingsTemperatureFragment";
+                break;
+            case R.id.action_user:
+                Log.d("register", "register user");
+                newFragment = RegisterUserDialogFragment.newInstance();
+                tag = "RegisterUserDialogFragment";
                 break;
         }
 

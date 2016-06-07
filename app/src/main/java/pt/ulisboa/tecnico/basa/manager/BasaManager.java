@@ -14,6 +14,7 @@ public class BasaManager {
     private TemperatureManager temperatureManager;
     private DeviceDiscoveryManager deviceDiscoveryManager;
     private WebServerManager webServerManager;
+    private UserManager userManager;
     private MainActivity activity;
 
     public BasaManager(MainActivity activity) {
@@ -28,6 +29,7 @@ public class BasaManager {
         this.temperatureManager = new TemperatureManager(getActivity());
         this.deviceDiscoveryManager = new DeviceDiscoveryManager(getActivity());
         this.webServerManager = new WebServerManager(getActivity());
+        this.userManager = new UserManager(getActivity());
     }
 
     public void stop(){
@@ -56,6 +58,10 @@ public class BasaManager {
             webServerManager.destroy();
         }
 
+        if(userManager != null){
+            userManager.destroy();
+        }
+
     }
 
 
@@ -81,6 +87,14 @@ public class BasaManager {
 
     public DeviceDiscoveryManager getDeviceDiscoveryManager() {
         return deviceDiscoveryManager;
+    }
+
+    public WebServerManager getWebServerManager() {
+        return webServerManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     public MainActivity getActivity() {

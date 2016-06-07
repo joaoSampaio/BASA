@@ -43,4 +43,9 @@ public class ModelCache<T> {
         }
     }
 
+    public static boolean keyExists(String key){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+        return sp.contains(key);
+    }
+
 }

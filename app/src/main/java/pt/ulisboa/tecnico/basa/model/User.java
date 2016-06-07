@@ -1,17 +1,61 @@
 package pt.ulisboa.tecnico.basa.model;
 
+import java.util.List;
+
 /**
  * Created by joaosampaio on 08-03-2016.
  */
 public class User {
-    private String name;
+    private String userName;
+    private String email;
     private String uuid;
+    private List<Recipe> recipes;
 
-    public User(String name) {
-        this.name = name;
+
+    public User(String userName) {
+        this.userName = userName;
+    }
+
+    public User(String userName, String uuid) {
+        this.userName = userName;
+        this.uuid = uuid;
+    }
+
+    public User(String userName, String email, String uuid) {
+        this.userName = userName;
+        this.email = email;
+        this.uuid = uuid;
     }
 
     public String getName() {
-        return name;
+        return userName;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public static User getUserFromList(List<User> users, String uuid){
+        for (User user: users){
+            if(user.getUuid() != null && user.getUuid().equals(uuid))
+                return user;
+        }
+        return null;
+    }
+
+    public static User getUserNameFromList(List<User> users, String name){
+        for (User user: users){
+            if(user.getName() != null && user.getName().equals(name))
+                return user;
+        }
+        return null;
+    }
+
+    public static boolean userNameExists(List<User> users, String uuid){
+        return getUserNameFromList(users, uuid) != null;
+    }
+
+    public static boolean userExists(List<User> users, String uuid){
+        return getUserFromList(users, uuid) != null;
     }
 }
