@@ -8,7 +8,7 @@ import android.graphics.Color;
 public class Global {
     public static final String SSID = "Connectify-me";
 //    public static final String SSID = "eduroam";
-
+    public static final int PORT = 5001;
 
 
     public final static int TAG_TEMPERATURE_FRAGMENT = 0;
