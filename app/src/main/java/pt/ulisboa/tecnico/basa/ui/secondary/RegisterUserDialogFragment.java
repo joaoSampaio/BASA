@@ -21,11 +21,16 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import pt.ulisboa.tecnico.basa.Global;
+import java.io.ByteArrayOutputStream;
+
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.RegisterAndroidQRCode;
+import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.SendEmailService;
+import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
-import android.support.v4.app.DialogFragment;
 
 public class RegisterUserDialogFragment extends android.support.v4.app.DialogFragment implements View.OnClickListener {
 
@@ -90,14 +95,37 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
                 String username = editUsername.getText().toString();
                 String email = editEmail.getText().toString();
 
-                String uuid = ((MainActivity)getActivity()).getBasaManager().getUserManager()
-                        .registerNewUser(username, email);
-
+                String uuid = null;
                 try {
-                    imageViewQRCode.setImageBitmap(encodeAsBitmap(uuid));
+                    uuid = ((MainActivity)getActivity()).getBasaManager().getUserManager()
+                            .registerNewUser(username, email);
+
+                    Bitmap image = encodeAsBitmap(uuid);
+                    imageViewQRCode.setImageBitmap(image);
+                    editUsername.setError(null);
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+
+                    new SendEmailService(new CallbackMultiple() {
+                        @Override
+                        public void success(Object response) {
+
+                        }
+
+                        @Override
+                        public void failed(Object error) {
+
+                        }
+                    }, email, "tema", WelcomeTemplate.getTemplate(), byteArray).execute();
+
+                } catch (UserRegistrationException e) {
+                    editUsername.setError(e.getMessage());
                 } catch (WriterException e) {
                     e.printStackTrace();
                 }
+
 
 
             }

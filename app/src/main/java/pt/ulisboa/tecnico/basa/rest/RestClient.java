@@ -81,9 +81,6 @@ public class RestClient {
                     newRequest = request.newBuilder()
                             .addHeader("Content-type", "application/json;charset=UTF-8")
                             .addHeader("Accept", "application/json");
-
-
-                    Log.d("servico", "COOKIES_REQUEST_INTERCEPTOR");
                     return chain.proceed(newRequest.build());
                 }
             };

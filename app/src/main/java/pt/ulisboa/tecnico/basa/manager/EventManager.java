@@ -37,7 +37,7 @@ public class EventManager {
     }
 
     public void addEvent(Event event){
-        Log.d("EVENT", "****" + eventToString(event) + "****: ");
+        //Log.d("EVENT", "****" + eventToString(event) + "****: ");
         for (InterestEventAssociation interest: interests){
             if(interest.isType(event.getType())){
                 interest.getInterest().onRegisteredEventTriggered(event);
