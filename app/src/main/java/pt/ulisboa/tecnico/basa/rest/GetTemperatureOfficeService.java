@@ -3,12 +3,6 @@ package pt.ulisboa.tecnico.basa.rest;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-
-import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -25,6 +19,8 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
     @Override
     public void execute() {
 
+        if(url == null || url.isEmpty())
+            return;
         Call<Temperature> call = RestClient.getService().requestTemperatureOffice(url);
             call.enqueue(new retrofit2.Callback<Temperature>() {
 

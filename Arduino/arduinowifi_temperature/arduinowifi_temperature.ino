@@ -22,7 +22,7 @@
 char packetBuffer[255]; //buffer to hold incoming packet
 WiFiUDP Udp;
 HTTPClient http;
-#define DHTPIN D2     // what digital pin we're connected to
+#define DHTPIN D4     // what digital pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 ESP8266WebServer server(80);
 WiFiManager wifiManager;

@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.basa.detection;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 
@@ -101,7 +100,7 @@ public class RgbMotionDetection implements IMotionDetection {
 
 
         if (totDifferentPixels <= 0) totDifferentPixels = 1;
-        Log.d("myapp", "totDifferentPixels: " + totDifferentPixels + " mThreshold: " + mThreshold);
+        //Log.d("myapp", "totDifferentPixels: " + totDifferentPixels + " mThreshold: " + mThreshold);
         boolean different = totDifferentPixels > mThreshold;
         /*
          * int size = height * width; int percent =

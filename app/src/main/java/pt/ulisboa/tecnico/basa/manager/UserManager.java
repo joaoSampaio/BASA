@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import pt.ulisboa.tecnico.basa.Global;
-import pt.ulisboa.tecnico.basa.model.Recipe;
+import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
@@ -28,20 +28,27 @@ public class UserManager implements Manager {
     }
 
 
-    public String registerNewUser(String userName, String email){
+    public String registerNewUser(String userName, String email) throws UserRegistrationException {
 
 
         UUID uuid = UUID.randomUUID();
         List<User> users = new ModelCache<List<User>>().loadModel(new TypeToken<List<User>>(){}.getType(), Global.OFFLINE_USERS);
-        if(!User.userNameExists(users, userName)){
-            users.add(new User(userName , email, uuid.toString()));
-            return uuid.toString();
-        }else{
-            return User.getUserNameFromList(users, userName).getUuid();
+
+        if(User.userNameExists(users, userName)){
+            throw new UserRegistrationException("Username already active");
         }
+
+        users.add(new User(userName , email, uuid.toString()));
+        return uuid.toString();
 
     }
 
+    public User getUser(String uuid){
+        List<User> users = new ModelCache<List<User>>().loadModel(new TypeToken<List<User>>(){}.getType(), Global.OFFLINE_USERS);
+        return User.getUserFromList(users, uuid);
+
+
+    }
 
 
     @Override
