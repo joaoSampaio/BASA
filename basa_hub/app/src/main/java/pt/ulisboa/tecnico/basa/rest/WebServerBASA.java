@@ -19,6 +19,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
@@ -125,7 +126,7 @@ public class WebServerBASA {
             // Moves the current Thread into the background
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
             Log.d("webserver", "Runnable");
-            int port = 5001;
+            int port = Global.PORT;
             try {
                 setPort(port);
                 endpoints();
