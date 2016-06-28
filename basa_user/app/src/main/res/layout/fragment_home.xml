@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_main">
 
 
 
@@ -58,7 +59,7 @@
         <RelativeLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
             <com.makeramen.roundedimageview.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/imageViewOp1"
@@ -68,8 +69,8 @@
                 app:riv_border_color="#1e5eff"
                 app:riv_mutate_background="true"
                 app:riv_oval="true"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:layout_centerHorizontal="true" />
 
             <TextView
@@ -85,7 +86,7 @@
         <RelativeLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
             <com.makeramen.roundedimageview.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/imageViewOp2"
@@ -95,14 +96,14 @@
                 app:riv_border_color="#1e5eff"
                 app:riv_mutate_background="true"
                 app:riv_oval="true"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:layout_centerHorizontal="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2N.11.5"
+                android:text="2N.11.6"
                 android:id="@+id/textViewdes2"
                 android:layout_below="@+id/imageViewOp2"
                 android:layout_centerHorizontal="true" />
@@ -112,24 +113,24 @@
         <RelativeLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
             <com.makeramen.roundedimageview.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/imageViewOp3"
-                android:src="@drawable/ic_thumb_office"
+                android:src="@drawable/ic_add"
                 android:scaleType="fitCenter"
                 app:riv_border_width="4dip"
                 app:riv_border_color="#1e5eff"
                 app:riv_mutate_background="true"
                 app:riv_oval="true"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:layout_centerHorizontal="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2N.11.5"
+                android:text="Add"
                 android:id="@+id/textViewdes3"
                 android:layout_below="@+id/imageViewOp3"
                 android:layout_centerHorizontal="true" />
