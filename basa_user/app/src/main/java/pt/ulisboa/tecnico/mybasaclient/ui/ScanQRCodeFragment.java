@@ -8,8 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +24,7 @@ import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.camera.CallbackCameraAction;
 import pt.ulisboa.tecnico.mybasaclient.camera.CallbackQRcode;
 import pt.ulisboa.tecnico.mybasaclient.camera.CameraPreview4;
+import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 
 /**
  * Created by Sampaio on 27/06/2016.
@@ -29,6 +35,7 @@ public class ScanQRCodeFragment extends Fragment {
     CameraPreview4 previewView;
     FrameLayout frame;
     Spinner spinner;
+    EditText editTextName;
     public static ScanQRCodeFragment newInstance() {
         ScanQRCodeFragment fragment = new ScanQRCodeFragment();
         return fragment;
@@ -46,20 +53,7 @@ public class ScanQRCodeFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_scan_qr_code, container, false);
         frame = (FrameLayout)rootView.findViewById(R.id.frame);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                frame.measure(0, 0);       //must call measure!
-                int height = frame.getMeasuredHeight(); //get width
-                int width = frame.getMeasuredWidth();
-                Log.d("ScanQRCodeFragment", "getSize w:"+width + " height:" + height);
-
-                width = frame.getWidth();
-                height = frame.getHeight();
-                Log.d("ScanQRCodeFragment", "getSize w:"+width + " height:" + height);
-            }
-        },300);
-
+        editTextName = (EditText)rootView.findViewById(R.id.editTextName);
         rootView.findViewById(R.id.re_scan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,8 +121,29 @@ public class ScanQRCodeFragment extends Fragment {
     }
 
     private void onQrCodeDetected(String value){
+        Log.d("qrcode", "onQrCodeDetected:");
         showLayoutStart(false);
         previewView.enableQRCode(false);
+
+
+        Gson gson = new Gson();
+        try {
+            Log.d("qrcode", "entrou:");
+            BasaDevice device = gson.fromJson(value, new TypeToken<BasaDevice>() {
+            }.getType());
+
+            if(device.getToken() != null && !device.getToken().isEmpty()){
+                Log.d("qrcode", "name:"+device.getName());
+                editTextName.setText(device.getName());
+            }else{
+                Toast.makeText(getActivity(), "Invalid QrCode", Toast.LENGTH_SHORT).show();
+                showLayoutStart(true);
+                rootView.findViewById(R.id.re_scan).setVisibility(View.VISIBLE);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
     }
