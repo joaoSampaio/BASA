@@ -25,12 +25,14 @@ import java.io.ByteArrayOutputStream;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.BasaDevice;
 import pt.ulisboa.tecnico.basa.model.RegisterAndroidQRCode;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;
 
 public class RegisterUserDialogFragment extends android.support.v4.app.DialogFragment implements View.OnClickListener {
 
@@ -38,8 +40,7 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
     private Button save;
     private EditText editUsername, editEmail;
     private ImageView imageViewQRCode, qrcode_android;
-    public final static int WHITE = 0xFFFFFFFF;
-    public final static int BLACK = 0xFF000000;
+
 
     private static final int[] CLICKABLE = {R.id.btn_android, R.id.btn_email};
 
@@ -98,9 +99,9 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
                 String uuid = null;
                 try {
                     uuid = ((MainActivity)getActivity()).getBasaManager().getUserManager()
-                            .registerNewUser(username, email);
+                            .registerNewUser(username, email, null);
 
-                    Bitmap image = encodeAsBitmap(uuid);
+                    Bitmap image = QRCodeGenerator.encodeAsBitmap(uuid);
                     imageViewQRCode.setImageBitmap(image);
                     editUsername.setError(null);
 
@@ -132,30 +133,7 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
         });
     }
 
-    private Bitmap encodeAsBitmap(String str) throws WriterException {
-        BitMatrix result;
-        int width = 600;
-        int height = 600;
-        try {
-            result = new MultiFormatWriter().encode(str,
-                    BarcodeFormat.QR_CODE, width, height, null);
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-            return null;
-        }
-        int w = result.getWidth();
-        int h = result.getHeight();
-        int[] pixels = new int[w * h];
-        for (int y = 0; y < h; y++) {
-            int offset = y * w;
-            for (int x = 0; x < w; x++) {
-                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-            }
-        }
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
-        return bitmap;
-    }
+
 
     @Override
     public void onStart() {
@@ -208,9 +186,12 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
         try {
             WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
             String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress()) + ":" + Global.PORT;
-            RegisterAndroidQRCode code = new RegisterAndroidQRCode("1234", ip);
+//            RegisterAndroidQRCode code = new RegisterAndroidQRCode("1234", ip);
+
+            BasaDevice device = new BasaDevice("1234", ip, "Tagus 2N.11.5", "descrição", "fdhh5464gdh");
+
             Gson gson = new Gson();
-            qrcode_android.setImageBitmap(encodeAsBitmap(gson.toJson(code)));
+            qrcode_android.setImageBitmap(QRCodeGenerator.encodeAsBitmap(gson.toJson(device)));
         } catch (WriterException e) {
             e.printStackTrace();
         }

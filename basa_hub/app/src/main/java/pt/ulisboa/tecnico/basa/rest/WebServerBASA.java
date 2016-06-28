@@ -12,17 +12,22 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.model.User;
+import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.MulticastLockSingleton;
 import spark.Request;
 import spark.Response;
@@ -66,6 +71,41 @@ public class WebServerBASA {
                 return json;
             }
         });
+
+        post(new Route("/register") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+                String body = request.body();
+                Log.d("webserver", "request.body():"+request.body());
+
+                Gson gson = new Gson();
+
+                final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
+                }.getType());
+
+
+                try {
+                    getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+                } catch (UserRegistrationException e) {
+                    e.printStackTrace();
+                    response.status(200);
+                    return "{\"status\": false}";
+                }
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+
+
+                response.status(200);
+                return "{\"status\": true}";
+            }
+        });
+
+
 
         post(new Route("/broadcast") {
             @Override

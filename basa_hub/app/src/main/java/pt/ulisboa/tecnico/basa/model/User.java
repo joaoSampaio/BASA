@@ -8,6 +8,7 @@ import java.util.List;
 public class User {
     private String userName;
     private String email;
+    private String pin;
     private String uuid;
     private List<Recipe> recipes;
 
@@ -35,6 +36,18 @@ public class User {
         return uuid;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
     public static User getUserFromList(List<User> users, String uuid){
         for (User user: users){
             if(user.getUuid() != null && user.getUuid().equals(uuid))
@@ -51,8 +64,32 @@ public class User {
         return null;
     }
 
+    public static User getUserEmailFromList(List<User> users, String email){
+        for (User user: users){
+            if(user.getName() != null && user.getEmail().equals(email))
+                return user;
+        }
+        return null;
+    }
+
+    public static User getUuidFromList(List<User> users, String uuid){
+        for (User user: users){
+            if(user.getName() != null && user.getUuid().equals(uuid))
+                return user;
+        }
+        return null;
+    }
+
     public static boolean userNameExists(List<User> users, String uuid){
         return getUserNameFromList(users, uuid) != null;
+    }
+
+    public static boolean userEmailExists(List<User> users, String email){
+        return getUserEmailFromList(users, email) != null;
+    }
+
+    public static boolean userUuidExists(List<User> users, String uuid){
+        return getUuidFromList(users, uuid) != null;
     }
 
     public static boolean userExists(List<User> users, String uuid){
