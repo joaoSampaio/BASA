@@ -4,6 +4,47 @@
     android:background="@drawable/bg_main">
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header"
+        android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/action_goToUser">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/imageButton"
+                android:background="@null"
+                android:src="@drawable/ic_arrow_down"
+                android:tint="@android:color/background_light" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BASA"
+                android:id="@+id/textView5"
+                android:layout_toRightOf="@+id/imageButton"
+                android:layout_toEndOf="@+id/imageButton"
+                android:textColor="@android:color/background_light"
+                android:textSize="22dp"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton2"
+            android:layout_alignParentRight="true"
+            android:tint="@android:color/background_light"
+            android:src="@drawable/ic_settings" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"

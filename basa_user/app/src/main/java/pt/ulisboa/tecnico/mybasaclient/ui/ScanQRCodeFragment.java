@@ -1,7 +1,10 @@
 package pt.ulisboa.tecnico.mybasaclient.ui;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +32,7 @@ import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 /**
  * Created by Sampaio on 27/06/2016.
  */
-public class ScanQRCodeFragment extends Fragment {
+public class ScanQRCodeFragment extends DialogFragment {
 
     View rootView;
     CameraPreview4 previewView;
@@ -46,6 +49,11 @@ public class ScanQRCodeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,6 +160,29 @@ public class ScanQRCodeFragment extends Fragment {
         rootView.findViewById(R.id.layout_before).setVisibility(start? View.VISIBLE : View.GONE);
         rootView.findViewById(R.id.layout_after).setVisibility(!start? View.VISIBLE : View.GONE);
         rootView.findViewById(R.id.re_scan).setVisibility(!start? View.VISIBLE : View.GONE);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog d = getDialog();
+        if (d!=null){
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            d.getWindow().setLayout(width, height);
+        }
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
 }

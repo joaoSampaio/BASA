@@ -37,6 +37,17 @@ public class HomeFragment extends Fragment {
                 ((MainActivity)getActivity()).openPage(Global.QRCODE);
             }
         });
+
+
+        rootView.findViewById(R.id.action_goToUser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).openViewpagerPage(Global.USER);
+            }
+        });
+
+
+
         return rootView;
     }
 
