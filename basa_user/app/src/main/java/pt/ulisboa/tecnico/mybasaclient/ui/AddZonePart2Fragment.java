@@ -12,14 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
-import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
@@ -33,6 +28,7 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
     View rootView;
     Toolbar toolbar;
     EditText editTextZoneName;
+    private InputMethodManager imm;
 
     private final static int[] CLICK = {R.id.gotoPage2};
 
@@ -45,6 +41,7 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
         AddZonePart2Fragment fragment = new AddZonePart2Fragment();
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,12 +59,11 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
         if (toolbar!=null) {
             toolbar.setTitle("Add Zone");
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-//            toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-
-                    ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_ZONE_PART1);
+                    closeKeyboard();
+                    if(getDialog() != null)
+                        getDialog().dismiss();
                 }
             });
         }
@@ -76,13 +72,23 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
         return rootView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openKeyboard();
+            }
+        },100);
+    }
+
     private void init(){
 
-        openKeyboard();
         for(int id : CLICK)
             rootView.findViewById(id).setOnClickListener(this);
-
         openPage(R.id.page2);
+
     }
 
 
@@ -93,7 +99,6 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
         rootView.findViewById(page).setVisibility(View.VISIBLE);
 
     }
-
 
     private void closeKeyboard(){
         try {
@@ -106,8 +111,11 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
 
     private void openKeyboard(){
         try {
+            editTextZoneName.requestFocus();
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(rootView, 0);
+            imm.showSoftInput(editTextZoneName, 0);
+//            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,20 +129,27 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
                 editTextZoneName.setError(null);
                 //validar e criar
                 String name = editTextZoneName.getText().toString();
+                name = name.trim();
                 if(name.length() >= 4){
                     closeKeyboard();
                     openPage(R.id.page3);
                     List<Zone> zones = Zone.loadZones();
                     zones.add(new Zone(name));
                     Zone.saveZones(zones);
+                    MainActivity activity = (MainActivity)getActivity();
+                    if(activity.getCommunicationUserFragment() != null)
+                        activity.getCommunicationUserFragment().refreshZones();
+                    if(activity.getCommunicationHomeFragment() != null)
+                        activity.getCommunicationHomeFragment().updateZone();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(getDialog() != null)
-                                getDialog().dismiss();
+
+                            if(getActivity() != null)
+                                ((MainActivity)getActivity()).dismissAllDialogs(getActivity().getSupportFragmentManager());
+
                         }
                     }, 1000);
-
 
                 }else {
                     editTextZoneName.setError("Name too short");
@@ -144,4 +159,6 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
                 break;
         }
     }
+
+
 }

@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,17 +51,21 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_add_zone, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        if (toolbar!=null) {
-            toolbar.setTitle("Add Zone");
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
-//            toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
+        if(!Zone.loadZones().isEmpty()) {
+            if (toolbar != null) {
+                toolbar.setTitle("Add Zone");
+                toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
 
-                    getDialog().dismiss();
-                }
-            });
+                        if (getActivity() != null)
+                            ((MainActivity) getActivity()).dismissAllDialogs(getActivity().getSupportFragmentManager());
+                    }
+                });
+            }
+        }else{
+            toolbar.setVisibility(View.GONE);
         }
 
         init();
@@ -82,7 +87,9 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.gotoPage1:
+//                getDialog().dismiss();
                 ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_ZONE_PART2);
+
                 break;
         }
     }

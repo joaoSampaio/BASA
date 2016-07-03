@@ -5,7 +5,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +39,8 @@ public class ScanQRCodeFragment extends DialogFragment {
     FrameLayout frame;
     Spinner spinner;
     EditText editTextName;
+    Toolbar toolbar;
+    View camera_bg;
     public static ScanQRCodeFragment newInstance() {
         ScanQRCodeFragment fragment = new ScanQRCodeFragment();
         return fragment;
@@ -59,6 +61,20 @@ public class ScanQRCodeFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_scan_qr_code, container, false);
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        camera_bg = rootView.findViewById(R.id.camera_bg);
+        if (toolbar!=null) {
+            toolbar.setTitle("Add Zone");
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
+//            toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    getDialog().dismiss();
+                }
+            });
+        }
         frame = (FrameLayout)rootView.findViewById(R.id.frame);
 
         editTextName = (EditText)rootView.findViewById(R.id.editTextName);
@@ -86,14 +102,27 @@ public class ScanQRCodeFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(((MainActivity)getActivity()).mayRequestCamera()) {
+            startCapture();
 
+        }else{
+            ((MainActivity)getActivity()).setCommunicationScanFragment(new CommunicationScanFragment() {
+                @Override
+                public void enableCamera() {
+                    startCapture();
+                    ((MainActivity)getActivity()).setCommunicationScanFragment(null);
+                }
+            });
+        }
+
+    }
+
+    private void startCapture(){
         try {
-
-
             previewView = new CameraPreview4(((MainActivity) getActivity()), new CallbackCameraAction() {
                 @Override
                 public void onSuccess() {
-
+                    camera_bg.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -121,6 +150,7 @@ public class ScanQRCodeFragment extends DialogFragment {
             return;
         }
     }
+
 
     @Override
     public void onPause() {
@@ -184,5 +214,11 @@ public class ScanQRCodeFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
     }
+
+
+    public interface CommunicationScanFragment{
+        void enableCamera();
+    }
+
 
 }

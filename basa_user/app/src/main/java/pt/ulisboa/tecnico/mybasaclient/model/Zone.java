@@ -16,6 +16,10 @@ public class Zone {
     private String name;
     private List<BasaDevice> devices;
 
+    public Zone(){
+        devices = new ArrayList<>();
+    }
+
 
     public Zone(String name) {
         this.name = name;
@@ -51,6 +55,74 @@ public class Zone {
     }
     public static void saveZones(List<Zone> zones){
         new ModelCache<List<Zone>>().saveModel(zones, Global.DATA_ZONE);
+    }
+
+    public static Zone getCurrentZone(){
+        try {
+            String current =  new ModelCache<String>().loadModel(new TypeToken<String>() {
+            }.getType(), Global.CURRENT_ZONE);
+
+            Zone zone = null;
+            List<Zone> zones = loadZones();
+            for (Zone z : zones){
+                if(current != null && z.getName().equals(current))
+                    zone = z;
+            }
+
+            if(zone == null && !zones.isEmpty())
+                zone = zones.get(0);
+            if(zone != null){
+                new ModelCache<String>().saveModel(zone.getName(), Global.CURRENT_ZONE);
+            }
+            return zone;
+
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static List<Zone> getOtherZones(List<Zone> zones, Zone current){
+        Zone zone = null;
+        for (Zone z : zones) {
+            if (z.getName().equals(current.getName()))
+                zone = z;
+        }
+        if(zone != null)
+            zones.remove(zone);
+
+        return zones;
+    }
+
+    public static Zone getZoneByName(String name){
+        List<Zone> zones = loadZones();
+        for (Zone z : zones){
+            if(z.getName().equals(name))
+                return z;
+        }
+        return null;
+    }
+    public static Zone getZoneByName(String name, List<Zone> zones){
+        for (Zone z : zones){
+            if(z.getName().equals(name))
+                return z;
+        }
+        return null;
+    }
+
+    public static void saveCurrentZone(Zone zone){
+        new ModelCache<String>().saveModel(zone.getName(), Global.CURRENT_ZONE);
+    }
+
+    public static void removeZone(String name){
+        List<Zone> zones = loadZones();
+        Zone zone = null;
+        for (Zone z : zones){
+            if(z.getName().equals(name))
+                zone = z;
+        }
+        zones.remove(zone);
+        Zone.saveZones(zones);
     }
 
 

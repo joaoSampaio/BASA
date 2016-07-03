@@ -1,65 +1,93 @@
 package pt.ulisboa.tecnico.mybasaclient;
 
+import android.annotation.TargetApi;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart2Fragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.DeviceFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.HomeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ScanQRCodeFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.UserFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsInfoFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 import pt.ulisboa.tecnico.mybasaclient.util.VerticalViewPager;
+import pt.ulisboa.tecnico.mybasaclient.util.ViewPagerPageScroll;
+
+import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private List<ViewPagerPageScroll> pageListener;
+    private UserFragment.CommunicationUserFragment communicationUserFragment;
+    private HomeFragment.CommunicationHomeFragment communicationHomeFragment;
+    private ScanQRCodeFragment.CommunicationScanFragment communicationScanFragment;
     private VerticalViewPager viewPager;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.setDrawerListener(toggle);
-//        toggle.syncState();
-//
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
+        pageListener = new ArrayList<>();
 
-
-
+        coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         viewPager = (VerticalViewPager) findViewById(R.id.pager);
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //Log.d("viewpager", "onPageScrolled position: "+position + " || positionOffset: "+positionOffset);
+                for (ViewPagerPageScroll scroll: pageListener){
+                    scroll.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("viewpager", "onPageSelected: "+position);
+                for (ViewPagerPageScroll scroll: pageListener){
+                    scroll.onPageSelected(position);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d("viewpager", "onPageScrollStateChanged: "+state);
+            }
+        });
+
+
         openViewpagerPage(Global.HOME);
-        //openPage(Global.HOME);
+        init();
     }
 
 
@@ -67,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
         if(!isZoneCreated()){
             //popup to create new zone
-
+            openPage(Global.DIALOG_ADD_ZONE_PART1);
 
 
         }
@@ -91,12 +119,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+
     }
 
     @Override
@@ -123,9 +147,9 @@ public class MainActivity extends AppCompatActivity
 
     public void openViewpagerPage(int position){
         if(position == Global.HOME){
-            viewPager.setCurrentItem(Global.HOME);
+            viewPager.setCurrentItem(Global.HOME, true);
         }else {
-            viewPager.setCurrentItem(Global.USER);
+            viewPager.setCurrentItem(Global.USER, true);
         }
     }
 
@@ -134,15 +158,24 @@ public class MainActivity extends AppCompatActivity
         DialogFragment newFragment = null;
         String tag = "";
 
-        if (id == Global.QRCODE) {
+        if (id == Global.DIALOG_ADD_DEVICE) {
             newFragment = ScanQRCodeFragment.newInstance();
             tag = "ScanQRCodeFragment";
         } else if(id == Global.DIALOG_ADD_ZONE_PART1){
             newFragment = AddZonePart1Fragment.newInstance();
             tag = "AddZonePart1Fragment";
-        }else if(id == Global.DIALOG_ADD_ZONE_PART2){
+        } else if(id == Global.DIALOG_ADD_ZONE_PART2){
             newFragment = AddZonePart2Fragment.newInstance();
             tag = "AddZonePart2Fragment";
+        } else if(id == Global.DIALOG_SETTINGS_ZONE){
+            newFragment = ZoneSettingsFragment.newInstance();
+            tag = "ZoneSettingsFragment";
+        } else if(id == Global.DIALOG_SETTINGS_ZONE_INFO){
+            newFragment = ZoneSettingsInfoFragment.newInstance();
+            tag = "ZoneSettingsInfoFragment";
+        } else if(id == Global.DIALOG_DEVICE){
+            newFragment = DeviceFragment.newInstance();
+            tag = "DeviceFragment";
         }
 
 
@@ -157,40 +190,6 @@ public class MainActivity extends AppCompatActivity
             newFragment.show(ft, tag);
         }
 
-
-
-
-//
-//        if (id == Global.HOME) {
-//            // Handle the camera action
-//            fragment = HomeFragment.newInstance();
-//        } else if (id == Global.QRCODE) {
-//            fragment = ScanQRCodeFragment.newInstance();
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
-//
-//        if(fragment != null) {
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.frame, fragment).addToBackStack("id"+id).commit();
-//
-//
-//        }
-////        // Highlight the selected item has been done by NavigationView
-////        menuItem.setChecked(true);
-//        // Set action bar title
-//        setTitle("ola");
-//
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
     }
 
 
@@ -215,5 +214,102 @@ public class MainActivity extends AppCompatActivity
         }
         openPage(id);
         return true;
+    }
+
+    public static void dismissAllDialogs(FragmentManager manager) {
+
+        List<Fragment> fragments = manager.getFragments();
+
+        if (fragments == null)
+            return;
+
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof DialogFragment) {
+                DialogFragment dialogFragment = (DialogFragment) fragment;
+                dialogFragment.dismissAllowingStateLoss();
+            }
+
+            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+            if (childFragmentManager != null)
+                dismissAllDialogs(childFragmentManager);
+        }
+    }
+
+    private static final int REQUEST_CAMERA = 20;
+
+    public boolean mayRequestCamera() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(CAMERA)) {
+            Snackbar.make(coordinatorLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+        }
+        return false;
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(getCommunicationScanFragment() != null)
+                    getCommunicationScanFragment().enableCamera();
+            }
+        }
+    }
+
+
+
+    public void showMessage(String text){
+        Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).show();
+    }
+
+
+
+
+    public void addPageListener(ViewPagerPageScroll listener){
+        pageListener.add(listener);
+    }
+    public void removePageListener(ViewPagerPageScroll listener){
+        pageListener.remove(listener);
+    }
+
+    public UserFragment.CommunicationUserFragment getCommunicationUserFragment() {
+        return communicationUserFragment;
+    }
+
+    public void setCommunicationUserFragment(UserFragment.CommunicationUserFragment communicationUserFragment) {
+        this.communicationUserFragment = communicationUserFragment;
+    }
+
+    public HomeFragment.CommunicationHomeFragment getCommunicationHomeFragment() {
+        return communicationHomeFragment;
+    }
+
+    public void setCommunicationHomeFragment(HomeFragment.CommunicationHomeFragment communicationHomeFragment) {
+        this.communicationHomeFragment = communicationHomeFragment;
+    }
+
+    public ScanQRCodeFragment.CommunicationScanFragment getCommunicationScanFragment() {
+        return communicationScanFragment;
+    }
+
+    public void setCommunicationScanFragment(ScanQRCodeFragment.CommunicationScanFragment communicationScanFragment) {
+        this.communicationScanFragment = communicationScanFragment;
     }
 }

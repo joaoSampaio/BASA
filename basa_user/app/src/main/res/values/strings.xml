@@ -108,6 +108,18 @@
         completions."
     </string>
 
+
+    <string name="add_zone_description">
+        <font size="20"><b>Lets get started.</b></font>\n\n
+        Adding a new zone to your account is the first step in bringing your Basa Hubs together into one place.\n
+        A zone is container for your devices, allowing you to keep them organized in the manner you see fit.\n\n
+        For example you can call a zone \"Home\" and later add devices you can control to it.\n
+
+
+
+    </string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

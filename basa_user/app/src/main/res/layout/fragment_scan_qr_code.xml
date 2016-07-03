@@ -3,25 +3,46 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@drawable/bg_main">
 
+    <include layout="@layout/layout_toolbar" android:id="@+id/toolbar_layout"></include>
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:id="@+id/frame"></FrameLayout>
+        android:layout_below="@+id/toolbar_layout"
+        android:id="@+id/frame"
+        android:background="@color/material_grey_100"></FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/toolbar_layout"
         android:weightSum="2">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_grey_100"
+                android:id="@+id/camera_bg">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:id="@+id/progressBar2"
+                    android:indeterminate="true"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
 
             <Button
                 android:layout_width="wrap_content"
@@ -30,6 +51,7 @@
                 android:id="@+id/re_scan"
                 android:layout_gravity="center"
                 android:layout_centerInParent="true" />
+
         </RelativeLayout>
 
         <RelativeLayout

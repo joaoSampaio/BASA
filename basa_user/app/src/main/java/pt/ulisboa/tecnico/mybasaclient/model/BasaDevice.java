@@ -1,5 +1,10 @@
 package pt.ulisboa.tecnico.mybasaclient.model;
 
+import com.google.gson.reflect.TypeToken;
+
+import pt.ulisboa.tecnico.mybasaclient.Global;
+import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
+
 /**
  * Created by sampaio on 28-06-2016.
  */
@@ -57,4 +62,25 @@ public class BasaDevice {
     public void setId(String id) {
         this.id = id;
     }
+
+
+    public static void saveCurrentDevice(BasaDevice device){
+        new ModelCache<BasaDevice>().saveModel(device, Global.DATA_CURRENT_DEVICE);
+    }
+
+    public static BasaDevice getCurrentDevice(){
+        try {
+            BasaDevice current =  new ModelCache<BasaDevice>().loadModel(new TypeToken<BasaDevice>() {
+            }.getType(), Global.DATA_CURRENT_DEVICE);
+
+
+            return current;
+
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }

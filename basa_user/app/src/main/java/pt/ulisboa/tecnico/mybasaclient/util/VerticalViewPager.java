@@ -1,47 +1,5 @@
 package pt.ulisboa.tecnico.mybasaclient.util;
 
-//import android.content.Context;
-//import android.support.v4.view.ViewPager;
-//import android.util.AttributeSet;
-//import android.view.MotionEvent;
-//
-//public class VerticalViewPager extends ViewPager {
-//
-//    public VerticalViewPager(Context context) {
-//        this(context, null);
-//    }
-//
-//    public VerticalViewPager(Context context, AttributeSet attrs) {
-//        super(context, attrs);
-//        setPageTransformer(false, new DefaultTransformer());
-//    }
-//
-//    private MotionEvent swapTouchEvent(MotionEvent event) {
-//        float width = getWidth();
-//        float height = getHeight();
-//
-//        float swappedX = (event.getY() / height) * width;
-//        float swappedY = (event.getX() / width) * height;
-//
-//        event.setLocation(swappedX, swappedY);
-//
-//        return event;
-//    }
-//
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent event) {
-//        boolean intercept = super.onInterceptTouchEvent(swapTouchEvent(event));
-//        //If not intercept, touch event should not be swapped.
-//        swapTouchEvent(event);
-//        return intercept;
-//    }
-//
-//    @Override
-//    public boolean onTouchEvent(MotionEvent ev) {
-//        return super.onTouchEvent(swapTouchEvent(ev));
-//    }
-
-
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -90,10 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * Created by castorflex on 12/29/13.
- * Just a copy of the original ViewPager modified to support vertical Scrolling
- */
 public class VerticalViewPager extends ViewGroup {
 
     private static final String TAG = "ViewPager";
@@ -112,6 +66,8 @@ public class VerticalViewPager extends ViewGroup {
     private static final int[] LAYOUT_ATTRS = new int[]{
             android.R.attr.layout_gravity
     };
+
+    private final static int VELOCITY_SCROLL = 7;
 
     /**
      * Used to track what the expected number of items in the adapter should be.
@@ -445,8 +401,10 @@ public class VerticalViewPager extends ViewGroup {
         return mCurItem;
     }
 
+
+
     void setCurrentItemInternal(int item, boolean smoothScroll, boolean always) {
-        setCurrentItemInternal(item, smoothScroll, always, 0);
+        setCurrentItemInternal(item, smoothScroll, always, VELOCITY_SCROLL);
     }
 
     void setCurrentItemInternal(int item, boolean smoothScroll, boolean always, int velocity) {

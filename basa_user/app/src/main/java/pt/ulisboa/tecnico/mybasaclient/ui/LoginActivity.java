@@ -3,24 +3,22 @@ package pt.ulisboa.tecnico.mybasaclient.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,8 +32,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.google.gson.reflect.TypeToken;
+import com.google.zxing.WriterException;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,9 +42,12 @@ import java.util.UUID;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
-import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
+import pt.ulisboa.tecnico.mybasaclient.rest.mail.WelcomeTemplate;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.SendEmailService;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
+import pt.ulisboa.tecnico.mybasaclient.util.QRCodeGenerator;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -58,24 +60,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private VideoView myVideoView;
     private int position = 0;
 
-
-
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -89,6 +77,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
+
+        Intent intent = getIntent();
+        Log.d("login", "(intent != null):"+(intent != null));
+        if(intent != null){
+            Bundle bundle = intent.getExtras();
+            Log.d("login", "(bundle != null):"+(bundle != null));
+            if(bundle != null){
+                String msgFromBrowserUrl = bundle.getString("msg_from_browser", "nada");
+                Log.d("login", "msgFromBrowserUrl:"+msgFromBrowserUrl);
+            }
+        }
 
         myVideoView = (VideoView) findViewById(R.id.video_view);
 
@@ -133,9 +133,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-
-
-
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         mUsernameView = (EditText)findViewById(R.id.username);
@@ -160,8 +157,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-    }
 
+
+
+        User user = User.getLoggedUser();
+        if(user != null){
+            mUsernameView.setText(user.getUserName());
+            mEmailView.setText(user.getEmail());
+        }
+
+    }
 
 
     private String generateUuidFromEmail(String email){
@@ -169,8 +174,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return UUID.nameUUIDFromBytes(email.getBytes()).toString();
 
     }
-
-
 
 
     private void populateAutoComplete() {
@@ -224,13 +227,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
 
-
-
-
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mUsernameView.setError(null);
@@ -277,14 +273,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             user.setEmail(email);
             user.setUuid(uuid);
 
-            new ModelCache<>().saveModel(user, Global.UUID_USER);
+            new ModelCache<>().saveModel(user, Global.DATA_USER);
 
 
             goToMainActivity();
 
-
-//            mAuthTask = new UserLoginTask(email, username);
-//            mAuthTask.execute((Void) null);
         }
     }
 
@@ -297,8 +290,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isUserLoggedIn(){
         try {
-            User user = new ModelCache<User>().loadModel(new TypeToken<User>() {
-            }.getType(), Global.UUID_USER);
+            User user = User.getLoggedUser();
             return user != null && user.getUuid() != null && !user.getUuid().isEmpty();
         }catch (Exception e){
             //if no user is saved an exception my the thrown
@@ -388,6 +380,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+
+        for(String s: emailAddressCollection){
+            Log.d("email","email:"+s);
+        }
+
+
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
@@ -406,61 +404,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+    private void sendMailRegister(String uuid, String email) throws WriterException {
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+        Bitmap image = QRCodeGenerator.encodeAsBitmap(uuid);
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+        new SendEmailService(new CallbackFromService() {
+            @Override
+            public void success(Object response) {
+
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
+            @Override
+            public void failed(Object error) {
+
             }
+        }, email, "tema", WelcomeTemplate.getTemplate(), byteArray).execute();
 
-            // TODO: register the new account here.
-            return true;
-        }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-//            if (success) {
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                mPasswordView.requestFocus();
-//            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
+
+
+
+
 }
 

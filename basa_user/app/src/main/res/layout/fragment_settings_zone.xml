@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="pt.ulisboa.tecnico.mybasaclient.ui.UserFragment">
+
+    <include layout="@layout/layout_toolbar" android:id="@+id/toolbar_layout"></include>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_layout"
+        android:background="@color/material_grey_100"
+        android:divider="?android:attr/listDivider"
+        android:showDividers="middle|beginning|end">
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/zone_info">
+
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/imageView2"
+                android:src="@drawable/ic_icon_home"
+                android:tint="@color/white"
+                android:background="@color/zone_settings_icon"
+                android:padding="10dp"
+                android:layout_centerVertical="true" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zone info"
+                android:id="@+id/textView6"
+                android:layout_alignParentTop="false"
+                android:layout_toRightOf="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                style="@style/SettingsText" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/add_device">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_add"
+                    android:tint="@color/white"
+                    android:background="@color/zone_settings_icon"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/imageViewOp3"/>
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add device"
+                android:id="@+id/textView7"
+                android:layout_alignParentTop="false"
+                android:layout_toRightOf="@+id/imageViewOp3"
+                android:layout_toEndOf="@+id/imageViewOp3"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:layout_marginTop="50dp"
+            android:divider="?android:attr/listDivider"
+            android:showDividers="beginning"
+            android:id="@+id/remove_zone">
+
+
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove"
+                android:id="@+id/textViewRemove"
+                android:layout_alignParentTop="false"
+                android:layout_centerInParent="true"
+                android:textColor="@color/design_textinput_error_color_light" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

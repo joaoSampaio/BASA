@@ -8,7 +8,7 @@
 
     <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="56dp"
     android:id="@+id/header"
     android:layout_margin="5dp">
 
@@ -24,7 +24,7 @@
             android:id="@+id/imageButton"
             android:background="@null"
             android:src="@drawable/ic_arrow_down"
-            android:scaleX="-1"
+            android:rotation="180"
             android:tint="@android:color/background_light" />
 
         <TextView
@@ -48,108 +48,199 @@
         android:src="@drawable/ic_add" />
 
 </RelativeLayout>
-    <RelativeLayout
+
+
+    <android.support.percent.PercentRelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:layout_below="@+id/header">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/relativeLayout"
-            android:layout_marginTop="35dp"
-            android:layout_marginBottom="35dp">
+        android:layout_height="match_parent">
 
 
-            <TextView
-                android:id="@+id/user_photo"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/circle"
-                android:text="JS"
-                android:textColor="@color/white"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_centerHorizontal="true" />
+            <!--<RelativeLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:id="@+id/relativeLayout"-->
+                <!--android:layout_marginTop="?attr/actionBarSize"-->
+                <!--android:layout_marginBottom="35dp">-->
 
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Office Taguspark"
-                android:id="@+id/textUsername"
-                android:textSize="25dp"
-                android:layout_below="@+id/user_photo"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Office Taguspark"
-                android:id="@+id/textEmail"
-                android:textSize="20dp"
-                android:layout_below="@+id/textUsername"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/user_photo"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/circle"
+                    android:text="JS"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="70dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_centerHorizontal="true" />
 
 
 
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="joao"
+                    android:id="@+id/textUsername"
+                    android:layout_below="@+id/user_photo"
+                    android:layout_centerHorizontal="true"
+                    style="@style/NormalText"
+                    android:textSize="20sp" />
 
-        <RelativeLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="joao@email.com"
+                    android:id="@+id/textEmail"
+                    android:textSize="15sp"
+                    android:layout_below="@+id/textUsername"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="30dp"
+                    android:textColor="@color/white" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/textEmail"
+                    android:layout_above="@+id/zone2"
+                    android:weightSum="3"
+                    android:layout_centerHorizontal="true">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" >
+
+                        <ImageView
+                            style="@style/UserButton"
+                            android:id="@+id/imageView4"
+                            android:src="@drawable/ic_comment"
+                            android:backgroundTint="@color/material_grey_600"
+                            android:padding="10dp" />
+
+                        <TextView
+                            style="@style/NormalText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Messages"
+                            android:id="@+id/textView12"
+                            android:layout_below="@+id/imageView4"
+                            android:gravity="center"
+                            android:layout_centerHorizontal="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            style="@style/UserButton"
+                            android:id="@+id/user_account"
+                            android:src="@drawable/ic_settings"
+                             />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Account"
+                            android:id="@+id/textView8"
+                            android:layout_below="@+id/user_account"
+                            style="@style/NormalText"
+                            android:gravity="center"
+                            android:layout_centerHorizontal="true" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            style="@style/UserButton"
+                            android:id="@+id/imageView3"
+                            android:src="@drawable/ic_info"
+                             />
+
+                        <TextView
+                            style="@style/NormalText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Info"
+                            android:id="@+id/textView11"
+                            android:layout_below="@+id/imageView3"
+                            android:gravity="center"
+                            android:layout_centerHorizontal="true" />
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
+            <!--</RelativeLayout>-->
+
+
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:background="@android:color/holo_green_dark"
-            android:padding="5dp"
-            android:id="@+id/area1">
+            app:layout_heightPercent="70%"
+            android:layout_height="0dp"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Office"
-                android:id="@+id/textView7"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@android:color/white"
-                android:textSize="25dp"
-                android:layout_marginLeft="20dp" />
-        </RelativeLayout>
+            android:id="@+id/placeholder" />
 
-        <RelativeLayout
+        <include layout="@layout/layout_zone"
+            android:layout_height="0dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:background="@android:color/holo_green_dark"
-            android:padding="5dp"
-            android:id="@+id/area2"
-            android:layout_above="@+id/area1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            app:layout_heightPercent="15%"
+            android:layout_below="@+id/placeholder"
+            android:id="@+id/zone2"></include>
+        <include layout="@layout/layout_zone"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:background="@android:color/holo_green_dark"
+            app:layout_heightPercent="15%"
+            android:layout_below="@+id/zone2"
+            android:id="@+id/zone1"></include>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Office"
-                android:id="@+id/textView6"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@android:color/white"
-                android:textSize="25dp"
-                android:layout_marginLeft="20dp" />
-        </RelativeLayout>
-
-    </RelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
 
 
 
 
+    <!--<LinearLayout-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+
+
+        <!--android:weightSum="6">-->
+
+        <!--<View android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="4">-->
+
+        <!--</View>-->
+
+        <!--<include layout="@layout/layout_zone"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@android:color/holo_green_dark"-->
+            <!--android:layout_weight="1"-->
+            <!--android:id="@+id/zone2"></include>-->
+        <!--<include layout="@layout/layout_zone"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@android:color/holo_green_dark"-->
+            <!--android:layout_weight="1"-->
+            <!--android:id="@+id/zone1"></include>-->
+
+    <!--</LinearLayout>-->
 
 
 </RelativeLayout>

@@ -414,10 +414,10 @@ public class CameraPreview4 extends ViewGroup implements SurfaceHolder.Callback,
                 scanner.setConfig(Symbol.QRCODE, Config.ENABLE, 1);
 
                 barcodeScanned = false;
-                if (getActivity() != null)
+                if (getActivity() != null && getmCamera() != null)
                     getmCamera().setPreviewCallback(previewCb);
             }else{
-                if (getActivity() != null)
+                if (getActivity() != null && getmCamera() != null)
                     getmCamera().setPreviewCallback(null);
                 barcodeScanned = true;
                 scanner = null;

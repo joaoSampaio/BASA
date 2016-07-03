@@ -1,5 +1,10 @@
 package pt.ulisboa.tecnico.mybasaclient.model;
 
+import com.google.gson.reflect.TypeToken;
+
+import pt.ulisboa.tecnico.mybasaclient.Global;
+import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
+
 /**
  * Created by sampaio on 28-06-2016.
  */
@@ -41,4 +46,21 @@ public class User {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+
+
+    public static User getLoggedUser(){
+
+        try {
+            User user =  new ModelCache<User>().loadModel(new TypeToken<User>() {
+            }.getType(), Global.DATA_USER);
+            return (user != null && !user.getEmail().isEmpty())? user : null;
+        }catch (Exception e){
+            return null;
+        }
+
+
+    }
+
+
 }

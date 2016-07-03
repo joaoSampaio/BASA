@@ -47,7 +47,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         switch (position){
 
             case Global.USER:
-                width = 0.75f;
+                width = 1f - 1f*0.13f;
                 break;
 
         }

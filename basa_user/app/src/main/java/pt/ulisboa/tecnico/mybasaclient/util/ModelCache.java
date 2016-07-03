@@ -8,13 +8,23 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 
+import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
+import pt.ulisboa.tecnico.mybasaclient.model.User;
 
 
 public class ModelCache<T> {
 
     public void saveModel(T list, String TAG){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+        if(!TAG.equals(Global.DATA_USER)){
+
+            User user = User.getLoggedUser();
+            TAG = TAG + "|"+user.getUuid();
+
+        }
+
+
         String json = new Gson().toJson(list);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(TAG, json);
@@ -27,7 +37,12 @@ public class ModelCache<T> {
 
     public T loadModel(Type type, String TAG, String defaultValue){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+        if(!TAG.equals(Global.DATA_USER)){
 
+            User user = User.getLoggedUser();
+            TAG = TAG + "|"+user.getUuid();
+
+        }
         String contacts = "";
         try {
             contacts = sp.getString(TAG, defaultValue);
