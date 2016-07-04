@@ -9,9 +9,10 @@ import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.eddystone.Eddystone;
 
-import java.util.Date;
 import java.util.List;
 
+import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
+import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 
 public class AppController extends Application {
@@ -59,22 +60,24 @@ public class AppController extends Application {
             public void onEddystonesFound(List<Eddystone> list) {
                 Log.d("temp", "list:" + list.size());
                 Log.d("temp", namespace +": wanted namespace:");
+                List<Zone> zones = Zone.loadZones();
                 for (Eddystone eddy: list) {
-                    Log.d("temp", eddy.namespace +": eddy namespace:");
-                    if(eddy.namespace.equals(namespace)){
-                        Log.d("temp", "eddy.telemetry != null:" + (eddy.telemetry != null));
-                        if(eddy.telemetry != null){
-                            Log.d("temp", "temperatura:" + eddy.telemetry.temperature);
-                            Utils.Proximity proximity = Utils.computeProximity(eddy);
-                            double accuracy = Utils.computeAccuracy(eddy);
-                            Log.d("temp", "proximity.toString():" + proximity.toString());
-                            Log.d("temp", "accuracy:" +accuracy);
 
+                    for(Zone z : zones){
+                        for(BasaDevice device : z.getDevices()){
+                            for(String beaconId: device.getBeaconUuids()){
+                                Log.d("temp", eddy.namespace +": eddy namespace:");
+                                if(eddy.namespace.equals(beaconId)){
+                                    Utils.Proximity proximity = Utils.computeProximity(eddy);
+                                    double accuracy = Utils.computeAccuracy(eddy);
+                                    Log.d("temp", "proximity.toString():" + proximity.toString());
+                                    Log.d("temp", "accuracy:" +accuracy);
+
+                                }
+                            }
                         }
                     }
                 }
-
-
             }
         });
 

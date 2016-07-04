@@ -20,12 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.estimote.sdk.SystemRequirementsChecker;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
@@ -101,9 +103,12 @@ public class MainActivity extends AppCompatActivity
         if(!isZoneCreated()){
             //popup to create new zone
             openPage(Global.DIALOG_ADD_ZONE_PART1);
-
-
         }
+
+
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+        AppController.getInstance().beaconStart();
+
 
     }
 

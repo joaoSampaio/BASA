@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.mybasaclient.model;
 
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
@@ -15,12 +18,14 @@ public class BasaDevice {
     private String name;
     private String description;
     private String token;
+    private List<String> beaconUuids;
 
     public BasaDevice(String url, String name, String description, String token) {
         this.url = url;
         this.name = name;
         this.description = description;
         this.token = token;
+        this.beaconUuids = new ArrayList<>();
     }
 
     public String getUrl() {
@@ -63,6 +68,9 @@ public class BasaDevice {
         this.id = id;
     }
 
+    public List<String> getBeaconUuids() {
+        return beaconUuids;
+    }
 
     public static void saveCurrentDevice(BasaDevice device){
         new ModelCache<BasaDevice>().saveModel(device, Global.DATA_CURRENT_DEVICE);

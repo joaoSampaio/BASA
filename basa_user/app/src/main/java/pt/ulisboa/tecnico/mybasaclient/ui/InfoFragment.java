@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import pt.ulisboa.tecnico.mybasaclient.Global;
-import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
@@ -47,7 +45,7 @@ public class InfoFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView =  inflater.inflate(R.layout.fragment_add_zone, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_info, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
         if(!Zone.loadZones().isEmpty()) {
@@ -74,7 +72,7 @@ public class InfoFragment extends DialogFragment {
         Glide.with(this).load(R.drawable.tagus1)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into((ImageView)rootView.findViewById(R.id.imageHome));
+                .into((ImageView)rootView.findViewById(R.id.imageInfo));
 
     }
 

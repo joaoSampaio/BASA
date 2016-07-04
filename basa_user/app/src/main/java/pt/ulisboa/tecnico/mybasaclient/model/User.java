@@ -60,6 +60,10 @@ public class User {
         }
     }
 
+    public static void saveUser(User user){
+        new ModelCache<>().saveModel(user, Global.DATA_USER);
+    }
+
     public static void signOut(){
         try {
             new ModelCache<String>().saveModel("", Global.DATA_USER);

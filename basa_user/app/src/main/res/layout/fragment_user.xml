@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pt.ulisboa.tecnico.mybasaclient.ui.UserFragment"
-    android:background="@color/background_floating_material_dark">
+    android:background="@color/background_floating_material_dark"
+    >
 
 
     <RelativeLayout
@@ -119,8 +120,8 @@
                             style="@style/UserButton"
                             android:id="@+id/imageView4"
                             android:src="@drawable/ic_comment"
-                            android:backgroundTint="@color/material_grey_600"
-                            android:padding="10dp" />
+                            android:padding="12dp"
+                            android:background="@drawable/circle_blue" />
 
                         <TextView
                             style="@style/NormalText"
@@ -142,7 +143,8 @@
                             style="@style/UserButton"
                             android:id="@+id/user_account"
                             android:src="@drawable/ic_settings"
-                             />
+                            android:background="@drawable/circle_grey"
+                            android:padding="12dp" />
 
                         <TextView
                             android:layout_width="wrap_content"

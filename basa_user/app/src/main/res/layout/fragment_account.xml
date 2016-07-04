@@ -99,27 +99,38 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="vertical"
 
-    <RelativeLayout
-        style="@style/ListItemBASA"
-        android:layout_marginTop="50dp"
         android:divider="?android:attr/listDivider"
-        android:showDividers="beginning"
-        android:id="@+id/sign_out"
-        android:layout_alignParentBottom="true">
+        android:showDividers="middle|beginning|end"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:divider="?android:attr/listDivider"
+            android:showDividers="beginning"
+            android:id="@+id/sign_out"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign out"
+                android:id="@+id/textViewRemove"
+                android:layout_alignParentTop="false"
+                android:layout_centerInParent="true"
+                android:textColor="@color/colorPrimary" />
 
 
+        </RelativeLayout>
 
-        <TextView
-            style="@style/SettingsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign out"
-            android:id="@+id/textViewRemove"
-            android:layout_alignParentTop="false"
-            android:layout_centerInParent="true"
-            android:textColor="@color/colorPrimary" />
-    </RelativeLayout>
+
+        </LinearLayout>
+
 
 
 </RelativeLayout>
