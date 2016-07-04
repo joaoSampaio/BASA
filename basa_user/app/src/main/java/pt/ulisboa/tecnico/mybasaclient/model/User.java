@@ -58,8 +58,16 @@ public class User {
         }catch (Exception e){
             return null;
         }
+    }
+
+    public static void signOut(){
+        try {
+            new ModelCache<String>().saveModel("", Global.DATA_USER);
 
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

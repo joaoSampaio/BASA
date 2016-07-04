@@ -70,6 +70,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         zoneTitle = (TextView)rootView.findViewById(R.id.zoneTitle);
 
         refreshHome();
+        for(int id : CLICK)
+            rootView.findViewById(id).setOnClickListener(this);
 
         return rootView;
     }

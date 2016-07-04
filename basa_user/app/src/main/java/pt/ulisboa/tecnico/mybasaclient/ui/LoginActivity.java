@@ -92,18 +92,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         myVideoView = (VideoView) findViewById(R.id.video_view);
 
+        Bundle b = getIntent().getExtras();
+        boolean signOut = false; // or other values
+        if(b != null)
+            signOut = b.getBoolean("signout");
         splash = findViewById(R.id.splash);
-        splash.setVisibility(View.VISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                splash.setVisibility(View.GONE);
-                if(isUserLoggedIn()){
-                    goToMainActivity();
+        splash.setVisibility(!signOut? View.VISIBLE : View.GONE);
+        if(!signOut) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    splash.setVisibility(View.GONE);
+                    if (isUserLoggedIn()) {
+                        goToMainActivity();
+                    }
                 }
-            }
-        },1500);
-
+            }, 1500);
+        }
 
 
         try {

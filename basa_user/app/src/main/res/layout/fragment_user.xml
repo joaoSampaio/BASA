@@ -163,7 +163,7 @@
 
                         <ImageView
                             style="@style/UserButton"
-                            android:id="@+id/imageView3"
+                            android:id="@+id/user_info"
                             android:src="@drawable/ic_info"
                              />
 
@@ -173,7 +173,7 @@
                             android:layout_height="wrap_content"
                             android:text="Info"
                             android:id="@+id/textView11"
-                            android:layout_below="@+id/imageView3"
+                            android:layout_below="@+id/user_info"
                             android:gravity="center"
                             android:layout_centerHorizontal="true" />
                     </RelativeLayout>

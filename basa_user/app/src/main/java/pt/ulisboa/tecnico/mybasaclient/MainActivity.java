@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.mybasaclient;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,10 +27,13 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart2Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.DeviceFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.HomeFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.InfoFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity;
 import pt.ulisboa.tecnico.mybasaclient.ui.ScanQRCodeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.UserFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsFragment;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     private UserFragment.CommunicationUserFragment communicationUserFragment;
     private HomeFragment.CommunicationHomeFragment communicationHomeFragment;
     private ScanQRCodeFragment.CommunicationScanFragment communicationScanFragment;
+    private ZoneSettingsFragment.CommunicationSettings communicationSettings;
     private VerticalViewPager viewPager;
     private CoordinatorLayout coordinatorLayout;
 
@@ -176,6 +181,12 @@ public class MainActivity extends AppCompatActivity
         } else if(id == Global.DIALOG_DEVICE){
             newFragment = DeviceFragment.newInstance();
             tag = "DeviceFragment";
+        } else if(id == Global.DIALOG_INFO){
+            newFragment = InfoFragment.newInstance();
+            tag = "InfoFragment";
+        } else if(id == Global.DIALOG_ACCOUNT){
+            newFragment = AccountFragment.newInstance();
+            tag = "AccountFragment";
         }
 
 
@@ -280,6 +291,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void signOut(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        Bundle b = new Bundle();
+        b.putBoolean("signout", true);
+        intent.putExtras(b); //Put your id to your next Intent
+        startActivity(intent);
+        finish();
+    }
 
 
     public void addPageListener(ViewPagerPageScroll listener){
@@ -311,5 +331,13 @@ public class MainActivity extends AppCompatActivity
 
     public void setCommunicationScanFragment(ScanQRCodeFragment.CommunicationScanFragment communicationScanFragment) {
         this.communicationScanFragment = communicationScanFragment;
+    }
+
+    public ZoneSettingsFragment.CommunicationSettings getCommunicationSettings() {
+        return communicationSettings;
+    }
+
+    public void setCommunicationSettings(ZoneSettingsFragment.CommunicationSettings communicationSettings) {
+        this.communicationSettings = communicationSettings;
     }
 }

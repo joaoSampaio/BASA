@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="pt.ulisboa.tecnico.mybasaclient.ui.UserFragment">
+
+    <include layout="@layout/layout_toolbar" android:id="@+id/toolbar_layout"></include>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_layout"
+        android:background="@color/material_grey_100"
+        android:divider="?android:attr/listDivider"
+        android:showDividers="middle|beginning|end">
+
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:layout_height="wrap_content"
+
+            >
+
+            <TextView
+                android:id="@+id/user_photo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/circle"
+                android:text="JS"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/editUsername">
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:id="@+id/textViewName"
+                android:layout_alignParentTop="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="joao"
+                android:id="@+id/textViewEditName"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/primary_dark_material_light" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/editEmail">
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:id="@+id/textViewEmail"
+                android:layout_alignParentTop="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:id="@+id/textViewEditEmail"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/primary_dark_material_light" />
+        </RelativeLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        style="@style/ListItemBASA"
+        android:layout_marginTop="50dp"
+        android:divider="?android:attr/listDivider"
+        android:showDividers="beginning"
+        android:id="@+id/sign_out"
+        android:layout_alignParentBottom="true">
+
+
+
+        <TextView
+            style="@style/SettingsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign out"
+            android:id="@+id/textViewRemove"
+            android:layout_alignParentTop="false"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorPrimary" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

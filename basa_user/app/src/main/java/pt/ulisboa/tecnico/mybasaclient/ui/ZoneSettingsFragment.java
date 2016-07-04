@@ -29,6 +29,7 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
     View rootView;
     Toolbar toolbar;
     private Zone zone;
+    private TextView remove;
     private final static int[] CLICK = {R.id.zone_info, R.id.add_device, R.id.remove_zone};
 
     public ZoneSettingsFragment() {
@@ -70,9 +71,34 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
         return rootView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+
+        ((MainActivity)getActivity()).setCommunicationSettings(new CommunicationSettings() {
+            @Override
+            public void onZoneChange() {
+                zone = Zone.getCurrentZone();
+                toolbar.setTitle(zone.getName());
+                remove.setText("Remove " + zone.getName());
+            }
+        });
+
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        ((MainActivity)getActivity()).setCommunicationSettings(null);
+
+
+    }
+
     private void init(){
 
-        TextView remove = (TextView)rootView.findViewById(R.id.textViewRemove);
+        remove = (TextView)rootView.findViewById(R.id.textViewRemove);
         remove.setText("Remove " + zone.getName());
 
         for(int id : CLICK)
@@ -129,6 +155,10 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
     private void dismissFragment(){
         if(getDialog() != null)
             getDialog().dismiss();
+    }
+
+    public interface CommunicationSettings{
+        void onZoneChange();
     }
 
 }

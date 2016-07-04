@@ -30,7 +30,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     View rootView, zone1, zone2;
     TextView user_photo, textUsername, textEmail;
     private List<Zone> zones;
-
+    private final static int[] CLICK = {R.id.action_add_zone, R.id.action_goToHome, R.id.user_info, R.id.user_account};
 
 
     public UserFragment() {
@@ -63,8 +63,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_photo = (TextView)rootView.findViewById(R.id.user_photo);
         textUsername = (TextView)rootView.findViewById(R.id.textUsername);
         textEmail = (TextView)rootView.findViewById(R.id.textEmail);
-            User user = new ModelCache<User>().loadModel(new TypeToken<User>() {
-            }.getType(), Global.DATA_USER);
+
+        User user = User.getLoggedUser();
 
         user_photo.setText(getLetters(user.getUserName()));
         textUsername.setText(user.getUserName());
@@ -72,27 +72,16 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         GradientDrawable bgShape = (GradientDrawable) user_photo.getBackground();
         bgShape.setColor(NiceColor.betterNiceColor(user.getUserName()));
 
-        rootView.findViewById(R.id.action_add_zone).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_ZONE_PART1);
-            }
-        });
-
-        rootView.findViewById(R.id.action_goToHome).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).openViewpagerPage(Global.HOME);
-            }
-        });
 
         zone1 = rootView.findViewById(R.id.zone1);
         zone2 = rootView.findViewById(R.id.zone2);
         zone1.setBackgroundResource(R.drawable.zone_background);
         zone2.setBackgroundResource(R.drawable.zone_background);
-//        zone1.setBackgroundColor(getResources().getColor(R.color.zone_bg));
-//        zone2.setBackgroundColor(getResources().getColor(R.color.zone_bg));
         refreshZoneTabs();
+
+        for (int id: CLICK)
+            rootView.findViewById(id).setOnClickListener(this);
+
     }
 
     private void refreshZoneTabs(){
@@ -172,6 +161,20 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 refreshZoneTabs();
                 ((MainActivity) getActivity()).openViewpagerPage(Global.HOME);
                 break;
+            case R.id.user_info:
+                ((MainActivity) getActivity()).openPage(Global.DIALOG_INFO);
+                break;
+            case R.id.action_add_zone:
+                ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_ZONE_PART1);
+                break;
+            case R.id.action_goToHome:
+                ((MainActivity)getActivity()).openViewpagerPage(Global.HOME);
+                break;
+            case R.id.user_account:
+                ((MainActivity) getActivity()).openPage(Global.DIALOG_ACCOUNT);
+                break;
+
+
         }
     }
 

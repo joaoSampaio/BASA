@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.mybasaclient.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -20,22 +21,22 @@ import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AddZonePart1Fragment#newInstance} factory method to
+ * Use the {@link AccountFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddZonePart1Fragment extends DialogFragment implements View.OnClickListener {
+public class AccountFragment extends DialogFragment implements View.OnClickListener {
     View rootView;
     Toolbar toolbar;
 
-    private final static int[] CLICK = {R.id.gotoPage1};
+    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out};
 
-    public AddZonePart1Fragment() {
+    public AccountFragment() {
         // Required empty public constructor
     }
 
 
-    public static AddZonePart1Fragment newInstance() {
-        AddZonePart1Fragment fragment = new AddZonePart1Fragment();
+    public static AccountFragment newInstance() {
+        AccountFragment fragment = new AccountFragment();
         return fragment;
     }
 
@@ -54,7 +55,7 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
 
         if(!Zone.loadZones().isEmpty()) {
             if (toolbar != null) {
-                toolbar.setTitle("Add Zone");
+                toolbar.setTitle("Account");
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -73,11 +74,6 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
     }
 
     private void init(){
-        Glide.with(this).load(R.drawable.room1)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into((ImageView)rootView.findViewById(R.id.imageHome));
-
 
         for(int id : CLICK)
             rootView.findViewById(id).setOnClickListener(this);
@@ -86,9 +82,17 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.gotoPage1:
-//                getDialog().dismiss();
-                ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_ZONE_PART2);
+            case R.id.editUsername:
+
+                break;
+            case R.id.editEmail:
+
+                break;
+            case R.id.sign_out:
+
+                ((MainActivity)getActivity()).signOut();
+
+
 
                 break;
         }
