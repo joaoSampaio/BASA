@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
-import pt.ulisboa.tecnico.basa.model.EventVoice;
+import pt.ulisboa.tecnico.basa.model.event.EventVoice;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;

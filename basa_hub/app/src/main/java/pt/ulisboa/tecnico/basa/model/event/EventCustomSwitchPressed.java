@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.model.event;
 
 
 
@@ -8,7 +8,7 @@ public class EventCustomSwitchPressed extends Event {
 
 
     public EventCustomSwitchPressed(int id) {
-        super(Event.CUSTOM_SWITCH);
+        super(CUSTOM_SWITCH);
         this.id = id;
     }
 

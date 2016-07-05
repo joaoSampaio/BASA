@@ -18,7 +18,7 @@ import java.util.TreeMap;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.manager.LightingManager;
-import pt.ulisboa.tecnico.basa.model.EventCustomSwitchPressed;
+import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 
 
 public class LightsFragment extends Fragment implements View.OnClickListener {

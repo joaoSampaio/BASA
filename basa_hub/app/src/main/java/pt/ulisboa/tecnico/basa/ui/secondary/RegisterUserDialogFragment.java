@@ -15,19 +15,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 
-import pt.ulisboa.tecnico.basa.Global;
 import java.io.ByteArrayOutputStream;
 
+import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.model.BasaDevice;
-import pt.ulisboa.tecnico.basa.model.RegisterAndroidQRCode;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
+import pt.ulisboa.tecnico.basa.model.BasaDevice;
+import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
@@ -188,7 +185,7 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
             String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress()) + ":" + Global.PORT;
 //            RegisterAndroidQRCode code = new RegisterAndroidQRCode("1234", ip);
 
-            BasaDevice device = new BasaDevice("1234", ip, "Tagus 2N.11.5", "descrição", "fdhh5464gdh");
+            BasaDevice device = new BasaDevice("1234", ip, "Tagus 2N.11.5", "descrição", UserRegistrationToken.generateToken());
 
             Gson gson = new Gson();
             qrcode_android.setImageBitmap(QRCodeGenerator.encodeAsBitmap(gson.toJson(device)));

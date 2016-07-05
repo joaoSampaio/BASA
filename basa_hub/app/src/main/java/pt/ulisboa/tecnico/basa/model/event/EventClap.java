@@ -1,11 +1,11 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.model.event;
 
 
 
 public class EventClap extends Event {
 
     public EventClap() {
-        super(Event.CLAP);
+        super(CLAP);
     }
 
 

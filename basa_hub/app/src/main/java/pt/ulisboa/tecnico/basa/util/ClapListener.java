@@ -1,23 +1,15 @@
 package pt.ulisboa.tecnico.basa.util;
 
-import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.util.Log;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.filters.LowPassSP;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchProcessor;
-import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.model.EventClap;
+import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 /**

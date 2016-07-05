@@ -17,9 +17,9 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.model.BasaLocation;
-import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventTemperature;
-import pt.ulisboa.tecnico.basa.model.EventTime;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;

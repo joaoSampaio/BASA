@@ -1,30 +1,24 @@
 package pt.ulisboa.tecnico.basa.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.estimote.sdk.SystemRequirementsChecker;
 import com.google.gson.reflect.TypeToken;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.manager.EventManager;
 import pt.ulisboa.tecnico.basa.manager.TemperatureManager;
-import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.SeekArc;
-import pt.ulisboa.tecnico.basa.util.SeekCircle;
 
 
 public class TemperatureFragment extends Fragment {

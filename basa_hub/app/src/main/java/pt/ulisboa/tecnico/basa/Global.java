@@ -31,7 +31,7 @@ public class Global {
     public static final String OFFLINE_TEMPERATURE_OUTPUT = "OFFLINE_TEMPERATURE_OUTPUT";
     public static final String OFFLINE_IP_TEMPERATURE = "OFFLINE_IP_TEMPERATURE";
     public static final String OFFLINE_USERS = "OFFLINE_USERS";
-
+    public static final String OFFLINE_TOKEN = "OFFLINE_TOKEN";
 
     public static final int COLOR_HEAT = Color.parseColor("#F57F17");
     public static final int COLOR_COLD = Color.parseColor("#ff33b5e5");

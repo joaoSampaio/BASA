@@ -6,17 +6,14 @@ import android.util.Log;
 
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
-import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.eddystone.Eddystone;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import pt.ulisboa.tecnico.basa.TemperatureActivity;
-import pt.ulisboa.tecnico.basa.model.EventTime;
+import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 

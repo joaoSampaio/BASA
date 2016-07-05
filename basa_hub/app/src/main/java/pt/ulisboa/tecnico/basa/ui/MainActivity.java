@@ -25,8 +25,6 @@ import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
@@ -35,9 +33,8 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
-import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventTemperature;
-import pt.ulisboa.tecnico.basa.model.User;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
 import pt.ulisboa.tecnico.basa.util.ModelCache;

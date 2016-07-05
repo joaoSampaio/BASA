@@ -1,40 +1,19 @@
 package pt.ulisboa.tecnico.basa.camera;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.TextureView;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 
 
 import java.util.List;
@@ -45,8 +24,8 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.detection.IMotionDetection;
 import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.detection.RgbMotionDetection;
-import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 

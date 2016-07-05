@@ -14,28 +14,23 @@ import android.util.Log;
 import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.util.List;
-
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
+import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
+import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
-import pt.ulisboa.tecnico.basa.util.MulticastLockSingleton;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-//import org.slf4j.LoggerFactory;
+import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.setPort;
 
-import static spark.Spark.*;
+//import org.slf4j.LoggerFactory;
 public class WebServerBASA {
 
     private final static String STARTING_TEXT = "7e7e0d02";
@@ -86,22 +81,22 @@ public class WebServerBASA {
 
 
                 try {
-                    getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
-                } catch (UserRegistrationException e) {
-                    e.printStackTrace();
-                    response.status(200);
-                    return "{\"status\": false}";
-                }
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
+                    if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
+
+                        getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+
+                        UserRegistrationAnswer answer = new UserRegistrationAnswer();
+
+                        response.status(200);
+                        return "{\"status\": true, \"data\": "+gson.toJson(answer)+"}";
 
                     }
-                });
-
+                } catch (UserRegistrationException e) {
+                    e.printStackTrace();
+                }
 
                 response.status(200);
-                return "{\"status\": true}";
+                return "{\"status\": false}";
             }
         });
 
@@ -169,6 +164,7 @@ public class WebServerBASA {
             int port = Global.PORT;
             try {
                 setPort(port);
+//                setSecure();
                 endpoints();
                 WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
                 String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());

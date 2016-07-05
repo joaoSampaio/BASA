@@ -28,6 +28,10 @@ import pt.ulisboa.tecnico.mybasaclient.camera.CallbackCameraAction;
 import pt.ulisboa.tecnico.mybasaclient.camera.CallbackQRcode;
 import pt.ulisboa.tecnico.mybasaclient.camera.CameraPreview4;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
+import pt.ulisboa.tecnico.mybasaclient.model.User;
+import pt.ulisboa.tecnico.mybasaclient.model.UserRegistration;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.RegisterUserService;
 
 /**
  * Created by Sampaio on 27/06/2016.
@@ -41,6 +45,7 @@ public class ScanQRCodeFragment extends DialogFragment {
     EditText editTextName;
     Toolbar toolbar;
     View camera_bg;
+    private BasaDevice device;
     public static ScanQRCodeFragment newInstance() {
         ScanQRCodeFragment fragment = new ScanQRCodeFragment();
         return fragment;
@@ -96,6 +101,15 @@ public class ScanQRCodeFragment extends DialogFragment {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
         showLayoutStart(true);
+
+
+        rootView.findViewById(R.id.save_device).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
+
         return rootView;
     }
 
@@ -167,12 +181,16 @@ public class ScanQRCodeFragment extends DialogFragment {
         Gson gson = new Gson();
         try {
             Log.d("qrcode", "entrou:");
-            BasaDevice device = gson.fromJson(value, new TypeToken<BasaDevice>() {
+            device = gson.fromJson(value, new TypeToken<BasaDevice>() {
             }.getType());
 
             if(device.getToken() != null && !device.getToken().isEmpty()){
                 Log.d("qrcode", "name:"+device.getName());
                 editTextName.setText(device.getName());
+
+
+
+
             }else{
                 Toast.makeText(getActivity(), "Invalid QrCode", Toast.LENGTH_SHORT).show();
                 showLayoutStart(true);
@@ -182,9 +200,33 @@ public class ScanQRCodeFragment extends DialogFragment {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void registerUser(){
+
+        if(device != null && device.getToken() != null && !device.getToken().isEmpty()){
+            String registrationUrl = device.getUrl() + "/register";
+            User user = User.getLoggedUser();
+            UserRegistration userRegistration = new UserRegistration(user.getEmail(), user.getUserName(), user.getUuid(), device.getToken());
+            new RegisterUserService(registrationUrl, userRegistration, new CallbackFromService() {
+                @Override
+                public void success(Object response) {
+
+                }
+
+                @Override
+                public void failed(Object error) {
+
+                }
+            }).execute();
+
+
+
+        }
 
 
     }
+
 
     private void showLayoutStart(boolean start){
         rootView.findViewById(R.id.layout_before).setVisibility(start? View.VISIBLE : View.GONE);

@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.model.registration;
+package pt.ulisboa.tecnico.mybasaclient.model;
 
 /**
  * Created by sampaio on 28-06-2016.

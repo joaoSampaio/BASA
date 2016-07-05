@@ -12,12 +12,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
-import pt.ulisboa.tecnico.basa.model.Event;
-import pt.ulisboa.tecnico.basa.model.EventClap;
-import pt.ulisboa.tecnico.basa.model.EventCustomSwitchPressed;
-import pt.ulisboa.tecnico.basa.model.EventOccupantDetected;
-import pt.ulisboa.tecnico.basa.model.EventTemperature;
-import pt.ulisboa.tecnico.basa.model.EventVoice;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventClap;
+import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
+import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.event.EventVoice;
 import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.Trigger;

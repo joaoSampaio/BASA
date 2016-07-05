@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.model.event;
 
 
 import java.util.List;
@@ -9,7 +9,7 @@ public class EventVoice extends Event {
 
 
     public EventVoice(List<String> voice) {
-        super(Event.VOICE);
+        super(VOICE);
         this.voice = voice;
     }
 
