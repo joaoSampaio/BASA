@@ -35,7 +35,7 @@ public class WebServerManager {
     public WebServerManager(MainActivity activity) {
         this.activity = activity;
 //        launchServer();
-//        server = new WebServerBASA(activity);
+        server = new WebServerBASA(activity);
     }
 
     public void launchServer(){

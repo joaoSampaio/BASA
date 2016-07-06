@@ -38,10 +38,15 @@ public class EventManager {
 
     public void addEvent(Event event){
         //Log.d("EVENT", "****" + eventToString(event) + "****: ");
-        for (InterestEventAssociation interest: interests){
-            if(interest.isType(event.getType())){
-                interest.getInterest().onRegisteredEventTriggered(event);
+
+        try {
+            for (InterestEventAssociation interest: interests){
+                if(interest.isType(event.getType())){
+                    interest.getInterest().onRegisteredEventTriggered(event);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -116,19 +116,23 @@ public class TemperatureFragment extends Fragment {
                 }
             }
         }, 0);
-        ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
-        ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().addListenner(new TemperatureManager.ActionTemperatureManager() {
-            @Override
-            public void onTemperatureOutputChange(int change) {
-                setUp(change);
-            }
-        });
-        ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().setGlobalTemperatureForecast(new TemperatureManager.GlobalTemperatureForecast() {
-            @Override
-            public void onChangeForecast(int temperature, String icon, String summary) {
-                forecastTemp.setText(""+temperature+"º");
-                forecastSummary.setText(summary);
-                imageForecast.setImageResource(getIcon(icon));
+        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
+
+        if(((MainActivity)getActivity()).getBasaManager().getTemperatureManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().addListenner(new TemperatureManager.ActionTemperatureManager() {
+                @Override
+                public void onTemperatureOutputChange(int change) {
+                    setUp(change);
+                }
+            });
+        if(((MainActivity)getActivity()).getBasaManager().getTemperatureManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().setGlobalTemperatureForecast(new TemperatureManager.GlobalTemperatureForecast() {
+                @Override
+                public void onChangeForecast(int temperature, String icon, String summary) {
+                    forecastTemp.setText(""+temperature+"º");
+                    forecastSummary.setText(summary);
+                    imageForecast.setImageResource(getIcon(icon));
 
 
             }
@@ -166,7 +170,8 @@ public class TemperatureFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
+        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
         interest = null;
     }
 

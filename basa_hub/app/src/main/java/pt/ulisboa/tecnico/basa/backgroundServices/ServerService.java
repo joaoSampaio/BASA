@@ -7,31 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.text.format.Formatter;
 import android.util.Log;
 
-import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.http.server.AsyncHttpServer;
-import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
-import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
-import com.koushikdutta.async.http.server.HttpServerRequestCallback;
-
-import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
-import pt.ulisboa.tecnico.basa.model.Status;
-import pt.ulisboa.tecnico.basa.model.User;
-import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
-import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
-import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.WebServerBASA;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
@@ -46,7 +30,7 @@ public class ServerService extends Service {
     private MainActivity activity;
     int time = 0;
     Handler handler;
-    AsyncHttpServer server;
+    WebServerBASA server;
     private final IBinder mBinder = new LocalBinder();
     private int width, height;
 
@@ -143,123 +127,18 @@ public class ServerService extends Service {
 
 
 
-    public void launchServer(){
-        server = new AsyncHttpServer();
 
-        String msg = "";
-        try {
-            server.get("/users/me", new HttpServerRequestCallback() {
-                @Override
-                public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-
-                    User user = new User("Joao");
-                    Gson gson = new Gson();
-                    String json = gson.toJson(user);
-
-                    response.send(json);
-                }
-            });
-
-            server.post("/register", new HttpServerRequestCallback() {
-                @Override
-                public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-
-                    String body = request.getBody().get().toString();
-                    Log.d("webserver", "request.body():"+body);
-
-                    Gson gson = new Gson();
-
-
-                    try {
-                        final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
-                        }.getType());
-                        if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
-
-                            activity.getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
-
-                            UserRegistrationAnswer answer = new UserRegistrationAnswer();
-
-                            response.send( "{\"status\": true, \"data\": "+gson.toJson(answer)+"}");
-
-                        }
-                    } catch (UserRegistrationException e) {
-                        e.printStackTrace();
-                    }
-
-                    response.send("{\"status\": false}");
-
-
-                }
-            });
-
-
-            server.post("/users", new HttpServerRequestCallback() {
-                @Override
-                public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-                    Gson gson = new Gson();
-                    Status status = null;
-                    try {
-                        String received = request.getBody().get().toString();
-                        Log.d("app", "post received:" + received);
-
-                        User user = gson.fromJson(received, User.class);
-                        if(user.getName() != null)
-                            status = new Status(true, "Welcome "+user.getName());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-                    if(status == null)
-                        status = new Status(false, "Sorry there was an error");
-                    String json = gson.toJson(status);
-
-                    response.send(json);
-                }
-            });
-
-            server.post("/broadcast", new HttpServerRequestCallback() {
-                @Override
-                public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-                    try {
-                        Log.d("webserver", "request.getBody().length():" + request.getBody().length());
-                        String received = request.getBody().get().toString();
-
-                        Log.d("webserver", "post received:" + received);
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.d("webserver", "Exception:");
-
-                    }
-
-
-                    response.send("ok");
-                }
-            });
-
-            // listen on port 5000
-            server.listen(5000);
-
-            //WifiManager wm = (WifiManager) activity.getSystemService(Activity.WIFI_SERVICE);
-            //String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-            msg = "The server is running in -> " + "algo" + ":5000";
-        } catch (Exception e) {
-            e.printStackTrace();
-            msg = "The server was not launched!";
-        } finally {
-            Log.d("servico", msg);
-        }
-    }
 
     public void stopserver(){
         Log.d("servico", "stopserver");
 //        AppController app = AppController.getInstance();
+        if(handler != null)
+            handler.removeCallbacksAndMessages(null);
         if(server != null) {
-            server.stop();
+            server.stopServer();
             server = null;
         }
-
+        stopSelf();
     }
 
 
@@ -281,14 +160,14 @@ public class ServerService extends Service {
             Log.d("servico", "Inicio do RUN");
 
 
-            launchServer();
-//            final WebServerBASA server = new WebServerBASA(activity);
+//            launchServer();
+            server = new WebServerBASA(activity);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     time+=1;
                     Log.d("servico", "time:"+time);
-                    if(time > 50){
+                    if(time > 2000){
                         stopserver();
 //                        server.stopServer();
                         isStarted = false;

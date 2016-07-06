@@ -55,39 +55,41 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume(){
         super.onResume();
-        ((MainActivity)getActivity()).getBasaManager().getLightingManager().setLightChangedListener(new LightingManager.LightChanged() {
-            @Override
-            public void onLightON(final int lightId) {
-                Handler refresh = new Handler(Looper.getMainLooper());
-                refresh.post(new Runnable() {
-                    public void run() {
-                        if (lightsIds.containsKey(lightId)) {
-                            int viewId = lightsIds.get(lightId);
-                            View state = rootView.findViewById(viewId);
-                            if (state != null) {
-                                ((ImageView) state).setImageResource(R.drawable.power_button);
+        if(((MainActivity)getActivity()).getBasaManager().getLightingManager() != null) {
+            ((MainActivity) getActivity()).getBasaManager().getLightingManager().setLightChangedListener(new LightingManager.LightChanged() {
+                @Override
+                public void onLightON(final int lightId) {
+                    Handler refresh = new Handler(Looper.getMainLooper());
+                    refresh.post(new Runnable() {
+                        public void run() {
+                            if (lightsIds.containsKey(lightId)) {
+                                int viewId = lightsIds.get(lightId);
+                                View state = rootView.findViewById(viewId);
+                                if (state != null) {
+                                    ((ImageView) state).setImageResource(R.drawable.power_button);
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            @Override
-            public void onLightOFF(final int lightId) {
-                Handler refresh = new Handler(Looper.getMainLooper());
-                refresh.post(new Runnable() {
-                    public void run() {
-                        if (lightsIds.containsKey(lightId)) {
-                            int viewId = lightsIds.get(lightId);
-                            View state = rootView.findViewById(viewId);
-                            if (state != null) {
-                                ((ImageView) state).setImageResource(R.drawable.power_button_off);
+                @Override
+                public void onLightOFF(final int lightId) {
+                    Handler refresh = new Handler(Looper.getMainLooper());
+                    refresh.post(new Runnable() {
+                        public void run() {
+                            if (lightsIds.containsKey(lightId)) {
+                                int viewId = lightsIds.get(lightId);
+                                View state = rootView.findViewById(viewId);
+                                if (state != null) {
+                                    ((ImageView) state).setImageResource(R.drawable.power_button_off);
+                                }
                             }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
         refreshLightLayout();
 
         }
@@ -95,7 +97,9 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
         @Override
     public void onPause(){
         super.onPause();
-        ((MainActivity)getActivity()).getBasaManager().getLightingManager().setLightChangedListener(null);
+            if(((MainActivity)getActivity()).getBasaManager().getLightingManager() != null) {
+                ((MainActivity) getActivity()).getBasaManager().getLightingManager().setLightChangedListener(null);
+            }
     }
 
 

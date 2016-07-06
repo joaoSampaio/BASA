@@ -188,6 +188,7 @@ public class MainActivity extends FragmentActivity {
         super.onStop();
         // Unbind from the service
         if (mBound) {
+            mService.stopserver();
             mService.registerClient(null);
             unbindService(mConnection);
             mBound = false;
@@ -204,6 +205,7 @@ public class MainActivity extends FragmentActivity {
 
         this.basaManager = new BasaManager(this);
         this.basaManager.start();
+        AppController.getInstance().basaManager = this.basaManager;
         initSavedValues();
 
 
@@ -222,7 +224,8 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void updateTemperature(double temperature) {
-                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
+                if(getBasaManager().getEventManager() != null)
+                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
             }
 
             @Override
@@ -259,7 +262,7 @@ public class MainActivity extends FragmentActivity {
         AppController.getInstance().beaconDisconect();
 
         this.basaManager.stop();
-
+        AppController.getInstance().basaManager = null;
         //clapListener.stop();
     }
 
@@ -380,7 +383,8 @@ public class MainActivity extends FragmentActivity {
         AppController.getInstance().timeScanPeriod = Integer.parseInt(preferences.getString("cam_time", "2"));
 //        new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
 
-        getBasaManager().getEventManager().reloadSavedRecipes();
+        if(getBasaManager().getEventManager() != null)
+            getBasaManager().getEventManager().reloadSavedRecipes();
 
         if(!ModelCache.keyExists(Global.OFFLINE_USERS)){
             new ModelCache<>().saveModel(new ArrayList<>(), Global.OFFLINE_USERS);

@@ -13,6 +13,7 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import java.util.Date;
 import java.util.List;
 
+import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
@@ -36,6 +37,8 @@ public class AppController extends Application {
     public int skipTop, skipBottom, skipLeft, skipRight;
     public float mThreshold;
     public int timeScanPeriod;
+
+    public BasaManager basaManager;
 
 
     @Override

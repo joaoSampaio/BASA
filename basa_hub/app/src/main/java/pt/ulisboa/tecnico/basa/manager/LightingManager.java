@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import pt.ulisboa.tecnico.basa.util.LightingControl;
 import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
@@ -27,7 +26,7 @@ public class LightingManager {
         for (int i=0;i<numLights;i++)
             this.lights[i]=false;
 
-        //lightingControl = new LightingControlEDUP(ctx);
+        lightingControl = new LightingControlEDUP(ctx);
     }
 
     public boolean getLightState(int lightId){

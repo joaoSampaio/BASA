@@ -24,11 +24,11 @@ public class BasaManager {
     public void start(){
         this.eventManager = new EventManager(getActivity());
         this.lightingManager = new LightingManager(getActivity());
-        //this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
+        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
         this.textToSpeechManager = new TextToSpeechManager(getActivity());
         this.temperatureManager = new TemperatureManager(getActivity());
         this.deviceDiscoveryManager = new DeviceDiscoveryManager(getActivity());
-        this.webServerManager = new WebServerManager(getActivity());
+//        this.webServerManager = new WebServerManager(getActivity());
         this.userManager = new UserManager(getActivity());
     }
 

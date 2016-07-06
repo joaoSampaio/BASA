@@ -3,11 +3,11 @@ package pt.ulisboa.tecnico.basa.rest;
 /**
  * Created by Sampaio on 30/05/2016.
  */
+
 import android.app.Activity;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -20,7 +20,6 @@ import java.util.concurrent.Future;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
@@ -33,7 +32,7 @@ import spark.Spark;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
-import static spark.Spark.setPort;
+//import spark.Spark;
 
 //import org.slf4j.LoggerFactory;
 public class WebServerBASA {
@@ -66,11 +65,70 @@ public class WebServerBASA {
         Log.d("servico", "stopserver");
         if(longRunningTaskFuture != null)
             longRunningTaskFuture.cancel(true);
+        Spark.stop();
     }
 
     public MainActivity getActivity() {
         return activity;
     }
+
+
+//    public void endpoints() {
+//
+//        get("/hello", (request, response) -> {
+//                    response.type("application/json");
+//
+//            return "Hello Spark MVC Framework!";
+//        });
+//
+//        get("/users", (request, response) -> {
+//            response.type("application/json");
+//
+//                User user = new User("Joao");
+//                Gson gson = new Gson();
+//                String json = gson.toJson(user);
+//
+//                return json;
+//
+//        });
+//
+//        post("/register", (request, response) ->  {
+//
+//                String body = request.body();
+//                Log.d("webserver", "request.body():"+request.body());
+//
+//                Gson gson = new Gson();
+//
+//
+//                try {
+//                    final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
+//                    }.getType());
+//                    if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
+//
+//                        getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+//
+//                        UserRegistrationAnswer answer = new UserRegistrationAnswer();
+//
+//                        response.status(200);
+//                        return "{\"status\": true, \"data\": "+gson.toJson(answer)+"}";
+//
+//                    }
+//                } catch (UserRegistrationException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                response.status(200);
+//                return "{\"status\": false}";
+//
+//        });
+//
+//
+//
+//
+//    }
+
+
+
 
     public void endpoints() {
         get(new Route("/hello") {
@@ -84,10 +142,14 @@ public class WebServerBASA {
             @Override
             public Object handle(Request request, Response response) {
 
+                long id = Thread.currentThread().getId();
+
+                long time1 = System.currentTimeMillis();
                 User user = new User("Joao");
                 Gson gson = new Gson();
                 String json = gson.toJson(user);
-
+                long time2 = System.currentTimeMillis();
+                Log.d("servico", "thread-> "+id+" |time:"+(time2-time1));
                 return json;
             }
         });
@@ -97,7 +159,7 @@ public class WebServerBASA {
             public Object handle(Request request, Response response) {
 
                 String body = request.body();
-                Log.d("webserver", "request.body():"+request.body());
+                Log.d("servico", "request.body():"+request.body());
 
                 Gson gson = new Gson();
 
@@ -105,21 +167,29 @@ public class WebServerBASA {
                 try {
                     final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
                     }.getType());
+                    Log.d("servico", "1:" + (getActivity() != null));
                     if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
+                        Log.d("servico", "2:");
+                        if(AppController.getInstance().basaManager != null){
+                            AppController.getInstance().basaManager.getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+                            UserRegistrationAnswer answer = new UserRegistrationAnswer();
+                            Log.d("servico", "3:");
+                            response.status(200);
+                            Log.d("servico", "{\"status\": true, \"data\": "+gson.toJson(answer)+"}");
+                            return "{\"status\": true, \"data\": "+gson.toJson(answer)+"}";
+                        }
+//                        getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+                        Log.d("servico", "1.1:");
 
-                        getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
-
-                        UserRegistrationAnswer answer = new UserRegistrationAnswer();
-
-                        response.status(200);
-                        return "{\"status\": true, \"data\": "+gson.toJson(answer)+"}";
 
                     }
-                } catch (UserRegistrationException e) {
+                    Log.d("servico", "4:");
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                Log.d("servico", "5:");
                 response.status(200);
+                Log.d("servico", "{\"status\": false}");
                 return "{\"status\": false}";
             }
         });
@@ -183,23 +253,30 @@ public class WebServerBASA {
         @Override
         public void run() {
             // Moves the current Thread into the background
-            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+//            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             Log.d("webserver", "Runnable");
             int port = Global.PORT;
             try {
                 Log.d("servico", "startserver");
-                setPort(port);
+                Spark.setPort(port);
+//                Spark.port(port);
+                Log.d("servico", "port");
+                //Spark.
+//                int maxThreads = 8;
+//                threadPool(maxThreads);
 //                setSecure();
                 endpoints();
+                Log.d("servico", "endpoints");
                 WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
                 String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-                Log.d("webserver", "The server is running in -> " + ip + ":" + port);
+                Log.d("servico", "The server is running in -> " + ip + ":" + port);
                 Log.d("servico", "The server is running in -> " + ip + ":" + port);
 
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("webserver", "falhou-> ");
+                Log.d("servico", "falhou->------------------------------------------------------------------------------------- ");
             }
 
 
