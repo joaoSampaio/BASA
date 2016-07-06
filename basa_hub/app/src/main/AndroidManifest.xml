@@ -69,6 +69,10 @@
         </activity>
 
         <service
+            android:name=".backgroundServices.ServerService"
+            android:exported="false"/>
+
+        <service
             android:name=".backgroundServices.WifiLocationService"
             android:exported="false"/>
         <service android:name=".backgroundServices.CameraBackgroundService" />

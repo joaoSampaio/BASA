@@ -45,18 +45,22 @@ public class UserManager implements Manager {
         String uuidString = uuid.toString();
         List<User> users = new ModelCache<List<User>>().loadModel(new TypeToken<List<User>>(){}.getType(), Global.OFFLINE_USERS);
 
-        if(User.userEmailExists(users, email)){
+        if(User.userEmailExists(users, email) && !User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid)){
             throw new UserRegistrationException("Email already active");
         }
+        uuidString = optionalUuid;
+//        if(optionalUuid != null && !optionalUuid.isEmpty() && !User.userUuidExists(users, optionalUuid)){
+//            uuidString = optionalUuid;
+//        }
 
-        if(optionalUuid != null && !optionalUuid.isEmpty() && !User.userUuidExists(users, optionalUuid)){
-            uuidString = optionalUuid;
+        //se utilizador com aquele mail e uuid ja existir nao vamos voltar a adiciona-lo
+        if(!(User.userEmailExists(users, email) &&
+                User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid))) {
+
+            users.add(new User(userName, email, uuidString));
+            new ModelCache<>().saveModel(users, Global.OFFLINE_USERS);
+
         }
-
-
-
-        users.add(new User(userName , email, uuidString));
-        new ModelCache<>().saveModel(users, Global.OFFLINE_USERS);
         try {
             sendMailRegister(email, uuid.toString());
         } catch (WriterException e) {

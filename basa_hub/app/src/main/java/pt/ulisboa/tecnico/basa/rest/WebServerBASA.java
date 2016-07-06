@@ -14,6 +14,10 @@ import android.util.Log;
 import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
@@ -25,6 +29,7 @@ import pt.ulisboa.tecnico.basa.ui.MainActivity;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import spark.Spark;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -36,11 +41,31 @@ public class WebServerBASA {
     private final static String STARTING_TEXT = "7e7e0d02";
     private final static String ENDING_TEXT = "7f7f";
     private MainActivity activity;
+    Future longRunningTaskFuture;
+    ExecutorService threadPoolExecutor;
+
+
     public WebServerBASA(MainActivity activity){
         Log.d("webserver", "WebServerBASA");
         this.activity =  activity;
-        new Thread(new HttpRunnable()).start();
 
+        threadPoolExecutor = Executors.newSingleThreadExecutor();
+        Runnable longRunningTask = new HttpRunnable();
+
+// submit task to threadpool:
+        longRunningTaskFuture = threadPoolExecutor.submit(longRunningTask);
+
+// At some point in the future, if you want to kill the task:
+
+
+//        new Thread(new HttpRunnable()).start();
+
+    }
+
+    public void stopServer(){
+        Log.d("servico", "stopserver");
+        if(longRunningTaskFuture != null)
+            longRunningTaskFuture.cancel(true);
     }
 
     public MainActivity getActivity() {
@@ -76,11 +101,10 @@ public class WebServerBASA {
 
                 Gson gson = new Gson();
 
-                final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
-                }.getType());
-
 
                 try {
+                    final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
+                    }.getType());
                     if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
 
                         getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
@@ -163,14 +187,19 @@ public class WebServerBASA {
             Log.d("webserver", "Runnable");
             int port = Global.PORT;
             try {
+                Log.d("servico", "startserver");
                 setPort(port);
 //                setSecure();
                 endpoints();
                 WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
                 String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
                 Log.d("webserver", "The server is running in -> " + ip + ":" + port);
+                Log.d("servico", "The server is running in -> " + ip + ":" + port);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("webserver", "falhou-> ");
             }
 
 

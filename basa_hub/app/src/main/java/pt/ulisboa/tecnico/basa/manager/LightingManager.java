@@ -27,7 +27,7 @@ public class LightingManager {
         for (int i=0;i<numLights;i++)
             this.lights[i]=false;
 
-        lightingControl = new LightingControlEDUP(ctx);
+        //lightingControl = new LightingControlEDUP(ctx);
     }
 
     public boolean getLightState(int lightId){

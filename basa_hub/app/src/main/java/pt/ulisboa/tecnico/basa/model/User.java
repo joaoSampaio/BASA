@@ -72,6 +72,7 @@ public class User {
         return null;
     }
 
+
     public static User getUuidFromList(List<User> users, String uuid){
         for (User user: users){
             if(user.getName() != null && user.getUuid().equals(uuid))

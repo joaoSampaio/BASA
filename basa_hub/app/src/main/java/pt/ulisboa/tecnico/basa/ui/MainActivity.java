@@ -1,12 +1,16 @@
 package pt.ulisboa.tecnico.basa.ui;
 
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -30,6 +34,7 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.MainPagerAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.backgroundServices.ServerService;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
@@ -68,7 +73,8 @@ public class MainActivity extends FragmentActivity {
     //intent for speech recogniztion
     Intent mSpeechIntent;
 
-
+    ServerService mService;
+    boolean mBound = true;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -150,6 +156,44 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.registerClient(MainActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(this, ServerService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (mBound) {
+            mService.registerClient(null);
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -188,13 +232,14 @@ public class MainActivity extends FragmentActivity {
         });
 
         AppController.getInstance().beaconStart();
+
+
+        Intent intent = new Intent(this, ServerService.class);
+        startService(intent);
+
     }
 
-    @Override
-    protected void onStart() {
 
-        super.onStart();
-    }
 
     @Override
     protected void onPause() {

@@ -195,10 +195,6 @@ public class LightingControlEDUP implements LightingControl {
                     Log.d("ListenEDUPMulticast", "ListenEDUPMulticast -> " + ip);
                     InetAddress IPAddress =  InetAddress.getByName(ip);
 
-//                    InetAddress IPAddress =  InetAddress.getByName("255.255.255.255");
-//                    DatagramSocket socket = new DatagramSocket(8089);
-//                    socket.setBroadcast(true);
-//                    socket.setReuseAddress(true);
                     byte[] buf = new byte[1024];
 
 
@@ -208,15 +204,6 @@ public class LightingControlEDUP implements LightingControl {
                     socket.setReuseAddress(true);
 //                    socket.setBroadcast(true);
                     socket.bind(address);
-
-
-
-
-//                    String str = "ola";
-//                    byte[] send_data = str.getBytes();
-//                    DatagramPacket send_packet = new DatagramPacket(send_data,str.length(), IPAddress, 8089);
-//                    socket.send(send_packet);
-
 
 
 
