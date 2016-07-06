@@ -12,4 +12,15 @@
 
     </style>
 
+
+    <style name="UserButton">
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_width">64dp</item>
+        <item name="android:background">@drawable/circle</item>
+        <item name="android:tint">@color/white</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:elevation">15dp</item>
+
+    </style>
+
 </resources>

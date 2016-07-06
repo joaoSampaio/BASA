@@ -24,7 +24,6 @@
         android:text="2N.11.6"
         android:id="@+id/device_name"
         android:layout_below="@+id/device_icon"
-        android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp" />

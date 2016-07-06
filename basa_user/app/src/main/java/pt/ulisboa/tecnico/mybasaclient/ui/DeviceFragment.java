@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
@@ -65,6 +68,15 @@ public class DeviceFragment extends DialogFragment implements View.OnClickListen
     }
 
     private void init(){
+
+
+        TextView name = (TextView)rootView.findViewById(R.id.device_name);
+        Gson gson = new Gson();
+        String ble = gson.toJson(device.getBeaconUuids());
+        name.setText("name:"+ device.getName() + "\n namespace:" + ble + "\n ip:"+device.getUrl());
+
+
+
 
 
 

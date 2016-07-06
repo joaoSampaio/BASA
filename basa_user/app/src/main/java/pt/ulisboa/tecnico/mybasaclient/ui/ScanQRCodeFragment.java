@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
@@ -30,6 +31,8 @@ import pt.ulisboa.tecnico.mybasaclient.camera.CameraPreview4;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistration;
+import pt.ulisboa.tecnico.mybasaclient.model.UserRegistrationAnswer;
+import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.RegisterUserService;
 
@@ -45,6 +48,8 @@ public class ScanQRCodeFragment extends DialogFragment {
     EditText editTextName;
     Toolbar toolbar;
     View camera_bg;
+    Button save_device;
+    View progressBarRegister;
     private BasaDevice device;
     public static ScanQRCodeFragment newInstance() {
         ScanQRCodeFragment fragment = new ScanQRCodeFragment();
@@ -72,7 +77,6 @@ public class ScanQRCodeFragment extends DialogFragment {
             toolbar.setTitle("Add Zone");
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
-//            toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
@@ -81,6 +85,7 @@ public class ScanQRCodeFragment extends DialogFragment {
             });
         }
         frame = (FrameLayout)rootView.findViewById(R.id.frame);
+        progressBarRegister = rootView.findViewById(R.id.progressBarRegister);
 
         editTextName = (EditText)rootView.findViewById(R.id.editTextName);
         rootView.findViewById(R.id.re_scan).setOnClickListener(new View.OnClickListener() {
@@ -102,8 +107,8 @@ public class ScanQRCodeFragment extends DialogFragment {
         spinner.setAdapter(dataAdapter);
         showLayoutStart(true);
 
-
-        rootView.findViewById(R.id.save_device).setOnClickListener(new View.OnClickListener() {
+        save_device = (Button)rootView.findViewById(R.id.save_device);
+        save_device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registerUser();
@@ -116,6 +121,7 @@ public class ScanQRCodeFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        progressBarRegister.setVisibility(View.GONE);
         if(((MainActivity)getActivity()).mayRequestCamera()) {
             startCapture();
 
@@ -205,17 +211,41 @@ public class ScanQRCodeFragment extends DialogFragment {
     private void registerUser(){
 
         if(device != null && device.getToken() != null && !device.getToken().isEmpty()){
+            save_device.setEnabled(false);
+            progressBarRegister.setVisibility(View.VISIBLE);
+
+            if(!device.getUrl().startsWith("http")) {
+                device.setUrl("http://" + device.getUrl());
+            }
+
             String registrationUrl = device.getUrl() + "/register";
             User user = User.getLoggedUser();
             UserRegistration userRegistration = new UserRegistration(user.getEmail(), user.getUserName(), user.getUuid(), device.getToken());
-            new RegisterUserService(registrationUrl, userRegistration, new CallbackFromService() {
+            new RegisterUserService(registrationUrl, userRegistration, new CallbackFromService<UserRegistrationAnswer, String>() {
                 @Override
-                public void success(Object response) {
+                public void success(UserRegistrationAnswer response) {
+
+                    device.setBeaconUuids(response.getUuids());
+                    device.setMacAddress(response.getMacAddress());
+
+                    Zone zone = Zone.getCurrentZone();
+
+
+                    List<Zone> zones = Zone.loadZones();
+                    zone = Zone.getZoneByName(zone.getName(), zones);
+                    zone.addDevice(device);
+                    Zone.saveZones(zones);
+                    Zone.saveCurrentZone(zone);
+                    if(getActivity() != null && ((MainActivity)getActivity()).getCommunicationHomeFragment() != null)
+                        ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone();
+                    if(getDialog() != null)
+                        getDialog().dismiss();
 
                 }
 
                 @Override
-                public void failed(Object error) {
+                public void failed(String error) {
+                    progressBarRegister.setVisibility(View.GONE);
 
                 }
             }).execute();

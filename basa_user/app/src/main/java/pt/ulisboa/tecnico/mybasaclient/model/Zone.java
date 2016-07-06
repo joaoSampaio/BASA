@@ -41,6 +41,20 @@ public class Zone {
         this.devices = devices;
     }
 
+    public void addDevice(BasaDevice device){
+        if(!containsDevice(device.getId()))
+        devices.add(device);
+    }
+
+    public boolean containsDevice(String id){
+
+        for (BasaDevice device : devices){
+            if(device.getId().equals(id))
+                return true;
+        }
+        return false;
+    }
+
 
 
     public static List<Zone> loadZones(){

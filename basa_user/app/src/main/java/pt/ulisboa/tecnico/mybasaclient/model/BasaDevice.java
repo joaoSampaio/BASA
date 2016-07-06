@@ -19,6 +19,7 @@ public class BasaDevice {
     private String description;
     private String token;
     private List<String> beaconUuids;
+    private List<String> macAddress;
 
     public BasaDevice(String url, String name, String description, String token) {
         this.url = url;
@@ -26,6 +27,7 @@ public class BasaDevice {
         this.description = description;
         this.token = token;
         this.beaconUuids = new ArrayList<>();
+        this.macAddress = new ArrayList<>();
     }
 
     public String getUrl() {
@@ -70,6 +72,18 @@ public class BasaDevice {
 
     public List<String> getBeaconUuids() {
         return beaconUuids;
+    }
+
+    public List<String> getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(List<String> macAddress) {
+        this.macAddress = macAddress;
+    }
+
+    public void setBeaconUuids(List<String> beaconUuids) {
+        this.beaconUuids = beaconUuids;
     }
 
     public static void saveCurrentDevice(BasaDevice device){
