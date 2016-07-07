@@ -33,9 +33,7 @@ public class BasaManager {
     }
 
     public void stop(){
-        if(eventManager != null){
-            eventManager.stop();
-        }
+
         if(lightingManager != null){
 
         }
@@ -62,6 +60,9 @@ public class BasaManager {
             userManager.destroy();
         }
 
+        if(eventManager != null){
+            eventManager.stop();
+        }
     }
 
 

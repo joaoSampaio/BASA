@@ -2,7 +2,24 @@ package pt.ulisboa.tecnico.mybasaclient.util;
 
 import android.graphics.Color;
 
+import java.security.SecureRandom;
+
 public class NiceColor {
+
+    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom rnd = new SecureRandom();
+    private static final int LEN = 6;
+
+    public static int randomColor(){
+
+        StringBuilder sb = new StringBuilder( LEN );
+        for( int i = 0; i < LEN; i++ )
+            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+        String token = sb.toString();
+        return betterNiceColor(token);
+
+    }
+
     public static int betterNiceColor(String name)
     {
         double goldenRatioConj = 0.618033988749895;

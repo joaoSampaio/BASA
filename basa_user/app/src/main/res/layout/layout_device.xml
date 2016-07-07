@@ -3,29 +3,50 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:id="@+id/container">
+    android:id="@+id/container"
+    android:padding="2dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/device_icon"
-        android:src="@drawable/ic_thumb_office"
-        android:scaleType="fitCenter"
-        app:riv_border_width="4dip"
-        app:riv_border_color="#1e5eff"
-        app:riv_mutate_background="true"
-        app:riv_oval="true"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-         />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/container2"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:padding="7dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/device_icon_img"
+            android:background="@drawable/round_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:elevation="5dp" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="25º"
+            android:textColor="#fff"
+            android:id="@+id/device_icon"
+            android:layout_centerHorizontal="true"
+            android:elevation="45dp"
+            android:background="@drawable/round_button"
+            android:visibility="gone" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2N.11.6"
         android:id="@+id/device_name"
-        android:layout_below="@+id/device_icon"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/container2" />
 
 </RelativeLayout>

@@ -162,7 +162,11 @@ public class WebServerBASA {
                             boolean[] lights = AppController.getInstance().basaManager
                                     .getLightingManager().getLights();
 
-                            double temperature = AppController.getInstance().basaManager.getTemperatureManager().getLatestTemperature().getTemperature();
+                            double temperature = (AppController.getInstance().basaManager
+                                    .getTemperatureManager().getLatestTemperature() != null)?
+                                    AppController.getInstance().basaManager.getTemperatureManager()
+                                            .getLatestTemperature().getTemperature() : -100;
+//                            double temperature = AppController.getInstance().basaManager.getTemperatureManager().getLatestTemperature().getTemperature();
                             DeviceStatus deviceStatus = new DeviceStatus(lights, temperature);
 
                             Log.d("servico", "3:");

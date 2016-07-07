@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
                 mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
                 mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 50, true));
+                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 30, true));
                 mAdapter = new DeviceAdapter((MainActivity) getActivity(), devices);
                 mRecyclerView.setAdapter(mAdapter);
             }

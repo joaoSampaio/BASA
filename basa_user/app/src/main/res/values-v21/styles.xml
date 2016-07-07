@@ -1,6 +1,8 @@
 <resources>
 
     <!--<style name="AppTheme" parent="android:Theme.Holo.NoActionBar.TranslucentDecor">-->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
         <item name="colorPrimary">@color/colorPrimary</item>
