@@ -20,6 +20,7 @@ import java.util.concurrent.Future;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
@@ -137,6 +138,53 @@ public class WebServerBASA {
                 return "Hello Spark MVC Framework!";
             }
         });
+
+
+        get(new Route("/alive") {
+            @Override
+            public Object handle(Request request, Response response) {
+                return "{\"status\": true}";
+            }
+        });
+
+
+        get(new Route("/status") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+
+                Gson gson = new Gson();
+
+                //verify permission in header
+                try {
+
+                        if(AppController.getInstance().basaManager != null){
+                            boolean[] lights = AppController.getInstance().basaManager
+                                    .getLightingManager().getLights();
+
+                            double temperature = AppController.getInstance().basaManager.getTemperatureManager().getLatestTemperature().getTemperature();
+                            DeviceStatus deviceStatus = new DeviceStatus(lights, temperature);
+
+                            Log.d("servico", "3:");
+                            response.status(200);
+                            Log.d("servico", "{\"status\": true, \"data\": "+gson.toJson(deviceStatus)+"}");
+                            return "{\"status\": true, \"data\": "+gson.toJson(deviceStatus)+"}";
+
+
+
+                    }
+                    Log.d("servico", "4:");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return "{\"status\": false}";
+            }
+        });
+
+
 
         get(new Route("/users") {
             @Override

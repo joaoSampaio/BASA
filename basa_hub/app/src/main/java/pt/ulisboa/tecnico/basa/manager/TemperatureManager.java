@@ -39,9 +39,11 @@ public class TemperatureManager {
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
     private GlobalTemperatureForecast globalTemperatureForecast;
     SharedPreferences preferences;
+    private Temperature latestTemperature;
     private MainActivity activity;
     Handler handler;
     private String urlTemperature;
+    private InterestEventAssociation interest;
 
     public TemperatureManager(MainActivity ctx){
         this.activity = ctx;
@@ -92,6 +94,22 @@ public class TemperatureManager {
         },0));
 
 
+        interest = new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
+            @Override
+            public void onRegisteredEventTriggered(Event event) {
+                if(event instanceof EventTemperature){
+                    double temperature = ((EventTemperature)event).getTemperature();
+                    latestTemperature = new Temperature(temperature, -1);
+
+
+                }
+            }
+        }, 0);
+        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
+
+
+
         requestUpdateTemperature();
 
 
@@ -115,6 +133,11 @@ public class TemperatureManager {
         if(handler != null)
             handler.removeCallbacksAndMessages(null);
 
+        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
+            ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
+        interest = null;
+
+
         preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
         this.activity = null;
     }
@@ -136,6 +159,7 @@ public class TemperatureManager {
                     public void success(Temperature response) {
                         if(response != null && activity != null && response.isValid()){
                             activity.getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response.getTemperature(), response.getHumidity()));
+                            //latestTemperature = response;
                         }
                     }
 
@@ -212,7 +236,9 @@ public class TemperatureManager {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
-
+    public Temperature getLatestTemperature() {
+        return latestTemperature;
+    }
 
     public GlobalTemperatureForecast getGlobalTemperatureForecast() {
         return globalTemperatureForecast;

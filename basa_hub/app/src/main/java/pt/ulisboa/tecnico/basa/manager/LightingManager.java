@@ -29,6 +29,10 @@ public class LightingManager {
         lightingControl = new LightingControlEDUP(ctx);
     }
 
+    public boolean[] getLights() {
+        return lights;
+    }
+
     public boolean getLightState(int lightId){
         if(this.lights != null && lightId < this.lights.length){
             return this.lights[lightId];
