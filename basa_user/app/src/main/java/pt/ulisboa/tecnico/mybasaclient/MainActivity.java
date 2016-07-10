@@ -32,6 +32,7 @@ import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart2Fragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.DeviceCameraFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.DeviceFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.DeviceLightsFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.DeviceSettingsFragment;
@@ -204,6 +205,9 @@ public class MainActivity extends AppCompatActivity
         } else if(id == Global.DIALOG_DEVICE_LIGHT){
             newFragment = DeviceLightsFragment.newInstance();
             tag = "DeviceLightsFragment";
+        } else if(id == Global.DIALOG_DEVICE_CAMERA){
+            newFragment = DeviceCameraFragment.newInstance();
+            tag = "DeviceCameraFragment";
         }
 
 

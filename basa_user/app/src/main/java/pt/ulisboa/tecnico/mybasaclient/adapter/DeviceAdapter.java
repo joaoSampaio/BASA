@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.mybasaclient.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -36,6 +37,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
     public final static int TYPE_TEMPERATURE = 0;
     public final static int TYPE_LIGHT = 1;
     public final static int TYPE_CAMERA  = 2;
+    public static final int PRIMARY = Color.parseColor("#2196f3");
+    public static final int COLOR_LIGHT = Color.parseColor("#FF737373");
+
     MainActivity context;
     List<BasaDevice> data = new ArrayList<>();
 
@@ -65,13 +69,24 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
     public void onBindViewHolder(final MyItemHolder holder, final int position) {
 
 
-        holder.addDevice.setVisibility((data.size()*3 == position)? View.VISIBLE : View.GONE);
+        holder.iconImg.setVisibility(View.GONE);
+        holder.addDevice.setVisibility(View.GONE);
+        holder.icon.setVisibility(View.GONE);
         if(position == (data.size()*3)){
             //add device
-            holder.icon.setVisibility((position == (data.size()*3))? View.GONE : View.VISIBLE);
-
+            holder.addDevice.setVisibility(View.VISIBLE);
             holder.name.setText("Add device");
-
+            holder.addDevice.setPadding(20,20,20,20);
+            changeBackgroundColor(holder.addDevice, PRIMARY);
+            Glide.with(context).load(R.drawable.ic_add_white_48dp).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.addDevice) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    holder.addDevice.setImageDrawable(circularBitmapDrawable);
+                }
+            });
 //            Glide.with(context).load(R.drawable.ic_add).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.iconImg) {
 //                @Override
 //                protected void setResource(Bitmap resource) {
@@ -124,14 +139,19 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                     });
                     break;
                 case TYPE_LIGHT:
-                    holder.iconImg.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(R.drawable.ic_light).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.iconImg) {
+
+                    changeBackgroundColor(holder.addDevice, COLOR_LIGHT);
+                    holder.addDevice.setVisibility(View.VISIBLE);
+                    holder.addDevice.setPadding(5,5,5,5);
+                    holder.addDevice.setColorFilter(Color.argb(255, 255, 255, 255));
+
+                    Glide.with(context).load(R.drawable.ic_device_light_large).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.addDevice) {
                         @Override
                         protected void setResource(Bitmap resource) {
                             RoundedBitmapDrawable circularBitmapDrawable =
                                     RoundedBitmapDrawableFactory.create(context.getResources(), resource);
                             circularBitmapDrawable.setCircular(true);
-                            holder.iconImg.setImageDrawable(circularBitmapDrawable);
+                            holder.addDevice.setImageDrawable(circularBitmapDrawable);
                         }
                     });
                     holder.container.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +181,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                         @Override
                         public void onClick(View v) {
                             BasaDevice.saveCurrentDevice(data.get(position / 3));
-                            context.openPage(Global.DIALOG_DEVICE);
+                            context.openPage(Global.DIALOG_DEVICE_CAMERA);
                         }
                     });
                     break;

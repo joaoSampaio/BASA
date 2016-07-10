@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.zxing.WriterException;
@@ -184,7 +185,7 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
             WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
             String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress()) + ":" + Global.PORT;
 //            RegisterAndroidQRCode code = new RegisterAndroidQRCode("1234", ip);
-
+            ((TextView)rootView.findViewById(R.id.textViewIP)).setText(ip);
             BasaDevice device = new BasaDevice("1234", ip, "Tagus 2N.11.5", "descrição", UserRegistrationToken.generateToken());
 
             Gson gson = new Gson();

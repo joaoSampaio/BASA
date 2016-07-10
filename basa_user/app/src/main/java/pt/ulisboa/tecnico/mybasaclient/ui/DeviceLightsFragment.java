@@ -2,8 +2,9 @@ package pt.ulisboa.tecnico.mybasaclient.ui;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,11 +29,7 @@ import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.GetDeviceStatusService;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeviceLightsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class DeviceLightsFragment extends DialogFragment implements View.OnClickListener {
     View rootView;
     Toolbar toolbar;
@@ -41,6 +38,8 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
     private List<LightBulb> lights;
     private BasaDevice device;
     private Button toggle_all;
+    private Handler handler;
+    private Runnable runnable;
 
     public DeviceLightsFragment() {
         // Required empty public constructor
@@ -82,8 +81,29 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
         return rootView;
     }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        handler.postDelayed(runnable, 2000);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        handler.removeCallbacks(runnable);
+    }
+
     private void init(){
 
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                refreshLights();
+                handler.postDelayed(this, 2000);
+            }
+        };
         toggle_all = (Button) rootView.findViewById(R.id.toggle_all);
         toggle_all.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,10 +153,20 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
         });
 
         if(mRecyclerView == null) {
+
+            int numLights = device.getNumLights();
+            for(int i = 0; i< numLights; i++){
+                lights.add(new LightBulb(false));
+            }
+
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.setHasFixedSize(true);
             mAdapter = new LightsAdapter((MainActivity) getActivity(), lights, device);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+
+
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnLightChange(new LightsAdapter.OnLightChange() {
                 @Override
@@ -157,6 +187,15 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
 //        mAdapter.notifyDataSetChanged();
 
 
+        refreshLights();
+
+
+    }
+
+
+    private void refreshLights(){
+        if(getActivity() == null)
+            return;
         new GetDeviceStatusService(device.getUrl(), new CallbackFromService<DeviceStatus, String>() {
             @Override
             public void success(DeviceStatus response) {
@@ -192,8 +231,6 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
 
             }
         }).execute();
-
-
     }
 
     @Override

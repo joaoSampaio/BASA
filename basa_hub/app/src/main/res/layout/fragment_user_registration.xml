@@ -164,6 +164,14 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/textViewIP"
+            android:layout_below="@+id/textView3"
+            android:layout_centerHorizontal="true" />
+
 
     </RelativeLayout>
 
