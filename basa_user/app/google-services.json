@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "360355109976",
+    "firebase_url": "https://basa-2a0c9.firebaseio.com",
+    "project_id": "basa-2a0c9",
+    "storage_bucket": "basa-2a0c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360355109976:android:d3d9244e8f9da5ba",
+        "android_client_info": {
+          "package_name": "pt.ulisboa.tecnico.mybasaclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360355109976-r5ja4r27asifcmlbc2r47n6o42k0agcq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDLd1zfzAwszL_8EbEQ-CMGzlmJ1yx3SM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -52,12 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        rootView.findViewById(R.id.imageViewOp3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_DEVICE);
-            }
-        });
+
         settings = rootView.findViewById(R.id.settings);
         settings.setVisibility(View.GONE);
         header = rootView.findViewById(R.id.header);
@@ -87,12 +82,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             devices.clear();
             devices.addAll(current.getDevices());
 
-            devices.add(new BasaDevice("url", "2N.11.5", "O meu escritorio no Tagus", "token"));
-            devices.add(new BasaDevice("url", "2N.11.7", "O meu escritorio no Tagus", "token"));
-            devices.add(new BasaDevice("url", "Gabinete Prof", "O meu escritorio no Tagus", "token"));
-
-            devices.add(new BasaDevice("url", "2N.11.5", "O meu escritorio no Tagus", "token"));
-
+//            devices.add(new BasaDevice("url", "2N.11.5", "O meu escritorio no Tagus", "token"));
+//            devices.add(new BasaDevice("url", "2N.11.7", "O meu escritorio no Tagus", "token", 10));
+//            devices.add(new BasaDevice("url", "Gabinete Prof", "O meu escritorio no Tagus", "token"));
 
             if(mRecyclerView == null) {
                 mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);

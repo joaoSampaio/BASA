@@ -50,13 +50,14 @@ public class LightingManager {
             //timeOld = timeCurrent;
 
             for (int i = 0; i < this.lights.length; i++) {
-                Log.d("webserver", "values[i]:" + values[i]);
-                if (values[i]) {
-                    turnONLight(i, false);
-                } else {
-                    turnOFFLight(i, false);
-                }
 
+                if(values != null && values.length > i) {
+                    if (values[i]) {
+                        turnONLight(i, false);
+                    } else {
+                        turnOFFLight(i, false);
+                    }
+                }
             }
         }else {
             Log.d("webserver", "setlight too close in time");

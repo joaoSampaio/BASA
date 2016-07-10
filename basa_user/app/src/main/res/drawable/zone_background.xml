@@ -18,9 +18,9 @@
     <gradient
         android:type="linear"
         android:centerX="75%"
-        android:startColor="#90e0fa"
+        android:startColor="#bbedfd"
         android:centerColor="#FF05C1FF"
-        android:endColor="#00a2d7"
+        android:endColor="#0090bf"
         android:angle="90"/>
 
 </shape>

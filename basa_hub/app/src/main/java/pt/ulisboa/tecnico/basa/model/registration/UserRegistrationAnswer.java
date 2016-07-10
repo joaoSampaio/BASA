@@ -10,15 +10,19 @@ public class UserRegistrationAnswer {
 
     private List<String> uuids;
     private List<String> macAddress;
+    private double temperature;
+    private int humidity;
 
     public UserRegistrationAnswer() {
         this.uuids = new ArrayList<>();
         this.macAddress = new ArrayList<>();
-
+        this.temperature = 25;
+        this.humidity = 80;
 
 
         uuids.add("edd1ebeac04e5defa017");
     }
+
 
     public List<String> getUuids() {
         return uuids;
@@ -34,5 +38,21 @@ public class UserRegistrationAnswer {
 
     public void setMacAddress(List<String> macAddress) {
         this.macAddress = macAddress;
+    }
+
+    public double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 }

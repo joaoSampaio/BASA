@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -106,9 +105,6 @@ public class ZoneSettingsInfoFragment extends DialogFragment implements View.OnC
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("Rename", null)
                 .setNegativeButton("Cancel", null);
-
-
-
 
         // create an alert dialog
         final AlertDialog alert = alertDialogBuilder.create();

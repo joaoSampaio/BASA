@@ -28,18 +28,10 @@ public class UserManager implements Manager {
 
     public UserManager(MainActivity activity) {
         this.activity = activity;
-
-
-
-
-
     }
 
 
     public String registerNewUser(String userName, String email, String optionalUuid) throws UserRegistrationException {
-
-
-
 
         UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString();
@@ -69,6 +61,8 @@ public class UserManager implements Manager {
         return uuidString;
 
     }
+
+
 
 
     private void sendMailRegister(String uuid, String email) throws WriterException {

@@ -25,7 +25,7 @@ public class TemperatureFragment extends Fragment {
 
 
     View rootView;
-    private TextView textTemperature, forecastTemp, forecastSummary;
+    private TextView forecastTemp, forecastSummary;
     private InterestEventAssociation interest;
     private SeekArc mSeekArc;
     private ImageView image_temperature_mode, imageForecast;
@@ -41,9 +41,12 @@ public class TemperatureFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_temperature, container, false);
 
-        textTemperature = (TextView)rootView.findViewById(R.id.textTemperature);
-        textTemperature.setText("Waiting...: ");
         mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
+        mSeekArc.setCurrentTemperature("Waiting...: ");
+
+//        textTemperature = (TextView)rootView.findViewById(R.id.textTemperature);
+//        textTemperature.setText("Waiting...: ");
+
         image_temperature_mode = (ImageView)rootView.findViewById(R.id.image_temperature_mode);
         forecastTemp = (TextView) rootView.findViewById(R.id.forecastTemp);
         forecastSummary = (TextView) rootView.findViewById(R.id.forecastSummary);
@@ -107,8 +110,8 @@ public class TemperatureFragment extends Fragment {
             public void onRegisteredEventTriggered(Event event) {
                 if(event instanceof EventTemperature){
                     double temperature = ((EventTemperature)event).getTemperature();
-                    textTemperature.setText("" + temperature);
-
+//                    textTemperature.setText("" + temperature);
+                    mSeekArc.setCurrentTemperature("" + temperature);
                     int color = (temperature < 18)? Global.COLOR_COLD : Global.COLOR_HEAT;
                     mSeekArc.setBackgroundColor(color);
 
@@ -124,6 +127,11 @@ public class TemperatureFragment extends Fragment {
                 @Override
                 public void onTemperatureOutputChange(int change) {
                     setUp(change);
+                }
+
+                @Override
+                public void onTargetTemperatureChange(int temperature) {
+                    mSeekArc.setProgress(temperature);
                 }
             });
         if(((MainActivity)getActivity()).getBasaManager().getTemperatureManager() != null)

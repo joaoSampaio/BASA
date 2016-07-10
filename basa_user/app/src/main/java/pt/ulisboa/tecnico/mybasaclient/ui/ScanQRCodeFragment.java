@@ -227,7 +227,7 @@ public class ScanQRCodeFragment extends DialogFragment {
 
                     device.setBeaconUuids(response.getUuids());
                     device.setMacAddress(response.getMacAddress());
-
+                    device.setLatestTemperature(response.getTemperature());
                     Zone zone = Zone.getCurrentZone();
 
 

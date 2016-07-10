@@ -96,6 +96,46 @@ public class Zone {
         }
     }
 
+    public static void removeDevice(BasaDevice device){
+        Zone currentZone = Zone.getCurrentZone();
+        List<Zone> zones =  loadZones();
+        Zone zone = Zone.getZoneByName(currentZone.getName(), zones);
+        int pos = getDevicePositionById(zone, device);
+        if(pos >= 0){
+            zone.getDevices().remove(pos);
+        }
+        Zone.saveZones(zones);
+        Zone.saveCurrentZone(zone);
+    }
+
+    public static void updateCurrentZone(BasaDevice device){
+        Zone currentZone = Zone.getCurrentZone();
+        List<Zone> zones =  loadZones();
+
+
+        Zone zone = Zone.getZoneByName(currentZone.getName(), zones);
+
+        int pos = getDevicePositionById(zone, device);
+        if(pos >= 0){
+            zone.getDevices().set(pos, device);
+        }
+
+        Zone.saveZones(zones);
+        Zone.saveCurrentZone(zone);
+
+    }
+
+    public static int getDevicePositionById(Zone zone, BasaDevice device){
+        int i = 0;
+        for(BasaDevice d : zone.getDevices()){
+            if(d.getId().equals(device.getId()))
+                return i;
+            i++;
+        }
+        return -1;
+    }
+
+
     public static List<Zone> getOtherZones(List<Zone> zones, Zone current){
         Zone zone = null;
         for (Zone z : zones) {

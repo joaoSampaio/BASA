@@ -26,12 +26,14 @@ package pt.ulisboa.tecnico.basa.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -121,6 +123,11 @@ public class SeekArc extends View {
 
 
 	/**
+	 * Current temperature
+	 */
+	private String currentTemperature = "";
+
+	/**
 	 * is the control enabled/touchable
  	 */
 	private boolean mEnabled = true;
@@ -140,9 +147,15 @@ public class SeekArc extends View {
 	private int mTextYPos;
 	private double mTouchAngle;
 	private Paint paintText;
+	private TextPaint paintTextCurrent, paintLabel;
 	private int mSelectedTemperature = 0;
 	private float mTouchIgnoreRadius;
 	private OnSeekArcChangeListener mOnSeekArcChangeListener;
+	private float density;
+	private Bitmap arrowUp, arrowDown;
+	private Context context;
+	private int smallest;
+//	private
 
 	public interface OnSeekArcChangeListener {
 
@@ -189,6 +202,7 @@ public class SeekArc extends View {
 
 	public SeekArc(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		init(context, attrs, R.attr.seekArcStyle);
 	}
 
@@ -201,7 +215,7 @@ public class SeekArc extends View {
 
 		Log.d(TAG, "Initialising SeekArc");
 		final Resources res = getResources();
-		float density = context.getResources().getDisplayMetrics().density;
+		density = context.getResources().getDisplayMetrics().density;
 
 		// Defaults, may need to link this into theme settings
 		int arcColor = res.getColor(R.color.progress_gray);
@@ -212,7 +226,8 @@ public class SeekArc extends View {
 		// Convert progress width to pixels for current density
 		mProgressWidth = (int) (mProgressWidth * density);
 
-		
+
+
 		if (attrs != null) {
 			// Attribute initialization
 			final TypedArray a = context.obtainStyledAttributes(attrs,
@@ -222,6 +237,26 @@ public class SeekArc extends View {
 			if (thumb != null) {
 				mThumb = thumb;
 			}
+
+
+
+
+
+
+
+
+//			paintTextCurrent = new Paint(Paint.ANTI_ALIAS_FLAG);
+//			// text color - #3D3D3D
+//			paintTextCurrent.setColor(Color.parseColor("#FF383838"));
+//			// text size in pixels
+//			paintTextCurrent.setTextSize((int) (22 * density));
+//
+//			paintTextCurrent.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+//
+//			// text shadow
+//			paintText.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+
 
 			paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
 			// text color - #3D3D3D
@@ -234,12 +269,11 @@ public class SeekArc extends View {
 			// text shadow
 			paintText.setShadowLayer(1f, 0f, 1f, Color.WHITE);
 
-			
-			
-			thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
-			thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
-			mThumb.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
-					thumbHalfheight);
+
+//			thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
+//			thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
+//			mThumb.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
+//					thumbHalfheight);
 
 			mMax = a.getInteger(R.styleable.SeekArc_max, mMax);
 			mMin= a.getInteger(R.styleable.SeekArc_min, mMin);
@@ -307,7 +341,49 @@ public class SeekArc extends View {
 		if(!mClockwise) {
 			canvas.scale(-1, 1, mArcRect.centerX(), mArcRect.centerY() );
 		}
-		
+
+		smallest = (getWidth() > getHeight())? getHeight() : getWidth();
+
+		if(paintTextCurrent == null){
+			int thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
+			int thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
+
+			thumbHalfheight = (int)(thumbHalfheight * ((smallest/density)/500));
+			thumbHalfWidth = (int)(thumbHalfWidth * ((smallest/density)/500));
+			mThumb.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
+					thumbHalfheight);
+		}
+
+
+		if(paintTextCurrent == null){
+			paintTextCurrent = new TextPaint();
+			paintTextCurrent.setColor(Color.WHITE);
+			paintTextCurrent.setTextAlign(Paint.Align.CENTER);
+			paintTextCurrent.setTextSize(getScaledSize(110));
+
+
+		}
+		if(paintLabel == null) {
+			paintLabel = new TextPaint();
+			paintLabel.setColor(context.getResources().getColor(R.color.grey));
+			paintLabel.setTextAlign(Paint.Align.CENTER);
+			paintLabel.setTextSize(getScaledSize(25));
+
+		}
+
+//		if(arrowUp == null){
+//			final Resources res = getResources();
+//
+//			arrowUp = BitmapFactory.decodeResource(res,
+//					R.drawable.ic_keyboard_arrow_up);
+//			int sizeBitmap = Math.round(getScaledSize(200));
+//			arrowUp = Bitmap.createScaledBitmap(arrowUp, sizeBitmap, sizeBitmap, true); // Make sure w and h are in the correct order
+//			arrowDown =  Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res,
+//					R.drawable.ic_keyboard_arrow_down), sizeBitmap, sizeBitmap, true);
+//		}
+
+
+
 		// Draw the arcs
 		final int arcStart = mStartAngle + mAngleOffset + mRotation;
 		final int arcSweep = mSweepAngle;
@@ -333,14 +409,32 @@ public class SeekArc extends View {
 			canvas.drawArc(mArcRect, arcStart, mProgressSweep, false, mProgressPaint);
 
 		}
-//		canvas.drawText("22", mTranslateX ,  mTranslateY , paintText);
 		canvas.drawText(""+(mSelectedTemperature+mMin), mTranslateX - mTextXPos  ,  mTranslateY - mTextYPos  , paintText);
-// Draw the thumb nail
+
+
+		RectF bounds = new RectF(0, 0, getWidth(), getHeight());
+		float textHeight = paintTextCurrent.descent() - paintTextCurrent.ascent();
+		float textOffset = (textHeight / 2) - paintTextCurrent.descent();
+		canvas.drawText(""+currentTemperature, bounds.centerX(), bounds.centerY() + textOffset, paintTextCurrent);
+
+
+
+		float textHeightLabel = paintLabel.descent() - paintLabel.ascent();
+		float textOffsetLabel = (textHeightLabel / 2) - paintLabel.descent();
+		canvas.drawText("Currrent", bounds.centerX(), bounds.centerY()  - textHeightLabel - getScaledSize(50), paintLabel);
+
+
+//		int centreX = ((int)(bounds.width()  - arrowUp.getWidth()) /2);
+//		Paint paint = new Paint();
+//		paint.setAntiAlias(true);
+//		paint.setFilterBitmap(true);
+//		paint.setDither(true);
+//		canvas.drawBitmap(arrowUp , centreX, 0 + getScaledSize(20), paint);
+//		centreX = ((int)(bounds.width()  - arrowDown.getWidth()) /2);
+//		canvas.drawBitmap(arrowDown , centreX, bounds.centerY() - (getScaledSize(20)), paint);
+
+
 		canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
-
-
-		//mThumb.draw(canvas);
-
 
 
 		canvas.save(Canvas.MATRIX_SAVE_FLAG); //Saving the canvas and later restoring it so only this image will be rotated.
@@ -348,53 +442,10 @@ public class SeekArc extends View {
 		mThumb.draw(canvas);
 		canvas.restore();
 
-//		canvas.drawText("22", mTextXPos - mThumbXPos ,  mTextYPos - mThumbYPos , paintText);
+	}
 
-//		canvas.save();
-////		canvas.rotate(mProgressSweep,  mTranslateX - mThumbXPos,  mTranslateY - mThumbYPos);
-//		canvas.drawText("22", mTranslateX ,  mTranslateY , paintText);
-////		canvas.drawText(text, x, y, paint);
-//		canvas.restore();
-
-
-//
-//		Log.d("arc", "bias:"+bias);
-//		Log.d("arc", "mColor1:"+mColor1);
-//		Log.d("arc", "mColor2:"+mColor2);
-//		Log.d("arc", "color:"+color);
-
-
-//		int relativeProgress = mProgress - arcStart;
-//		int relativeMax = arcSweep - arcStart;
-//		float rotation = 360.0f / (float) relativeMax;
-//		for (int i = 0; i < relativeMax; ++i) {
-//			canvas.save();
-//
-//			canvas.rotate((float) i * rotation);
-//			canvas.translate(0, -mRadius);
-//
-//			if (i < relativeProgress) {
-//				float bias = (float) mProgressSweep / (float) (arcSweep - 1);
-//				int mColor1 =  Color.parseColor("#ff33b5e5");
-//				int mColor2 =  Color.parseColor("#689F38");
-//				int color = interpolateColor(mColor1, mColor2, bias);
-//				mProgressPaint.setColor(color);
-//			} else {
-//				int mInactiveColor =  Color.parseColor("#FFD8D8D8");
-//				canvas.scale(0.7f, 0.7f);
-//				mProgressPaint.setColor(mInactiveColor);
-//			}
-//
-//			canvas.drawRect(mSectionRect, mProgressPaint);
-//			canvas.restore();
-//		}
-
-
-
-
-
-
-
+	private int getScaledSize(int value){
+		return (int)(density * value * ((smallest/density)/500));
 	}
 
 	private int interpolateColor(int colorA, int colorB, float bias) {
@@ -595,6 +646,14 @@ public class SeekArc extends View {
 		invalidate();
 	}
 
+	public void setCurrentTemperature(String temperature){
+
+		currentTemperature = temperature;
+
+		invalidate();
+	}
+
+
 
 	/**
 	 * Sets a listener to receive notifications of changes to the SeekArc's
@@ -610,7 +669,7 @@ public class SeekArc extends View {
 	}
 
 	public void setProgress(int progress) {
-		updateProgress(progress, false);
+		updateProgress(progress-mMin, false);
 	}
 
 	public int getProgress() {

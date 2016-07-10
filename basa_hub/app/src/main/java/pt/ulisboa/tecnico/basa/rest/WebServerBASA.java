@@ -14,18 +14,22 @@ import android.util.Log;
 import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
+import pt.ulisboa.tecnico.basa.rest.Pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -147,6 +151,56 @@ public class WebServerBASA {
             }
         });
 
+        post(new Route("/make-changes") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+                String body = request.body();
+                Log.d("servico", "request.body():"+request.body());
+
+                Gson gson = new Gson();
+                try {
+                    final ChangeTemperatureLights changeTemperatureLights = gson.fromJson(body, new TypeToken<ChangeTemperatureLights>() {
+                    }.getType());
+                    Log.d("servico", "1:" + (getActivity() != null));
+
+                        Log.d("servico", "2:");
+                        if(AppController.getInstance().basaManager != null){
+
+                            final int temperature = changeTemperatureLights.getTargetTemperature();
+                            final boolean[] lights = changeTemperatureLights.getLightsState();
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    BasaManager manager = AppController.getInstance().basaManager;
+                                    if(temperature > 0 && manager.getTemperatureManager() != null)
+                                        manager.getTemperatureManager().changeTargetTemperature(temperature);
+                                    if(lights != null && lights.length > 0 && manager.getLightingManager() != null)
+                                        manager.getLightingManager().setLightState(lights);
+
+
+                                }
+                            });
+
+
+                            Log.d("servico", "3:");
+                            response.status(200);
+                            Log.d("servico", "{\"status\": true}");
+                            return "{\"status\": true}";
+                        }
+
+
+
+                    Log.d("servico", "4:");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                response.status(200);
+                Log.d("servico", "{\"status\": false}");
+                return "{\"status\": false}";
+            }
+        });
 
         get(new Route("/status") {
             @Override
@@ -157,6 +211,10 @@ public class WebServerBASA {
 
                 //verify permission in header
                 try {
+
+                    String session = request.headers("session");
+//                    if(isRequestAuthorized(session)){
+
 
                         if(AppController.getInstance().basaManager != null){
                             boolean[] lights = AppController.getInstance().basaManager
@@ -174,9 +232,8 @@ public class WebServerBASA {
                             Log.d("servico", "{\"status\": true, \"data\": "+gson.toJson(deviceStatus)+"}");
                             return "{\"status\": true, \"data\": "+gson.toJson(deviceStatus)+"}";
 
-
-
-                    }
+                        }
+//                    }
                     Log.d("servico", "4:");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -294,6 +351,13 @@ public class WebServerBASA {
             output.append((char) Integer.parseInt(str, 16));
         }
         return output.toString();
+    }
+
+
+    public boolean isRequestAuthorized(String uuid){
+        List<User> users = new ModelCache<List<User>>().loadModel(new TypeToken<List<User>>(){}.getType(), Global.OFFLINE_USERS);
+
+        return User.userUuidExists(users, uuid);
     }
 
     private class HttpRunnable implements Runnable {

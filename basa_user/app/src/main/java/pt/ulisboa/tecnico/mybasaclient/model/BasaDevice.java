@@ -18,6 +18,8 @@ public class BasaDevice {
     private String name;
     private String description;
     private String token;
+    private int numLights;
+    private double latestTemperature;
     private List<String> beaconUuids;
     private List<String> macAddress;
 
@@ -28,7 +30,21 @@ public class BasaDevice {
         this.token = token;
         this.beaconUuids = new ArrayList<>();
         this.macAddress = new ArrayList<>();
+        this.latestTemperature = 25;
+        this.numLights = 1;
     }
+
+    public BasaDevice(String url, String name, String description, String token, double latestTemperature) {
+        this.url = url;
+        this.name = name;
+        this.description = description;
+        this.token = token;
+        this.beaconUuids = new ArrayList<>();
+        this.macAddress = new ArrayList<>();
+        this.latestTemperature = latestTemperature;
+        this.numLights = 1;
+    }
+
 
     public String getUrl() {
         return url;
@@ -84,6 +100,22 @@ public class BasaDevice {
 
     public void setBeaconUuids(List<String> beaconUuids) {
         this.beaconUuids = beaconUuids;
+    }
+
+    public double getLatestTemperature() {
+        return latestTemperature;
+    }
+
+    public void setLatestTemperature(double latestTemperature) {
+        this.latestTemperature = latestTemperature;
+    }
+
+    public int getNumLights() {
+        return numLights;
+    }
+
+    public void setNumLights(int numLights) {
+        this.numLights = numLights;
     }
 
     public static void saveCurrentDevice(BasaDevice device){

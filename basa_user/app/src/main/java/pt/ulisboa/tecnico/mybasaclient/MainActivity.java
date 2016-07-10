@@ -33,6 +33,9 @@ import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart2Fragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.DeviceFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.DeviceLightsFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.DeviceSettingsFragment;
+import pt.ulisboa.tecnico.mybasaclient.ui.DeviceTemperatureFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.HomeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.InfoFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity;
@@ -192,6 +195,15 @@ public class MainActivity extends AppCompatActivity
         } else if(id == Global.DIALOG_ACCOUNT){
             newFragment = AccountFragment.newInstance();
             tag = "AccountFragment";
+        } else if(id == Global.DIALOG_DEVICE_TEMPERATURE){
+            newFragment = DeviceTemperatureFragment.newInstance();
+            tag = "DeviceTemperatureFragment";
+        } else if(id == Global.DIALOG_DEVICE_SETTINGS){
+            newFragment = DeviceSettingsFragment.newInstance();
+            tag = "DeviceSettingsFragment";
+        } else if(id == Global.DIALOG_DEVICE_LIGHT){
+            newFragment = DeviceLightsFragment.newInstance();
+            tag = "DeviceLightsFragment";
         }
 
 
@@ -230,6 +242,25 @@ public class MainActivity extends AppCompatActivity
         }
         openPage(id);
         return true;
+    }
+
+    public void dismissAllDialogs() {
+
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+
+        if (fragments == null)
+            return;
+
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof DialogFragment) {
+                DialogFragment dialogFragment = (DialogFragment) fragment;
+                dialogFragment.dismissAllowingStateLoss();
+            }
+
+            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+            if (childFragmentManager != null)
+                dismissAllDialogs(childFragmentManager);
+        }
     }
 
     public static void dismissAllDialogs(FragmentManager manager) {

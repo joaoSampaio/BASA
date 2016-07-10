@@ -118,6 +118,8 @@ public class TemperatureManager {
 
     public interface ActionTemperatureManager{
         void onTemperatureOutputChange(int change);
+
+        void onTargetTemperatureChange(int temperature);
 //        void onTemperatureChanged(double temperature);
     }
 
@@ -172,8 +174,16 @@ public class TemperatureManager {
                 handler.postDelayed(this, 30 * 1000);
             }
         });
+    }
+
+    public void changeTargetTemperature(int temperature){
+
+        //TODO logic
 
 
+        for (ActionTemperatureManager listenner: actionTemperatureManagerList) {
+            listenner.onTargetTemperatureChange(temperature);
+        }
     }
 
 
