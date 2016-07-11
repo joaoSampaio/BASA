@@ -50,7 +50,6 @@ public class TemperatureManager {
         actionTemperatureManagerList = new ArrayList<>();
         preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         handler = new Handler();
-        int numLights = Integer.parseInt(preferences.getString("light_number", "1"));
 
         preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -68,8 +67,6 @@ public class TemperatureManager {
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
         updateLocation();
-
-
 
         getActivity().getBasaManager().getEventManager().registerInterest(new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
@@ -99,14 +96,17 @@ public class TemperatureManager {
             public void onRegisteredEventTriggered(Event event) {
                 if(event instanceof EventTemperature){
                     double temperature = ((EventTemperature)event).getTemperature();
-                    latestTemperature = new Temperature(temperature, -1);
+                    Log.d("servico", "latest temp:" + temperature);
 
+                    setLatestTemperature(new Temperature(temperature, -1));
 
                 }
             }
         }, 0);
-        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
+
+        Log.d("servico", "TemperatureManager:" + (getActivity().getBasaManager().getEventManager() != null));
+        if((getActivity()).getBasaManager().getEventManager() != null)
+            getActivity().getBasaManager().getEventManager().registerInterest(interest);
 
 
 
@@ -244,6 +244,11 @@ public class TemperatureManager {
 
 // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
+
+    public void setLatestTemperature(Temperature latestTemperature) {
+        Log.d("servico", "setLatestTemperature:" + (latestTemperature != null));
+        this.latestTemperature = latestTemperature;
     }
 
     public Temperature getLatestTemperature() {

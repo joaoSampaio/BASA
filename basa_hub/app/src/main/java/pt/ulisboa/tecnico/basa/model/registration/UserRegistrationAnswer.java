@@ -20,7 +20,7 @@ public class UserRegistrationAnswer {
         this.humidity = 80;
 
 
-        uuids.add("edd1ebeac04e5defa017");
+        uuids.add("b9407f30-f5f8-466e-aff9-25556b57fe6d");
     }
 
 

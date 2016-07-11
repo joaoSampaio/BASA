@@ -4,10 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
+import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
-import com.estimote.sdk.eddystone.Eddystone;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class AppController extends Application {
     private MainActivity.InterfaceToActivity interfaceToActivity;
     public AsyncHttpServer server;
     private String namespace = "edd1ebeac04e5defa017";
+    String uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     public int currentCameraId;
     public int width;
     public int height;
@@ -50,9 +52,6 @@ public class AppController extends Application {
         AppController.context = getApplicationContext();
         EstimoteSDK.enableDebugLogging(true);
 
-//long scanPeriodMillis, long waitTimeMillis
-//        scanPeriodMillis - How long to perform Bluetooth Low Energy scanning?
-//                waitTimeMillis - How long to wait until performing next scanning?
 
     }
 
@@ -60,40 +59,75 @@ public class AppController extends Application {
     public void beaconStart(){
         Log.d("temp", "beaconStart:" );
         beaconManager = new BeaconManager(getApplicationContext());
-        beaconManager.setBackgroundScanPeriod(13000, 25000);
-        beaconManager.setForegroundScanPeriod(14000,0);
-        beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
+
+        beaconManager.setBackgroundScanPeriod(1300, 25000);
+        beaconManager.setForegroundScanPeriod(1000,5000);
+
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
-            public void onEddystonesFound(List<Eddystone> list) {
-                Log.d("temp", "list:" + list.size());
-                Log.d("temp", namespace +": wanted namespace:");
-                for (Eddystone eddy: list) {
-                    Log.d("temp", eddy.namespace +": eddy namespace:");
-                    if(eddy.namespace.equals(namespace)){
-                        Log.d("temp", "eddy.telemetry != null:" + (eddy.telemetry != null));
-                        if(eddy.telemetry != null){
-                            Log.d("temp", "temperatura:" + eddy.telemetry.temperature);
-                            Utils.Proximity proximity = Utils.computeProximity(eddy);
-                            double accuracy = Utils.computeAccuracy(eddy);
-                            Log.d("temp", "proximity.toString():" + proximity.toString());
-                            Log.d("temp", "accuracy:" +accuracy);
-                            if(interfaceToActivity != null){
-                                interfaceToActivity.updateTemperature(eddy.telemetry.temperature);
-                            }
-                        }
-                    }
+            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
+                Log.d("temp", "list:" + beacons.size());
+                if (beacons.size() != 0) {
+                    Beacon beacon = beacons.get(0);
+                    Utils.Proximity proximity = Utils.computeProximity(beacon);
+                    Log.d("temp", "proximity:" + proximity);
+                    Log.d("temp", "beacon:" + beacon.toString());
+                    Log.d("temp", "getProximityUUID:" + beacon.getProximityUUID());
+                    // ...
                 }
-
-
             }
         });
+
 
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                idEdge = beaconManager.startEddystoneScanning();
+                beaconManager.startRanging(new Region("regiao", null, null , null));
             }
         });
+
+
+
+
+
+//        beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
+//            @Override
+//            public void onEddystonesFound(List<Eddystone> list) {
+//                Log.d("temp", "list:" + list.size());
+//                Log.d("temp", namespace +": wanted namespace:");
+//                for (Eddystone eddy: list) {
+//                    Log.d("temp", eddy.namespace +": eddy namespace:");
+//                    if(eddy.namespace.equals(namespace)){
+//                        Log.d("temp", "eddy.telemetry != null:" + (eddy.telemetry != null));
+//                        if(eddy.telemetry != null){
+//                            Log.d("servico", "temperatura:" + eddy.telemetry.temperature);
+//                            Utils.Proximity proximity = Utils.computeProximity(eddy);
+//                            Log.d("servico", "basaManager != null:" + (basaManager != null));
+//                            if(basaManager != null) {
+//                                basaManager.getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
+//
+//                            }
+//
+//                            double accuracy = Utils.computeAccuracy(eddy);
+//                            Log.d("temp", "proximity.toString():" + proximity.toString());
+//                            Log.d("temp", "accuracy:" +accuracy);
+//                            if(interfaceToActivity != null){
+//                                interfaceToActivity.updateTemperature(eddy.telemetry.temperature);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//
+//            }
+//        });
+//
+//        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+//            @Override
+//            public void onServiceReady() {
+//                idEdge = beaconManager.startEddystoneScanning();
+//            }
+//        });
     }
 
     public void stopEddystoneScanning(){

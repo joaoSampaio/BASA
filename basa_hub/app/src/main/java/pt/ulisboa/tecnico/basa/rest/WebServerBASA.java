@@ -5,6 +5,7 @@ package pt.ulisboa.tecnico.basa.rest;
  */
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,10 +15,13 @@ import android.util.Log;
 import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import javax.servlet.http.HttpServletResponse;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
@@ -29,6 +33,7 @@ import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import spark.Request;
 import spark.Response;
@@ -45,22 +50,54 @@ public class WebServerBASA {
     private final static String STARTING_TEXT = "7e7e0d02";
     private final static String ENDING_TEXT = "7f7f";
     private MainActivity activity;
+    private CameraSettingsDialogFragment.BitmapMotionTransfer transfer;
     Future longRunningTaskFuture;
     ExecutorService threadPoolExecutor;
+    Runnable runnable;
+    Handler handler;
+    Bitmap live;
+    boolean isBitmapRegistered = false;
 
+    public void setActivity(MainActivity activity) {
+        if(this.activity != null)
+            return;
+        this.activity = activity;
+        if(!isBitmapRegistered){
+            if(getActivity() != null && getActivity().getmHelper() != null){
+                isBitmapRegistered = true;
+                getActivity().getmHelper().addImageListener(transfer);
+            }
+        }
+    }
 
     public WebServerBASA(MainActivity activity){
         Log.d("webserver", "WebServerBASA");
         this.activity =  activity;
+        transfer = new CameraSettingsDialogFragment.BitmapMotionTransfer() {
+            @Override
+            public void onBitMapAvailable(Bitmap bitmap) {
+                Log.d("servico", "onBitMapAvailable (live == bitmap)-> " + (live == bitmap));
+                live = bitmap;
+            }
+        };
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("servico", "getActivity() != null" + (getActivity() != null));
+
+                if(getActivity() != null && getActivity().getmHelper() != null){
+                    isBitmapRegistered = true;
+                    getActivity().getmHelper().addImageListener(transfer);
+                }
+            }
+        });
+
 
         threadPoolExecutor = Executors.newSingleThreadExecutor();
         Runnable longRunningTask = new HttpRunnable();
-
-// submit task to threadpool:
         longRunningTaskFuture = threadPoolExecutor.submit(longRunningTask);
 
 // At some point in the future, if you want to kill the task:
-
 
 //        new Thread(new HttpRunnable()).start();
 
@@ -68,6 +105,9 @@ public class WebServerBASA {
 
     public void stopServer(){
         Log.d("servico", "stopserver");
+        if(getActivity() != null && getActivity().getmHelper() != null) {
+            getActivity().getmHelper().removeImageListener(transfer);
+        }
         if(longRunningTaskFuture != null)
             longRunningTaskFuture.cancel(true);
         Spark.stop();
@@ -78,63 +118,6 @@ public class WebServerBASA {
     }
 
 
-//    public void endpoints() {
-//
-//        get("/hello", (request, response) -> {
-//                    response.type("application/json");
-//
-//            return "Hello Spark MVC Framework!";
-//        });
-//
-//        get("/users", (request, response) -> {
-//            response.type("application/json");
-//
-//                User user = new User("Joao");
-//                Gson gson = new Gson();
-//                String json = gson.toJson(user);
-//
-//                return json;
-//
-//        });
-//
-//        post("/register", (request, response) ->  {
-//
-//                String body = request.body();
-//                Log.d("webserver", "request.body():"+request.body());
-//
-//                Gson gson = new Gson();
-//
-//
-//                try {
-//                    final UserRegistration userRegistration = gson.fromJson(body, new TypeToken<UserRegistration>() {
-//                    }.getType());
-//                    if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
-//
-//                        getActivity().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
-//
-//                        UserRegistrationAnswer answer = new UserRegistrationAnswer();
-//
-//                        response.status(200);
-//                        return "{\"status\": true, \"data\": "+gson.toJson(answer)+"}";
-//
-//                    }
-//                } catch (UserRegistrationException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                response.status(200);
-//                return "{\"status\": false}";
-//
-//        });
-//
-//
-//
-//
-//    }
-
-
-
-
     public void endpoints() {
         get(new Route("/hello") {
             @Override
@@ -143,6 +126,46 @@ public class WebServerBASA {
             }
         });
 
+
+        get(new Route("/live") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+                Log.d("servico", "live != null" + (live != null));
+
+                if(live != null) {
+                    byte[] data = null;
+                    try {
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        live.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        data = stream.toByteArray();
+//                        data = Files.readAllBytes(path);
+                    } catch (Exception e1) {
+
+                        e1.printStackTrace();
+                    }
+
+                    HttpServletResponse raw = response.raw();
+//                    response.header("Content-Disposition", "attachment; filename=image.jpg");
+                    //response.type("application/force-download");
+                    try {
+                        raw.getOutputStream().write(data);
+                        raw.getOutputStream().flush();
+                        raw.getOutputStream().close();
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                    return raw;
+
+
+//                    return "{\"status\": true}";
+
+                }else{
+                    return "{\"status\": false}";
+                }
+            }
+        });
 
         get(new Route("/alive") {
             @Override
@@ -219,6 +242,9 @@ public class WebServerBASA {
                         if(AppController.getInstance().basaManager != null){
                             boolean[] lights = AppController.getInstance().basaManager
                                     .getLightingManager().getLights();
+
+                            Log.d("servico", "getLatestTemperature:" + (AppController.getInstance().basaManager
+                                    .getTemperatureManager().getLatestTemperature() != null));
 
                             double temperature = (AppController.getInstance().basaManager
                                     .getTemperatureManager().getLatestTemperature() != null)?

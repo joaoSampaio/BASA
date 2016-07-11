@@ -155,8 +155,21 @@ public class DeviceSettingsFragment extends DialogFragment implements View.OnCli
                                     new CheckServerService(ip, new CallbackFromService() {
                                         @Override
                                         public void success(Object response) {
+
+
+
                                             if(getDialog() != null)
-                                            Zone.updateCurrentZone(device);
+                                                Zone.updateCurrentZone(device);
+
+                                            if(getActivity() != null){
+                                                MainActivity activity = (MainActivity) getActivity();
+                                                if(activity.getCommunicationHomeFragment() != null)
+                                                    activity.getCommunicationHomeFragment().updateZone();
+
+                                                if(activity.getCommunicationUserFragment() != null)
+                                                    activity.getCommunicationUserFragment().refreshZones();
+
+                                            }
                                             if(alert != null)
                                             alert.dismiss();
                                         }

@@ -41,6 +41,7 @@ public class Global {
 
     public final static String HUB_ENDPOINT_MAKE_CHANGES = "/make-changes";
     public final static String HUB_ENDPOINT_ALIVE = "/alive";
+    public final static String HUB_ENDPOINT_LIVE = "/live";
     public final static String HUB_ENDPOINT_STATUS = "/status";
 
 

@@ -50,6 +50,10 @@ public class ServerService extends Service {
     //Here Activity register to the service as Callbacks client
     public void registerClient(MainActivity activity){
         this.activity = activity;
+
+        if(server != null)
+            server.setActivity(activity);
+
     }
 
 
@@ -77,6 +81,9 @@ public class ServerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("servico", "onStartCommand");
         //check internet
+
+        Log.d("servico", "activity:"+(activity != null));
+
         String origin = "";
         if(intent != null) {
             Bundle extras = intent.getExtras();

@@ -108,6 +108,8 @@ public class Zone {
         Zone.saveCurrentZone(zone);
     }
 
+//    public static List<String> get
+
     public static void updateCurrentZone(BasaDevice device){
         Zone currentZone = Zone.getCurrentZone();
         List<Zone> zones =  loadZones();

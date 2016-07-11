@@ -2,9 +2,11 @@ package pt.ulisboa.tecnico.mybasaclient.ui;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
     View rootView;
     Toolbar toolbar;
     private BasaDevice device;
+    private Handler handler;
+    private Runnable runnable;
 
     public DeviceCameraFragment() {
         // Required empty public constructor
@@ -67,8 +71,41 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
         return rootView;
     }
 
-    private void init(){
+    @Override
+    public void onResume(){
+        super.onResume();
 
+        handler.post(runnable);
+    }
+
+    private DeviceCameraFragment getThis(){
+        return this;
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        handler.removeCallbacks(runnable);
+    }
+
+    private void init(){
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null){
+                    Log.d("device", "get photo");
+                    Glide.with(getThis()).load(device.getUrl() + Global.HUB_ENDPOINT_LIVE)
+                            .skipMemoryCache( true )
+                            .diskCacheStrategy( DiskCacheStrategy.NONE )
+                            .dontAnimate()
+                            .centerCrop()
+                            .into((ImageView) rootView.findViewById(R.id.imageCamera));
+                handler.postDelayed(this, 3000);
+                }
+            }
+        };
         View settings = rootView.findViewById(R.id.action_settings);
         settings.setVisibility(View.VISIBLE);
         settings.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +122,8 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into((ImageView)rootView.findViewById(R.id.imageCamera));
+
+
 
 
     }

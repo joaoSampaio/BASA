@@ -3,28 +3,15 @@ package pt.ulisboa.tecnico.basa.ui.secondary;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.util.List;
 
@@ -32,8 +19,6 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.RectangleView;
-import pt.ulisboa.tecnico.basa.detection.IMotionDetection;
-import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.ui.MainActivity;
 
 
@@ -42,7 +27,7 @@ public class CameraSettingsDialogFragment extends DialogFragment {
     private View rootView;
     private ImageView img_camera;
     private RectangleView rect;
-
+    private BitmapMotionTransfer transfer;
 
 
     public CameraSettingsDialogFragment() {
@@ -185,30 +170,34 @@ public class CameraSettingsDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         Dialog d = getDialog();
         if (d!=null){
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
         }
+
+        transfer = new BitmapMotionTransfer() {
+            @Override
+            public void onBitMapAvailable(Bitmap bitmap) {
+                if(getActivity() != null && img_camera != null)
+                img_camera.setImageBitmap(bitmap);
+            }
+        };
+
         MainActivity activity = (MainActivity)getActivity();
         if(activity.getmHelper() != null) {
 
-            activity.getmHelper().setBitmapMotionTransfer(new BitmapMotionTransfer() {
-                @Override
-                public void onBitMapAvailable(Bitmap bitmap) {
-                    img_camera.setImageBitmap(bitmap);
-                }
-            });
+            activity.getmHelper().addImageListener(transfer);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)getActivity()).getmHelper().setBitmapMotionTransfer(null);
+        ((MainActivity)getActivity()).getmHelper().removeImageListener(transfer);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
             @Override
             public void run() {
                 refreshLights();
-                handler.postDelayed(this, 2000);
+                handler.postDelayed(this, 3000);
             }
         };
         toggle_all = (Button) rootView.findViewById(R.id.toggle_all);

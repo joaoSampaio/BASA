@@ -15,7 +15,7 @@ import android.view.Display;
 import android.view.TextureView;
 import android.view.WindowManager;
 
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,7 +35,7 @@ import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 public class CameraHelper implements TextureView.SurfaceTextureListener {
 
     private MainActivity activity;
-    private CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotionTransfer;
+    private List<CameraSettingsDialogFragment.BitmapMotionTransfer> bitmapMotionTransfer;
     private int previewCount = 0;
     private static volatile AtomicBoolean processing = new AtomicBoolean(false);
     private IMotionDetection detector = null;
@@ -46,6 +46,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
 
     public CameraHelper(MainActivity act) {
         this.activity = act;
+        bitmapMotionTransfer = new ArrayList<>();
         setUpSize();
         detector = new RgbMotionDetection();
     }
@@ -233,13 +234,26 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
         return previewCallback;
     }
 
-    public CameraSettingsDialogFragment.BitmapMotionTransfer getBitmapMotionTransfer() {
+    public List<CameraSettingsDialogFragment.BitmapMotionTransfer> getBitmapMotionTransfer() {
         return bitmapMotionTransfer;
     }
 
-    public void setBitmapMotionTransfer(CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotionTransfer) {
-        this.bitmapMotionTransfer = bitmapMotionTransfer;
+    public void addImageListener(CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotion ){
+
+        for (CameraSettingsDialogFragment.BitmapMotionTransfer transfer : bitmapMotionTransfer)
+            if(transfer == bitmapMotion)
+                return;
+
+        bitmapMotionTransfer.add(bitmapMotion);
     }
+
+    public void removeImageListener(CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotion ){
+        bitmapMotionTransfer.remove(bitmapMotion);
+    }
+
+//    public void setBitmapMotionTransfer(CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotionTransfer) {
+//        this.bitmapMotionTransfer = bitmapMotionTransfer;
+//    }
 
     public final class DetectionThread extends Thread {
 
@@ -283,19 +297,18 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
 
                     detected(false);
                 }
-                if(getBitmapMotionTransfer() != null) {
+                if(!getBitmapMotionTransfer().isEmpty()) {
                     final Bitmap b = ImageProcessing.rgbToBitmap(img, width, height);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getBitmapMotionTransfer() != null) {
-                                getBitmapMotionTransfer().onBitMapAvailable(b);
+                    for(final CameraSettingsDialogFragment.BitmapMotionTransfer  transfer : getBitmapMotionTransfer()){
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                    transfer.onBitMapAvailable(b);
+
                             }
-//                                Log.d("UI thread", "I am the UI thread");
-//                                getActivity().getPreview_img().setImageBitmap(b);
-//                                getActivity().getPreview_img().bringToFront();
-                        }
-                    });
+                        });
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

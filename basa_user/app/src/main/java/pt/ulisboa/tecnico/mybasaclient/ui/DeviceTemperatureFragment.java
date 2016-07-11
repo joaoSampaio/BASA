@@ -16,9 +16,11 @@ import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
+import pt.ulisboa.tecnico.mybasaclient.model.DeviceStatus;
 import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.GetDeviceStatusService;
 import pt.ulisboa.tecnico.mybasaclient.util.SeekArc;
 
 /**
@@ -72,6 +74,13 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
         return rootView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        refreshTemperature();
+    }
+
+
     private void init(){
 
         mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
@@ -124,6 +133,31 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
             }
         });
     }
+
+    private void refreshTemperature(){
+        if(getActivity() == null)
+            return;
+        new GetDeviceStatusService(device.getUrl(), new CallbackFromService<DeviceStatus, String>() {
+            @Override
+            public void success(DeviceStatus response) {
+
+                if(getActivity() != null){
+
+
+                    device.setLatestTemperature(response.getTemperature());
+                    mSeekArc.setBackgroundColor((device.getLatestTemperature() >= 18)? Global.COLOR_HEAT : Global.COLOR_COLD);
+                    mSeekArc.setCurrentTemperature(device.getLatestTemperature() + "");
+
+                }
+            }
+
+            @Override
+            public void failed(String error) {
+
+            }
+        }).execute();
+    }
+
 
     @Override
     public void onClick(View v) {
