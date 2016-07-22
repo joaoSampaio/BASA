@@ -70,9 +70,43 @@
     </PreferenceCategory>
 
 
+    <PreferenceCategory
+        android:title="Firebase database">
+
+
+        <EditTextPreference
+            android:key="FIREBASE_EMAIL"
+            android:title="Firebase account email"
+            android:summary="Email used to sync with google firebase"
+            android:dialogTitle="Firebase account email" />
+
+        <EditTextPreference
+            android:key="FIREBASE_PASS"
+            android:title="Firebase Password"
+            android:password="true"
+            android:summary="******"
+            android:dialogTitle="Password for Firebase" />
+
+        <Preference android:title="Login to firebase"
+            android:key="FIREBASE_BTN"
+            android:summary=""/>
+
+
+
+    </PreferenceCategory>
+
+
 
     <PreferenceCategory android:title="Kiosk Mode">
-        <Preference android:title="Exit App"
+
+        <CheckBoxPreference
+            android:key="enable_kiosk"
+            android:title="Enable Kiosk mode"
+            android:summary="Prevent the user from leaving the app"
+            android:defaultValue="false"
+            />
+
+        <Preference android:title="Exit app"
             android:key="btn_kiosk"
             android:summary="Introduce the PIN to close the app"/>
     </PreferenceCategory>

@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 
 /**
@@ -54,7 +55,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_device_camera, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        device = BasaDevice.getCurrentDevice();
+        device = AppController.getInstance().getCurrentDevice();
         if (toolbar!=null) {
 
             toolbar.setTitle(device.getName());

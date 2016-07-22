@@ -27,6 +27,8 @@ public interface Api {
     @GET
     Call<JsonElement> deviceStatus(@Url String url);
 
+    @GET
+    Call<JsonElement> registerOnDevice(@Url String url);
 
     @POST
     Call<JsonElement> registerOnDevice(@Url String url,@Body UserRegistration registration);

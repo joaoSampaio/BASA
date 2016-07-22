@@ -19,14 +19,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by Sampaio on 16/05/2016.
@@ -36,9 +34,9 @@ public class LightingControlEDUP implements LightingControl {
     private final static String STARTING_TEXT = "7e7e000d0002";
     //7E7E000D0002
     private final static String ENDING_TEXT = "7f7f";
-    private MainActivity activity;
+    private Launch2Activity activity;
 
-    public LightingControlEDUP(MainActivity activity) {
+    public LightingControlEDUP(Launch2Activity activity) {
         this.activity = activity;
 
         new Thread(new ListenEDUPMulticast(activity)).start();
@@ -310,7 +308,7 @@ public class LightingControlEDUP implements LightingControl {
         }
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 }

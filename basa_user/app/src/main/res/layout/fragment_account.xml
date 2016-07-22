@@ -92,6 +92,31 @@
                 android:textColor="@color/primary_dark_material_light" />
         </RelativeLayout>
 
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/enableFirebase">
+
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Firebase"
+                android:id="@+id/textFirebase"
+                android:layout_alignParentTop="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp" />
+
+            <CheckBox
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkboxFirebase"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/primary_dark_material_light" />
+        </RelativeLayout>
+
 
 
 

@@ -1,30 +1,26 @@
 package pt.ulisboa.tecnico.basa.manager;
 
 import android.app.Activity;
-import android.graphics.ImageFormat;
-import android.graphics.YuvImage;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by Sampaio on 16/04/2016.
  */
 public class VideoManager {
 
-    private MainActivity activity;
+    private Launch2Activity activity;
     private Socket socket;
     private String TAG = "steam";
     private DataOutputStream stream;
@@ -42,7 +38,7 @@ public class VideoManager {
     private ServerSocket serverSocket;
 
 
-    public VideoManager(MainActivity activity){
+    public VideoManager(Launch2Activity activity){
         this.activity = activity;
     }
 
@@ -253,7 +249,7 @@ public class VideoManager {
 //        }
 
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 }

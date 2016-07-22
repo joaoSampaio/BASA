@@ -8,38 +8,38 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.adapter.LightsAdapter;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.DeviceStatus;
-import pt.ulisboa.tecnico.mybasaclient.model.LightBulb;
-import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.GetDeviceStatusService;
+import pt.ulisboa.tecnico.mybasaclient.util.GenericCommunicationToFragment;
 
 
-public class DeviceLightsFragment extends DialogFragment implements View.OnClickListener {
+public class DeviceLightsFragment extends DialogFragment {
     View rootView;
     Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private LightsAdapter mAdapter;
-    private List<LightBulb> lights;
     private BasaDevice device;
     private Button toggle_all;
     private Handler handler;
     private Runnable runnable;
+    private GenericCommunicationToFragment listener;
 
     public DeviceLightsFragment() {
         // Required empty public constructor
@@ -63,7 +63,7 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_device_lights, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        device = BasaDevice.getCurrentDevice();
+        device = AppController.getInstance().getCurrentDevice();
         if (toolbar!=null) {
 
             toolbar.setTitle(device.getName());
@@ -76,7 +76,6 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
                 }
             });
         }
-        lights = new ArrayList<>();
         init();
         return rootView;
     }
@@ -85,17 +84,29 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
     @Override
     public void onResume(){
         super.onResume();
-        handler.postDelayed(runnable, 2000);
+        if (!AppController.getInstance().getLoggedUser().isEnableFirebase() || ((MainActivity)getActivity()).getmManager() == null) {
+            handler.post(runnable);
+        }
+        ((MainActivity)getActivity()).addGenericCommunication(listener);
     }
 
     @Override
     public void onPause(){
         super.onPause();
         handler.removeCallbacks(runnable);
+        ((MainActivity)getActivity()).removeGenericCommunication(listener);
     }
 
     private void init(){
 
+        listener = new GenericCommunicationToFragment() {
+            @Override
+            public void onDataChanged() {
+
+                mAdapter.notifyDataSetChanged();
+
+            }
+        };
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -108,36 +119,7 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
         toggle_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean allTurnedOn = true;
-                for(LightBulb l : lights) {
-                    if(!l.isOn())
-                        allTurnedOn = false;
-
-                }
-
-
-
-                for(LightBulb lightBulb : lights){
-                    lightBulb.setState(!allTurnedOn);
-                }
-
-                ChangeTemperatureLights changeTemperatureLights = new ChangeTemperatureLights(LightBulb.getArray(lights), -80);
-                new ChangeTemperatureLightsService(device.getUrl(), changeTemperatureLights, new CallbackFromService() {
-                    @Override
-                    public void success(Object response) {
-
-                    }
-
-                    @Override
-                    public void failed(Object error) {
-
-                    }
-                }).execute();
-                mAdapter.notifyDataSetChanged();
-                toggle_all.setText(!allTurnedOn? "All off" : "All on");
-
-
-
+                toggleLights();
             }
         });
 
@@ -154,15 +136,10 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
 
         if(mRecyclerView == null) {
 
-            int numLights = device.getNumLights();
-            for(int i = 0; i< numLights; i++){
-                lights.add(new LightBulb(false));
-            }
-
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.setHasFixedSize(true);
-            mAdapter = new LightsAdapter((MainActivity) getActivity(), lights, device);
+            mAdapter = new LightsAdapter((MainActivity) getActivity(), device);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
             mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
@@ -170,11 +147,11 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnLightChange(new LightsAdapter.OnLightChange() {
                 @Override
-                public void onChange(List<LightBulb> bulbList) {
+                public void onChange(List<Boolean> bulbList) {
 
                     boolean allTurnedOn = true;
-                    for(LightBulb l : bulbList) {
-                        if(!l.isOn())
+                    for(Boolean isOn : bulbList) {
+                        if(!isOn)
                             allTurnedOn = false;
 
                     }
@@ -184,43 +161,36 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
                 }
             });
         }
-//        mAdapter.notifyDataSetChanged();
-
-
-        refreshLights();
-
-
     }
 
 
     private void refreshLights(){
         if(getActivity() == null)
             return;
+
         new GetDeviceStatusService(device.getUrl(), new CallbackFromService<DeviceStatus, String>() {
             @Override
             public void success(DeviceStatus response) {
 
 
-                if(device != null){
+                if (device != null) {
                     int numLights = response.getLights().length;
                     device.setNumLights(numLights);
-                    Zone.updateCurrentZone(device);
-                    BasaDevice.saveCurrentDevice(device);
-
+//                    AppController.getInstance().saveCurrentDevice(device);
                 }
 
-                if(getActivity() != null){
+                if (getActivity() != null) {
 
                     boolean allTurnedOn = true;
-                    lights.clear();
-                    for(boolean l : response.getLights()) {
-                        lights.add(new LightBulb(l));
-                        if(!l)
+                    device.getLights().clear();
+                    for (boolean l : response.getLights()) {
+                        device.getLights().add(l);
+                        if (!l)
                             allTurnedOn = false;
 
                     }
 
-                    toggle_all.setText(allTurnedOn? "All off" : "All on");
+                    toggle_all.setText(allTurnedOn ? "All off" : "All on");
 
                     mAdapter.notifyDataSetChanged();
                 }
@@ -231,21 +201,43 @@ public class DeviceLightsFragment extends DialogFragment implements View.OnClick
 
             }
         }).execute();
+
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.zone_info:
-                ((MainActivity)getActivity()).openPage(Global.DIALOG_SETTINGS_ZONE_INFO);
-                break;
-            case R.id.add_device:
+    private void toggleLights() {
+        boolean allTurnedOn = true;
+        for (Boolean isOn : device.getLights()) {
+            if (!isOn)
+                allTurnedOn = false;
+        }
 
-                break;
-            case R.id.remove_zone:
+        for (int i = 0; i < device.getLights().size(); i++)
+            device.getLights().set(i, !allTurnedOn);
 
-                break;
+        if (AppController.getInstance().getLoggedUser().isEnableFirebase() && ((MainActivity)getActivity()).getmManager() != null) {
+            Log.d("light", "firebase command:");
+            ((MainActivity)getActivity()).getmManager().changeLights(device.getLights());
+
+        } else {
+            boolean[] tmp = new boolean[device.getLights().size()];
+            for(int i = 0; i < device.getLights().size(); i++) tmp[i] = device.getLights().get(i);
+            ChangeTemperatureLights changeTemperatureLights = new ChangeTemperatureLights(tmp, -80);
+            new ChangeTemperatureLightsService(device.getUrl(), changeTemperatureLights, new CallbackFromService() {
+                @Override
+                public void success(Object response) {
+
+                }
+
+                @Override
+                public void failed(Object error) {
+
+                }
+            }).execute();
+            mAdapter.notifyDataSetChanged();
 
         }
+        toggle_all.setText(!allTurnedOn ? "All off" : "All on");
     }
+
+
 }

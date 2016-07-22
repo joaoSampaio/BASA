@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.basa.manager;
 
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by joaosampaio on 20-04-2016.
@@ -15,9 +15,9 @@ public class BasaManager {
     private DeviceDiscoveryManager deviceDiscoveryManager;
     private WebServerManager webServerManager;
     private UserManager userManager;
-    private MainActivity activity;
+    private Launch2Activity activity;
 
-    public BasaManager(MainActivity activity) {
+    public BasaManager(Launch2Activity activity) {
         this.activity = activity;
     }
 
@@ -98,7 +98,7 @@ public class BasaManager {
         return userManager;
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 }

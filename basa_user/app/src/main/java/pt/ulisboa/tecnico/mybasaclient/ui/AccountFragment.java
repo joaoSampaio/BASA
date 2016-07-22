@@ -9,17 +9,19 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
-import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,8 +32,9 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
     View rootView;
     Toolbar toolbar;
     User user;
+    CheckBox checkboxFirebase;
 
-    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out};
+    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out, R.id.enableFirebase};
 
     public AccountFragment() {
         // Required empty public constructor
@@ -56,7 +59,7 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
         rootView =  inflater.inflate(R.layout.fragment_account, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        if(!Zone.loadZones().isEmpty()) {
+        if(!AppController.getInstance().isEmptyZones()) {
             if (toolbar != null) {
                 toolbar.setTitle("Account");
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -77,7 +80,10 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
     }
 
     private void init(){
-        user = User.getLoggedUser();
+        user = AppController.getInstance().getLoggedUser();
+        checkboxFirebase = (CheckBox) rootView.findViewById(R.id.checkboxFirebase);
+        checkboxFirebase.setChecked(user.isEnableFirebase());
+
         for(int id : CLICK)
             rootView.findViewById(id).setOnClickListener(this);
     }
@@ -115,7 +121,7 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
 
                                 if(name.length() >= 4){
                                     user.setUserName(name);
-                                    User.saveUser(user);
+                                    AppController.getInstance().setLoggedUser(user);
                                     alert.dismiss();
                                 }else{
                                     Snackbar snack = Snackbar.make(editText, "Name too short", Snackbar.LENGTH_SHORT);
@@ -139,8 +145,13 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
 
                 ((MainActivity)getActivity()).signOut();
 
+                break;
 
-
+            case R.id.enableFirebase:
+                Log.d("arc", "user.isEnableFirebase():"+user.isEnableFirebase());
+                user.setEnableFirebase(!user.isEnableFirebase());
+                checkboxFirebase.setChecked(user.isEnableFirebase());
+                Log.d("arc", "depois user.isEnableFirebase():"+user.isEnableFirebase());
                 break;
         }
     }

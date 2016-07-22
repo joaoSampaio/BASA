@@ -19,7 +19,7 @@ public class ModelCache<T> {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
         if(!TAG.equals(Global.DATA_USER)){
 
-            User user = User.getLoggedUser();
+            User user = AppController.getInstance().getLoggedUser();
             TAG = TAG + "|"+user.getUuid();
 
         }
@@ -29,6 +29,7 @@ public class ModelCache<T> {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(TAG, json);
         editor.commit();
+        Log.d("home", "tag->" + TAG + " saveModel->" + json);
     }
 
     public T loadModel(Type type, String TAG){
@@ -39,7 +40,7 @@ public class ModelCache<T> {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
         if(!TAG.equals(Global.DATA_USER)){
 
-            User user = User.getLoggedUser();
+            User user = AppController.getInstance().getLoggedUser();
             TAG = TAG + "|"+user.getUuid();
 
         }
@@ -47,12 +48,12 @@ public class ModelCache<T> {
         try {
             contacts = sp.getString(TAG, defaultValue);
         }catch (Exception e){
-            Log.d("myapp", "error:" + e.getMessage());
+            Log.d("home", "error:" + e.getMessage());
         }
         if (contacts.equals("")) {
             return null;
         } else {
-            Log.d("loadModel", "loadModel->" + contacts);
+            Log.d("home",  "tag->" + TAG + " loadModel->" + contacts);
             T contactsList = new Gson().fromJson(contacts, type);
             return contactsList;
         }

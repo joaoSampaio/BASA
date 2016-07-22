@@ -25,6 +25,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.camera.CallbackCameraAction;
 import pt.ulisboa.tecnico.mybasaclient.camera.CallbackQRcode;
 import pt.ulisboa.tecnico.mybasaclient.camera.CameraPreview4;
@@ -33,7 +34,10 @@ import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistration;
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.model.registration.BasaDeviceInfo;
+import pt.ulisboa.tecnico.mybasaclient.model.registration.SimpleBasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.GetRegistrationInfoService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.RegisterUserService;
 
 /**
@@ -51,6 +55,7 @@ public class ScanQRCodeFragment extends DialogFragment {
     Button save_device;
     View progressBarRegister;
     private BasaDevice device;
+    private SimpleBasaDevice simpleBasaDevice;
     public static ScanQRCodeFragment newInstance() {
         ScanQRCodeFragment fragment = new ScanQRCodeFragment();
         return fragment;
@@ -115,6 +120,7 @@ public class ScanQRCodeFragment extends DialogFragment {
             }
         });
 
+        device = new BasaDevice();
         return rootView;
     }
 
@@ -187,12 +193,41 @@ public class ScanQRCodeFragment extends DialogFragment {
         Gson gson = new Gson();
         try {
             Log.d("qrcode", "entrou:");
-            device = gson.fromJson(value, new TypeToken<BasaDevice>() {
+            simpleBasaDevice = gson.fromJson(value, new TypeToken<SimpleBasaDevice>() {
             }.getType());
 
-            if(device.getToken() != null && !device.getToken().isEmpty()){
-                Log.d("qrcode", "name:"+device.getName());
-                editTextName.setText(device.getName());
+            if(simpleBasaDevice.getToken() != null && !simpleBasaDevice.getToken().isEmpty()){
+
+                if(!simpleBasaDevice.getUrl().startsWith("http")) {
+                    simpleBasaDevice.setUrl("http://" + simpleBasaDevice.getUrl());
+                }
+
+                device.setUrl(simpleBasaDevice.getUrl());
+                save_device.setEnabled(false);
+                //contact server
+                new GetRegistrationInfoService(simpleBasaDevice.getUrl(), new CallbackFromService<BasaDeviceInfo, Object>() {
+                    @Override
+                    public void success(BasaDeviceInfo response) {
+
+                        if(getDialog() != null){
+                            save_device.setEnabled(true);
+                            Log.d("qrcode", "name:"+response.getName());
+                            editTextName.setText(response.getName());
+                            device.setDescription(response.getDescription());
+                            device.setId(response.getId());
+                            device.setName(response.getName());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void failed(Object error) {
+                        Toast.makeText(getActivity(), "Could not contact device.", Toast.LENGTH_SHORT).show();
+                    }
+                }).execute();
+
+
 
 
 
@@ -210,7 +245,7 @@ public class ScanQRCodeFragment extends DialogFragment {
 
     private void registerUser(){
 
-        if(device != null && device.getToken() != null && !device.getToken().isEmpty()){
+        if(simpleBasaDevice != null && simpleBasaDevice.getToken() != null && !simpleBasaDevice.getToken().isEmpty()){
             save_device.setEnabled(false);
             progressBarRegister.setVisibility(View.VISIBLE);
 
@@ -218,9 +253,9 @@ public class ScanQRCodeFragment extends DialogFragment {
                 device.setUrl("http://" + device.getUrl());
             }
 
-            String registrationUrl = device.getUrl() + "/register";
-            User user = User.getLoggedUser();
-            UserRegistration userRegistration = new UserRegistration(user.getEmail(), user.getUserName(), user.getUuid(), device.getToken());
+            String registrationUrl = device.getUrl();
+            User user = AppController.getInstance().getLoggedUser();
+            UserRegistration userRegistration = new UserRegistration(user.getEmail(), user.getUserName(), user.getUuid(), simpleBasaDevice.getToken());
             new RegisterUserService(registrationUrl, userRegistration, new CallbackFromService<UserRegistrationAnswer, String>() {
                 @Override
                 public void success(UserRegistrationAnswer response) {
@@ -228,16 +263,16 @@ public class ScanQRCodeFragment extends DialogFragment {
                     device.setBeaconUuids(response.getUuids());
                     device.setMacAddress(response.getMacAddress());
                     device.setLatestTemperature(response.getTemperature());
-                    Zone zone = Zone.getCurrentZone();
+                    Zone zone = AppController.getInstance().getCurrentZone();
 
 
-                    List<Zone> zones = Zone.loadZones();
+                    List<Zone> zones = AppController.getInstance().loadZones();
                     zone = Zone.getZoneByName(zone.getName(), zones);
                     zone.addDevice(device);
-                    Zone.saveZones(zones);
-                    Zone.saveCurrentZone(zone);
+                    AppController.getInstance().saveZones(zones);
+                    AppController.getInstance().saveCurrentZone(zone);
                     if(getActivity() != null && ((MainActivity)getActivity()).getCommunicationHomeFragment() != null)
-                        ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone();
+                        ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone(true);
                     if(getDialog() != null)
                         getDialog().dismiss();
 

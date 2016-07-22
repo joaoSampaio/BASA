@@ -24,12 +24,12 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
-import pt.ulisboa.tecnico.basa.model.BasaDevice;
+import pt.ulisboa.tecnico.basa.model.registration.SimpleBasaDevice;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;
 
 public class RegisterUserDialogFragment extends android.support.v4.app.DialogFragment implements View.OnClickListener {
@@ -96,7 +96,7 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
 
                 String uuid = null;
                 try {
-                    uuid = ((MainActivity)getActivity()).getBasaManager().getUserManager()
+                    uuid = ((Launch2Activity)getActivity()).getBasaManager().getUserManager()
                             .registerNewUser(username, email, null);
 
                     Bitmap image = QRCodeGenerator.encodeAsBitmap(uuid);
@@ -186,7 +186,8 @@ public class RegisterUserDialogFragment extends android.support.v4.app.DialogFra
             String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress()) + ":" + Global.PORT;
 //            RegisterAndroidQRCode code = new RegisterAndroidQRCode("1234", ip);
             ((TextView)rootView.findViewById(R.id.textViewIP)).setText(ip);
-            BasaDevice device = new BasaDevice("1234", ip, "Tagus 2N.11.5", "descrição", UserRegistrationToken.generateToken());
+            SimpleBasaDevice device = new SimpleBasaDevice(ip, UserRegistrationToken.generateToken());
+//            BasaDeviceInfo device = new BasaDeviceInfo("WzGE9m7AKgYUmgbW1sE8fzgVDQB2", ip, "Tagus 2N.11.5", "descrição", UserRegistrationToken.generateToken());
 
             Gson gson = new Gson();
             qrcode_android.setImageBitmap(QRCodeGenerator.encodeAsBitmap(gson.toJson(device)));

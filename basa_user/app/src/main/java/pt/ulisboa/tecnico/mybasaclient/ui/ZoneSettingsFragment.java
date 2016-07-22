@@ -18,6 +18,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
@@ -55,7 +56,7 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
         rootView =  inflater.inflate(R.layout.fragment_settings_zone, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar!=null) {
-            zone = Zone.getCurrentZone();
+            zone = AppController.getInstance().getCurrentZone();
             toolbar.setTitle(zone.getName());
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
@@ -79,7 +80,7 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
         ((MainActivity)getActivity()).setCommunicationSettings(new CommunicationSettings() {
             @Override
             public void onZoneChange() {
-                zone = Zone.getCurrentZone();
+                zone = AppController.getInstance().getCurrentZone();
                 toolbar.setTitle(zone.getName());
                 remove.setText("Remove " + zone.getName());
             }
@@ -115,7 +116,7 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
                 ((MainActivity)getActivity()).openPage(Global.DIALOG_ADD_DEVICE);
                 break;
             case R.id.remove_zone:
-                List<Zone> zones = Zone.loadZones();
+                List<Zone> zones = AppController.getInstance().loadZones();
                 if(zones.size() >= 2){
 
                     new AlertDialog.Builder(getActivity())
@@ -128,7 +129,7 @@ public class ZoneSettingsFragment extends DialogFragment implements View.OnClick
 
                                     ((MainActivity)getActivity()).showMessage("Zone removed.");
                                     Zone.removeZone(zone.getName());
-                                    List<Zone> zones = Zone.loadZones();
+                                    List<Zone> zones = AppController.getInstance().loadZones();
                                     Zone newCurrent = zones.get(0);
                                     if( ((MainActivity)getActivity()).getCommunicationHomeFragment() != null)
                                         ((MainActivity)getActivity()).getCommunicationHomeFragment().changeZone(newCurrent.getName());

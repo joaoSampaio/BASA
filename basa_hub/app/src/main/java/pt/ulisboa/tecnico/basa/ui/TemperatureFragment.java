@@ -119,11 +119,11 @@ public class TemperatureFragment extends Fragment {
                 }
             }
         }, 0);
-        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
+        if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
+            ((Launch2Activity)getActivity()).getBasaManager().getEventManager().registerInterest(interest);
 
-        if(((MainActivity)getActivity()).getBasaManager().getTemperatureManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().addListenner(new TemperatureManager.ActionTemperatureManager() {
+        if(((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager() != null)
+            ((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager().addListenner(new TemperatureManager.ActionTemperatureManager() {
                 @Override
                 public void onTemperatureOutputChange(int change) {
                     setUp(change);
@@ -134,8 +134,8 @@ public class TemperatureFragment extends Fragment {
                     mSeekArc.setProgress(temperature);
                 }
             });
-        if(((MainActivity)getActivity()).getBasaManager().getTemperatureManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getTemperatureManager().setGlobalTemperatureForecast(new TemperatureManager.GlobalTemperatureForecast() {
+        if(((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager() != null)
+            ((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager().setGlobalTemperatureForecast(new TemperatureManager.GlobalTemperatureForecast() {
                 @Override
                 public void onChangeForecast(int temperature, String icon, String summary) {
                     forecastTemp.setText(""+temperature+"º");
@@ -178,8 +178,8 @@ public class TemperatureFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
+        if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
+            ((Launch2Activity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
         interest = null;
     }
 

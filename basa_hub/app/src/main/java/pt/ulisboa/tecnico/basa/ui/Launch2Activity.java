@@ -16,16 +16,35 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,10 +60,12 @@ import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
+import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
-public class MainActivity extends FragmentActivity {
+public class Launch2Activity extends FragmentActivity implements
+        GoogleApiClient.OnConnectionFailedListener {
 
     private final static int[] CLICKABLE = {R.id.action_gogo_lights, R.id.action_gogo_temperature, R.id.action_gogo_option};
 
@@ -88,11 +109,57 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter mPagerAdapter;
 
     TextToSpeech t1;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    String TAG = "main";
+    private FirebaseAuth mAuth;
+    private static final int RC_SIGN_IN = 9001;
+    private GoogleApiClient mGoogleApiClient;
+    private DatabaseReference mDatabase;
+    private FirebaseHelper helper = null;
+// ...
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         setContentView(R.layout.activity_main);
+
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    helper = new FirebaseHelper(mDatabase);
+
+                    helper.registerUser(user.getUid());
+
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+
 
 
         // Instantiate a ViewPager and a PagerAdapter.
@@ -141,20 +208,78 @@ public class MainActivity extends FragmentActivity {
             }
 
         });
-
-
-//       t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int status) {
-//                Log.d("activity", "activity onInit:" + status);
-//                if(status != TextToSpeech.ERROR) {
-//                    t1.setLanguage(Locale.UK);
-//                    t1.speak("hello all", TextToSpeech.QUEUE_FLUSH, null);
-//                }
-//            }
-//        });
-
+        signIn();
     }
+
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        //super.onWindowFocusChanged(hasFocus);
+//        Log.d("KioskService2", "onWindowFocusChanged:"+hasFocus);
+//        if(!hasFocus) {
+//            // Close every kind of system dialog
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//                    sendBroadcast(closeDialog);
+//                }
+//            },300);
+//
+//        }
+//    }
+
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult:" + requestCode);
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                Log.d(TAG, "Google Sign In was successful, authenticate with Firebase");
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                Log.d(TAG, "Google Sign In failed, update UI appropriately:");
+
+                // Google Sign In failed, update UI appropriately
+                // ...
+            }
+        }
+    }
+
+
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(Launch2Activity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        // ...
+                    }
+                });
+    }
+
 
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -166,7 +291,7 @@ public class MainActivity extends FragmentActivity {
             ServerService.LocalBinder binder = (ServerService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
-            mService.registerClient(MainActivity.this);
+            mService.registerClient(Launch2Activity.this);
         }
 
         @Override
@@ -181,18 +306,27 @@ public class MainActivity extends FragmentActivity {
         // Bind to LocalService
         Intent intent = new Intent(this, ServerService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if (mAuth != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         // Unbind from the service
-        if (mBound) {
+        if (mBound && mService!= null) {
             mService.stopserver();
             mService.registerClient(null);
             unbindService(mConnection);
             mBound = false;
         }
+
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+
     }
 
     @Override
@@ -248,7 +382,7 @@ public class MainActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         Log.d("checkIsSignedIn", "**onPause**** ");
-
+        Log.d("KioskService2", "onPause:");
         if(mHelper != null) {
             mHelper = null;
         }
@@ -263,7 +397,20 @@ public class MainActivity extends FragmentActivity {
 
         this.basaManager.stop();
         AppController.getInstance().basaManager = null;
+
+        //restoreApp();
+
+
         //clapListener.stop();
+    }
+
+    public void restoreApp() {
+        // Restart activity
+        Intent i = new Intent(this, Launch2Activity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.setAction(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        startActivity(i);
     }
 
     @Override
@@ -286,7 +433,8 @@ public class MainActivity extends FragmentActivity {
         if (mPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
+
+            //super.onBackPressed();
         } else {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
@@ -405,8 +553,11 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-
-
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
 
 
     public interface InterfaceToActivity {
@@ -432,7 +583,7 @@ public class MainActivity extends FragmentActivity {
 //        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
 //        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 //
-//        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this);
+//        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(Launch2Activity.this);
 //        SpeechListener mRecognitionListener = new SpeechListener(mSpeechRecognizer, mSpeechIntent);
 //        mSpeechRecognizer.setRecognitionListener(mRecognitionListener);
 //
@@ -445,7 +596,7 @@ public class MainActivity extends FragmentActivity {
 
 
 
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this);
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(Launch2Activity.this);
         SpeechListener2 mRecognitionListener = new SpeechListener2();
         mSpeechRecognizer.setRecognitionListener(mRecognitionListener);
         mSpeechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -587,6 +738,42 @@ public class MainActivity extends FragmentActivity {
                 Log.d("response", "****" + response + "****: ");
 
 
+        }
+    }
+
+    private boolean screenState = true;
+
+    public boolean isScreenOn(){
+        return screenState;
+    }
+
+    public void toggleScreen(boolean turnOn){
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        screenState = turnOn;
+        if (!turnOn) {
+            //TODO Store original brightness value
+            params.screenBrightness = 0.001f;
+            getWindow().setAttributes(params);
+            //enableDisableViewGroup((ViewGroup)findViewById(R.id.main_container).getParent(),false);
+            Log.e("onSensorChanged","NEAR");
+
+        } else {
+            //TODO Store original brightness value
+            params.screenBrightness = -1.0f;
+            this.getWindow().setAttributes(params);
+            //enableDisableViewGroup((ViewGroup)findViewById(R.id.main_container).getParent(),true);
+            Log.e("onSensorChanged","FAR");
+        }
+    }
+
+    public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = viewGroup.getChildAt(i);
+            view.setEnabled(enabled);
+            if (view instanceof ViewGroup) {
+                enableDisableViewGroup((ViewGroup) view, enabled);
+            }
         }
     }
 

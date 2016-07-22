@@ -26,7 +26,7 @@ import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.detection.RgbMotionDetection;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 
 /**
@@ -34,7 +34,7 @@ import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
  */
 public class CameraHelper implements TextureView.SurfaceTextureListener {
 
-    private MainActivity activity;
+    private Launch2Activity activity;
     private List<CameraSettingsDialogFragment.BitmapMotionTransfer> bitmapMotionTransfer;
     private int previewCount = 0;
     private static volatile AtomicBoolean processing = new AtomicBoolean(false);
@@ -44,7 +44,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
     private long timeOld = 0;
     private long timeCurrent = 0;
 
-    public CameraHelper(MainActivity act) {
+    public CameraHelper(Launch2Activity act) {
         this.activity = act;
         bitmapMotionTransfer = new ArrayList<>();
         setUpSize();
@@ -146,7 +146,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
 
 
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 
@@ -325,7 +325,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
+                    if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
                         getActivity().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(Event.OCCUPANT_DETECTED, isDetected));
                 }
             });

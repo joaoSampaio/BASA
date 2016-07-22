@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.ulisboa.tecnico.basa">
+    package="pt.ulisboa.tecnico.basa" >
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -21,13 +21,19 @@
     <!-- Required to access Estimote Cloud. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
+
+
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:name=".app.AppController"
@@ -36,58 +42,76 @@
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".TemperatureActivity"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".TemperatureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
-
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
-
-        <activity android:name=".WebServerActivity"
+        <activity
+            android:name=".WebServerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
-
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".ui.MainActivity"
+        <activity
+            android:name=".ui.Launch2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
-            android:label="@string/app_name">
+            android:launchMode="singleInstance"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.FakeHome"  android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".CameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme">
-
+            android:theme="@style/FullscreenTheme" >
         </activity>
 
         <service
             android:name=".backgroundServices.ServerService"
-            android:exported="false"/>
-
+            android:exported="false" />
         <service
             android:name=".backgroundServices.WifiLocationService"
-            android:exported="false"/>
+            android:exported="false" />
         <service android:name=".backgroundServices.CameraBackgroundService" />
 
         <receiver android:name=".BroadcastReceiver.WifiBroadcastReceiver" >
             <intent-filter>
-                <!--<action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE"></action>-->
-                <!--<action android:name="android.net.wifi.WIFI_STATE_CHANGED"></action>-->
-                <!--<action android:name="android.net.wifi.SCAN_RESULTS" ></action>-->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BroadcastReceiver.TimeBroadcastReceiver">
+        <receiver android:name=".BroadcastReceiver.TimeBroadcastReceiver" >
         </receiver>
-        <!--<action android:name="android.net.wifi.WIFI_STATE_CHANGED" >-->
+
+        <receiver android:name=".BroadcastReceiver.BootReceiver">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".backgroundServices.KioskService" android:exported="false"/>
+
+        <!-- <action android:name="android.net.wifi.WIFI_STATE_CHANGED" > -->
 
     </application>
 

@@ -9,16 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
-
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
-import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 import pt.ulisboa.tecnico.mybasaclient.util.NiceColor;
 
 /**
@@ -64,7 +62,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         textUsername = (TextView)rootView.findViewById(R.id.textUsername);
         textEmail = (TextView)rootView.findViewById(R.id.textEmail);
 
-        User user = User.getLoggedUser();
+        User user = AppController.getInstance().getLoggedUser();
 
         user_photo.setText(getLetters(user.getUserName()));
         textUsername.setText(user.getUserName());
@@ -89,9 +87,9 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         zone2.setVisibility(View.INVISIBLE);
         zone1.setOnClickListener(null);
         zone2.setOnClickListener(null);
-        zones = Zone.loadZones();
+        zones = AppController.getInstance().loadZones();
         if(!zones.isEmpty()){
-            Zone current = Zone.getCurrentZone();
+            Zone current = AppController.getInstance().getCurrentZone();
             zones = Zone.getOtherZones(zones, current);
 
             int i = 0;

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
 /**
@@ -17,32 +18,39 @@ public class BasaDevice {
     private String url;
     private String name;
     private String description;
-    private String token;
     private int numLights;
+    private List<Boolean> lights;
     private double latestTemperature;
+    private int changeTemperature;
     private List<String> beaconUuids;
     private List<String> macAddress;
+    private boolean supportsFirebase;
 
-    public BasaDevice(String url, String name, String description, String token) {
-        this.url = url;
-        this.name = name;
-        this.description = description;
-        this.token = token;
-        this.beaconUuids = new ArrayList<>();
-        this.macAddress = new ArrayList<>();
-        this.latestTemperature = 25;
-        this.numLights = 1;
+    public BasaDevice() {
     }
 
-    public BasaDevice(String url, String name, String description, String token, double latestTemperature) {
+    public BasaDevice(String url, String name, String description) {
         this.url = url;
         this.name = name;
         this.description = description;
-        this.token = token;
+        this.beaconUuids = new ArrayList<>();
+        this.macAddress = new ArrayList<>();
+        this.lights = new ArrayList<>();
+        this.latestTemperature = 25;
+        this.numLights = 1;
+        this.changeTemperature = 20;
+    }
+
+    public BasaDevice(String url, String name, String description, double latestTemperature) {
+        this.url = url;
+        this.name = name;
+        this.description = description;
         this.beaconUuids = new ArrayList<>();
         this.macAddress = new ArrayList<>();
         this.latestTemperature = latestTemperature;
         this.numLights = 1;
+        this.lights = new ArrayList<>();
+        this.changeTemperature = 20;
     }
 
 
@@ -70,12 +78,12 @@ public class BasaDevice {
         this.description = description;
     }
 
-    public String getToken() {
-        return token;
+    public int getChangeTemperature() {
+        return changeTemperature;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setChangeTemperature(int changeTemperature) {
+        this.changeTemperature = changeTemperature;
     }
 
     public String getId() {
@@ -110,6 +118,15 @@ public class BasaDevice {
         this.latestTemperature = latestTemperature;
     }
 
+
+    public List<Boolean> getLights() {
+        return lights;
+    }
+
+    public void setLights(List<Boolean> lights) {
+        this.lights = lights;
+    }
+
     public int getNumLights() {
         return numLights;
     }
@@ -118,22 +135,32 @@ public class BasaDevice {
         this.numLights = numLights;
     }
 
-    public static void saveCurrentDevice(BasaDevice device){
-        new ModelCache<BasaDevice>().saveModel(device, Global.DATA_CURRENT_DEVICE);
+    public boolean isAnyLightOn(){
+        for(boolean l : this.getLights()){
+            if(l){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static BasaDevice getCurrentDevice(){
         try {
-            BasaDevice current =  new ModelCache<BasaDevice>().loadModel(new TypeToken<BasaDevice>() {
+            String current =  new ModelCache<String>().loadModel(new TypeToken<String>() {
             }.getType(), Global.DATA_CURRENT_DEVICE);
 
 
-            return current;
+            for(BasaDevice d : AppController.getInstance().getCurrentZone().getDevices()){
+                if(d.getId().equals(current))
+                    return d;
+
+            }
 
 
         } catch (Exception e) {
-            return null;
+
         }
+        return null;
     }
 
 

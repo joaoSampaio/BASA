@@ -32,7 +32,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.Trigger;
 import pt.ulisboa.tecnico.basa.model.TriggerAction;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
@@ -280,7 +280,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     new ModelCache<List<Recipe>>().saveModel(recipes, Global.OFFLINE_RECIPES);
                     if(listener != null)
                         listener.onNewRecipe();
-                    ((MainActivity)getActivity()).getBasaManager().getEventManager().reloadSavedRecipes();
+                    ((Launch2Activity)getActivity()).getBasaManager().getEventManager().reloadSavedRecipes();
                     getDialog().dismiss();
 
                 }else{

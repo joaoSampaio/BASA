@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
-import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +48,7 @@ public class InfoFragment extends DialogFragment {
         rootView =  inflater.inflate(R.layout.fragment_info, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        if(!Zone.loadZones().isEmpty()) {
+        if(!AppController.getInstance().isEmptyZones()) {
             if (toolbar != null) {
                 toolbar.setTitle("Info");
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);

@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.basa.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.estimote.sdk.Beacon;
@@ -14,9 +17,11 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import java.util.Date;
 import java.util.List;
 
+import pt.ulisboa.tecnico.basa.BroadcastReceiver.OnScreenOffReceiver;
+import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 
 public class AppController extends Application {
@@ -26,7 +31,7 @@ public class AppController extends Application {
     private static AppController mInstance;
     private BeaconManager beaconManager;
     private String idEdge;
-    private MainActivity.InterfaceToActivity interfaceToActivity;
+    private Launch2Activity.InterfaceToActivity interfaceToActivity;
     public AsyncHttpServer server;
     private String namespace = "edd1ebeac04e5defa017";
     String uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
@@ -42,19 +47,43 @@ public class AppController extends Application {
 
     public BasaManager basaManager;
 
+    private PowerManager.WakeLock wakeLock;
+    private OnScreenOffReceiver onScreenOffReceiver;
+
+
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-
+//        Firebase.setAndroidContext(this);
         mInstance = this;
         AppController.context = getApplicationContext();
         EstimoteSDK.enableDebugLogging(true);
 
-
+        registerKioskModeScreenOffReceiver();
+        startKioskService();
     }
 
+    private void startKioskService() { // ... and this method
+        startService(new Intent(this, KioskService.class));
+    }
+
+    private void registerKioskModeScreenOffReceiver() {
+        // register screen off receiver
+        final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        onScreenOffReceiver = new OnScreenOffReceiver();
+        registerReceiver(onScreenOffReceiver, filter);
+    }
+
+    public PowerManager.WakeLock getWakeLock() {
+        if(wakeLock == null) {
+            // lazy loading: first call, create wakeLock via PowerManager.
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "wakeup");
+        }
+        return wakeLock;
+    }
 
     public void beaconStart(){
         Log.d("temp", "beaconStart:" );
@@ -148,11 +177,11 @@ public class AppController extends Application {
         return AppController.context;
     }
 
-    public MainActivity.InterfaceToActivity getInterfaceToActivity() {
+    public Launch2Activity.InterfaceToActivity getInterfaceToActivity() {
         return interfaceToActivity;
     }
 
-    public void setInterfaceToActivity(MainActivity.InterfaceToActivity interfaceToActivity) {
+    public void setInterfaceToActivity(Launch2Activity.InterfaceToActivity interfaceToActivity) {
         this.interfaceToActivity = interfaceToActivity;
     }
 

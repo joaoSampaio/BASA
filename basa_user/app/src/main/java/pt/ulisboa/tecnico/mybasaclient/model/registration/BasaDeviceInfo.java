@@ -1,31 +1,21 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.mybasaclient.model.registration;
 
 /**
  * Created by sampaio on 28-06-2016.
  */
-public class BasaDevice {
+public class BasaDeviceInfo {
 
     private String id;
-    private String url;
     private String name;
     private String description;
-    private String token;
 
-    public BasaDevice(String id, String url, String name, String description, String token) {
+    public BasaDeviceInfo(String id, String name, String description) {
         this.id = id;
-        this.url = url;
         this.name = name;
         this.description = description;
-        this.token = token;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public String getName() {
         return name;
@@ -43,13 +33,7 @@ public class BasaDevice {
         this.description = description;
     }
 
-    public String getToken() {
-        return token;
-    }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public String getId() {
         return id;

@@ -16,7 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
-import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +52,7 @@ public class AddZonePart1Fragment extends DialogFragment implements View.OnClick
         rootView =  inflater.inflate(R.layout.fragment_add_zone, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        if(!Zone.loadZones().isEmpty()) {
+        if(!AppController.getInstance().isEmptyZones()) {
             if (toolbar != null) {
                 toolbar.setTitle("Add Zone");
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);

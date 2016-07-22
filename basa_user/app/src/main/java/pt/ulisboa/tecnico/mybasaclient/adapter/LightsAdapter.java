@@ -16,13 +16,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
-import pt.ulisboa.tecnico.mybasaclient.model.LightBulb;
 import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
@@ -30,16 +29,14 @@ import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsServ
 public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyItemHolder>{
 
 
-    MainActivity context;
-    List<LightBulb> data = new ArrayList<>();
+    MainActivity activity;
     private BasaDevice device;
     public static final int COLOR_LIGHT_ON = Color.parseColor("#FFFFD321");
     public static final int COLOR_LIGHT_OFF = Color.parseColor("#cccccc");
     private OnLightChange onLightChange;
 
-    public LightsAdapter(MainActivity context, List<LightBulb> data, BasaDevice device) {
-        this.context = context;
-        this.data = data;
+    public LightsAdapter(MainActivity context, BasaDevice device) {
+        this.activity = context;
         this.device = device;
     }
 
@@ -47,17 +44,18 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyItemHold
         this.onLightChange = onLightChange;
     }
 
+    public void setDevice(BasaDevice device) {
+        this.device = device;
+    }
+
     @Override
     public MyItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MyItemHolder viewHolder;
 
-//        GridView grid = (GridView)parent;
-//        int size = grid.getColumnWidth();
 
         View v;
         v = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.layout_light_bulb, parent, false);
-//        v.setLayoutParams(new GridView.LayoutParams(size, size));
         viewHolder = new MyItemHolder(v);
         return viewHolder;
     }
@@ -66,34 +64,43 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyItemHold
     @Override
     public void onBindViewHolder(final MyItemHolder holder, final int position) {
 
-        LightBulb bulb = data.get(position);
+        boolean isOn = device.getLights().get(position);
         holder.name.setText("light " + (position+1));
-        changeBackgroundColor(holder.icon, (bulb.isOn())? COLOR_LIGHT_ON : COLOR_LIGHT_OFF);
+        changeBackgroundColor(holder.icon, (isOn)? COLOR_LIGHT_ON : COLOR_LIGHT_OFF);
 
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                data.get(position).setState(!data.get(position).isOn());
+                device.getLights().set(position, (!device.getLights().get(position)));
 
                 if(onLightChange != null)
-                    onLightChange.onChange(data);
+                    onLightChange.onChange(device.getLights());
+
+                if (AppController.getInstance().getLoggedUser().isEnableFirebase() && activity.getmManager() != null) {
+                    Log.d("light", "firebase command:");
+                    activity.getmManager().changeLights(device.getLights());
+
+                } else {
+                    boolean[] tmp = new boolean[device.getLights().size()];
+                    for(int i = 0; i < device.getLights().size(); i++) tmp[i] = device.getLights().get(i);
 
 
+                    ChangeTemperatureLights changeTemperatureLights = new ChangeTemperatureLights(tmp, -80);
+                    new ChangeTemperatureLightsService(device.getUrl(), changeTemperatureLights, new CallbackFromService() {
+                        @Override
+                        public void success(Object response) {
 
-                ChangeTemperatureLights changeTemperatureLights = new ChangeTemperatureLights(LightBulb.getArray(data), -80);
-                new ChangeTemperatureLightsService(device.getUrl(), changeTemperatureLights, new CallbackFromService() {
-                    @Override
-                    public void success(Object response) {
+                        }
 
-                    }
+                        @Override
+                        public void failed(Object error) {
 
-                    @Override
-                    public void failed(Object error) {
+                        }
+                    }).execute();
+                    notifyDataSetChanged();
+                }
 
-                    }
-                }).execute();
-                notifyDataSetChanged();
 
             }
         });
@@ -127,7 +134,7 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyItemHold
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return device.getLights().size();
     }
 
     public static class MyItemHolder extends RecyclerView.ViewHolder {
@@ -148,7 +155,7 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyItemHold
 
 
     public interface OnLightChange{
-        void onChange(List<LightBulb> bulbList);
+        void onChange(List<Boolean> bulbList);
     }
 
 

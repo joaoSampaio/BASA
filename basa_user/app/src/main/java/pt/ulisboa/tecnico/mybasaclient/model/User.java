@@ -14,6 +14,7 @@ public class User {
     private String email;
     private String pin;
     private String uuid;
+    private boolean enableFirebase;
 
     public String getUserName() {
         return userName;
@@ -47,7 +48,13 @@ public class User {
         this.uuid = uuid;
     }
 
+    public boolean isEnableFirebase() {
+        return enableFirebase;
+    }
 
+    public void setEnableFirebase(boolean enableFirebase) {
+        this.enableFirebase = enableFirebase;
+    }
 
     public static User getLoggedUser(){
 

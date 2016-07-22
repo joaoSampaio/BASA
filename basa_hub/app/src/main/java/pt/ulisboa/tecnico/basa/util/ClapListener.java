@@ -10,7 +10,7 @@ import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by joaosampaio on 25-03-2016.
@@ -26,7 +26,7 @@ public class ClapListener implements OnsetHandler {
     private byte[] buffer;
     private AudioRecord recorder;
     private long timeOld = 0, stopTime = 0;
-    private MainActivity activity;
+    private Launch2Activity activity;
 
 
 
@@ -34,7 +34,7 @@ public class ClapListener implements OnsetHandler {
 
     AudioDispatcher dispatcher;
 
-    public ClapListener(MainActivity activity){
+    public ClapListener(Launch2Activity activity){
         this.activity = activity;
         clap = 0;
 //        setUpNew(0.2, 0.5);

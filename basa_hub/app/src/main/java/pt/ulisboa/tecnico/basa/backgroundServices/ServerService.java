@@ -17,7 +17,7 @@ import android.util.Log;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.rest.WebServerBASA;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by sampaio on 06-07-2016.
@@ -27,7 +27,7 @@ public class ServerService extends Service {
     private boolean isStarted;
     private BackgroundThread run;
     private Context ctx;
-    private MainActivity activity;
+    private Launch2Activity activity;
     int time = 0;
     Handler handler;
     WebServerBASA server;
@@ -48,7 +48,7 @@ public class ServerService extends Service {
     }
 
     //Here Activity register to the service as Callbacks client
-    public void registerClient(MainActivity activity){
+    public void registerClient(Launch2Activity activity){
         this.activity = activity;
 
         if(server != null)

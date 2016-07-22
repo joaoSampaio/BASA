@@ -19,7 +19,7 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.RectangleView;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 
 public class CameraSettingsDialogFragment extends DialogFragment {
@@ -187,7 +187,7 @@ public class CameraSettingsDialogFragment extends DialogFragment {
             }
         };
 
-        MainActivity activity = (MainActivity)getActivity();
+        Launch2Activity activity = (Launch2Activity)getActivity();
         if(activity.getmHelper() != null) {
 
             activity.getmHelper().addImageListener(transfer);
@@ -197,7 +197,7 @@ public class CameraSettingsDialogFragment extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)getActivity()).getmHelper().removeImageListener(transfer);
+        ((Launch2Activity)getActivity()).getmHelper().removeImageListener(transfer);
     }
 
     @Override

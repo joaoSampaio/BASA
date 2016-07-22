@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.adapter.DeviceAdapter;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.util.GridSpacingItemDecoration;
@@ -73,7 +75,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     private void refreshHome(){
-        Zone current = Zone.getCurrentZone();
+        Zone current = AppController.getInstance().getCurrentZone();
+        Log.d("home", "current:" + (current != null));
+        Log.d("home", "loadZones:" + (AppController.getInstance().loadZones().size()));
         if(current != null) {
             settings.setVisibility(View.VISIBLE);
             textViewTitle.setText(current.getName());
@@ -137,13 +141,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                 Zone current = Zone.getZoneByName(name);
                 if(current != null) {
-                    Zone.saveCurrentZone(current);
+                    AppController.getInstance().saveCurrentZone(current);
+
+                    if(AppController.getInstance().getCurrentZone() != null && ((MainActivity)getActivity()).getmManager() != null)
+                        ((MainActivity)getActivity()).getmManager().setCurrentZone(AppController.getInstance().getCurrentZone());
                     refreshHome();
                 }
             }
 
             @Override
-            public void updateZone() {
+            public void updateZone(boolean refreshFirebase) {
+
+                if(refreshFirebase && AppController.getInstance().getCurrentZone() != null && ((MainActivity)getActivity()).getmManager() != null)
+                    ((MainActivity)getActivity()).getmManager().setCurrentZone(AppController.getInstance().getCurrentZone());
                 refreshHome();
             }
         });
@@ -175,7 +185,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public interface CommunicationHomeFragment{
 
         void changeZone(String name);
-        void updateZone();
+        void updateZone(boolean refreshFirebase);
 
     }
 

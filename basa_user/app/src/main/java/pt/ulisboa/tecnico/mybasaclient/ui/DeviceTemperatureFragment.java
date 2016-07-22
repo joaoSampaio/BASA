@@ -21,6 +21,7 @@ import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.GetDeviceStatusService;
+import pt.ulisboa.tecnico.mybasaclient.util.GenericCommunicationToFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.SeekArc;
 
 /**
@@ -33,6 +34,7 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
     Toolbar toolbar;
     SeekArc mSeekArc;
     private BasaDevice device;
+    private GenericCommunicationToFragment listener;
 
     public DeviceTemperatureFragment() {
         // Required empty public constructor
@@ -56,7 +58,7 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_device_temperature, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        device = BasaDevice.getCurrentDevice();
+        device = AppController.getInstance().getCurrentDevice();
         if (toolbar!=null) {
 
             toolbar.setTitle(device.getName());
@@ -78,10 +80,24 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
     public void onResume(){
         super.onResume();
         refreshTemperature();
+        ((MainActivity)getActivity()).addGenericCommunication(listener);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        ((MainActivity)getActivity()).removeGenericCommunication(listener);
     }
 
 
     private void init(){
+
+        listener = new GenericCommunicationToFragment() {
+            @Override
+            public void onDataChanged() {
+                refreshTemperature();
+            }
+        };
 
         mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
         mSeekArc.setCurrentTemperature(device.getLatestTemperature() + "");
@@ -104,10 +120,6 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
             @Override
             public void onProgressChanged(SeekArc seekArc, int progress, boolean fromUser) {
 
-//                if(fromUser){
-//                    Log.d("arc", "progress:"+progress);
-//                }
-
             }
 
             @Override
@@ -118,44 +130,62 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
             @Override
             public void onStopTrackingTouch(SeekArc seekArc) {
 
-                new ChangeTemperatureLightsService(device.getUrl(), new ChangeTemperatureLights(new boolean[0], seekArc.getProgress()), new CallbackFromService() {
-                    @Override
-                    public void success(Object response) {
-                        Toast.makeText(AppController.getAppContext(), "Temperature changed", Toast.LENGTH_SHORT).show();
-                    }
+                if (AppController.getInstance().getLoggedUser().isEnableFirebase() && ((MainActivity)getActivity()).getmManager() != null) {
+                    Log.d("arc", "firebase command:");
+                    ((MainActivity)getActivity()).getmManager().changeTemperature(seekArc.getProgress());
 
-                    @Override
-                    public void failed(Object error) {
-                        Toast.makeText(AppController.getAppContext(), "Cound not change temperature", Toast.LENGTH_SHORT).show();
-                    }
-                }).execute();
-                Log.d("arc", "onStopTrackingTouch:"+seekArc.getProgress());
+                } else {
+                    Log.d("arc", "webserver command:");
+                    new ChangeTemperatureLightsService(device.getUrl(), new ChangeTemperatureLights(new boolean[0], seekArc.getProgress()), new CallbackFromService() {
+                        @Override
+                        public void success(Object response) {
+                            Toast.makeText(AppController.getAppContext(), "Temperature changed", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void failed(Object error) {
+                            Toast.makeText(AppController.getAppContext(), "Cound not change temperature", Toast.LENGTH_SHORT).show();
+                        }
+                    }).execute();
+                }
+
+                Log.d("arc", "onStopTrackingTouch:" + seekArc.getProgress());
             }
+
         });
     }
 
     private void refreshTemperature(){
         if(getActivity() == null)
             return;
-        new GetDeviceStatusService(device.getUrl(), new CallbackFromService<DeviceStatus, String>() {
-            @Override
-            public void success(DeviceStatus response) {
+        if (AppController.getInstance().getLoggedUser().isEnableFirebase() && ((MainActivity)getActivity()).getmManager() != null) {
 
-                if(getActivity() != null){
+            mSeekArc.setBackgroundColor((device.getLatestTemperature() >= 18) ? Global.COLOR_HEAT : Global.COLOR_COLD);
+            mSeekArc.setCurrentTemperature(device.getLatestTemperature() + "");
+            mSeekArc.setProgress(device.getChangeTemperature());
+
+        }else {
+
+            new GetDeviceStatusService(device.getUrl(), new CallbackFromService<DeviceStatus, String>() {
+                @Override
+                public void success(DeviceStatus response) {
+
+                    if (getActivity() != null) {
 
 
-                    device.setLatestTemperature(response.getTemperature());
-                    mSeekArc.setBackgroundColor((device.getLatestTemperature() >= 18)? Global.COLOR_HEAT : Global.COLOR_COLD);
-                    mSeekArc.setCurrentTemperature(device.getLatestTemperature() + "");
+                        device.setLatestTemperature(response.getTemperature());
+                        mSeekArc.setBackgroundColor((device.getLatestTemperature() >= 18) ? Global.COLOR_HEAT : Global.COLOR_COLD);
+                        mSeekArc.setCurrentTemperature(device.getLatestTemperature() + "");
+
+                    }
+                }
+
+                @Override
+                public void failed(String error) {
 
                 }
-            }
-
-            @Override
-            public void failed(String error) {
-
-            }
-        }).execute();
+            }).execute();
+        }
     }
 
 

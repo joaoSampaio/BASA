@@ -30,6 +30,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHolder>{
@@ -39,7 +40,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
     public final static int TYPE_CAMERA  = 2;
     public static final int PRIMARY = Color.parseColor("#2196f3");
     public static final int COLOR_LIGHT = Color.parseColor("#FF737373");
-
+    public static final int COLOR_LIGHT_ON = Color.parseColor("#FFEB3B");
     MainActivity context;
     List<BasaDevice> data = new ArrayList<>();
 
@@ -133,17 +134,30 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                     holder.container.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BasaDevice.saveCurrentDevice(data.get(position / 3));
+                            AppController.getInstance().saveCurrentDevice(data.get(position / 3));
                             context.openPage(Global.DIALOG_DEVICE_TEMPERATURE);
                         }
                     });
                     break;
                 case TYPE_LIGHT:
 
-                    changeBackgroundColor(holder.addDevice, COLOR_LIGHT);
+
                     holder.addDevice.setVisibility(View.VISIBLE);
                     holder.addDevice.setPadding(5,5,5,5);
-                    holder.addDevice.setColorFilter(Color.argb(255, 255, 255, 255));
+
+
+
+
+
+                    if(device.isAnyLightOn()){
+                        changeBackgroundColor(holder.addDevice, COLOR_LIGHT_ON);
+                        holder.addDevice.setColorFilter(Color.rgb(0, 0, 0));
+                    }else{
+                        changeBackgroundColor(holder.addDevice, COLOR_LIGHT);
+                        holder.addDevice.setColorFilter(Color.argb(255, 255, 255, 255));
+                    }
+
+
 
                     Glide.with(context).load(R.drawable.ic_device_light_large).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.addDevice) {
                         @Override
@@ -157,7 +171,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                     holder.container.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BasaDevice.saveCurrentDevice(data.get(position / 3));
+                            AppController.getInstance().saveCurrentDevice(data.get(position / 3));
                             context.openPage(Global.DIALOG_DEVICE_LIGHT);
                         }
                     });
@@ -180,7 +194,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                     holder.container.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BasaDevice.saveCurrentDevice(data.get(position / 3));
+                            AppController.getInstance().saveCurrentDevice(data.get(position / 3));
                             context.openPage(Global.DIALOG_DEVICE_CAMERA);
                         }
                     });

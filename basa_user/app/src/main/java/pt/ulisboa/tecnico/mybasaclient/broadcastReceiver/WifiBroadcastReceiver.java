@@ -17,6 +17,7 @@ import android.util.Log;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
@@ -51,7 +52,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             List<ScanResult> mScanResults = mWifiManager.getScanResults();
-            List<Zone> zones = Zone.loadZones();
+            List<Zone> zones = AppController.getInstance().loadZones();
             boolean hasFound = false;
             for (ScanResult result:mScanResults) {
                 Log.d("wifi", "result.SSID:" + result.SSID);

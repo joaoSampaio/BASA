@@ -20,6 +20,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
@@ -57,7 +58,7 @@ public class ZoneSettingsInfoFragment extends DialogFragment implements View.OnC
         rootView =  inflater.inflate(R.layout.fragment_settings_zone_info, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar!=null) {
-            zone = Zone.getCurrentZone();
+            zone = AppController.getInstance().getCurrentZone();
             toolbar.setTitle("Zone info");
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -123,15 +124,14 @@ public class ZoneSettingsInfoFragment extends DialogFragment implements View.OnC
 
 
                         if(Zone.getZoneByName(name) == null) {
-                            List<Zone> zones = Zone.loadZones();
-                            zone = Zone.getZoneByName(zone.getName(), zones);
+                            List<Zone> zones = AppController.getInstance().loadZones();
                             zone.setName(name);
-                            Zone.saveZones(zones);
-                            Zone.saveCurrentZone(zone);
+                            AppController.getInstance().saveZones(zones);
+                            AppController.getInstance().saveCurrentZone(zone);
                             textViewName.setText(zone.getName());
                             if (getActivity() != null) {
                                 if (((MainActivity) getActivity()).getCommunicationHomeFragment() != null) {
-                                    ((MainActivity) getActivity()).getCommunicationHomeFragment().updateZone();
+                                    ((MainActivity) getActivity()).getCommunicationHomeFragment().updateZone(false);
                                 }
 
                                 if (((MainActivity) getActivity()).getCommunicationSettings() != null)

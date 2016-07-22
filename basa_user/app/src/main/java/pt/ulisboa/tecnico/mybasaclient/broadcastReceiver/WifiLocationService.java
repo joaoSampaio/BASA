@@ -18,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
@@ -52,7 +53,7 @@ private int misses;
                         boolean hasFound = false;
                         mWifiManager.startScan();
                         List<ScanResult> mScanResults =  mWifiManager.getScanResults();
-                        List<Zone> zones = Zone.loadZones();
+                        List<Zone> zones = AppController.getInstance().loadZones();
                         for (ScanResult result:mScanResults) {
                             Log.d("wifi2", "result.BSSID:" + result.BSSID);
 

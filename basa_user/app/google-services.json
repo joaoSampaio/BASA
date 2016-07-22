@@ -15,6 +15,53 @@
       },
       "oauth_client": [
         {
+          "client_id": "360355109976-qm397q05fqqpg6bptpjrvib8sbjjpspp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.ulisboa.tecnico.mybasaclient",
+            "certificate_hash": "B2F19D29BEAB61C3A76B2ACE9FE354EAED25C045"
+          }
+        },
+        {
+          "client_id": "360355109976-r5ja4r27asifcmlbc2r47n6o42k0agcq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDLd1zfzAwszL_8EbEQ-CMGzlmJ1yx3SM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360355109976:android:4619e3e02c92951b",
+        "android_client_info": {
+          "package_name": "pt.ulisboa.tecnico.basa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360355109976-df420bsbl9ugo1t2eebokdt6t9g0j77g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.ulisboa.tecnico.basa",
+            "certificate_hash": "B2F19D29BEAB61C3A76B2ACE9FE354EAED25C045"
+          }
+        },
+        {
           "client_id": "360355109976-r5ja4r27asifcmlbc2r47n6o42k0agcq.apps.googleusercontent.com",
           "client_type": 3
         }

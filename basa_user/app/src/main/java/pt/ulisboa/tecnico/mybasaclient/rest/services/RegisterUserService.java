@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistration;
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.mybasaclient.rest.RestClient;
@@ -21,7 +22,7 @@ public class RegisterUserService extends ServerCommunicationService {
     private UserRegistration registration;
     public RegisterUserService(String url, UserRegistration registration, CallbackFromService callback){
         this.callback = callback;
-        this.url = url;
+        this.url = url + Global.HUB_ENDPOINT_REGISTER;
         this.registration = registration;
     }
 

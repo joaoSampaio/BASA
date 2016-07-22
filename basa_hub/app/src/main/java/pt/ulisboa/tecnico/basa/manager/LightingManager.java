@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.LightingControl;
 import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
 
@@ -18,7 +18,7 @@ public class LightingManager {
     private long timeOld = 0;
     private long timeCurrent = 0;
 
-    public LightingManager(MainActivity ctx){
+    public LightingManager(Launch2Activity ctx){
         this.ctx = ctx;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         int numLights = Integer.parseInt(preferences.getString("light_number", "1"));

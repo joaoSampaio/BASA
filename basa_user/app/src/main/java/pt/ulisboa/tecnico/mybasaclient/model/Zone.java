@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
 /**
@@ -23,6 +24,7 @@ public class Zone {
 
     public Zone(String name) {
         this.name = name;
+        devices = new ArrayList<>();
     }
 
     public String getName() {
@@ -77,7 +79,7 @@ public class Zone {
             }.getType(), Global.CURRENT_ZONE);
 
             Zone zone = null;
-            List<Zone> zones = loadZones();
+            List<Zone> zones = AppController.getInstance().loadZones();
             for (Zone z : zones){
                 if(current != null && z.getName().equals(current))
                     zone = z;
@@ -97,61 +99,30 @@ public class Zone {
     }
 
     public static void removeDevice(BasaDevice device){
-        Zone currentZone = Zone.getCurrentZone();
-        List<Zone> zones =  loadZones();
-        Zone zone = Zone.getZoneByName(currentZone.getName(), zones);
-        int pos = getDevicePositionById(zone, device);
-        if(pos >= 0){
-            zone.getDevices().remove(pos);
-        }
-        Zone.saveZones(zones);
-        Zone.saveCurrentZone(zone);
+        Zone currentZone = AppController.getInstance().getCurrentZone();
+        List<Zone> zones =  AppController.getInstance().loadZones();
+
+        currentZone.getDevices().remove(device);
+
+        AppController.getInstance().saveZones(zones);
+        AppController.getInstance().saveCurrentZone(currentZone);
     }
-
-//    public static List<String> get
-
-    public static void updateCurrentZone(BasaDevice device){
-        Zone currentZone = Zone.getCurrentZone();
-        List<Zone> zones =  loadZones();
-
-
-        Zone zone = Zone.getZoneByName(currentZone.getName(), zones);
-
-        int pos = getDevicePositionById(zone, device);
-        if(pos >= 0){
-            zone.getDevices().set(pos, device);
-        }
-
-        Zone.saveZones(zones);
-        Zone.saveCurrentZone(zone);
-
-    }
-
-    public static int getDevicePositionById(Zone zone, BasaDevice device){
-        int i = 0;
-        for(BasaDevice d : zone.getDevices()){
-            if(d.getId().equals(device.getId()))
-                return i;
-            i++;
-        }
-        return -1;
-    }
-
 
     public static List<Zone> getOtherZones(List<Zone> zones, Zone current){
+        List<Zone> tmp = new ArrayList<Zone>(zones);
         Zone zone = null;
-        for (Zone z : zones) {
+        for (Zone z : tmp) {
             if (z.getName().equals(current.getName()))
                 zone = z;
         }
         if(zone != null)
-            zones.remove(zone);
+            tmp.remove(zone);
 
-        return zones;
+        return tmp;
     }
 
     public static Zone getZoneByName(String name){
-        List<Zone> zones = loadZones();
+        List<Zone> zones = AppController.getInstance().loadZones();
         for (Zone z : zones){
             if(z.getName().equals(name))
                 return z;
@@ -171,7 +142,7 @@ public class Zone {
     }
 
     public static void removeZone(String name){
-        List<Zone> zones = loadZones();
+        List<Zone> zones = AppController.getInstance().loadZones();
         Zone zone = null;
         for (Zone z : zones){
             if(z.getName().equals(name))
@@ -181,5 +152,14 @@ public class Zone {
         Zone.saveZones(zones);
     }
 
+    public static boolean isZoneCreated(){
+        try {
+            List<Zone> zones = AppController.getInstance().loadZones();
+            return zones != null && !zones.isEmpty();
+        }catch (Exception e){
+            //if no user is saved an exception my the thrown
+            return false;
+        }
+    }
 
 }

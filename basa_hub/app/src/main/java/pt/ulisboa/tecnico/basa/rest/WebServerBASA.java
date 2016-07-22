@@ -26,13 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
+import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceInfo;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ChangeTemperatureLights;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import spark.Request;
@@ -49,7 +50,7 @@ public class WebServerBASA {
 
     private final static String STARTING_TEXT = "7e7e0d02";
     private final static String ENDING_TEXT = "7f7f";
-    private MainActivity activity;
+    private Launch2Activity activity;
     private CameraSettingsDialogFragment.BitmapMotionTransfer transfer;
     Future longRunningTaskFuture;
     ExecutorService threadPoolExecutor;
@@ -58,7 +59,7 @@ public class WebServerBASA {
     Bitmap live;
     boolean isBitmapRegistered = false;
 
-    public void setActivity(MainActivity activity) {
+    public void setActivity(Launch2Activity activity) {
         if(this.activity != null)
             return;
         this.activity = activity;
@@ -70,7 +71,7 @@ public class WebServerBASA {
         }
     }
 
-    public WebServerBASA(MainActivity activity){
+    public WebServerBASA(Launch2Activity activity){
         Log.d("webserver", "WebServerBASA");
         this.activity =  activity;
         transfer = new CameraSettingsDialogFragment.BitmapMotionTransfer() {
@@ -113,7 +114,7 @@ public class WebServerBASA {
         Spark.stop();
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 
@@ -146,8 +147,6 @@ public class WebServerBASA {
                     }
 
                     HttpServletResponse raw = response.raw();
-//                    response.header("Content-Disposition", "attachment; filename=image.jpg");
-                    //response.type("application/force-download");
                     try {
                         raw.getOutputStream().write(data);
                         raw.getOutputStream().flush();
@@ -157,9 +156,6 @@ public class WebServerBASA {
                         e.printStackTrace();
                     }
                     return raw;
-
-
-//                    return "{\"status\": true}";
 
                 }else{
                     return "{\"status\": false}";
@@ -179,15 +175,12 @@ public class WebServerBASA {
             public Object handle(Request request, Response response) {
 
                 String body = request.body();
-                Log.d("servico", "request.body():"+request.body());
 
                 Gson gson = new Gson();
                 try {
                     final ChangeTemperatureLights changeTemperatureLights = gson.fromJson(body, new TypeToken<ChangeTemperatureLights>() {
                     }.getType());
-                    Log.d("servico", "1:" + (getActivity() != null));
 
-                        Log.d("servico", "2:");
                         if(AppController.getInstance().basaManager != null){
 
                             final int temperature = changeTemperatureLights.getTargetTemperature();
@@ -201,14 +194,9 @@ public class WebServerBASA {
                                     if(lights != null && lights.length > 0 && manager.getLightingManager() != null)
                                         manager.getLightingManager().setLightState(lights);
 
-
                                 }
                             });
-
-
-                            Log.d("servico", "3:");
                             response.status(200);
-                            Log.d("servico", "{\"status\": true}");
                             return "{\"status\": true}";
                         }
 
@@ -286,6 +274,16 @@ public class WebServerBASA {
                 long time2 = System.currentTimeMillis();
                 Log.d("servico", "thread-> "+id+" |time:"+(time2-time1));
                 return json;
+            }
+        });
+
+        get(new Route("/register") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+                BasaDeviceInfo device = new BasaDeviceInfo("WzGE9m7AKgYUmgbW1sE8fzgVDQB2", "Tagus 2N.11.5", "descrição");
+                Gson gson = new Gson();
+                return "{\"status\": true, \"data\": "+gson.toJson(device)+"}";
             }
         });
 

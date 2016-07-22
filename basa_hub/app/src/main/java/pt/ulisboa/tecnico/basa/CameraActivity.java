@@ -200,7 +200,7 @@ public class CameraActivity extends AppCompatActivity {
             // We've binded to LocalService, cast the IBinder and get LocalService instance
             CameraBackgroundService.LocalBinder binder = (CameraBackgroundService.LocalBinder) service;
             myService = binder.getServiceInstance(); //Get instance of your service!
-            //myService.registerMonitoringActivity((MainActivity) getActivity());
+            //myService.registerMonitoringActivity((Launch2Activity) getActivity());
             Log.d("teste", "+++++++++++++++++++++++++onServiceConnected");
         }
 

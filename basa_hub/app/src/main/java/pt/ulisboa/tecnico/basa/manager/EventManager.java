@@ -22,15 +22,15 @@ import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.Recipe;
 import pt.ulisboa.tecnico.basa.model.Trigger;
 import pt.ulisboa.tecnico.basa.model.TriggerAction;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class EventManager {
 
-    private MainActivity activity;
+    private Launch2Activity activity;
     private List<InterestEventAssociation> interests;
 
-    public EventManager(MainActivity activity) {
+    public EventManager(Launch2Activity activity) {
         interests = new ArrayList<>();
         this.activity = activity;
         this.setUpCalender();
@@ -235,7 +235,7 @@ public class EventManager {
         activity = null;
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 
 /**
@@ -51,7 +52,7 @@ public class DeviceFragment extends DialogFragment implements View.OnClickListen
         rootView =  inflater.inflate(R.layout.fragment_device, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar!=null) {
-            device = BasaDevice.getCurrentDevice();
+            device = AppController.getInstance().getCurrentDevice();
             toolbar.setTitle(device.getName());
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 

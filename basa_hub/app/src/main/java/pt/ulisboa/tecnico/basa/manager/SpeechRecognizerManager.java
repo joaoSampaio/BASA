@@ -47,7 +47,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 import pt.ulisboa.tecnico.basa.model.event.EventVoice;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -64,10 +64,10 @@ public class SpeechRecognizerManager {
     protected android.speech.SpeechRecognizer mGoogleSpeechRecognizer;
     private Context mContext;
     private OnResultListener mOnResultListener;
-    private MainActivity activity;
+    private Launch2Activity activity;
 
 
-    public SpeechRecognizerManager(Context context, MainActivity activity) {
+    public SpeechRecognizerManager(Context context, Launch2Activity activity) {
         this.mContext = context;
         this.activity = activity;
         Log.d(TAG, "SpeechRecognizerManager:");
@@ -125,7 +125,7 @@ public class SpeechRecognizerManager {
 
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
@@ -58,7 +59,7 @@ public class DeviceSettingsFragment extends DialogFragment implements View.OnCli
         // Inflate the layout for this fragment
         rootView =  inflater.inflate(R.layout.fragment_device_settings, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        device = BasaDevice.getCurrentDevice();
+        device = AppController.getInstance().getCurrentDevice();
         if (toolbar!=null) {
             toolbar.setTitle(device.getName());
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -89,7 +90,6 @@ public class DeviceSettingsFragment extends DialogFragment implements View.OnCli
     }
 
     private void init(){
-        device = BasaDevice.getCurrentDevice();
         remove = (TextView)rootView.findViewById(R.id.textViewRemove);
         remove.setText("Remove " + device.getName());
         String tempIp = device.getUrl();
@@ -156,15 +156,10 @@ public class DeviceSettingsFragment extends DialogFragment implements View.OnCli
                                         @Override
                                         public void success(Object response) {
 
-
-
-                                            if(getDialog() != null)
-                                                Zone.updateCurrentZone(device);
-
                                             if(getActivity() != null){
                                                 MainActivity activity = (MainActivity) getActivity();
                                                 if(activity.getCommunicationHomeFragment() != null)
-                                                    activity.getCommunicationHomeFragment().updateZone();
+                                                    activity.getCommunicationHomeFragment().updateZone(false);
 
                                                 if(activity.getCommunicationUserFragment() != null)
                                                     activity.getCommunicationUserFragment().refreshZones();
@@ -209,7 +204,7 @@ public class DeviceSettingsFragment extends DialogFragment implements View.OnCli
 
 
                                     if( ((MainActivity)getActivity()).getCommunicationHomeFragment() != null)
-                                        ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone();
+                                        ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone(true);
 
                                     ((MainActivity)getActivity()).dismissAllDialogs();
 //                                    dismissFragment();

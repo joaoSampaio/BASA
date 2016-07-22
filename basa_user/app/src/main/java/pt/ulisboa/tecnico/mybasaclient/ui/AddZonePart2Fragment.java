@@ -17,6 +17,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 /**
@@ -133,14 +134,14 @@ public class AddZonePart2Fragment extends DialogFragment implements View.OnClick
                 if(name.length() >= 4){
                     closeKeyboard();
                     openPage(R.id.page3);
-                    List<Zone> zones = Zone.loadZones();
+                    List<Zone> zones = AppController.getInstance().loadZones();
                     zones.add(new Zone(name));
-                    Zone.saveZones(zones);
+                    AppController.getInstance().saveZones(zones);
                     MainActivity activity = (MainActivity)getActivity();
                     if(activity.getCommunicationUserFragment() != null)
                         activity.getCommunicationUserFragment().refreshZones();
                     if(activity.getCommunicationHomeFragment() != null)
-                        activity.getCommunicationHomeFragment().updateZone();
+                        activity.getCommunicationHomeFragment().updateZone(false);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

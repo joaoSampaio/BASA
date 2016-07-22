@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,18 +15,32 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
-import com.google.gson.reflect.TypeToken;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
+import pt.ulisboa.tecnico.mybasaclient.manager.DeviceManager;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
@@ -44,29 +57,42 @@ import pt.ulisboa.tecnico.mybasaclient.ui.ScanQRCodeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.UserFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsInfoFragment;
-import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
+import pt.ulisboa.tecnico.mybasaclient.util.FirebaseHelper;
+import pt.ulisboa.tecnico.mybasaclient.util.GenericCommunicationToFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.VerticalViewPager;
 import pt.ulisboa.tecnico.mybasaclient.util.ViewPagerPageScroll;
 
 import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements
+        GoogleApiClient.OnConnectionFailedListener {
 
     private List<ViewPagerPageScroll> pageListener;
     private UserFragment.CommunicationUserFragment communicationUserFragment;
     private HomeFragment.CommunicationHomeFragment communicationHomeFragment;
     private ScanQRCodeFragment.CommunicationScanFragment communicationScanFragment;
     private ZoneSettingsFragment.CommunicationSettings communicationSettings;
+    private List<GenericCommunicationToFragment> toFragmentList;
     private VerticalViewPager viewPager;
     private CoordinatorLayout coordinatorLayout;
+
+
+    private FirebaseAuth mAuth;
+    private static final int RC_SIGN_IN = 9001;
+    private GoogleApiClient mGoogleApiClient;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseHelper mHelper;
+    private DeviceManager mManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         pageListener = new ArrayList<>();
-
+        toFragmentList = new ArrayList<>();
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
         viewPager = (VerticalViewPager) findViewById(R.id.pager);
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
@@ -96,40 +122,103 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
         openViewpagerPage(Global.HOME);
         init();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        AppController.getInstance().resetData();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        AppController.getInstance().saveData();
+        if(mManager != null)
+            mManager.clearAllListeners();
+        toFragmentList.clear();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mAuth != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
+    }
 
     private void init(){
 
-        if(!isZoneCreated()){
+        if(!Zone.isZoneCreated()){
             //popup to create new zone
             openPage(Global.DIALOG_ADD_ZONE_PART1);
         }
-
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
         AppController.getInstance().beaconStart();
 
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addOnConnectionFailedListener(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d("main", "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    if(mDatabase == null) {
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        mHelper = new FirebaseHelper(mDatabase);
+                        mHelper.setActivity(MainActivity.this);
+                        mHelper.registerUser(user.getUid(), AppController.getInstance().getLoggedUser().getUserName());
+
+                        mManager = new DeviceManager(mHelper);
+                        if (AppController.getInstance().getCurrentZone() != null)
+                            mManager.setCurrentZone(AppController.getInstance().getCurrentZone());
+                    }
+
+//
+//                    helper.registerUser(user.getUid());
+
+                } else {
+                    // User is signed out
+                    Log.d("main", "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+        signIn();
+
     }
-
-    private boolean isZoneCreated(){
-        try {
-            List<Zone> zones = new ModelCache<List<Zone>>().loadModel(new TypeToken<List<Zone>>() {
-            }.getType(), Global.DATA_ZONE);
-            return zones != null && !zones.isEmpty();
-        }catch (Exception e){
-            //if no user is saved an exception my the thrown
-            return false;
-        }
-    }
-
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -137,27 +226,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     public void openViewpagerPage(int position){
         if(position == Global.HOME){
@@ -210,8 +283,6 @@ public class MainActivity extends AppCompatActivity
             tag = "DeviceCameraFragment";
         }
 
-
-
         if(newFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
@@ -222,30 +293,6 @@ public class MainActivity extends AppCompatActivity
             newFragment.show(ft, tag);
         }
 
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-            id= Global.HOME;
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-        openPage(id);
-        return true;
     }
 
     public void dismissAllDialogs() {
@@ -324,7 +371,49 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("main", "onActivityResult:" + requestCode);
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                Log.d("main", "Google Sign In was successful, authenticate with Firebase");
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                Log.d("main", "Google Sign In failed, update UI appropriately:");
 
+                // Google Sign In failed, update UI appropriately
+                // ...
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("main", "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("main", "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w("main", "signInWithCredential", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        // ...
+                    }
+                });
+    }
 
     public void showMessage(String text){
         Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG).show();
@@ -379,5 +468,26 @@ public class MainActivity extends AppCompatActivity
 
     public void setCommunicationSettings(ZoneSettingsFragment.CommunicationSettings communicationSettings) {
         this.communicationSettings = communicationSettings;
+    }
+
+    public DeviceManager getmManager() {
+        return mManager;
+    }
+
+    public void addGenericCommunication(GenericCommunicationToFragment listener){
+        toFragmentList.add(listener);
+    }
+
+    public void removeGenericCommunication(GenericCommunicationToFragment listener){
+        toFragmentList.remove(listener);
+    }
+
+    public List<GenericCommunicationToFragment> getGenericCommunicationList() {
+        return toFragmentList;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

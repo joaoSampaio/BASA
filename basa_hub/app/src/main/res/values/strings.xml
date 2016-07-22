@@ -10,4 +10,14 @@
         <item >AltBeacon</item>
     </string-array>
 
+
+    <string name="signup_error_message">Please make sure you enter an email address and password!</string>
+    <string name="signup_error_title">Error!</string>
+    <string name="signup_success">Account successfully created! You can now Login.</string>
+
+
+    <string name="web_client_id">AIzaSyBHtUg-QsxQTjD500j7hZtNZqQZUFCdseU</string>
+
+
+
 </resources>

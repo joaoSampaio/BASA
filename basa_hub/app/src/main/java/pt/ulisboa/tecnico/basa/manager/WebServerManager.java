@@ -20,19 +20,19 @@ import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.WebServerBASA;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by Sampaio on 16/04/2016.
  */
 public class WebServerManager {
 
-    private MainActivity activity;
+    private Launch2Activity activity;
     private WebServerBASA server;
 
 
 
-    public WebServerManager(MainActivity activity) {
+    public WebServerManager(Launch2Activity activity) {
         this.activity = activity;
 //        launchServer();
         server = new WebServerBASA(activity);
@@ -162,11 +162,11 @@ public class WebServerManager {
         }
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 
-    public void setActivity(MainActivity activity) {
+    public void setActivity(Launch2Activity activity) {
         this.activity = activity;
     }
 

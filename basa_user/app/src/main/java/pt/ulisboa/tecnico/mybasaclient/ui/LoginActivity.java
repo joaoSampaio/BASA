@@ -42,6 +42,7 @@ import java.util.UUID;
 import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.rest.mail.WelcomeTemplate;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
@@ -165,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
 
-        User user = User.getLoggedUser();
+        User user = AppController.getInstance().getLoggedUser();
         if(user != null){
             mUsernameView.setText(user.getUserName());
             mEmailView.setText(user.getEmail());
@@ -295,7 +296,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isUserLoggedIn(){
         try {
-            User user = User.getLoggedUser();
+            User user = AppController.getInstance().getLoggedUser();
             return user != null && user.getUuid() != null && !user.getUuid().isEmpty();
         }catch (Exception e){
             //if no user is saved an exception my the thrown

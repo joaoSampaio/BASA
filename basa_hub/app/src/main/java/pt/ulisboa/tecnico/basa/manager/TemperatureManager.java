@@ -27,7 +27,7 @@ import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
-import pt.ulisboa.tecnico.basa.ui.MainActivity;
+import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class TemperatureManager {
@@ -40,12 +40,12 @@ public class TemperatureManager {
     private GlobalTemperatureForecast globalTemperatureForecast;
     SharedPreferences preferences;
     private Temperature latestTemperature;
-    private MainActivity activity;
+    private Launch2Activity activity;
     Handler handler;
     private String urlTemperature;
     private InterestEventAssociation interest;
 
-    public TemperatureManager(MainActivity ctx){
+    public TemperatureManager(Launch2Activity ctx){
         this.activity = ctx;
         actionTemperatureManagerList = new ArrayList<>();
         preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -66,7 +66,7 @@ public class TemperatureManager {
         };
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-        updateLocation();
+//        updateLocation();
 
         getActivity().getBasaManager().getEventManager().registerInterest(new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
@@ -135,8 +135,8 @@ public class TemperatureManager {
         if(handler != null)
             handler.removeCallbacksAndMessages(null);
 
-        if(((MainActivity)getActivity()).getBasaManager().getEventManager() != null)
-            ((MainActivity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
+        if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
+            ((Launch2Activity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
         interest = null;
 
 
@@ -144,7 +144,7 @@ public class TemperatureManager {
         this.activity = null;
     }
 
-    public MainActivity getActivity() {
+    public Launch2Activity getActivity() {
         return activity;
     }
 
