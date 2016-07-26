@@ -1,11 +1,6 @@
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -16,18 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
-import pt.ulisboa.tecnico.basa.model.BasaLocation;
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class TemperatureManager {
@@ -40,15 +36,18 @@ public class TemperatureManager {
     private GlobalTemperatureForecast globalTemperatureForecast;
     SharedPreferences preferences;
     private Temperature latestTemperature;
-    private Launch2Activity activity;
+    private BasaManager basaManager;
     Handler handler;
     private String urlTemperature;
     private InterestEventAssociation interest;
 
-    public TemperatureManager(Launch2Activity ctx){
-        this.activity = ctx;
+    private int targetTemperature;
+
+    public TemperatureManager(BasaManager basaManager){
+        this.basaManager = basaManager;
         actionTemperatureManagerList = new ArrayList<>();
-        preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Log.d("tempera", "TemperatureManager:"+(actionTemperatureManagerList != null));
+        preferences = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
         handler = new Handler();
 
         preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -68,7 +67,7 @@ public class TemperatureManager {
         preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
 //        updateLocation();
 
-        getActivity().getBasaManager().getEventManager().registerInterest(new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
+        getBasaManager().getEventManager().registerInterest(new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {
 
@@ -98,15 +97,21 @@ public class TemperatureManager {
                     double temperature = ((EventTemperature)event).getTemperature();
                     Log.d("servico", "latest temp:" + temperature);
 
+
                     setLatestTemperature(new Temperature(temperature, -1));
+
+
 
                 }
             }
         }, 0);
 
-        Log.d("servico", "TemperatureManager:" + (getActivity().getBasaManager().getEventManager() != null));
-        if((getActivity()).getBasaManager().getEventManager() != null)
-            getActivity().getBasaManager().getEventManager().registerInterest(interest);
+        Log.d("servico", "TemperatureManager:" + (getBasaManager().getEventManager() != null));
+        if(getBasaManager().getEventManager() != null) {
+            Log.d("servico", "TemperatureManager register:" );
+            getBasaManager().getEventManager().registerInterest(interest);
+
+        }
 
 
 
@@ -128,6 +133,7 @@ public class TemperatureManager {
     }
 
     public void destroy() {
+        Log.d("tempera", "TemperatureManager destroy:"+(actionTemperatureManagerList != null));
         if (actionTemperatureManagerList != null) {
             actionTemperatureManagerList.clear();
             actionTemperatureManagerList = null;
@@ -135,60 +141,75 @@ public class TemperatureManager {
         if(handler != null)
             handler.removeCallbacksAndMessages(null);
 
-        if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
-            ((Launch2Activity)getActivity()).getBasaManager().getEventManager().removeInterest(interest);
+        if(getBasaManager().getEventManager() != null)
+            getBasaManager().getEventManager().removeInterest(interest);
         interest = null;
 
 
         preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
-        this.activity = null;
+        this.basaManager = null;
     }
 
-    public Launch2Activity getActivity() {
-        return activity;
+
+    public BasaManager getBasaManager() {
+        return basaManager;
     }
 
     public void requestUpdateTemperature(){
 
-        urlTemperature = preferences.getString(Global.OFFLINE_IP_TEMPERATURE, "");
+//        urlTemperature = preferences.getString(Global.OFFLINE_IP_TEMPERATURE, "");
+
         handler.removeCallbacksAndMessages(null);
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
-                    @Override
-                    public void success(Temperature response) {
-                        if(response != null && activity != null && response.isValid()){
-                            activity.getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response.getTemperature(), response.getHumidity()));
-                            //latestTemperature = response;
+        if(AppController.getInstance().getDeviceConfig().getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO) {
+            urlTemperature = AppController.getInstance().getDeviceConfig().getArduinoIP();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
+                        @Override
+                        public void success(Temperature response) {
+                            if (response != null && getBasaManager() != null && response.isValid()) {
+                                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response.getTemperature(), response.getHumidity()));
+                                //latestTemperature = response;
+                            }
                         }
-                    }
 
-                    @Override
-                    public void failed(String error) {
+                        @Override
+                        public void failed(String error) {
 
-                    }
+                        }
 
-                }).execute();
-                handler.postDelayed(this, 30 * 1000);
-            }
-        });
+                    }).execute();
+                    handler.postDelayed(this, 30 * 1000);
+                }
+            });
+        }
     }
 
+
+
+
     public void changeTargetTemperature(int temperature){
+        if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
+            FirebaseHelper mHelperFire = new FirebaseHelper();
+            mHelperFire.changeTemperature(temperature);
+        }
+    }
+
+    public void onChangeTargetTemperature(int temperature) {
 
         //TODO logic
-
-
-        for (ActionTemperatureManager listenner: actionTemperatureManagerList) {
-            listenner.onTargetTemperatureChange(temperature);
+        Log.d("tempera", "actionTemperatureManagerList:" + (actionTemperatureManagerList != null));
+        if (actionTemperatureManagerList != null) {
+            for (ActionTemperatureManager listenner : actionTemperatureManagerList) {
+                listenner.onTargetTemperatureChange(temperature);
+            }
         }
     }
 
 
     private void updateLocation(){
-
 
         new GetTemperatureListService(new CallbackMultiple<WeatherForecast, String>() {
             @Override
@@ -223,32 +244,17 @@ public class TemperatureManager {
 
     }
 
-    private void getLongitude(){
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                Log.d("updateLocation", "getLatitude:" + location.getLatitude());
-                Log.d("updateLocation", "getLongitude:" + location.getLongitude());
-                BasaLocation basaLocation = new BasaLocation(location.getLatitude(), location.getLongitude());
-                basaLocation.save();
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            public void onProviderEnabled(String provider) {}
-
-            public void onProviderDisabled(String provider) {}
-        };
-
-// Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    }
 
     public void setLatestTemperature(Temperature latestTemperature) {
         Log.d("servico", "setLatestTemperature:" + (latestTemperature != null));
         this.latestTemperature = latestTemperature;
+
+        if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
+            FirebaseHelper mHelperFire = new FirebaseHelper();
+            mHelperFire.setLatestTemperature((int)latestTemperature.getTemperature());
+        }
+
     }
 
     public Temperature getLatestTemperature() {

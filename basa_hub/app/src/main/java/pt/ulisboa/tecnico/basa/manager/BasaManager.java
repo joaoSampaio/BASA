@@ -1,6 +1,14 @@
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.util.Log;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 
 /**
  * Created by joaosampaio on 20-04-2016.
@@ -16,26 +24,50 @@ public class BasaManager {
     private WebServerManager webServerManager;
     private UserManager userManager;
     private Launch2Activity activity;
+    private ValueEventListener fireListenner;
+    private VideoManager videoManager;
 
-    public BasaManager(Launch2Activity activity) {
-        this.activity = activity;
+    public BasaManager() {
+
     }
 
     public void start(){
-        this.eventManager = new EventManager(getActivity());
-        this.lightingManager = new LightingManager(getActivity());
-        this.speechRecognizerManager = new SpeechRecognizerManager(getActivity(), getActivity());
-        this.textToSpeechManager = new TextToSpeechManager(getActivity());
-        this.temperatureManager = new TemperatureManager(getActivity());
-        this.deviceDiscoveryManager = new DeviceDiscoveryManager(getActivity());
+        this.eventManager = new EventManager(this);
+        this.lightingManager = new LightingManager();
+        this.speechRecognizerManager = new SpeechRecognizerManager(this);
+        this.textToSpeechManager = new TextToSpeechManager();
+        this.temperatureManager = new TemperatureManager(this);
+        this.deviceDiscoveryManager = new DeviceDiscoveryManager();
 //        this.webServerManager = new WebServerManager(getActivity());
-        this.userManager = new UserManager(getActivity());
+        this.userManager = new UserManager();
+
+//        if(getActivity() != null){
+//            videoManager = new VideoManager(getActivity());
+//        }
+
+        if(AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+            FirebaseHelper mHelperFire = new FirebaseHelper();
+            fireListenner =  mHelperFire.getZoneDevicesListener();
+        }
+
     }
 
     public void stop(){
 
-        if(lightingManager != null){
+        Log.d("manager", "basamanager stop:");
 
+        if(fireListenner != null){
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            mDatabase.removeEventListener(fireListenner);
+            fireListenner = null;
+        }
+
+//        if(videoManager != null){
+//            videoManager.destroy();
+//        }
+
+        if(lightingManager != null){
+            lightingManager.destroy();
         }
         if(speechRecognizerManager != null){
             speechRecognizerManager.destroy();
@@ -100,5 +132,9 @@ public class BasaManager {
 
     public Launch2Activity getActivity() {
         return activity;
+    }
+
+    public void setActivity(Launch2Activity activity) {
+        this.activity = activity;
     }
 }

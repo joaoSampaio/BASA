@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.basa.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.EventManager;
 import pt.ulisboa.tecnico.basa.manager.TemperatureManager;
 import pt.ulisboa.tecnico.basa.model.event.Event;
@@ -44,33 +46,31 @@ public class TemperatureFragment extends Fragment {
         mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
         mSeekArc.setCurrentTemperature("Waiting...: ");
 
-//        textTemperature = (TextView)rootView.findViewById(R.id.textTemperature);
-//        textTemperature.setText("Waiting...: ");
-
         image_temperature_mode = (ImageView)rootView.findViewById(R.id.image_temperature_mode);
         forecastTemp = (TextView) rootView.findViewById(R.id.forecastTemp);
         forecastSummary = (TextView) rootView.findViewById(R.id.forecastSummary);
         imageForecast = (ImageView) rootView.findViewById(R.id.imageForecast);
-        action_increase = rootView.findViewById(R.id.action_increase);
-        action_decrease = rootView.findViewById(R.id.action_decrease);
-        action_increase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSeekArc.setProgress(mSeekArc.getProgress() + 1);
-            }
-        });
-        action_decrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSeekArc.setProgress(mSeekArc.getProgress() - 1);
-            }
-        });
+//        action_increase = rootView.findViewById(R.id.action_increase);
+//        action_decrease = rootView.findViewById(R.id.action_decrease);
+//        action_increase.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mSeekArc.setProgress(mSeekArc.getProgress() + 1);
+//            }
+//        });
+//        action_decrease.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mSeekArc.setProgress(mSeekArc.getProgress() - 1);
+//            }
+//        });
 
 
         mSeekArc.setOnSeekArcChangeListener(new SeekArc.OnSeekArcChangeListener() {
 
             @Override
             public void onStopTrackingTouch(SeekArc seekArc) {
+                AppController.getInstance().getBasaManager().getTemperatureManager().changeTargetTemperature(seekArc.getProgress());
             }
 
             @Override
@@ -109,9 +109,11 @@ public class TemperatureFragment extends Fragment {
             @Override
             public void onRegisteredEventTriggered(Event event) {
                 if(event instanceof EventTemperature){
+
                     double temperature = ((EventTemperature)event).getTemperature();
+                    Log.d("servico", "latest temp frag:" + temperature);
 //                    textTemperature.setText("" + temperature);
-                    mSeekArc.setCurrentTemperature("" + temperature);
+                    mSeekArc.setCurrentTemperature("" + (int)temperature);
                     int color = (temperature < 18)? Global.COLOR_COLD : Global.COLOR_HEAT;
                     mSeekArc.setBackgroundColor(color);
 

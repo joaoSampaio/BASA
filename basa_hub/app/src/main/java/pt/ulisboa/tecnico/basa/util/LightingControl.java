@@ -6,5 +6,5 @@ package pt.ulisboa.tecnico.basa.util;
 public interface LightingControl {
 
     void sendLightCommand(boolean[] lights);
-
+    void destroy();
 }

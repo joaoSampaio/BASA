@@ -24,7 +24,7 @@ import java.net.SocketException;
 import java.util.Arrays;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import pt.ulisboa.tecnico.basa.manager.LightingManager;
 
 /**
  * Created by Sampaio on 16/05/2016.
@@ -34,13 +34,19 @@ public class LightingControlEDUP implements LightingControl {
     private final static String STARTING_TEXT = "7e7e000d0002";
     //7E7E000D0002
     private final static String ENDING_TEXT = "7f7f";
-    private Launch2Activity activity;
-
-    public LightingControlEDUP(Launch2Activity activity) {
-        this.activity = activity;
-
-        new Thread(new ListenEDUPMulticast(activity)).start();
+    private LightingManager lightingManager;
+    private ListenEDUPMulticast listenEDUPMulticast;
+    public LightingControlEDUP(LightingManager lightingManager) {
+        this.lightingManager = lightingManager;
+        listenEDUPMulticast = new ListenEDUPMulticast();
+        new Thread(listenEDUPMulticast).start();
     }
+
+    public void destroy(){
+        MulticastLockSingleton.getInstance(AppController.getAppContext()).releaseLock();
+        listenEDUPMulticast.stopSocket();
+    }
+
 
     @Override
     public void sendLightCommand(boolean[] lighting) {
@@ -104,7 +110,9 @@ public class LightingControlEDUP implements LightingControl {
 
 
             Log.d("light", "doInBackground");
-            String content = "ZH037CC7097B7CA91";
+//            String content = "ZH037CC7097B7CA91";
+            String content = AppController.getInstance().getDeviceConfig().getEdupLightId();
+
             for (int light : lights)
                 content+=light;
 
@@ -164,10 +172,18 @@ public class LightingControlEDUP implements LightingControl {
          * Defines the code to run for this task.
          */
 
+        private DatagramSocket socket;
         private Context ctx;
+        private boolean run;
+        public ListenEDUPMulticast() {
+            this.ctx = AppController.getAppContext();
+            this.run = true;
+        }
 
-        public ListenEDUPMulticast(Context ctx) {
-            this.ctx = ctx;
+        public void stopSocket(){
+            run = false;
+            if(socket != null)
+                socket.close();
         }
 
         @Override
@@ -180,10 +196,10 @@ public class LightingControlEDUP implements LightingControl {
 
             if(wifi != null) {
 
-//                multicastLockSingleton = MulticastLockSingleton.getInstance(ctx);
-//                multicastLockSingleton.acquireLock();
-                WifiManager.MulticastLock lock = wifi.createMulticastLock("TheLock");
-                lock.acquire();
+                multicastLockSingleton = MulticastLockSingleton.getInstance(ctx);
+                multicastLockSingleton.acquireLock();
+//                WifiManager.MulticastLock lock = wifi.createMulticastLock("TheLock");
+//                lock.acquire();
 
                 try {
 
@@ -196,7 +212,7 @@ public class LightingControlEDUP implements LightingControl {
                     byte[] buf = new byte[1024];
 
 
-                    DatagramSocket socket = new DatagramSocket(null);
+                    socket = new DatagramSocket(null);
                     InetSocketAddress address = new InetSocketAddress("0.0.0.0", 8089);
 //                    InetSocketAddress address = new InetSocketAddress(ip, 8089);
                     socket.setReuseAddress(true);
@@ -206,8 +222,9 @@ public class LightingControlEDUP implements LightingControl {
 
 
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                    while (true) {
-                        Log.d("ListenEDUPMulticast", "Waiting for data + " + lock.isHeld());
+                    while (run) {
+
+                        Log.d("ListenEDUPMulticast", "Waiting for data + ");
                         try {
 
                             socket.receive(packet);
@@ -237,7 +254,7 @@ public class LightingControlEDUP implements LightingControl {
                                     @Override
                                     public void run() {
                                         Log.d("webserver", "values:"+values.toString());
-                                        getActivity().getBasaManager().getLightingManager().setLightState(values);
+                                        getLightingManager().setLightState(values, false, true);
                                     }
                                 });
                             }
@@ -254,6 +271,7 @@ public class LightingControlEDUP implements LightingControl {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                multicastLockSingleton.releaseLock();
             }
         }
     }
@@ -308,7 +326,7 @@ public class LightingControlEDUP implements LightingControl {
         }
     }
 
-    public Launch2Activity getActivity() {
-        return activity;
+    public LightingManager getLightingManager() {
+        return lightingManager;
     }
 }

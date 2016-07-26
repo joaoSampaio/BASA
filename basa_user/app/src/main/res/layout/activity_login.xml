@@ -2,25 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity">
-
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center" >
-
-        <VideoView
-            android:id="@+id/video_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"/>
-
-    </FrameLayout>
-
+    tools:context="pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity"
+    android:background="@color/colorPrimary">
 
 
     <!-- Login progress -->
@@ -30,7 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_centerHorizontal="true" />
 
     <ScrollView
         android:id="@+id/login_form"
@@ -39,7 +27,8 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header_container">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -47,35 +36,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+
+                <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white" />
 
-            </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+
+                <EditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Username"
-                    android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white" />
 
-            </android.support.design.widget.TextInputLayout>
 
 
 
@@ -88,14 +75,101 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Or sign in with your google account"
+                android:id="@+id/textView16"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
         </LinearLayout>
     </ScrollView>
+
+
+
+
+    <RelativeLayout
+
+    android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_container">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView3"
+            android:layout_alignParentRight="true"
+            android:background="@color/white"
+            android:id="@+id/header_white"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/imageView3"
+            ></RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_logo_butler"
+            android:tint="@color/colorPrimary"
+            android:scaleType="matrix" />
+
+
+
+    </RelativeLayout>
+
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@+id/header_container"
+    android:layout_alignBottom="@+id/header_container"
+    android:id="@+id/title_container">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Basa"
+        android:id="@+id/textViewLogo"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:textSize="50sp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="60dp"
+        android:textColor="@color/colorPrimary"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="your personal assistant..."
+        android:id="@+id/textView19"
+        android:layout_alignLeft="@+id/textViewLogo"
+        android:layout_below="@+id/textViewLogo"
+        android:layout_alignParentRight="false"
+        android:textColor="@color/colorPrimary" />
+
+</RelativeLayout>
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/splash"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@color/colorPrimary"
+        android:clipChildren="false"
         android:visibility="gone">
 
         <TextView
@@ -104,10 +178,10 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="BASA"
             android:id="@+id/textView3"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textColor="@color/abc_primary_text_material_dark"
-            android:textSize="45dp" />
+            android:textSize="45dp"
+            android:layout_below="@+id/imageViewAnim2" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,5 +192,24 @@
             android:layout_centerHorizontal="true"
             android:textColor="@color/abc_primary_text_material_dark"
             android:textSize="17dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewAnim2"
+            android:src="@drawable/ic_logo_butler"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
     </RelativeLayout>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewAnim"
+        android:src="@drawable/ic_logo_butler"
+        android:adjustViewBounds="true"
+        android:layout_centerInParent="true" />
+
 </RelativeLayout>

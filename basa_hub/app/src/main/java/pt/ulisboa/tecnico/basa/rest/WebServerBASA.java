@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceInfo;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
@@ -181,18 +182,18 @@ public class WebServerBASA {
                     final ChangeTemperatureLights changeTemperatureLights = gson.fromJson(body, new TypeToken<ChangeTemperatureLights>() {
                     }.getType());
 
-                        if(AppController.getInstance().basaManager != null){
+                        if(AppController.getInstance().getBasaManager() != null){
 
                             final int temperature = changeTemperatureLights.getTargetTemperature();
                             final boolean[] lights = changeTemperatureLights.getLightsState();
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    BasaManager manager = AppController.getInstance().basaManager;
+                                    BasaManager manager = AppController.getInstance().getBasaManager();
                                     if(temperature > 0 && manager.getTemperatureManager() != null)
-                                        manager.getTemperatureManager().changeTargetTemperature(temperature);
+                                        manager.getTemperatureManager().onChangeTargetTemperature(temperature);
                                     if(lights != null && lights.length > 0 && manager.getLightingManager() != null)
-                                        manager.getLightingManager().setLightState(lights);
+                                        manager.getLightingManager().setLightState(lights, true, true);
 
                                 }
                             });
@@ -227,16 +228,16 @@ public class WebServerBASA {
 //                    if(isRequestAuthorized(session)){
 
 
-                        if(AppController.getInstance().basaManager != null){
-                            boolean[] lights = AppController.getInstance().basaManager
+                        if(AppController.getInstance().getBasaManager() != null){
+                            boolean[] lights = AppController.getInstance().getBasaManager()
                                     .getLightingManager().getLights();
 
-                            Log.d("servico", "getLatestTemperature:" + (AppController.getInstance().basaManager
+                            Log.d("servico", "getLatestTemperature:" + (AppController.getInstance().getBasaManager()
                                     .getTemperatureManager().getLatestTemperature() != null));
 
-                            double temperature = (AppController.getInstance().basaManager
+                            double temperature = (AppController.getInstance().getBasaManager()
                                     .getTemperatureManager().getLatestTemperature() != null)?
-                                    AppController.getInstance().basaManager.getTemperatureManager()
+                                    AppController.getInstance().getBasaManager().getTemperatureManager()
                                             .getLatestTemperature().getTemperature() : -100;
 //                            double temperature = AppController.getInstance().basaManager.getTemperatureManager().getLatestTemperature().getTemperature();
                             DeviceStatus deviceStatus = new DeviceStatus(lights, temperature);
@@ -281,7 +282,8 @@ public class WebServerBASA {
             @Override
             public Object handle(Request request, Response response) {
 
-                BasaDeviceInfo device = new BasaDeviceInfo("WzGE9m7AKgYUmgbW1sE8fzgVDQB2", "Tagus 2N.11.5", "descrição");
+                BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
+                BasaDeviceInfo device = new BasaDeviceInfo(conf.getUuid(), conf.getName(), conf.getDescription());
                 Gson gson = new Gson();
                 return "{\"status\": true, \"data\": "+gson.toJson(device)+"}";
             }
@@ -303,8 +305,8 @@ public class WebServerBASA {
                     Log.d("servico", "1:" + (getActivity() != null));
                     if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
                         Log.d("servico", "2:");
-                        if(AppController.getInstance().basaManager != null){
-                            AppController.getInstance().basaManager.getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+                        if(AppController.getInstance().getBasaManager() != null){
+                            AppController.getInstance().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
                             UserRegistrationAnswer answer = new UserRegistrationAnswer();
                             Log.d("servico", "3:");
                             response.status(200);
@@ -350,7 +352,7 @@ public class WebServerBASA {
                             @Override
                             public void run() {
                                 Log.d("webserver", "values:"+values.toString());
-                                getActivity().getBasaManager().getLightingManager().setLightState(values);
+                                getActivity().getBasaManager().getLightingManager().setLightState(values, false, true);
                             }
                         });
 //                    }

@@ -17,7 +17,7 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
     private boolean isInitialized;
     public static final int RESULT_SPEECH = 1;
 
-    public TextToSpeechManager(Launch2Activity activity) {
+    public TextToSpeechManager() {
         isInitialized = false;
         tts = new TextToSpeech(AppController.getAppContext(), this);
         Log.d("TextToSpeechManager", "constructor:");

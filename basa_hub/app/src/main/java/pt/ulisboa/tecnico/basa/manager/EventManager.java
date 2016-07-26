@@ -1,62 +1,88 @@
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
+import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.model.Recipe;
+import pt.ulisboa.tecnico.basa.model.Trigger;
+import pt.ulisboa.tecnico.basa.model.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventVoice;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.model.Recipe;
-import pt.ulisboa.tecnico.basa.model.Trigger;
-import pt.ulisboa.tecnico.basa.model.TriggerAction;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class EventManager {
 
-    private Launch2Activity activity;
+    private BasaManager basaManager;
     private List<InterestEventAssociation> interests;
-
-    public EventManager(Launch2Activity activity) {
+    private List<InterestEventAssociation> recipes;
+    public EventManager(BasaManager basaManager) {
         interests = new ArrayList<>();
-        this.activity = activity;
-        this.setUpCalender();
+        recipes = new ArrayList<>();
+        this.basaManager = basaManager;
+        Log.d("EVENT", "EventManager new ");
+//        this.setUpCalender();
     }
 
     public void addEvent(Event event){
         Log.d("EVENT", "****" + eventToString(event) + "****: ");
 
         try {
+            int i = 0;
             for (InterestEventAssociation interest: interests){
                 if(interest.isType(event.getType())){
                     interest.getInterest().onRegisteredEventTriggered(event);
+                    i++;
+                    Log.d("EVENT", "****i= " + i);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            int i = 0;
+            for (InterestEventAssociation interest: recipes){
+                if(interest.isType(event.getType())){
+                    interest.getInterest().onRegisteredEventTriggered(event);
+                    i++;
+                    Log.d("EVENT", "****i= " + i);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    public void registerInterestRecipe(InterestEventAssociation interest){
+        this.recipes.add(interest);
+    }
+
+    public void removeInterestRecipe(InterestEventAssociation interest){
+        this.recipes.remove(interest);
     }
 
     public void registerInterest(InterestEventAssociation interest){
+        Log.d("EVENT", " register interests.size():" + interests.size() );
+
         this.interests.add(interest);
+        Log.d("EVENT", " register interest:" + interest.getType() );
     }
 
     public void removeInterest(InterestEventAssociation interest){
         this.interests.remove(interest);
-
+        Log.d("EVENT", " removeInterest :" + interest.getType() );
     }
 
 
@@ -88,7 +114,7 @@ public class EventManager {
     }
 
     public void reloadSavedRecipes(){
-        interests.clear();
+        recipes.clear();
         initSavedRecipes();
     }
 
@@ -103,7 +129,7 @@ public class EventManager {
             final Recipe recipeFinal = re;
             switch (re.getTriggerId()) {
                 case Trigger.CLAP:
-                    registerInterest(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
+                    registerInterestRecipe(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
                         @Override
                         public void onRegisteredEventTriggered(Event event) {
                             Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
@@ -118,7 +144,7 @@ public class EventManager {
                     break;
                 case Trigger.TEMPERATURE:
 
-                    registerInterest(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
+                    registerInterestRecipe(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
                         @Override
                         public void onRegisteredEventTriggered(Event event) {
                             if (event instanceof EventTemperature) {
@@ -146,7 +172,7 @@ public class EventManager {
                 case Trigger.SWITCH:
                     Log.d("initSavedValues", "SWITCH ");
 
-                    registerInterest(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
+                    registerInterestRecipe(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
                         @Override
                         public void onRegisteredEventTriggered(Event event) {
                             Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
@@ -163,7 +189,7 @@ public class EventManager {
                     break;
                 case Trigger.VOICE:
                     Log.d("initSavedValues", "VOICE ");
-                    registerInterest(new InterestEventAssociation(Event.VOICE, new RegisterInterestEvent() {
+                    registerInterestRecipe(new InterestEventAssociation(Event.VOICE, new RegisterInterestEvent() {
                         @Override
                         public void onRegisteredEventTriggered(Event event) {
                             if (event instanceof EventVoice) {
@@ -203,22 +229,22 @@ public class EventManager {
 
 
                 for(int id: re.getSelectedAction()){
-                    if(activity.getBasaManager().getLightingManager() != null)
-                        activity.getBasaManager().getLightingManager().turnONLight(id, true);
+                    if(getBasaManager().getLightingManager() != null)
+                        getBasaManager().getLightingManager().turnONLight(id, true, true);
                 }
 
                 break;
             case TriggerAction.LIGHT_OFF:
                 for(int id: re.getSelectedAction()){
-                    if(activity.getBasaManager().getLightingManager() != null)
-                        activity.getBasaManager().getLightingManager().turnOFFLight(id, true);
+                    if(getBasaManager().getLightingManager() != null)
+                        getBasaManager().getLightingManager().turnOFFLight(id, true, true);
                 }
                 break;
 
             case TriggerAction.VOICE:
 
                 String say = re.getConditionEventValue();
-                activity.getBasaManager().getTextToSpeechManager().speak(say);
+                getBasaManager().getTextToSpeechManager().speak(say);
 
 
                 break;
@@ -230,41 +256,44 @@ public class EventManager {
 
 
     public void stop(){
+        Log.d("EVENT", "EventManager stop ");
         interests.clear();
+        recipes.clear();
         interests = null;
-        activity = null;
+        basaManager = null;
     }
 
-    public Launch2Activity getActivity() {
-        return activity;
+    public BasaManager getBasaManager() {
+        return basaManager;
     }
 
-    public void setUpCalender(){
 
-        Calendar midnightCalendar = Calendar.getInstance();
-
-        //set the time to midnight tonight
-
-        midnightCalendar.set(Calendar.HOUR_OF_DAY, 21);
-
-        midnightCalendar.set(Calendar.MINUTE, 0);
-
-        midnightCalendar.set(Calendar.SECOND, 0);
-
-        AlarmManager am = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-
-        //create a pending intent to be called at midnight
-
-        PendingIntent midnightPI = PendingIntent.getService(getActivity(), 0, new Intent("pt.ulisboa.tecnico.basa.BroadcastReceiver.TimeBroadcastReceiver"), PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
-
-        am.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, midnightPI);
-
-
-
-
-    }
+//    public void setUpCalender(){
+//
+//        Calendar midnightCalendar = Calendar.getInstance();
+//
+//        //set the time to midnight tonight
+//
+//        midnightCalendar.set(Calendar.HOUR_OF_DAY, 21);
+//
+//        midnightCalendar.set(Calendar.MINUTE, 0);
+//
+//        midnightCalendar.set(Calendar.SECOND, 0);
+//
+//        AlarmManager am = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+//
+//        //create a pending intent to be called at midnight
+//
+//        PendingIntent midnightPI = PendingIntent.getService(getActivity(), 0, new Intent("pt.ulisboa.tecnico.basa.BroadcastReceiver.TimeBroadcastReceiver"), PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
+//
+//        am.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, midnightPI);
+//
+//
+//
+//
+//    }
 
 
 }

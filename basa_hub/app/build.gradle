@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'basa'
             keyPassword 'OZrqow45pVx3bM'
-            storeFile file('D:/documents/basa/basa_key.jks')
+            storeFile file('../../key/basa_key.jks')
             storePassword 'OZrqow45pVx3bM'
         }
     }

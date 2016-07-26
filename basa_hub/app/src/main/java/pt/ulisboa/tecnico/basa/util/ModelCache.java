@@ -19,6 +19,7 @@ public class ModelCache<T> {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(TAG, json);
         editor.commit();
+        Log.d("myapp", "json:" +json);
     }
 
     public T loadModel(Type type, String TAG){

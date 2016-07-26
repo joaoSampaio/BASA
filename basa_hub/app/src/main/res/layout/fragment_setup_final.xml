@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:seekcircle="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="20dp">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Security"
+            android:id="@+id/textView5"
+            android:layout_alignParentTop="false"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/title">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_below="@+id/textView16">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/editTextPin"
+                    android:background="@drawable/rounded_border_edittext"
+                    android:hint="Pin (4 numbers):"
+                    android:paddingLeft="10dp"
+                    android:maxLength="4"
+                    android:layout_marginBottom="20dp"
+                    android:inputType="numberPassword" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/editTextPin2"
+                    android:background="@drawable/rounded_border_edittext"
+                    android:hint="Retype Pin (4 numbers):"
+                    android:maxLength="4"
+                    android:paddingLeft="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:inputType="numberPassword" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_security"
+            android:id="@+id/textView16"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/action_save"
+        android:background="@drawable/button_blue"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="40dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingRight="40dp" />
+
+
+</RelativeLayout>

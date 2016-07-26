@@ -37,9 +37,9 @@ public class FirebaseHelper {
         this.activity = activity;
     }
 
-    public void registerUser(String userId, String name){
+    public void registerUser(String userId, String name, String email){
 
-        UserFirebase user = new UserFirebase(name, userId);
+        UserFirebase user = new UserFirebase(name, userId, email);
         mDatabase.child("users").child(userId).setValue(user);
     }
 

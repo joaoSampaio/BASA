@@ -2,17 +2,117 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
-    xmlns:seekcircle="http://schemas.android.com/tools"
     android:background="@color/white">
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp">
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/indicator">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_first"
+                android:layout_gravity="bottom"
+                android:background="@drawable/viewpager_indicator" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_second"
+                android:layout_gravity="bottom"
+                android:background="@drawable/viewpager_indicator"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_third"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/viewpager_indicator" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_fourth"
+                android:layout_gravity="bottom"
+                android:background="@drawable/viewpager_indicator" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_fifth"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/viewpager_indicator" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/goto_six"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/viewpager_indicator" />
+        </LinearLayout>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:id="@+id/action_next"
+            android:background="@null"
+            android:textSize="20sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous"
+            android:id="@+id/action_prev"
+            android:background="@null"
+            android:textSize="20sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_skip"
+            android:id="@+id/action_load_config"
+            android:background="@drawable/button_blue"
+            android:textSize="20sp"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
 
     </RelativeLayout>
+
+
+
 
 </RelativeLayout>

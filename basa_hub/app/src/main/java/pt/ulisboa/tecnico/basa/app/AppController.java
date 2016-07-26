@@ -7,21 +7,20 @@ import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.util.Log;
 
-import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
-import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
+import com.estimote.sdk.eddystone.Eddystone;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
-import java.util.Date;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.BroadcastReceiver.OnScreenOffReceiver;
 import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
-import pt.ulisboa.tecnico.basa.model.event.EventTime;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 
 
 public class AppController extends Application {
@@ -31,11 +30,12 @@ public class AppController extends Application {
     private static AppController mInstance;
     private BeaconManager beaconManager;
     private String idEdge;
-    private Launch2Activity.InterfaceToActivity interfaceToActivity;
+//    private Launch2Activity.InterfaceToActivity interfaceToActivity;
     public AsyncHttpServer server;
-    private String namespace = "edd1ebeac04e5defa017";
+//    private String namespace = "edd1ebeac04e5defa017";
+    private String namespace;
+
     String uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
-    public int currentCameraId;
     public int width;
     public int height;
     public int widthPreview;
@@ -45,12 +45,11 @@ public class AppController extends Application {
     public float mThreshold;
     public int timeScanPeriod;
 
-    public BasaManager basaManager;
+    private BasaManager basaManager;
 
     private PowerManager.WakeLock wakeLock;
     private OnScreenOffReceiver onScreenOffReceiver;
-
-
+    private BasaDeviceConfig deviceConfig;
 
     @Override
     public void onCreate() {
@@ -86,84 +85,100 @@ public class AppController extends Application {
     }
 
     public void beaconStart(){
-        Log.d("temp", "beaconStart:" );
-        beaconManager = new BeaconManager(getApplicationContext());
+        Log.d(TAG, "beaconStart:" );
 
-        beaconManager.setBackgroundScanPeriod(1300, 25000);
-        beaconManager.setForegroundScanPeriod(1000,5000);
+        if(getDeviceConfig().getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON) {
 
-        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override
-            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
-                Log.d("temp", "list:" + beacons.size());
-                if (beacons.size() != 0) {
-                    Beacon beacon = beacons.get(0);
-                    Utils.Proximity proximity = Utils.computeProximity(beacon);
-                    Log.d("temp", "proximity:" + proximity);
-                    Log.d("temp", "beacon:" + beacon.toString());
-                    Log.d("temp", "getProximityUUID:" + beacon.getProximityUUID());
-                    // ...
-                }
-            }
-        });
+            beaconManager = new BeaconManager(getApplicationContext());
+//        beaconManager.setBackgroundScanPeriod(1300, 25000);
+//        beaconManager.setForegroundScanPeriod(1000,5000);
 
-
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(new Region("regiao", null, null , null));
-            }
-        });
-
-
-
-
-
-//        beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
+//        beaconManager.setBackgroundScanPeriod(1300, 25000);
+//        beaconManager.setForegroundScanPeriod(1000,5000);
+//
+//        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
 //            @Override
-//            public void onEddystonesFound(List<Eddystone> list) {
-//                Log.d("temp", "list:" + list.size());
-//                Log.d("temp", namespace +": wanted namespace:");
-//                for (Eddystone eddy: list) {
-//                    Log.d("temp", eddy.namespace +": eddy namespace:");
-//                    if(eddy.namespace.equals(namespace)){
-//                        Log.d("temp", "eddy.telemetry != null:" + (eddy.telemetry != null));
-//                        if(eddy.telemetry != null){
-//                            Log.d("servico", "temperatura:" + eddy.telemetry.temperature);
-//                            Utils.Proximity proximity = Utils.computeProximity(eddy);
-//                            Log.d("servico", "basaManager != null:" + (basaManager != null));
-//                            if(basaManager != null) {
-//                                basaManager.getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
-//
-//                            }
-//
-//                            double accuracy = Utils.computeAccuracy(eddy);
-//                            Log.d("temp", "proximity.toString():" + proximity.toString());
-//                            Log.d("temp", "accuracy:" +accuracy);
-//                            if(interfaceToActivity != null){
-//                                interfaceToActivity.updateTemperature(eddy.telemetry.temperature);
-//                            }
-//                        }
-//                    }
+//            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
+//                Log.d("temp", "list:" + beacons.size());
+//                if (beacons.size() != 0) {
+//                    Beacon beacon = beacons.get(0);
+//                    Utils.Proximity proximity = Utils.computeProximity(beacon);
+//                    Log.d("temp", "proximity:" + proximity);
+//                    Log.d("temp", "beacon:" + beacon.toString());
+//                    Log.d("temp", "getProximityUUID:" + beacon.getProximityUUID());
+//                    // ...
 //                }
-//
-//
 //            }
 //        });
+//
 //
 //        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
 //            @Override
 //            public void onServiceReady() {
-//                idEdge = beaconManager.startEddystoneScanning();
+//                beaconManager.startRanging(new Region("regiao", null, null , null));
 //            }
 //        });
+
+
+            namespace = getDeviceConfig().getBeaconUuidTemperature();
+
+
+            beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
+                @Override
+                public void onEddystonesFound(List<Eddystone> list) {
+                    Log.d(TAG, "list:" + list.size());
+                    Log.d(TAG, namespace + ": wanted namespace:");
+                    for (Eddystone eddy : list) {
+                        Log.d(TAG, eddy.namespace + ": eddy namespace:");
+                        if (eddy.namespace.equals(namespace)) {
+                            Log.d(TAG, "eddy.telemetry != null:" + (eddy.telemetry != null));
+                            if (eddy.telemetry != null) {
+                                Log.d(TAG, "temperatura:" + eddy.telemetry.temperature);
+                                Utils.Proximity proximity = Utils.computeProximity(eddy);
+                                Log.d(TAG, "basaManager != null:" + (basaManager != null));
+                                if (getBasaManager() != null) {
+                                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
+
+                                }
+                                double accuracy = Utils.computeAccuracy(eddy);
+                                Log.d("temp", "proximity.toString():" + proximity.toString());
+                                Log.d("temp", "accuracy:" + accuracy);
+                            }
+                        }
+                    }
+                }
+            });
+
+            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+                @Override
+                public void onServiceReady() {
+                    idEdge = beaconManager.startEddystoneScanning();
+                }
+            });
+        }else{
+            Log.d(TAG, "BLE disabled");
+        }
+    }
+
+    public void setDeviceConfig(BasaDeviceConfig deviceConfig) {
+        this.deviceConfig = deviceConfig;
+        BasaDeviceConfig.save(deviceConfig);
+    }
+
+    public BasaDeviceConfig getDeviceConfig() {
+        if(deviceConfig == null){
+            deviceConfig = BasaDeviceConfig.getConfig();
+        }
+        return deviceConfig;
     }
 
     public void stopEddystoneScanning(){
-        beaconManager.stopEddystoneScanning(idEdge);
+        if(beaconManager != null)
+            beaconManager.stopEddystoneScanning(idEdge);
     }
 
     public void beaconDisconect(){
+        stopEddystoneScanning();
         if(beaconManager != null)
         beaconManager.disconnect();
     }
@@ -177,13 +192,13 @@ public class AppController extends Application {
         return AppController.context;
     }
 
-    public Launch2Activity.InterfaceToActivity getInterfaceToActivity() {
-        return interfaceToActivity;
-    }
-
-    public void setInterfaceToActivity(Launch2Activity.InterfaceToActivity interfaceToActivity) {
-        this.interfaceToActivity = interfaceToActivity;
-    }
+//    public Launch2Activity.InterfaceToActivity getInterfaceToActivity() {
+//        return interfaceToActivity;
+//    }
+//
+//    public void setInterfaceToActivity(Launch2Activity.InterfaceToActivity interfaceToActivity) {
+//        this.interfaceToActivity = interfaceToActivity;
+//    }
 
     public AsyncHttpServer getServer() {
         return server;
@@ -194,10 +209,20 @@ public class AppController extends Application {
     }
 
 
-    public void onTimerIntent(){
-        if(interfaceToActivity != null){
-            interfaceToActivity.getManager().getEventManager().addEvent(new EventTime(new Date()));
+    public BasaManager getBasaManager() {
+
+        if(basaManager == null){
+            basaManager = new BasaManager();
+            basaManager.start();
         }
+
+        return basaManager;
     }
+
+//    public void onTimerIntent(){
+//        if(interfaceToActivity != null){
+//            interfaceToActivity.getManager().getEventManager().addEvent(new EventTime(new Date()));
+//        }
+//    }
 
 }

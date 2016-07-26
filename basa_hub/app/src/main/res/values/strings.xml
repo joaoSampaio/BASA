@@ -18,6 +18,20 @@
 
     <string name="web_client_id">AIzaSyBHtUg-QsxQTjD500j7hZtNZqQZUFCdseU</string>
 
+    <string name="login_skip">
+        <font size="5"><b>Skip</b></font><br></br><small>(load config)</small>
+    </string>
+    <string name="setup_advanced">The next options enable location based services. they are optional.</string>
+    <string name="setup_database">Your Basa device can use google\'s Firebase (Realtime Database), this allows you to control your device from anywhere even outside of home.\n
+    \nWithout firebase you can only control your device locally or with a VPN.</string>
+    <string name="setup_database_no_firebase">You disabled Firebase, this is not recomended. With firebase the app works both with internet and without.</string>
+    <string name="setup_light_temp_description">The following items are optional but are needed if the device needs to control lights/HVAC.</string>
+    <string name="setup_security">We are almost finished, the last thing to do is define your Pin code. It allows you to change any settings later on.</string>
 
+    <string-array name="array_temperature_question">
+        <item>Don\'t use Temperature Monitor or control</item>
+        <item>Monitor Temperature (Estimote beacon)</item>
+        <item>Monitor and control HVAC (Arduino device)</item>
+    </string-array>
 
 </resources>

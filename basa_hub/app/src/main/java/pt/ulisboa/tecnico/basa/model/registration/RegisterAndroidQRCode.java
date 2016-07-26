@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.model.registration;
 
 /**
  * Created by sampaio on 14-06-2016.
@@ -7,7 +7,7 @@ public class RegisterAndroidQRCode {
     private String ip;
     private String nounce;
 
-    public RegisterAndroidQRCode(String nounce, String ip) {
+    public RegisterAndroidQRCode(String ip, String nounce) {
         this.nounce = nounce;
         this.ip = ip;
     }

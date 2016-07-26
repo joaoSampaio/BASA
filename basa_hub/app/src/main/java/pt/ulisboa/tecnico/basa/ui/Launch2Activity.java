@@ -57,8 +57,9 @@ import pt.ulisboa.tecnico.basa.backgroundServices.ServerService;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
-import pt.ulisboa.tecnico.basa.model.event.Event;
-import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.ui.setup.MainSetupActivity;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
@@ -126,42 +127,83 @@ public class Launch2Activity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
 
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        if(AppController.getInstance().getDeviceConfig() == null){
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+            Intent intent = new Intent(this, MainSetupActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            initUI();
+            initFirebase();
+        }
 
-        mAuth = FirebaseAuth.getInstance();
+    }
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-                    helper = new FirebaseHelper(mDatabase);
 
-                    helper.registerUser(user.getUid());
+    private void initFirebase(){
+        BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
+        if(config != null && config.isFirebaseEnabled()) {
 
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+
+            mAuth = FirebaseAuth.getInstance();
+
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed in
+                        Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                        BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
+                        config.setUuid(user.getUid());
+                        BasaDeviceConfig.save(config);
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        helper = new FirebaseHelper();
+
+
+                        helper.checkIfDeviceExists(new CallbackMultiple<Boolean, Boolean>() {
+                            @Override
+                            public void success(Boolean exists) {
+                                if(!exists)
+                                    helper.registerDevice(AppController.getInstance().getDeviceConfig().getUuid());
+                            }
+
+                            @Override
+                            public void failed(Boolean error) {
+
+                            }
+                        });
+
+//                        helper.registerDevice(user.getUid());
+
+                    } else {
+                        // User is signed out
+                        Log.d(TAG, "onAuthStateChanged:signed_out");
+                    }
+                    // ...
                 }
-                // ...
+            };
+            if(mAuth.getCurrentUser() == null) {
+                Log.d(TAG, "mAuth.getCurrentUser() == null");
+                signIn();
+
             }
-        };
+        }
 
+    }
 
-
-
+    private void initUI(){
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
@@ -208,25 +250,9 @@ public class Launch2Activity extends FragmentActivity implements
             }
 
         });
-        signIn();
+
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        //super.onWindowFocusChanged(hasFocus);
-//        Log.d("KioskService2", "onWindowFocusChanged:"+hasFocus);
-//        if(!hasFocus) {
-//            // Close every kind of system dialog
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-//                    sendBroadcast(closeDialog);
-//                }
-//            },300);
-//
-//        }
-//    }
 
 
     private void signIn() {
@@ -304,10 +330,13 @@ public class Launch2Activity extends FragmentActivity implements
     protected void onStart() {
         super.onStart();
         // Bind to LocalService
-        Intent intent = new Intent(this, ServerService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        if (mAuth != null) {
-            mAuth.addAuthStateListener(mAuthListener);
+        BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
+        if (config != null) {
+            Intent intent = new Intent(this, ServerService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            if (mAuth != null) {
+                mAuth.addAuthStateListener(mAuthListener);
+            }
         }
 
     }
@@ -333,47 +362,44 @@ public class Launch2Activity extends FragmentActivity implements
     public void onResume(){
         super.onResume();
         Log.d("myapp_new", "****onResume onResume onResume: ");
+        BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
+        if(config != null) {
+            if (mHelper == null)
+                mHelper = new CameraHelper(this);
 
-        if(mHelper == null)
-            mHelper = new CameraHelper(this);
+            this.basaManager = AppController.getInstance().getBasaManager();
+            this.basaManager.setActivity(this);
+//            this.basaManager.start();
 
-        this.basaManager = new BasaManager(this);
-        this.basaManager.start();
-        AppController.getInstance().basaManager = this.basaManager;
-        initSavedValues();
-
-
-
-
-        start_camera();
-        this.videoManager = new VideoManager(this);
-        //clapListener = new ClapListener(this);
+            initSavedValues();
 
 
-        getVideoManager().start();
+            start_camera();
+            this.videoManager = new VideoManager(this);
+            //clapListener = new ClapListener(this);
 
-        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+            getVideoManager().start();
 
-        AppController.getInstance().setInterfaceToActivity(new InterfaceToActivity() {
+            SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
-            @Override
-            public void updateTemperature(double temperature) {
-                if(getBasaManager().getEventManager() != null)
-                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
-            }
+//            AppController.getInstance().setInterfaceToActivity(new InterfaceToActivity() {
+//
+//                @Override
+//                public void updateTemperature(double temperature) {
+//                    if (getBasaManager().getEventManager() != null)
+//                        getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
+//                }
+//
+//                @Override
+//                public BasaManager getManager() {
+//                    return getBasaManager();
+//                }
+//            });
 
-            @Override
-            public BasaManager getManager() {
-                return getBasaManager();
-            }
-        });
-
-        AppController.getInstance().beaconStart();
-
-
-        Intent intent = new Intent(this, ServerService.class);
-        startService(intent);
-
+            AppController.getInstance().beaconStart();
+            Intent intent = new Intent(this, ServerService.class);
+            startService(intent);
+        }
     }
 
 
@@ -392,11 +418,15 @@ public class Launch2Activity extends FragmentActivity implements
         }
         destroyView();
 
-        AppController.getInstance().setInterfaceToActivity(null);
         AppController.getInstance().beaconDisconect();
 
-        this.basaManager.stop();
-        AppController.getInstance().basaManager = null;
+        if(this.basaManager != null) {
+            this.basaManager.stop();
+            this.basaManager.setActivity(null);
+//            AppController.getInstance().basaManager = null;
+        }
+
+
 
         //restoreApp();
 
@@ -522,9 +552,6 @@ public class Launch2Activity extends FragmentActivity implements
     private void initSavedValues(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-
-
-
         AppController.getInstance().mThreshold = Float.parseFloat(preferences.getString("cam_accuracy", "0.5"));
         AppController.getInstance().mThreshold = AppController.getInstance().mThreshold /100;
 
@@ -542,13 +569,27 @@ public class Launch2Activity extends FragmentActivity implements
 
 
 
+    public BasaManager getBasaManager(){
+//        if(this.basaManager  == null) {
+//            Log.d("basaManager", "basaManager");
+//            this.basaManager = new BasaManager(this);
+//            this.basaManager.start();
+//            AppController.getInstance().basaManager = this.basaManager;
+//        }
+        return this.basaManager;
+    }
 
 
 
+    public void openFragment(int id){
+        Fragment fragment = null;
+        if(id == Global.PAGE_SETUP){
 
-    public void openFragment(){
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, PreferencesFragment.newInstance(), "PreferencesFragment").commit();
+        }else{
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, PreferencesFragment.newInstance(), "PreferencesFragment").commit();
+        }
+
         findViewById(R.id.content).setVisibility(View.VISIBLE);
 
     }
@@ -615,21 +656,6 @@ public class Launch2Activity extends FragmentActivity implements
         mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
         mSpeechRecognizer.startListening(mSpeechIntent);
 
-
-//
-//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-////        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-////                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-BR");
-//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-//                "speach promt!!2!2!");
-//        try {
-//            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-//        } catch (ActivityNotFoundException a) {
-//            Toast.makeText(this,
-//                    "not supported",
-//                    Toast.LENGTH_SHORT).show();
-//        }
     }
 
 
@@ -777,9 +803,6 @@ public class Launch2Activity extends FragmentActivity implements
         }
     }
 
-    public BasaManager getBasaManager() {
-        return basaManager;
-    }
 
     public VideoManager getVideoManager() {
         return videoManager;

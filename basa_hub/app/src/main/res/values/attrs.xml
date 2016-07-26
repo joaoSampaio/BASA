@@ -36,16 +36,7 @@
         <attr name="seekArcStyle" format="reference"></attr>
     </declare-styleable>
 
-    <declare-styleable name="SeekCircle">
-        <attr name="min" />
-        <attr name="max" />
-        <attr name="progress" />
-        <attr name="startColor" format="color" />
-        <attr name="endColor" format="color" />
-        <attr name="inactiveColor" format="color" />
-        <attr name="ringBias" format="float" />
-        <attr name="sectionRatio" format="float" />
-    </declare-styleable>
+
 
 
 </resources>

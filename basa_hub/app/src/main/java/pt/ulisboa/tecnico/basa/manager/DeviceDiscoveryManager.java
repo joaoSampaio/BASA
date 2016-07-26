@@ -1,20 +1,15 @@
 package pt.ulisboa.tecnico.basa.manager;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.List;
 
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.SSDP;
-import pt.ulisboa.tecnico.basa.util.LightingControl;
-import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
 import pt.ulisboa.tecnico.basa.util.NsdHelper;
 import pt.ulisboa.tecnico.basa.util.SSDiscoveryProtocol;
-import pt.ulisboa.tecnico.basa.util.UDPDiscovery;
 
 public class DeviceDiscoveryManager implements Manager {
 
@@ -23,8 +18,7 @@ public class DeviceDiscoveryManager implements Manager {
     SSDiscoveryProtocol ssDiscoveryProtocol;
 //    private UDPDiscovery udpDiscovery;
 
-    public DeviceDiscoveryManager(Context ctx){
-        this.ctx = ctx;
+    public DeviceDiscoveryManager(){
 //        this.udpDiscovery = new UDPDiscovery(ctx, "BASA", 49000);
 
 
@@ -39,7 +33,7 @@ public class DeviceDiscoveryManager implements Manager {
 
     public void startDiscovery(final DevicesDiscovery mListener){
         Log.d("ssdp", "startDiscovery: ");
-        ssDiscoveryProtocol = new SSDiscoveryProtocol(ctx, new SSDiscoveryProtocol.SearchSSDP() {
+        ssDiscoveryProtocol = new SSDiscoveryProtocol(AppController.getAppContext(), new SSDiscoveryProtocol.SearchSSDP() {
             @Override
             public void onSearchFinish(List<SSDP> endpoints) {
                 mListener.onDevicesDiscovered(endpoints);

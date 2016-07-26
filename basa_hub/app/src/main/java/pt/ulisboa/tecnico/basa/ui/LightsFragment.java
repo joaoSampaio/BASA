@@ -188,9 +188,6 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    public interface SwitchLight{
-//        void turnOnLight(int id);
-//        void turnOffLight(int id);
-//    }
+
 
 }

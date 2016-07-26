@@ -41,6 +41,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.manager.DeviceManager;
+import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
@@ -91,6 +92,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(AppController.getInstance().getLoggedUser() == null || FirebaseAuth.getInstance().getCurrentUser() == null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        Log.d("Main", "nao devia: ");
         pageListener = new ArrayList<>();
         toFragmentList = new ArrayList<>();
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
@@ -193,12 +203,16 @@ public class MainActivity extends AppCompatActivity
                 if (user != null) {
                     // User is signed in
                     Log.d("main", "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d("main", "onAuthStateChanged:signed_in:" + user.getDisplayName());
+
 
                     if(mDatabase == null) {
+                        User userBasa = AppController.getInstance().getLoggedUser();
+                        userBasa.setUuid(user.getUid());
                         mDatabase = FirebaseDatabase.getInstance().getReference();
                         mHelper = new FirebaseHelper(mDatabase);
                         mHelper.setActivity(MainActivity.this);
-                        mHelper.registerUser(user.getUid(), AppController.getInstance().getLoggedUser().getUserName());
+                        mHelper.registerUser(user.getUid(), AppController.getInstance().getLoggedUser().getUserName(), user.getEmail());
 
                         mManager = new DeviceManager(mHelper);
                         if (AppController.getInstance().getCurrentZone() != null)
@@ -216,7 +230,8 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        signIn();
+        if(mAuth.getCurrentUser() == null)
+            signIn();
 
     }
 

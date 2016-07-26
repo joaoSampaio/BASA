@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:seekcircle="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="20dp">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Database"
+            android:id="@+id/textView5"
+            android:layout_alignParentTop="false"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/title"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_database"
+            android:id="@+id/textView18"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp" />
+
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use Firebase"
+            android:id="@+id/switchFirebase"
+
+            android:textOn="Firebase" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/container_firebase_yes">
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/sign_in_button"
+                android:layout_toEndOf="@+id/sign_in_button"
+                android:layout_marginLeft="25dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewEmail" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewId" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/container_firebase_no">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_database_no_firebase"
+                android:id="@+id/textView19"
+                android:textSize="18sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/editTextUuid"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/action_generate_uuid"
+                android:background="@drawable/rounded_border_edittext"
+                android:hint="Unique Id:"
+                android:paddingLeft="10dp"
+                android:layout_below="@+id/textView19" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Generate UUID"
+                android:id="@+id/action_generate_uuid"
+                android:layout_alignBottom="@+id/editTextUuid"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/button_blue"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="20dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

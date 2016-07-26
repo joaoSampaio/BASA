@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:seekcircle="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="20dp">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Setup"
+            android:id="@+id/textView5"
+            android:layout_alignParentTop="false"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="80dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="textCapSentences|textPersonName"
+            android:ems="10"
+            android:id="@+id/editTextName"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:hint="Device name:"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rounded_border_edittext"
+            android:paddingLeft="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences|textMultiLine"
+            android:ems="10"
+            android:id="@+id/editTextDescription"
+            android:layout_below="@+id/editTextName"
+            android:layout_alignParentStart="true"
+            android:lines="5"
+            android:hint="Device description:"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rounded_border_edittext"
+            android:paddingLeft="10dp"
+            android:gravity="top"
+            android:paddingTop="10dp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

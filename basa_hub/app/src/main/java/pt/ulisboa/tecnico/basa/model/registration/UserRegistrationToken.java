@@ -61,8 +61,8 @@ public class UserRegistrationToken {
             Long timePast = userRegistrationToken.getTokens().get(token).longValue();
             long timeCurrent = System.currentTimeMillis();
             long time = timeCurrent - timePast;
-            userRegistrationToken.getTokens().remove(token);
-            UserRegistrationToken.save(userRegistrationToken);
+//            userRegistrationToken.getTokens().remove(token);
+//            UserRegistrationToken.save(userRegistrationToken);
             return time <= VALID_DURATION;
         }
 

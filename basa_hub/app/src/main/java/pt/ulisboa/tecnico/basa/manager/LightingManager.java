@@ -1,46 +1,76 @@
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import java.util.ArrayList;
+import java.util.List;
+
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.LightingControl;
 import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
 
-public class LightingManager {
+public class LightingManager implements
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private boolean[] lights;
-    private Context ctx;
+    private List<Boolean> lights;
     private LightChanged lightChangedListener;
     private LightingControl lightingControl;
     private long timeOld = 0;
     private long timeCurrent = 0;
 
-    public LightingManager(Launch2Activity ctx){
-        this.ctx = ctx;
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
+    public LightingManager(){
+        SharedPreferences preferences = getSharedPreferences();
         int numLights = Integer.parseInt(preferences.getString("light_number", "1"));
-        this.lights = new boolean[numLights];
+        this.lights = new ArrayList<>();
         for (int i=0;i<numLights;i++)
-            this.lights[i]=false;
+            this.lights.add(false);
 
-        lightingControl = new LightingControlEDUP(ctx);
+        lightingControl = new LightingControlEDUP(this);
+        getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+
+
+
+    }
+
+    private SharedPreferences getSharedPreferences(){
+        return PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+    }
+
+    public void destroy(){
+        getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+
+        if(lightingControl != null)
+            lightingControl.destroy();
     }
 
     public boolean[] getLights() {
-        return lights;
+
+        return convert(lights);
     }
 
-    public boolean getLightState(int lightId){
-        if(this.lights != null && lightId < this.lights.length){
-            return this.lights[lightId];
+    private boolean[] convert(List<Boolean> list){
+
+        boolean[] array = new boolean[list.size()];
+        for(int i = 0; i< list.size(); i++)
+            array[i] = list.get(i);
+
+        return array;
+    }
+
+
+    public Boolean getLightState(int lightId){
+        if(this.lights != null && lightId < this.lights.size()){
+            return this.lights.get(lightId);
         }
         return false;
     }
 
-    public void setLightState(boolean[] values){
+    public void setLightState(boolean[] values, boolean sendServer, boolean sendFireDB){
         Log.d("webserver", "setLightState");
 
 
@@ -49,13 +79,13 @@ public class LightingManager {
         if (elapsedTimeNs >= 4) {
             //timeOld = timeCurrent;
 
-            for (int i = 0; i < this.lights.length; i++) {
+            for (int i = 0; i < this.lights.size(); i++) {
 
                 if(values != null && values.length > i) {
                     if (values[i]) {
-                        turnONLight(i, false);
+                        turnONLight(i, sendServer, sendFireDB);
                     } else {
-                        turnOFFLight(i, false);
+                        turnOFFLight(i, sendServer, sendFireDB);
                     }
                 }
             }
@@ -67,37 +97,45 @@ public class LightingManager {
     public void toggleLight(int lightId){
         timeOld = System.currentTimeMillis();
         Log.d("light", "toggleLight");
-        if(this.lights != null && lightId < this.lights.length){
+        if(this.lights != null && lightId < this.lights.size()){
 
-            this.lights[lightId] = ! this.lights[lightId];
-            if (this.lights[lightId])
-                turnONLight(lightId, true);
+            this.lights.set(lightId, !this.lights.get(lightId));
+            if (this.lights.get(lightId))
+                turnONLight(lightId, true, true);
             else
-                turnOFFLight(lightId, true);
+                turnOFFLight(lightId, true, true);
 
         }
     }
 
-    public void turnONLight(int lightId, boolean sendServer){
-        Log.d("light", "turnONLight");
-        if(lightId < this.lights.length){
-            this.lights[lightId] = true;
+    public void turnONLight(int lightId, boolean sendServer, boolean sendFireDB){
+        Log.d("light", "turnONLight sendFireDB:"+sendFireDB);
+        if(lightId < this.lights.size()){
+            this.lights.set(lightId, true);
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightON(lightId);
 
+            if(sendFireDB && AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+                FirebaseHelper mHelperFire = new FirebaseHelper();
+                mHelperFire.changeLights(lights);
+            }
             if(sendServer)
-                lightingControl.sendLightCommand(lights);
+                lightingControl.sendLightCommand(convert(lights));
         }
     }
 
-    public void turnOFFLight(int lightId, boolean sendServer){
-        Log.d("light", "turnOFFLight");
-        if(lightId < this.lights.length){
-            this.lights[lightId] = false;
+    public void turnOFFLight(int lightId, boolean sendServer, boolean sendFireDB){
+        Log.d("light", "turnOFFLight sendFireDB:"+sendFireDB);
+        if(lightId < this.lights.size()){
+            this.lights.set(lightId, false);
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightOFF(lightId);
+            if(sendFireDB && AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+                FirebaseHelper mHelperFire = new FirebaseHelper();
+                mHelperFire.changeLights(lights);
+            }
             if(sendServer)
-                lightingControl.sendLightCommand(lights);
+                lightingControl.sendLightCommand(convert(lights));
         }
     }
 
@@ -110,9 +148,28 @@ public class LightingManager {
         this.lightChangedListener = lightChangedListener;
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals("light_number")){
+
+            SharedPreferences preferences = getSharedPreferences();
+            int numLights = Integer.parseInt(preferences.getString("light_number", "1"));
+            if(lights.size() > numLights){
+
+                for(int i= 0; i< (lights.size() - numLights); i++){
+                    this.lights.remove(lights.size()-1);
+                }
+
+            } else if(lights.size() < numLights){
+                for(int i= 0; i< ( numLights - lights.size()); i++){
+                    this.lights.add(false);
+                }
+            }
 
 
 
+        }
+    }
 
 
     public interface LightChanged{

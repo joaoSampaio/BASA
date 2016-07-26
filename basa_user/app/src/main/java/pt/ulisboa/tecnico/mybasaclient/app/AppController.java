@@ -43,11 +43,9 @@ public class AppController extends Application {
 
         mInstance = this;
         AppController.context = getApplicationContext();
+
         EstimoteSDK.enableDebugLogging(true);
 
-//long scanPeriodMillis, long waitTimeMillis
-//        scanPeriodMillis - How long to perform Bluetooth Low Energy scanning?
-//                waitTimeMillis - How long to wait until performing next scanning?
 
     }
 

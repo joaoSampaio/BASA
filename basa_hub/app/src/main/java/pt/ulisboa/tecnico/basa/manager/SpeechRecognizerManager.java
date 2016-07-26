@@ -30,7 +30,6 @@
 
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,8 +45,8 @@ import java.util.ArrayList;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.event.EventVoice;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -62,14 +61,12 @@ public class SpeechRecognizerManager {
     private static final String TAG = SpeechRecognizerManager.class.getSimpleName();
     protected Intent mSpeechRecognizerIntent;
     protected android.speech.SpeechRecognizer mGoogleSpeechRecognizer;
-    private Context mContext;
     private OnResultListener mOnResultListener;
-    private Launch2Activity activity;
+    private BasaManager basaManager;
 
 
-    public SpeechRecognizerManager(Context context, Launch2Activity activity) {
-        this.mContext = context;
-        this.activity = activity;
+    public SpeechRecognizerManager( BasaManager basaManager) {
+        this.basaManager = basaManager;
         Log.d(TAG, "SpeechRecognizerManager:");
         initPockerSphinx();
         initGoogleSpeechRecognizer();
@@ -84,7 +81,7 @@ public class SpeechRecognizerManager {
             protected Exception doInBackground(Void... params) {
                 try {
                     Log.d(TAG, "initPockerSphinx doInBackground:");
-                    Assets assets = new Assets(mContext);
+                    Assets assets = new Assets(AppController.getAppContext());
 
                     //Performs the synchronization of assets in the application and external storage
                     File assetDir = assets.syncAssets();
@@ -116,7 +113,7 @@ public class SpeechRecognizerManager {
             @Override
             protected void onPostExecute(Exception result) {
                 if (result != null) {
-                    Toast.makeText(mContext, "Failed to init mPocketSphinxRecognizer ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AppController.getAppContext(), "Failed to init mPocketSphinxRecognizer ", Toast.LENGTH_SHORT).show();
                 } else {
                     restartSearch(KWS_SEARCH);
                 }
@@ -125,14 +122,14 @@ public class SpeechRecognizerManager {
 
     }
 
-    public Launch2Activity getActivity() {
-        return activity;
+    public BasaManager getBasaManager() {
+        return basaManager;
     }
 
     private void initGoogleSpeechRecognizer() {
 
         mGoogleSpeechRecognizer = android.speech.SpeechRecognizer
-                .createSpeechRecognizer(mContext);
+                .createSpeechRecognizer(AppController.getAppContext());
 
         mGoogleSpeechRecognizer.setRecognitionListener(new GoogleRecognitionListener());
 
@@ -210,7 +207,7 @@ public class SpeechRecognizerManager {
 
 
 
-                Toast.makeText(mContext, "You said: " + text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppController.getAppContext(), "You said: " + text, Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -271,7 +268,7 @@ public class SpeechRecognizerManager {
         public void onError(int error) {
             Log.e(TAG, "onError:" + error);
             mGoogleSpeechRecognizer.cancel();
-            getActivity().getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
+            getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
             mPocketSphinxRecognizer.startListening(KWS_SEARCH);
 
 
@@ -299,7 +296,7 @@ public class SpeechRecognizerManager {
 
                 }
 
-                getActivity().getBasaManager().getEventManager().addEvent(new EventVoice(heard));
+                getBasaManager().getEventManager().addEvent(new EventVoice(heard));
 
                 //send list of words to activity
                 if (mOnResultListener!=null){

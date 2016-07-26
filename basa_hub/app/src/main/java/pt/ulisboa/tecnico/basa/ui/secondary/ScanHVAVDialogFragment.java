@@ -29,6 +29,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.DiscoveryServiceAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.DeviceDiscoveryManager;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.SSDP;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
@@ -180,6 +181,12 @@ public class ScanHVAVDialogFragment extends DialogFragment {
                 Log.d("ssdp", "action_accept");
                 String location = editTextUrl.getText().toString();
                 new ModelCache<String>().saveModel(location, Global.OFFLINE_IP_TEMPERATURE);
+
+                AppController.getInstance().getDeviceConfig().setArduinoIP(location);
+                AppController.getInstance().getDeviceConfig().setTemperatureChoice(BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO);
+                AppController.getInstance().setDeviceConfig(AppController.getInstance().getDeviceConfig());
+
+
                 ((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager().requestUpdateTemperature();
 
                 WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);

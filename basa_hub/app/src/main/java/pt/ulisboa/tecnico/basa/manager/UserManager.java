@@ -15,7 +15,6 @@ import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;
 
@@ -24,10 +23,9 @@ import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;
  */
 public class UserManager implements Manager {
 
-    Launch2Activity activity;
 
-    public UserManager(Launch2Activity activity) {
-        this.activity = activity;
+    public UserManager() {
+
     }
 
 
@@ -101,7 +99,4 @@ public class UserManager implements Manager {
 
     }
 
-    public Launch2Activity getActivity() {
-        return activity;
-    }
 }
