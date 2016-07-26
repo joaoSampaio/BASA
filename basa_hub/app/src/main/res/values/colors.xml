@@ -24,7 +24,7 @@
     <color name="progress_gray_dark">#FF383838</color>
     <color name="default_blue_light">#33b5e5</color>
 
-    <color name="red">#ffe2231a</color>
+    <color name="red">#e2231a</color>
     <color name="dark_red">#ff510209</color>
 
 </resources>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
+import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -242,6 +244,13 @@ public class Launch2Activity extends FragmentActivity implements
                 ImageView view = (ImageView) findViewById(CLICKABLE[position]);
                 view.setBackground(getResources().getDrawable(R.drawable.circle));
                 view.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+                Fragment fragment = getFragmentManager().findFragmentByTag("PreferencesFragment");
+                if(fragment != null)
+                getFragmentManager().beginTransaction()
+                        .remove(fragment).commit();
+
+                findViewById(R.id.content).setVisibility(View.GONE);
             }
 
             @Override
@@ -250,6 +259,44 @@ public class Launch2Activity extends FragmentActivity implements
             }
 
         });
+
+
+
+
+
+        final String[] colors = getResources().getStringArray(R.array.vertical_ntb);
+
+        final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_vertical);
+        final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_light),
+                        Color.parseColor(colors[0]))
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_light))
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_temperature),
+                        Color.parseColor(colors[1]))
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_light))
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.ic_option),
+                        Color.parseColor(colors[2]))
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_light))
+                        .build()
+        );
+
+
+        navigationTabBar.setModels(models);
+        navigationTabBar.setViewPager(mPager, 0);
+
+
+
+
 
     }
 
@@ -381,20 +428,6 @@ public class Launch2Activity extends FragmentActivity implements
             getVideoManager().start();
 
             SystemRequirementsChecker.checkWithDefaultDialogs(this);
-
-//            AppController.getInstance().setInterfaceToActivity(new InterfaceToActivity() {
-//
-//                @Override
-//                public void updateTemperature(double temperature) {
-//                    if (getBasaManager().getEventManager() != null)
-//                        getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, temperature));
-//                }
-//
-//                @Override
-//                public BasaManager getManager() {
-//                    return getBasaManager();
-//                }
-//            });
 
             AppController.getInstance().beaconStart();
             Intent intent = new Intent(this, ServerService.class);

@@ -2,14 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:keepScreenOn="true"
     android:id="@+id/main_container">
 
 
+
+
+
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         >
 
@@ -24,7 +28,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/ntb_vertical" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -66,10 +71,18 @@
 
     <FrameLayout
         android:id="@+id/content"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/white"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_toRightOf="@+id/ntb_vertical" />
+
+    <com.gigamole.navigationtabbar.ntb.NavigationTabBar
+        android:id="@+id/ntb_vertical"
+        android:layout_width="75dp"
+        android:layout_height="match_parent"
+        app:ntb_preview_colors="@array/vertical_ntb"/>
+
 
 </RelativeLayout>

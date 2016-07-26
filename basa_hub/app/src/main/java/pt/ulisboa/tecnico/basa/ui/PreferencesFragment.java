@@ -15,6 +15,10 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,8 +58,22 @@ public class PreferencesFragment extends PreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+
     }
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        if(v != null) {
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)v.getLayoutParams();
+            params.setMargins(150, 0, 10, 0); //substitute parameters for left, top, right, bottom
+            v.setLayoutParams(params);
+        }
+        return v;
+    }
 
 //    @Override
 //    public void onCreatePreferences(Bundle bundle, String s) {
