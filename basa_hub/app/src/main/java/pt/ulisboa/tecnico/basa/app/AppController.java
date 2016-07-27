@@ -213,7 +213,7 @@ public class AppController extends Application {
 
         if(basaManager == null){
             basaManager = new BasaManager();
-            basaManager.start();
+//            basaManager.start();
         }
 
         return basaManager;

@@ -90,15 +90,15 @@ public class KioskService extends Service {
                 Log.i(TAG, "t:"+t.topActivity.getPackageName() + " numRunning:"+t.numRunning);
             }
 
-            if(Build.VERSION.SDK_INT > 20){
-                mPackageName = am.getRunningAppProcesses().get(0).processName;
-
-                for(ActivityManager.RunningAppProcessInfo p: am.getRunningAppProcesses()){
-                    Log.i(TAG, "p:"+p.processName + " importace:"+p.importance);
-                }
-//                return (!ctx.getApplicationContext().getPackageName().equals(mPackageName) ||
-//                        (ctx.getApplicationContext().getPackageName().equals(mPackageName) && am.getRunningAppProcesses().get(0).importance > 100));
-            }
+//            if(Build.VERSION.SDK_INT > 20){
+//                mPackageName = am.getRunningAppProcesses().get(0).processName;
+//
+//                for(ActivityManager.RunningAppProcessInfo p: am.getRunningAppProcesses()){
+//                    Log.i(TAG, "p:"+p.processName + " importace:"+p.importance);
+//                }
+////                return (!ctx.getApplicationContext().getPackageName().equals(mPackageName) ||
+////                        (ctx.getApplicationContext().getPackageName().equals(mPackageName) && am.getRunningAppProcesses().get(0).importance > 100));
+//            }
 //            else{
 //                mPackageName = am.getRunningTasks(1).get(0).topActivity.getPackageName();
 //            }

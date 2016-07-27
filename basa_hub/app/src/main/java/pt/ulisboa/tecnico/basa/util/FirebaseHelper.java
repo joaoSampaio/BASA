@@ -97,7 +97,8 @@ public class FirebaseHelper {
                 String id = firebaseBasaDevice.getUuid();
 
                 BasaManager manager = AppController.getInstance().getBasaManager();
-                if(manager.getLightingManager() != null){
+                if(manager.getLightingManager() != null && manager.getLightingManager().hasLightChanged(firebaseBasaDevice.getLights())){
+
 
                     boolean[] tmp = new boolean[firebaseBasaDevice.getLights().size()];
                     for(int i = 0; i < firebaseBasaDevice.getLights().size(); i++) tmp[i] = firebaseBasaDevice.getLights().get(i);

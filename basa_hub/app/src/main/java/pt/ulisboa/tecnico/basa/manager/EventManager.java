@@ -74,15 +74,15 @@ public class EventManager {
     }
 
     public void registerInterest(InterestEventAssociation interest){
-        Log.d("EVENT", " register interests.size():" + interests.size() );
-
-        this.interests.add(interest);
-        Log.d("EVENT", " register interest:" + interest.getType() );
+        try {
+            this.interests.add(interest);
+        }catch (Exception e){
+            Log.d("Exception","registerInterest");
+        }
     }
 
     public void removeInterest(InterestEventAssociation interest){
         this.interests.remove(interest);
-        Log.d("EVENT", " removeInterest :" + interest.getType() );
     }
 
 
@@ -259,8 +259,6 @@ public class EventManager {
         Log.d("EVENT", "EventManager stop ");
         interests.clear();
         recipes.clear();
-        interests = null;
-        basaManager = null;
     }
 
     public BasaManager getBasaManager() {

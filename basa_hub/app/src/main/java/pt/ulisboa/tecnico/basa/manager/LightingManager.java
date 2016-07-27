@@ -72,6 +72,7 @@ public class LightingManager implements
 
     public void setLightState(boolean[] values, boolean sendServer, boolean sendFireDB){
         Log.d("webserver", "setLightState");
+        Log.d("light", "setLightState:"+values.toString());
 
 
         timeCurrent = System.currentTimeMillis();
@@ -169,6 +170,20 @@ public class LightingManager implements
 
 
         }
+    }
+
+
+    public boolean hasLightChanged(List<Boolean> received){
+
+        if(received.size() != lights.size())
+            return true;
+        for (int i= 0; i<lights.size(); i++){
+
+            if(lights.get(i) != received.get(i))
+                return true;
+        }
+
+        return false;
     }
 
 

@@ -228,11 +228,11 @@ public class LightingControlEDUP implements LightingControl {
                         try {
 
                             socket.receive(packet);
-                            Log.d("ListenEDUPMulticast", "Data received");
+                            Log.d("light", "Data received");
                             String s = new String(packet.getData(), 0, packet.getLength(), "US-ASCII");
 
-                            Log.d("ListenEDUPMulticast", " packet.getLength():-> " +  packet.getLength());
-                            Log.d("ListenEDUPMulticast", "packet.getData():-> " + packet.getData());
+                            Log.d("light", " packet.getLength():-> " +  packet.getLength());
+                            Log.d("light", "packet.getData():-> " + packet.getData());
                             byte[] content = Arrays.copyOfRange(packet.getData(),0,packet.getLength());
                             String broadcast = bytesToHex(content);
                             Log.d("ListenEDUPMulticast", "bytesToHex:-> " + broadcast);
@@ -253,7 +253,7 @@ public class LightingControlEDUP implements LightingControl {
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Log.d("webserver", "values:"+values.toString());
+                                        Log.d("light", "values:"+values.toString());
                                         getLightingManager().setLightState(values, false, true);
                                     }
                                 });

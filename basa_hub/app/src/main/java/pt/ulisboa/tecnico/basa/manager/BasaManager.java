@@ -28,7 +28,7 @@ public class BasaManager {
     private VideoManager videoManager;
 
     public BasaManager() {
-
+        start();
     }
 
     public void start(){
