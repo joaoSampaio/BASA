@@ -1,19 +1,16 @@
 package pt.ulisboa.tecnico.basa.BroadcastReceiver;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -54,12 +51,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         } else {
             Log.d("Network Available ", "NO");
         }
-
-
-
-
-
-
 
 
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {

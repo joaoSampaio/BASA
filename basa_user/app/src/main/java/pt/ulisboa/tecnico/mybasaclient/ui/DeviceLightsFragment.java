@@ -27,6 +27,7 @@ import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.ChangeTemperatureLightsService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.GetDeviceStatusService;
+import pt.ulisboa.tecnico.mybasaclient.util.DividerItemDecoration;
 import pt.ulisboa.tecnico.mybasaclient.util.GenericCommunicationToFragment;
 
 

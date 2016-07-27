@@ -24,6 +24,9 @@ public class Global {
     public final static int DIALOG_DEVICE_CAMERA = 11;
     public final static int DIALOG_DEVICE_LIGHT = 12;
     public final static int DIALOG_DEVICE_SETTINGS = 13;
+    public final static int DIALOG_DEVICE_SCAN_WIFI = 14;
+
+
 
     public final static String CURRENT_ZONE = "CURRENT_ZONE";
     public final static String DATA_CURRENT_DEVICE = "DATA_CURRENT_DEVICE";

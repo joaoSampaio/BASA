@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.mybasaclient.ui;
+package pt.ulisboa.tecnico.mybasaclient.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

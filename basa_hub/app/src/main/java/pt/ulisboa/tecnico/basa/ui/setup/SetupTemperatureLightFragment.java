@@ -48,6 +48,12 @@ public class SetupTemperatureLightFragment extends Fragment{
         handler = new Handler();
         conf.setTemperatureChoice(BasaDeviceConfig.TEMPERATURE_TYPE_NO_MONITOR_CONTROL);
 
+        editTextLight.setText("ZH037CC7097B7CA91");
+        AppController.getInstance().getDeviceConfig().setEdupLightId("ZH037CC7097B7CA91");
+
+        editTextBeacon.setText("2a11a5a1111111111111");
+        AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature("2a11a5a1111111111111");
+
 
         spinnerTemperature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

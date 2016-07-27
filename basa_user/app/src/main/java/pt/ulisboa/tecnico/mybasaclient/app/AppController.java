@@ -16,6 +16,7 @@ import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.ui.ScanNetworkFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
 
@@ -35,6 +36,8 @@ public class AppController extends Application {
     private List<Zone> zones;
     private Zone currentZone;
     private BasaDevice currentDevice;
+
+    private ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener;
 
     @Override
     public void onCreate() {
@@ -180,4 +183,11 @@ public class AppController extends Application {
         this.zones = null;
     }
 
+    public ScanNetworkFragment.ScanResultAvailableListener getScanResultAvailableListener() {
+        return scanResultAvailableListener;
+    }
+
+    public void setScanResultAvailableListener(ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener) {
+        this.scanResultAvailableListener = scanResultAvailableListener;
+    }
 }

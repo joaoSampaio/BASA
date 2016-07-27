@@ -54,6 +54,7 @@ import pt.ulisboa.tecnico.mybasaclient.ui.DeviceTemperatureFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.HomeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.InfoFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity;
+import pt.ulisboa.tecnico.mybasaclient.ui.ScanNetworkFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ScanQRCodeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.UserFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsFragment;
@@ -296,6 +297,9 @@ public class MainActivity extends AppCompatActivity
         } else if(id == Global.DIALOG_DEVICE_CAMERA){
             newFragment = DeviceCameraFragment.newInstance();
             tag = "DeviceCameraFragment";
+        }else if(id == Global.DIALOG_DEVICE_SCAN_WIFI){
+            newFragment = ScanNetworkFragment.newInstance();
+            tag = "ScanNetworkFragment";
         }
 
         if(newFragment != null) {

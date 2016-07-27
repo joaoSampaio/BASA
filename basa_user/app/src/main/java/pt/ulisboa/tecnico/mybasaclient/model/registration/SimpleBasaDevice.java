@@ -2,27 +2,27 @@ package pt.ulisboa.tecnico.mybasaclient.model.registration;
 
 public class SimpleBasaDevice {
 
-    private String url;
-    private String token;
+    private String ip;
+    private String nounce;
 
-    public SimpleBasaDevice(String url, String token) {
-        this.url = url;
-        this.token = token;
+    public SimpleBasaDevice(String url, String nounce) {
+        this.ip = url;
+        this.nounce = nounce;
     }
 
     public String getUrl() {
-        return url;
+        return ip;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.ip = url;
     }
 
     public String getToken() {
-        return token;
+        return nounce;
     }
 
     public void setToken(String token) {
-        this.token = token;
+        this.nounce = token;
     }
 }

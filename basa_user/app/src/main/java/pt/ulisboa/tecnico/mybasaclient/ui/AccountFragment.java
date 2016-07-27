@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
@@ -139,6 +140,10 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
 
                 break;
             case R.id.editEmail:
+
+
+                ((MainActivity)getActivity()).openPage(Global.DIALOG_DEVICE_SCAN_WIFI);
+
 
                 break;
             case R.id.sign_out:

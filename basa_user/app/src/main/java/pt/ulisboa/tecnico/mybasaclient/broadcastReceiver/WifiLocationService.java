@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
@@ -15,7 +16,6 @@ import android.util.Log;
 
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
@@ -33,6 +33,7 @@ public class WifiLocationService extends Service {
     private static final long UPDATE_INTERVAL = 1 * 15 * 1000; //15s
     private static final long DELAY_INTERVAL = 0;
 
+    private Handler handler;
     private Timer timer;
     WifiManager mWifiManager;
 
@@ -43,55 +44,53 @@ private int misses;
         Log.d("wifi_Service", "STARTING SERVICE");
         super.onCreate();
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        handler = new Handler();
         misses = 0;
-        timer = new Timer();
-        timer.scheduleAtFixedRate(
-                new TimerTask() {
-                    public void run() {
-                        Log.d("wifi_Service", "RUN");
-                        //DO YOUR CODE
-                        boolean hasFound = false;
-                        mWifiManager.startScan();
-                        List<ScanResult> mScanResults =  mWifiManager.getScanResults();
-                        List<Zone> zones = AppController.getInstance().loadZones();
-                        for (ScanResult result:mScanResults) {
-                            Log.d("wifi2", "result.BSSID:" + result.BSSID);
 
-                            for(Zone zone : zones){
 
-                                for(BasaDevice device : zone.getDevices()){
-                                    for(String mac : device.getMacAddress()){
-                                        if(mac.toLowerCase().equals(result.BSSID.toLowerCase())){
-                                            //enviar mensagem
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
 
-                                            hasFound = true;
-                                            break;
-                                        }
-                                    }
+                Log.d("wifi_Service", "RUN");
+                //DO YOUR CODE
+                boolean hasFound = false;
+                mWifiManager.startScan();
+                List<ScanResult> mScanResults =  mWifiManager.getScanResults();
+                List<Zone> zones = AppController.getInstance().loadZones();
+                for (ScanResult result:mScanResults) {
+                    Log.d("wifi2", "result.BSSID:" + result.BSSID);
+
+                    for(Zone zone : zones){
+
+                        for(BasaDevice device : zone.getDevices()){
+                            for(String mac : device.getMacAddress()){
+                                if(mac.toLowerCase().equals(result.BSSID.toLowerCase())){
+                                    //enviar mensagem
+
+                                    hasFound = true;
+                                    break;
                                 }
                             }
-
-
-//                            if(result.SSID.equals(Global.SSID)) {
-//                                createNotification(result.SSID, result.BSSID, getApplicationContext());
-//                                hasFound = true;
-//                                break;
-//                            }
                         }
-
-                        if(!hasFound)
-                            misses++;
-                        Log.d("wifi2", "misses:" + misses);
-                        if(misses > 2) {
-                            misses = 0;
-                            stopSelf();
-                        }
-
                     }
-                },
-                DELAY_INTERVAL,
-                UPDATE_INTERVAL
-        );
+
+                }
+
+                if(!hasFound)
+                    misses++;
+                Log.d("wifi2", "misses:" + misses);
+                if(misses >= 20) {
+                    misses = 0;
+                    stopSelf();
+                }else{
+                    handler.postDelayed(this, UPDATE_INTERVAL * (misses+1));
+                }
+
+            }
+
+        });
+
     }
 
     @Override

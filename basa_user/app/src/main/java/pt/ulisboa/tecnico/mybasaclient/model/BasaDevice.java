@@ -27,6 +27,9 @@ public class BasaDevice {
     private boolean supportsFirebase;
 
     public BasaDevice() {
+        this.beaconUuids = new ArrayList<>();
+        this.macAddress = new ArrayList<>();
+        this.lights = new ArrayList<>();
     }
 
     public BasaDevice(String url, String name, String description) {

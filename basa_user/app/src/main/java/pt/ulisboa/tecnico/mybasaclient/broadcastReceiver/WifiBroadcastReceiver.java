@@ -18,8 +18,6 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
-import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
-import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 
 public class WifiBroadcastReceiver extends BroadcastReceiver {
 
@@ -49,40 +47,83 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
 
 
+
+        if(intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE") && isConnected){
+
+
+            context.startService(new Intent(context, WifiLocationService.class));
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+            Log.d("wifi", "SCAN_RESULTS_AVAILABLE_ACTION:" );
+
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             List<ScanResult> mScanResults = mWifiManager.getScanResults();
-            List<Zone> zones = AppController.getInstance().loadZones();
-            boolean hasFound = false;
-            for (ScanResult result:mScanResults) {
-                Log.d("wifi", "result.SSID:" + result.SSID);
-                Log.d("wifi", "result.BSSID:" + result.BSSID);
 
 
-                for(Zone zone : zones) {
+            if(AppController.getInstance().getScanResultAvailableListener() != null)
+                AppController.getInstance().getScanResultAvailableListener().onResultsAvailable(mScanResults);
 
-                    for (BasaDevice device : zone.getDevices()) {
-                        for (String mac : device.getMacAddress()) {
-                            if (mac.toLowerCase().equals(result.BSSID.toLowerCase())) {
-                                //enviar mensagem
-
-                                hasFound = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-
-                //The device is in a target building start monitoring
-                if(hasFound) {
-                    createNotification(result.SSID, result.BSSID, context);
-                    context.startService(new Intent(context, WifiLocationService.class));
-                    break;
-                }
-            }
+//            List<Zone> zones = AppController.getInstance().loadZones();
+//            boolean hasFound = false;
+//            for (ScanResult result:mScanResults) {
+//                Log.d("wifi", "result.SSID:" + result.SSID);
+//                Log.d("wifi", "result.BSSID:" + result.BSSID);
+//
+//
+//                for(Zone zone : zones) {
+//
+//                    for (BasaDevice device : zone.getDevices()) {
+//                        for (String mac : device.getMacAddress()) {
+//                            if (mac.toLowerCase().equals(result.BSSID.toLowerCase())) {
+//                                //enviar mensagem
+//
+//                                hasFound = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//
+//                //The device is in a target building start monitoring
+//                if(hasFound) {
+//                    createNotification(result.SSID, result.BSSID, context);
+//                    context.startService(new Intent(context, WifiLocationService.class));
+//                    break;
+//                }
+//            }
             // add your logic here
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (WifiManager.NETWORK_STATE_CHANGED_ACTION .equals(action)) {
             Log.d("wifi", "******************NETWORK_STATE_CHANGED_ACTION");
