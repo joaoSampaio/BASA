@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    xmlns:seekcircle="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="20dp">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:id="@+id/textView5"
+            android:layout_alignParentTop="false"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/title">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:layout_below="@+id/textView16">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/editTextBeacon"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/action_open_beacon"
+                    android:background="@drawable/rounded_border_edittext"
+                    android:hint="Beacon uuids (separated by &quot;,&quot;)"
+                    android:lines="3"
+                    android:inputType="textMultiLine"
+                    android:paddingLeft="10dp"
+                    android:layout_marginBottom="20dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/editTextMac"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/action_open_mac"
+                    android:background="@drawable/rounded_border_edittext"
+                    android:hint="IP MAC address (separated by &quot;,&quot;)"
+                    android:lines="3"
+                    android:inputType="textMultiLine"
+                    android:paddingLeft="10dp"
+                    android:layout_below="@+id/editTextArduino" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingLeft="30dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Search beacons"
+                    android:id="@+id/action_open_beacon"
+                    android:layout_alignBottom="@+id/editTextBeacon"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_blue"
+                    android:padding="15dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Search nearby MAC"
+                    android:id="@+id/action_open_mac"
+                    android:layout_alignBottom="@+id/editTextMac"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_blue"
+                    android:padding="15dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_advanced"
+            android:id="@+id/textView16"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

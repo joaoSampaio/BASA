@@ -2,12 +2,20 @@ package pt.ulisboa.tecnico.basa.ui.setup;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceLoad;
 
 
 public class SetupAdvancedFragment extends Fragment implements View.OnClickListener{
@@ -31,12 +39,55 @@ public class SetupAdvancedFragment extends Fragment implements View.OnClickListe
         editTextBeacon = (EditText)rootView.findViewById(R.id.editTextBeacon);
         editTextMac = (EditText)rootView.findViewById(R.id.editTextMac);
 
+        BasaDeviceLoad load = ((MainSetupActivity)getActivity()).getBasaDeviceLoad();
+        BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
+        if(load != null) {
+            editTextBeacon.setText(load.getBeaconList());
+            editTextMac.setText(load.getMacList());
+            conf.setBeaconList(getList(load.getBeaconList()));
+            conf.setMacList(getList(load.getMacList()));
+        }
+
+
+
+        editTextBeacon.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence c, int start, int before, int count) {
+
+                AppController.getInstance().getDeviceConfig().setBeaconList(getList(c.toString()));
+            }
+            public void beforeTextChanged(CharSequence c, int start, int count, int after) {}
+            public void afterTextChanged(Editable c) {}
+        });
+
+        editTextMac.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence c, int start, int before, int count) {
+
+                AppController.getInstance().getDeviceConfig().setMacList(getList(c.toString()));
+            }
+            public void beforeTextChanged(CharSequence c, int start, int count, int after) {}
+            public void afterTextChanged(Editable c) {}
+        });
+
         for (int id: CLICK)
             rootView.findViewById(id).setOnClickListener(this);
 
 
         return rootView;
     }
+
+
+    private List<String> getList(String data){
+        List<String> list = new ArrayList<>();
+
+        String[] words = data.split(",");
+        for(String word : words){
+            list.add(word.trim());
+        }
+        return list;
+    }
+
 
     @Override
     public void onDestroy() {

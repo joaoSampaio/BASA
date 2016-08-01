@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 
 import pt.ulisboa.tecnico.mybasaclient.model.UserRegistration;
 import pt.ulisboa.tecnico.mybasaclient.rest.pojo.ChangeTemperatureLights;
+import pt.ulisboa.tecnico.mybasaclient.rest.pojo.UserLocation;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -29,6 +30,10 @@ public interface Api {
 
     @GET
     Call<JsonElement> registerOnDevice(@Url String url);
+
+
+    @POST
+    Call<JsonElement> updateLocation(@Url String url,@Body UserLocation userLocation);
 
     @POST
     Call<JsonElement> registerOnDevice(@Url String url,@Body UserRegistration registration);

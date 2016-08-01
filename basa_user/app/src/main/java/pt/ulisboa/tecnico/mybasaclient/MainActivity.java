@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
-        AppController.getInstance().beaconStart();
+        //AppController.getInstance().beaconStart();
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

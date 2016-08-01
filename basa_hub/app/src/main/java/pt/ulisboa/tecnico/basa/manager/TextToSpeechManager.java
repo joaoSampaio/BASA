@@ -6,7 +6,6 @@ import android.util.Log;
 import java.util.Locale;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 
 /**
  * Created by joaosampaio on 29-03-2016.
@@ -60,9 +59,15 @@ public class TextToSpeechManager implements TextToSpeech.OnInitListener{
     }
 
     public void destroy(){
-        tts.stop();
-        tts.shutdown();
-        tts = null;
+        try {
+            if(tts != null) {
+                tts.stop();
+                tts.shutdown();
+                tts = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         isInitialized = false;
     }
 

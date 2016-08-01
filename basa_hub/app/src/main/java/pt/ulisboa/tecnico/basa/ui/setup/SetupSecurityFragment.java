@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceLoad;
 
 
 public class SetupSecurityFragment extends Fragment implements View.OnClickListener{
@@ -37,6 +38,15 @@ public class SetupSecurityFragment extends Fragment implements View.OnClickListe
         for (int id: CLICK)
             rootView.findViewById(id).setOnClickListener(this);
 
+        BasaDeviceLoad load = ((MainSetupActivity)getActivity()).getBasaDeviceLoad();
+        if(load != null) {
+            int pin = load.getPin();
+            if (pin > 0) {
+                editTextPin.setText(pin + "");
+                editTextPin2.setText(pin + "");
+                AppController.getInstance().getDeviceConfig().setPinSha(pin + "");
+            }
+        }
 
 
         editTextPin.addTextChangedListener(new TextWatcher() {

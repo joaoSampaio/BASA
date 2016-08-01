@@ -47,7 +47,7 @@ public class Global {
     public final static String HUB_ENDPOINT_LIVE = "/live";
     public final static String HUB_ENDPOINT_STATUS = "/status";
     public final static String HUB_ENDPOINT_REGISTER = "/register";
-
+    public final static String HUB_ENDPOINT_LOCATION = "/location";
 
 
 }

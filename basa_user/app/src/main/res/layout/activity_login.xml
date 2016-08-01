@@ -37,48 +37,10 @@
             android:orientation="vertical">
 
 
-
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white" />
-
-
-
-
-                <EditText
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Username"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:inputType="text"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white" />
-
-
-
-
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Or sign in with your google account"
+                android:text="Sign in with your google account"
                 android:id="@+id/textView16"
                 android:textSize="20sp"
                 android:gravity="center_horizontal"

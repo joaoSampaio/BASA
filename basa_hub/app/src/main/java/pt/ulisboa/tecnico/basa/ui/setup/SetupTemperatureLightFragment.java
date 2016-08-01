@@ -46,13 +46,19 @@ public class SetupTemperatureLightFragment extends Fragment{
         editTextBeacon.setVisibility(View.GONE);
         conf = AppController.getInstance().getDeviceConfig();
         handler = new Handler();
-        conf.setTemperatureChoice(BasaDeviceConfig.TEMPERATURE_TYPE_NO_MONITOR_CONTROL);
 
-        editTextLight.setText("ZH037CC7097B7CA91");
-        AppController.getInstance().getDeviceConfig().setEdupLightId("ZH037CC7097B7CA91");
 
-        editTextBeacon.setText("2a11a5a1111111111111");
-        AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature("2a11a5a1111111111111");
+
+
+
+
+        //conf.setTemperatureChoice(BasaDeviceConfig.TEMPERATURE_TYPE_NO_MONITOR_CONTROL);
+
+//        editTextLight.setText("ZH037CC7097B7CA91");
+//        AppController.getInstance().getDeviceConfig().setEdupLightId("ZH037CC7097B7CA91");
+//
+//        editTextBeacon.setText("2a11a5a1111111111111");
+//        AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature("2a11a5a1111111111111");
 
 
         spinnerTemperature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,7 +161,10 @@ public class SetupTemperatureLightFragment extends Fragment{
     @Override
     public void onResume(){
         super.onResume();
-
+        spinnerTemperature.setSelection(conf.getTemperatureChoice());
+        editTextArduino.setText(conf.getArduinoIP());
+        editTextBeacon.setText(conf.getBeaconUuidTemperature());
+        editTextLight.setText(conf.getEdupLightId());
 
     }
 

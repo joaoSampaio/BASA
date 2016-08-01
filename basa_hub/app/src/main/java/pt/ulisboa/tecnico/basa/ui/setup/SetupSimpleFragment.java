@@ -33,6 +33,11 @@ public class SetupSimpleFragment extends Fragment{
         editName = (EditText)rootView.findViewById(R.id.editTextName);
         editDescription = (EditText)rootView.findViewById(R.id.editTextDescription);
         this.showError = false;
+
+
+
+
+
         return rootView;
     }
 
@@ -46,7 +51,11 @@ public class SetupSimpleFragment extends Fragment{
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("main", "  onResume:"+showError);
+
+        BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
+        editName.setText(conf.getName());
+        editDescription.setText(conf.getDescription());
+        Log.d("conf", " SetupSimpleFragment onResume:"+conf.getName());
 
         editName.setError(null);
         if(showError){

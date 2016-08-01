@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -41,7 +42,8 @@ public class RestClient {
 
                     newRequest = request.newBuilder()
                             .addHeader("Content-type", "application/json;charset=UTF-8")
-                            .addHeader("Accept", "application/json");
+                            .addHeader("Accept", "application/json")
+                            .addHeader("session-id", AppController.getInstance().getLoggedUser().getUuid());;
 
 
                     Log.d("servico", "COOKIES_REQUEST_INTERCEPTOR");
@@ -79,7 +81,8 @@ public class RestClient {
 
                     newRequest = request.newBuilder()
                             .addHeader("Content-type", "application/json;charset=UTF-8")
-                            .addHeader("Accept", "application/json");
+                            .addHeader("Accept", "application/json")
+                            .addHeader("session-id", AppController.getInstance().getLoggedUser().getUuid());
                     return chain.proceed(newRequest.build());
                 }
             };

@@ -21,6 +21,9 @@ import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.rest.pojo.UserLocation;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.UpdateLocationService;
 
 
 /**
@@ -58,17 +61,29 @@ private int misses;
                 mWifiManager.startScan();
                 List<ScanResult> mScanResults =  mWifiManager.getScanResults();
                 List<Zone> zones = AppController.getInstance().loadZones();
-                for (ScanResult result:mScanResults) {
-                    Log.d("wifi2", "result.BSSID:" + result.BSSID);
 
-                    for(Zone zone : zones){
+                boolean foundDevice = false;
+                for(Zone zone : zones){
 
-                        for(BasaDevice device : zone.getDevices()){
+                    for(BasaDevice device : zone.getDevices()){
+                        foundDevice = false;
+                        for (ScanResult result:mScanResults) {
+                            if(foundDevice)
+                                break;
+                            Log.d("wifi2", "result.BSSID:" + result.BSSID);
                             for(String mac : device.getMacAddress()){
+                                Log.d("wifi2", ":wifi device:" + mac.toLowerCase() + " found:" + result.BSSID.toLowerCase());
                                 if(mac.toLowerCase().equals(result.BSSID.toLowerCase())){
+                                    Log.d("wifi2", ": is in building sending msg...");
                                     //enviar mensagem
-
+                                    new UpdateLocationService(device.getUrl(), new UserLocation(true, UserLocation.TYPE_BUILDING), new CallbackFromService() {
+                                        @Override
+                                        public void success(Object response) {}
+                                        @Override
+                                        public void failed(Object error) {}
+                                    }).execute();
                                     hasFound = true;
+                                    foundDevice = true;
                                     break;
                                 }
                             }
@@ -79,6 +94,10 @@ private int misses;
 
                 if(!hasFound)
                     misses++;
+                else {
+                    AppController.getInstance().beaconStart();
+
+                }
                 Log.d("wifi2", "misses:" + misses);
                 if(misses >= 20) {
                     misses = 0;

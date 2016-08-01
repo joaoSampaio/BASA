@@ -54,7 +54,7 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d("AppController", "onCreate (mInstance == null->" + (mInstance == null));
 //        Firebase.setAndroidContext(this);
         mInstance = this;
         AppController.context = getApplicationContext();
@@ -165,6 +165,10 @@ public class AppController extends Application {
         BasaDeviceConfig.save(deviceConfig);
     }
 
+    public void saveDeviceConfig() {
+        BasaDeviceConfig.save(deviceConfig);
+    }
+
     public BasaDeviceConfig getDeviceConfig() {
         if(deviceConfig == null){
             deviceConfig = BasaDeviceConfig.getConfig();
@@ -180,7 +184,7 @@ public class AppController extends Application {
     public void beaconDisconect(){
         stopEddystoneScanning();
         if(beaconManager != null)
-        beaconManager.disconnect();
+            beaconManager.disconnect();
     }
 
 
@@ -212,6 +216,7 @@ public class AppController extends Application {
     public BasaManager getBasaManager() {
 
         if(basaManager == null){
+            Log.d("getBasaManager", "getBasaManager is null ");
             basaManager = new BasaManager();
 //            basaManager.start();
         }

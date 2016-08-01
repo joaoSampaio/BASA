@@ -70,34 +70,29 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory
-        android:title="Firebase database">
+    <PreferenceCategory android:title="Location">
+
+        <EditTextPreference
+            android:key="LOCATION_WIFI"
+            android:title="Building location"
+            android:summary="List of mac addresses of the building wifi network, when such address is seen by the user we know he is in the building"
+            android:dialogTitle="Building location" />
 
 
         <EditTextPreference
-            android:key="FIREBASE_EMAIL"
-            android:title="Firebase account email"
-            android:summary="Email used to sync with google firebase"
+            android:key="LOCATION_BLE"
+            android:title="Room location"
+            android:summary="List of beacon uuid, the beacons are spaced near the room and allow finer location control."
             android:dialogTitle="Firebase account email" />
-
-        <EditTextPreference
-            android:key="FIREBASE_PASS"
-            android:title="Firebase Password"
-            android:password="true"
-            android:summary="******"
-            android:dialogTitle="Password for Firebase" />
-
-        <Preference android:title="Login to firebase"
-            android:key="FIREBASE_BTN"
-            android:summary=""/>
-
-
-
     </PreferenceCategory>
 
 
-
     <PreferenceCategory android:title="Kiosk Mode">
+
+        <Preference android:title="Open registration"
+            android:key="OPEN_REG"
+            android:summary=""/>
+
 
         <CheckBoxPreference
             android:key="enable_kiosk"

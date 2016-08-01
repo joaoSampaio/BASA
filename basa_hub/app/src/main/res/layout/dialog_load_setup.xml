@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textCapSentences|textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextUrl"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:hint="Setup file url:"
+        android:background="@drawable/rounded_border_edittext"
+        android:paddingLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Or paste the config text below:"
+        android:id="@+id/textView20"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences|textMultiLine"
+        android:ems="10"
+        android:id="@+id/editTextConfig"
+        android:layout_below="@+id/editTextName"
+        android:layout_alignParentStart="true"
+        android:lines="5"
+        android:hint="Config text:"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_border_edittext"
+        android:paddingLeft="10dp"
+        android:gravity="top"
+        android:paddingTop="10dp" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load config"
+        android:id="@+id/action_load_config"
+        android:background="@drawable/button_blue"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp" />
+
+
+
+</LinearLayout>

@@ -1,17 +1,15 @@
 package pt.ulisboa.tecnico.basa.model.event;
 
 
-import java.util.Date;
-
 public class EventTime extends Event {
 
-    public Date date;
-    public EventTime(Date date) {
+    public Long date;
+    public EventTime(Long date) {
         super(TIME);
         this.date = date;
     }
 
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 }

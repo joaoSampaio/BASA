@@ -11,6 +11,8 @@ public class Event {
     public final static int CLAP = 4;
     public final static int TIME = 5;
 
+    public final static int USER_LOCATION = 6;
+
     private int type;
 
     public Event(int type) {

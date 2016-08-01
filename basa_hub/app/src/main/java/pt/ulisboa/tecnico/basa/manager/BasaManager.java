@@ -28,26 +28,30 @@ public class BasaManager {
     private VideoManager videoManager;
 
     public BasaManager() {
-        start();
+        Log.d("manager", "BasaManager new ");
+//        start();
     }
 
     public void start(){
-        this.eventManager = new EventManager(this);
-        this.lightingManager = new LightingManager();
-        this.speechRecognizerManager = new SpeechRecognizerManager(this);
-        this.textToSpeechManager = new TextToSpeechManager();
-        this.temperatureManager = new TemperatureManager(this);
-        this.deviceDiscoveryManager = new DeviceDiscoveryManager();
-//        this.webServerManager = new WebServerManager(getActivity());
-        this.userManager = new UserManager();
+        if(eventManager == null && lightingManager == null) {
+            Log.d("manager", "BasaManager start ");
+            this.eventManager = new EventManager(this);
+            this.lightingManager = new LightingManager();
+            this.speechRecognizerManager = new SpeechRecognizerManager(this);
+            this.textToSpeechManager = new TextToSpeechManager();
+            this.temperatureManager = new TemperatureManager(this);
+            this.deviceDiscoveryManager = new DeviceDiscoveryManager();
+            this.userManager = new UserManager();
 
 //        if(getActivity() != null){
 //            videoManager = new VideoManager(getActivity());
 //        }
 
-        if(AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
-            FirebaseHelper mHelperFire = new FirebaseHelper();
-            fireListenner =  mHelperFire.getZoneDevicesListener();
+            if (AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+                FirebaseHelper mHelperFire = new FirebaseHelper();
+                fireListenner = mHelperFire.getZoneDevicesListener();
+            }
+
         }
 
     }
@@ -84,9 +88,9 @@ public class BasaManager {
             deviceDiscoveryManager.destroy();
         }
 
-        if(webServerManager != null){
-            webServerManager.destroy();
-        }
+//        if(webServerManager != null){
+//            webServerManager.destroy();
+//        }
 
         if(userManager != null){
             userManager.destroy();
@@ -95,6 +99,15 @@ public class BasaManager {
         if(eventManager != null){
             eventManager.stop();
         }
+
+        this.eventManager = null;
+        this.lightingManager = null;
+        this.speechRecognizerManager = null;
+        this.textToSpeechManager = null;
+        this.temperatureManager = null;
+        this.deviceDiscoveryManager = null;
+        this.userManager = null;
+
     }
 
 

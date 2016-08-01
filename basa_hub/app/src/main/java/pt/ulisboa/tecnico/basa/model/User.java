@@ -1,6 +1,12 @@
 package pt.ulisboa.tecnico.basa.model;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import pt.ulisboa.tecnico.basa.Global;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 /**
  * Created by joaosampaio on 08-03-2016.
@@ -96,4 +102,18 @@ public class User {
     public static boolean userExists(List<User> users, String uuid){
         return getUserFromList(users, uuid) != null;
     }
+
+
+
+    public static List<User> getUsers(){
+        List<User> users = new ModelCache<List<User>>().loadModel(new TypeToken<List<User>>(){}.getType(), Global.OFFLINE_USERS);
+        if(users == null)
+            users = new ArrayList<>();
+        return users;
+    }
+
+
+
+
+
 }

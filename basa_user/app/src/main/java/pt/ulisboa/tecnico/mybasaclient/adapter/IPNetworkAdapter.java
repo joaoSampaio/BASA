@@ -47,6 +47,20 @@ public class IPNetworkAdapter extends RecyclerView.Adapter<IPNetworkAdapter.MyIt
     }
 
 
+    public String getBssidList(){
+        String macs = "";
+
+        for(IPNetwork ipNetwork : devices){
+            macs += ipNetwork.getMac()+",";
+        }
+        if(macs.length()>0){
+            macs = macs.substring(0, macs.length()-1);
+        }
+
+
+        return macs;
+
+    }
 
 
 

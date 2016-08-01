@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.mybasaclient.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class ScanNetworkFragment extends DialogFragment {
     private RecyclerView mRecyclerView;
     private IPNetworkAdapter mAdapter;
     private List<IPNetwork> devices;
+    private WifiManager mWifiManager;
 
     public static ScanNetworkFragment newInstance() {
         ScanNetworkFragment fragment = new ScanNetworkFragment();
@@ -84,8 +87,44 @@ public class ScanNetworkFragment extends DialogFragment {
             mRecyclerView.setAdapter(mAdapter);
 
         }
-        WifiManager mWifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-        mWifiManager.startScan();
+        mWifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+        rootView.findViewById(R.id.buttonScan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reScan();
+            }
+        });
+
+        rootView.findViewById(R.id.buttonShare).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String data = mAdapter.getBssidList();
+                if(data.length() > 0) {
+
+
+                    Intent email = new Intent(Intent.ACTION_SEND);
+//                email.putExtra(Intent.EXTRA_EMAIL, new String[] { to });
+//                email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    email.putExtra(Intent.EXTRA_TEXT, data);
+
+                    // need this to prompts email client only
+                    email.setType("message/rfc822");
+
+                    startActivity(Intent.createChooser(email, "Choose an Email client"));
+                }else{
+                    Toast.makeText(AppController.getAppContext(), "No devices found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+
+
+
+
+//        mWifiManager.startScan();
         return rootView;
     }
 
@@ -93,20 +132,35 @@ public class ScanNetworkFragment extends DialogFragment {
     public void onResume() {
         super.onResume();
 
-        AppController.getInstance().setScanResultAvailableListener(new ScanResultAvailableListener() {
-            @Override
-            public void onResultsAvailable(List<ScanResult> mScanResults) {
-                devices.clear();
-                for(ScanResult result: mScanResults)
-                    devices.add(IPNetwork.convert(result));
-
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+//        AppController.getInstance().setScanResultAvailableListener(new ScanResultAvailableListener() {
+//            @Override
+//            public void onResultsAvailable(List<ScanResult> mScanResults) {
+//                devices.clear();
+//                for(ScanResult result: mScanResults)
+//                    devices.add(IPNetwork.convert(result));
+//
+//                mAdapter.notifyDataSetChanged();
+//            }
+//        });
 
     }
 
 
+    private void reScan(){
+        mWifiManager.startScan();
+        List<ScanResult> mScanResults =  mWifiManager.getScanResults();
+
+//        devices.clear();
+
+        List<IPNetwork> received = new ArrayList<>();
+        for(ScanResult result: mScanResults)
+            received.add(IPNetwork.convert(result));
+
+        IPNetwork.addNonDuplicates(devices, received);
+
+        mAdapter.notifyDataSetChanged();
+
+    }
 
 
     @Override

@@ -130,10 +130,8 @@ public class Launch2Activity extends FragmentActivity implements
 
 
         if(AppController.getInstance().getDeviceConfig() == null){
+            openSetup();
 
-            Intent intent = new Intent(this, MainSetupActivity.class);
-            startActivity(intent);
-            finish();
         }else{
             initUI();
             initFirebase();
@@ -141,6 +139,12 @@ public class Launch2Activity extends FragmentActivity implements
 
     }
 
+
+    public void openSetup(){
+        Intent intent = new Intent(this, MainSetupActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 
     private void initFirebase(){
@@ -302,6 +306,7 @@ public class Launch2Activity extends FragmentActivity implements
 
 
 
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -416,7 +421,7 @@ public class Launch2Activity extends FragmentActivity implements
 
             this.basaManager = AppController.getInstance().getBasaManager();
             this.basaManager.setActivity(this);
-//            this.basaManager.start();
+            this.basaManager.start();
 
             initSavedValues();
 

@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,21 +19,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
+import java.util.List;
 
-import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.ScanHVAVDialogFragment;
+import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 
 //import android.support.v4.app.DialogFragment;
 //import android.support.v4.app.Fragment;
@@ -89,6 +81,18 @@ public class PreferencesFragment extends PreferenceFragment implements
 
             AppController.getInstance().mThreshold = Float.parseFloat(preferences.getString("cam_accuracy", "0.5"));
             AppController.getInstance().mThreshold = AppController.getInstance().mThreshold /100;
+
+        }else if(key.equals("LOCATION_WIFI")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig().setMacList(getList(preferences.getString("LOCATION_WIFI", "")));
+            AppController.getInstance().saveDeviceConfig();
+            new FirebaseHelper().updateDeviceLocationList();
+
+        }else if(key.equals("LOCATION_BLE")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig().setMacList(getList(preferences.getString("LOCATION_BLE", "")));
+            AppController.getInstance().saveDeviceConfig();
+            new FirebaseHelper().updateDeviceLocationList();
 
         }else if(key.equals("cam_time")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -157,15 +161,19 @@ public class PreferencesFragment extends PreferenceFragment implements
             button.setOnPreferenceClickListener(new PreferenceListener());
         }
 
-        button = findPreference("FIREBASE_BTN");
-        if(button != null) {
-            button.setOnPreferenceClickListener(new PreferenceListener());
-        }
+
 
         button = findPreference("btn_kiosk");
         if(button != null) {
             button.setOnPreferenceClickListener(new PreferenceListener());
         }
+
+
+        button = findPreference("OPEN_REG");
+        if(button != null) {
+            button.setOnPreferenceClickListener(new PreferenceListener());
+        }
+
 
     }
 
@@ -236,97 +244,12 @@ public class PreferencesFragment extends PreferenceFragment implements
                     getActivity().finish();
 
                     break;
+                case "OPEN_REG":
+                    ((Launch2Activity)getActivity()).openSetup();
 
+
+                    break;
                 case "FIREBASE_BTN":
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("message");
-
-                    myRef.setValue("Hello, World!");
-
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                    String password = preferences.getString(Global.FIREBASE_PASS, "");
-                    String email = preferences.getString(Global.FIREBASE_EMAIL, "");
-
-                    password = password.trim();
-                    email = email.trim();
-
-                    if (password.isEmpty() || email.isEmpty()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage(R.string.signup_error_message)
-                                .setTitle(R.string.signup_error_title)
-                                .setPositiveButton(android.R.string.ok, null);
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    } else {
-
-                        // signup
-
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                                .addOnFailureListener(getActivity(), new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                        if(e instanceof FirebaseAuthUserCollisionException){
-                                            Log.d("login", "createUserWithEmail:getErrorCode:" + ((FirebaseAuthUserCollisionException )e).getErrorCode());
-                                            if(((FirebaseAuthUserCollisionException )e).getErrorCode().equals("ERROR_EMAIL_ALREADY_IN_USE")){
-                                                Toast.makeText(AppController.getAppContext(), "Email already in use.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-
-
-                                        }
-                                        e.printStackTrace();
-                                    }
-                                })
-                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.d("login", "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                                        // If sign in fails, display a message to the user. If sign in succeeds
-                                        // the auth state listener will be notified and logic to handle the
-                                        // signed in user can be handled in the listener.
-                                        if (!task.isSuccessful()) {
-//                                            task.getException().printStackTrace();
-                                            Toast.makeText(AppController.getAppContext(), "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }
-                                });
-                    }
-
-//                        ref.createUser(email, password, new Firebase.ResultHandler() {
-//                            @Override
-//                            public void onSuccess() {
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                                builder.setMessage(R.string.signup_success)
-//                                        .setPositiveButton("Login", new DialogInterface.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialogInterface, int i) {
-////                                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-////                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-////                                                startActivity(intent);
-//                                            }
-//                                        });
-//                                AlertDialog dialog = builder.create();
-//                                dialog.show();
-//                            }
-//
-//                            @Override
-//                            public void onError(FirebaseError firebaseError) {
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                                builder.setMessage(firebaseError.getMessage())
-//                                        .setTitle(R.string.signup_error_title)
-//                                        .setPositiveButton(android.R.string.ok, null);
-//                                AlertDialog dialog = builder.create();
-//                                dialog.show();
-//                            }
-//                        });
-//                    }
 
                     break;
 
@@ -334,6 +257,16 @@ public class PreferencesFragment extends PreferenceFragment implements
 
             return true;
         }
+    }
+
+    private List<String> getList(String data){
+        List<String> list = new ArrayList<>();
+
+        String[] words = data.split(",");
+        for(String word : words){
+            list.add(word.trim());
+        }
+        return list;
     }
 
     private boolean isMyLauncherDefault() {

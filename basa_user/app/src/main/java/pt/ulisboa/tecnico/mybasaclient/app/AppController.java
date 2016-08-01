@@ -1,14 +1,14 @@
 package pt.ulisboa.tecnico.mybasaclient.app;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.util.Log;
 
-import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
-import com.estimote.sdk.Region;
-import com.estimote.sdk.Utils;
+import com.estimote.sdk.eddystone.Eddystone;
 
 import java.util.List;
 
@@ -16,6 +16,9 @@ import pt.ulisboa.tecnico.mybasaclient.Global;
 import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
+import pt.ulisboa.tecnico.mybasaclient.rest.pojo.UserLocation;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
+import pt.ulisboa.tecnico.mybasaclient.rest.services.UpdateLocationService;
 import pt.ulisboa.tecnico.mybasaclient.ui.ScanNetworkFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
@@ -36,6 +39,7 @@ public class AppController extends Application {
     private List<Zone> zones;
     private Zone currentZone;
     private BasaDevice currentDevice;
+    private boolean isBLEStarted;
 
     private ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener;
 
@@ -48,7 +52,7 @@ public class AppController extends Application {
         AppController.context = getApplicationContext();
 
         EstimoteSDK.enableDebugLogging(true);
-
+        isBLEStarted = false;
 
     }
 
@@ -57,34 +61,66 @@ public class AppController extends Application {
         Log.d("temp", "beaconStart:" );
 
 
-        beaconManager = new BeaconManager(getApplicationContext());
+        if(!isBLEStarted) {
+            isBLEStarted = true;
+            BluetoothAdapter mBluetoothAdapter = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+                mBluetoothAdapter = mBluetoothManager.getAdapter();
+            } else {
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            }
 
-        beaconManager.setBackgroundScanPeriod(1300, 25000);
-        beaconManager.setForegroundScanPeriod(1000,5000);
+            if (!mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter.enable();
+            }
 
-        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override
-            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
-                Log.d("temp", "list:" + beacons.size());
-                if (beacons.size() != 0) {
-                    Beacon beacon = beacons.get(0);
-                    Utils.Proximity proximity = Utils.computeProximity(beacon);
-                    Log.d("temp", "proximity:" + proximity);
-                    Log.d("temp", "beacon:" + beacon.toString());
-                    Log.d("temp", "getProximityUUID:" + beacon.getProximityUUID());
-                    // ...
+
+            beaconManager = new BeaconManager(getApplicationContext());
+
+            beaconManager.setBackgroundScanPeriod(1000, 5000);
+            beaconManager.setForegroundScanPeriod(1000, 5000);
+
+
+            beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
+                @Override
+                public void onEddystonesFound(List<Eddystone> list) {
+                    Log.d(TAG, "list:" + list.size());
+                    for (Eddystone eddy : list) {
+                        Log.d(TAG, eddy.namespace + ": eddy namespace:");
+
+
+                        for (Zone zone : zones) {
+
+                            for (BasaDevice device : zone.getDevices()) {
+                                for (String beaconId : device.getBeaconUuids()) {
+                                    Log.d(TAG, ": device:" + beaconId.toLowerCase() + " found:" + eddy.namespace.toLowerCase());
+
+                                    if (beaconId.toLowerCase().equals(eddy.namespace.toLowerCase())) {
+                                        //enviar mensagem
+                                        Log.d(TAG, ": is near office sending msg...");
+                                        new UpdateLocationService(device.getUrl(), new UserLocation(true, UserLocation.TYPE_OFFICE), new CallbackFromService() {
+                                            @Override
+                                            public void success(Object response) {}
+                                            @Override
+                                            public void failed(Object error) {}
+                                        }).execute();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        });
+            });
 
-
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(new Region("regiao", null, null , null));
-            }
-        });
-
+            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+                @Override
+                public void onServiceReady() {
+                    idEdge = beaconManager.startEddystoneScanning();
+                }
+            });
+        }
     }
 
     public void stopEddystoneScanning(){
@@ -92,8 +128,12 @@ public class AppController extends Application {
     }
 
     public void beaconDisconect(){
-        if(beaconManager != null)
-        beaconManager.disconnect();
+        if(beaconManager != null){
+            stopEddystoneScanning();
+            beaconManager.disconnect();
+        }
+        isBLEStarted = false;
+
     }
 
 

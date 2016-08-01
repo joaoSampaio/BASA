@@ -11,6 +11,8 @@ public class FirebaseBasaDevice {
     private String ip;
     private int currentTemperature;
     private int changeTemperature;
+    private List<String> macList;
+    private List<String> beaconList;
     private List<Boolean> lights;
 
     public FirebaseBasaDevice() {
@@ -54,5 +56,21 @@ public class FirebaseBasaDevice {
 
     public void setLights(List<Boolean> lights) {
         this.lights = lights;
+    }
+
+    public List<String> getMacList() {
+        return macList;
+    }
+
+    public void setMacList(List<String> macList) {
+        this.macList = macList;
+    }
+
+    public List<String> getBeaconList() {
+        return beaconList;
+    }
+
+    public void setBeaconList(List<String> beaconList) {
+        this.beaconList = beaconList;
     }
 }

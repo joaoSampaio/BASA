@@ -1,0 +1,1 @@
+{"BeaconList":"","beaconOrIp":"2a11a5a1111111111111","description":"uma descrição","edupLightId":"ZH037CC7097B7CA91","edupNumLight":3,"macList":"","name":"Office Tagus 2.N.11.5","pin":1234,"temperatureChoice":1}

@@ -8,7 +8,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 
@@ -27,6 +26,10 @@ public interface Api {
 
     @GET("http://192.168.0.102/temp")
     Call<JsonElement> requestTemperatureOffice2();
+
+
+    @GET
+    Call<JsonElement> getConfig(@Url String url);
 
 
 }

@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +18,7 @@ import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.EventVoice;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
@@ -25,10 +27,26 @@ public class EventManager {
     private BasaManager basaManager;
     private List<InterestEventAssociation> interests;
     private List<InterestEventAssociation> recipes;
+    private Handler handler;
+    private final static int PERIOD = 2000;
+    private Runnable run;
+
     public EventManager(BasaManager basaManager) {
         interests = new ArrayList<>();
         recipes = new ArrayList<>();
+
         this.basaManager = basaManager;
+        this.handler = new Handler();
+        this.run = new Runnable() {
+            @Override
+            public void run() {
+                addEvent(new EventTime(System.currentTimeMillis()));
+
+                handler.postDelayed(this, PERIOD);
+
+            }
+        };
+        handler.post(run);
         Log.d("EVENT", "EventManager new ");
 //        this.setUpCalender();
     }
@@ -257,6 +275,7 @@ public class EventManager {
 
     public void stop(){
         Log.d("EVENT", "EventManager stop ");
+        handler.removeCallbacks(run);
         interests.clear();
         recipes.clear();
     }

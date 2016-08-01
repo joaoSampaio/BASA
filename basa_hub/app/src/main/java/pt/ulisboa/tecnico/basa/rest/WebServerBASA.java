@@ -27,9 +27,11 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
-import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceInfo;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
+import pt.ulisboa.tecnico.basa.model.UserLocation;
+import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
+import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceInfo;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
@@ -289,6 +291,37 @@ public class WebServerBASA {
             }
         });
 
+
+        post(new Route("/location") {
+            @Override
+            public Object handle(Request request, Response response) {
+
+                String body = request.body();
+                Log.d("servico", "request.body():"+request.body());
+
+
+
+
+                String session = request.headers("session-id");
+                Log.d("servico", "session:"+session);
+                Gson gson = new Gson();
+                if(session != null && AppController.getInstance().getBasaManager().getUserManager().getUser(session) != null){
+
+                    UserLocation userLocation = gson.fromJson(body, new TypeToken<UserLocation>() {}.getType());
+                    AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(session, userLocation.isInBuilding(), userLocation.getType()));
+
+//                    Log.d("servico", "users:"+gson.toJson(User.getUsers()));
+                    return "{\"status\": true}";
+                }
+
+                response.status(200);
+                Log.d("servico", "{\"status\": false}");
+                return "{\"status\": false}";
+            }
+        });
+
+
+
         post(new Route("/register") {
             @Override
             public Object handle(Request request, Response response) {
@@ -307,7 +340,7 @@ public class WebServerBASA {
                         Log.d("servico", "2:");
                         if(AppController.getInstance().getBasaManager() != null){
                             AppController.getInstance().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
-                            UserRegistrationAnswer answer = new UserRegistrationAnswer();
+                            UserRegistrationAnswer answer = new UserRegistrationAnswer(AppController.getInstance().getDeviceConfig());
                             Log.d("servico", "3:");
                             response.status(200);
                             Log.d("servico", "{\"status\": true, \"data\": "+gson.toJson(answer)+"}");

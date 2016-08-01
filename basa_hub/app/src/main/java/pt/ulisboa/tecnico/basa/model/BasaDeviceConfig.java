@@ -23,9 +23,11 @@ public class BasaDeviceConfig {
     private String description;
 
     private List<String> macList;
-    private List<String> macBeacon;
+    private List<String> beaconList;
     private boolean firebaseEnabled;
     private String edupLightId;
+    private int edupNumLight;
+    private int lightLevel = 50;
 
     private int temperatureChoice;
     private String beaconUuidTemperature;
@@ -35,7 +37,7 @@ public class BasaDeviceConfig {
 
     public BasaDeviceConfig() {
         this.macList = new ArrayList<>();
-        this.macBeacon = new ArrayList<>();
+        this.beaconList = new ArrayList<>();
     }
 
 
@@ -69,6 +71,14 @@ public class BasaDeviceConfig {
 
     public void setFirebaseEnabled(boolean firebaseEnabled) {
         this.firebaseEnabled = firebaseEnabled;
+    }
+
+    public int getEdupNumLight() {
+        return edupNumLight;
+    }
+
+    public void setEdupNumLight(int edupNumLight) {
+        this.edupNumLight = edupNumLight;
     }
 
     public boolean isPinCorrect(String pin) {
@@ -127,12 +137,12 @@ public class BasaDeviceConfig {
         this.macList = macList;
     }
 
-    public List<String> getMacBeacon() {
-        return macBeacon;
+    public List<String> getBeaconList() {
+        return beaconList;
     }
 
-    public void setMacBeacon(List<String> macBeacon) {
-        this.macBeacon = macBeacon;
+    public void setBeaconList(List<String> beaconList) {
+        this.beaconList = beaconList;
     }
 
     public static BasaDeviceConfig getConfig(){

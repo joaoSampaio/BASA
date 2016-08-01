@@ -1,7 +1,8 @@
 package pt.ulisboa.tecnico.basa.model.registration;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 
 /**
  * Created by sampaio on 28-06-2016.
@@ -13,14 +14,11 @@ public class UserRegistrationAnswer {
     private double temperature;
     private int humidity;
 
-    public UserRegistrationAnswer() {
-        this.uuids = new ArrayList<>();
-        this.macAddress = new ArrayList<>();
+    public UserRegistrationAnswer(BasaDeviceConfig config) {
+        this.uuids = config.getBeaconList();
+        this.macAddress = config.getMacList();
         this.temperature = 25;
         this.humidity = 80;
-
-
-        uuids.add("b9407f30-f5f8-466e-aff9-25556b57fe6d");
     }
 
 

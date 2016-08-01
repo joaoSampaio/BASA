@@ -1,19 +1,25 @@
 package pt.ulisboa.tecnico.basa.ui.setup;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -37,6 +43,9 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.SetupPagerAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceLoad;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.GetConfigService;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 
@@ -61,6 +70,7 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference mDatabase;
     private FirebaseHelper helper = null;
+    private BasaDeviceLoad basaDeviceLoad = null;
 
     public MainSetupActivity() {
         // Required empty public constructor
@@ -93,6 +103,7 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
         action_prev = findViewById(R.id.action_prev);
         action_next.setOnClickListener(this);
         action_prev.setOnClickListener(this);
+        findViewById(R.id.action_load_config).setOnClickListener(this);
         mPager = (ViewPager) findViewById(R.id.pager_login);
         mPagerAdapter = new SetupPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -128,6 +139,23 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
             }
         });
 
+
+        BasaDeviceLoad load = new BasaDeviceLoad();
+        load.setName("Office Tagus 2.N.11.5");
+        load.setDescription("uma descrição");
+        load.setEdupLightId("ZH037CC7097B7CA91");
+        load.setEdupNumLight(3);
+        load.setPin(1234);
+        load.setBeaconList("");
+        load.setMacList("");
+
+        load.setTemperatureChoice(1);
+        load.setBeaconOrIp("2a11a5a1111111111111");
+        Gson gson = new Gson();
+        Log.d("conf", " " + gson.toJson(load));
+
+
+
     }
 
     protected void hideKeyboard(View view)
@@ -154,15 +182,6 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
         boolean error = false;
         Gson gson = new Gson();
         Log.d("main", " " + gson.toJson(basaDeviceConfig));
-
-//        if(basaDeviceConfig.getName() == null || basaDeviceConfig.getName().length() < 4){
-//            error = true;
-//        }
-//        if(basaDeviceConfig.getDescription() == null || basaDeviceConfig.getDescription().length() < 4){
-//            error = true;
-//        }
-
-
 
         if(basaDeviceConfig.getName() == null || basaDeviceConfig.getName().length() < 4) {
             showPage(Global.PAGE_SETUP_BASIC);
@@ -221,9 +240,9 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
         config.setVisibility(View.GONE);
         action_prev.setVisibility(View.VISIBLE);
         action_next.setVisibility(View.VISIBLE);
-        ImageView view;
+        View view;
         for(int id : VIEWPAGER_INDICATOR) {
-            view = (ImageView)findViewById(id);
+            view = findViewById(id);
             view.setBackground(getResources().getDrawable(R.drawable.viewpager_indicator));
         }
     }
@@ -287,7 +306,113 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
                 showPage(page > 0? (page-1) : 0);
                 break;
 
+            case R.id.action_load_config:
+                showConfigDialog();
+                break;
         }
+    }
+
+    public void showConfigDialog() {
+
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        final View promptView = layoutInflater.inflate(R.layout.dialog_load_setup, null);
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setView(promptView);
+        alertDialogBuilder.setCancelable(false);
+
+
+        final EditText editTextUrl = (EditText) promptView.findViewById(R.id.editTextUrl);
+        final EditText editTextConfig = (EditText) promptView.findViewById(R.id.editTextConfig);
+
+
+        editTextConfig.setText("{\"BeaconList\":\"beacccccccc\",\"beaconOrIp\":\"2a11a5a1111111111111\",\"description\":\"uma descrição\",\"edupLightId\":\"ZH037CC7097B7CA91\",\"edupNumLight\":3,\"macList\":\"\",\"name\":\"Office Tagus 2.N.11.5\",\"pin\":1234,\"temperatureChoice\":1}");
+
+        editTextUrl.setText("https://dl.dropboxusercontent.com/u/68830630/config.txt");
+
+
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("Load", null)
+                .setNegativeButton("Cancel", null);
+
+        // create an alert dialog
+        final android.support.v7.app.AlertDialog alert = alertDialogBuilder.create();
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface arg0) {
+
+                Button okButton = alert.getButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE);
+                okButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View arg0) {
+
+                        String url = editTextUrl.getText().toString().trim();
+                        String config = editTextConfig.getText().toString().trim();
+
+                        if(url.isEmpty() && config.isEmpty()) {
+                            Snackbar snack = Snackbar.make(promptView, "You already have a zone with that name!", Snackbar.LENGTH_SHORT);
+                            View view = snack.getView();
+                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            tv.setTextColor(Color.RED);
+                            snack.show();
+
+                        }else{
+
+                            if(config.length()> 0){
+
+                                Gson gson = new Gson();
+                                basaDeviceLoad = gson.fromJson(config, BasaDeviceLoad.class);
+
+                                basaDeviceConfig.setEdupLightId(basaDeviceLoad.getEdupLightId());
+                                basaDeviceConfig.setName(basaDeviceLoad.getName());
+
+                                basaDeviceConfig.setTemperatureChoice(basaDeviceLoad.getTemperatureChoice());
+                                basaDeviceConfig.setDescription(basaDeviceLoad.getDescription());
+                                basaDeviceConfig.setEdupNumLight(basaDeviceLoad.getEdupNumLight());
+                                basaDeviceConfig.setArduinoIP(basaDeviceLoad.getBeaconOrIp());
+                                basaDeviceConfig.setBeaconUuidTemperature(basaDeviceLoad.getBeaconOrIp());
+                                mPager.setAdapter(mPagerAdapter);
+//                                mPagerAdapter.notifyDataSetChanged();
+
+                            }else {
+
+                                new GetConfigService(url, new CallbackMultiple<BasaDeviceLoad, Object>() {
+                                    @Override
+                                    public void success(BasaDeviceLoad response) {
+                                        basaDeviceLoad = response;
+                                        basaDeviceConfig.setEdupLightId(basaDeviceLoad.getEdupLightId());
+                                        basaDeviceConfig.setName(basaDeviceLoad.getName());
+
+                                        basaDeviceConfig.setTemperatureChoice(basaDeviceLoad.getTemperatureChoice());
+                                        basaDeviceConfig.setDescription(basaDeviceLoad.getDescription());
+                                        basaDeviceConfig.setEdupNumLight(basaDeviceLoad.getEdupNumLight());
+                                        basaDeviceConfig.setArduinoIP(basaDeviceLoad.getBeaconOrIp());
+                                        basaDeviceConfig.setBeaconUuidTemperature(basaDeviceLoad.getBeaconOrIp());
+                                        mPager.setAdapter(mPagerAdapter);
+
+
+                                    }
+
+                                    @Override
+                                    public void failed(Object error) {
+
+                                    }
+                                }).execute();
+
+                            }
+
+                            alert.dismiss();
+//
+                        }
+                    }
+                });
+            }
+        });
+        alert.show();
+
+
     }
 
 
@@ -408,9 +533,17 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
 
     }
 
+    public BasaDeviceLoad getBasaDeviceLoad() {
+        return basaDeviceLoad;
+    }
+
     public interface SetupDataInterface{
         boolean onBasicDataReady(BasaDeviceConfig deviceConfig);
         void onAdvancedDataReady(BasaDeviceConfig deviceConfig);
+
+
+
+
     }
 
 }

@@ -136,7 +136,6 @@ public class TemperatureManager {
         Log.d("tempera", "TemperatureManager destroy:"+(actionTemperatureManagerList != null));
         if (actionTemperatureManagerList != null) {
             actionTemperatureManagerList.clear();
-            actionTemperatureManagerList = null;
         }
         if(handler != null)
             handler.removeCallbacksAndMessages(null);

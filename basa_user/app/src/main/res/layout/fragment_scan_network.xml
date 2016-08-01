@@ -14,7 +14,32 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_layout"
         android:stretchMode="spacingWidthUniform"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_above="@+id/btnContainer" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btnContainer"
+        android:weightSum="2"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Scan"
+            android:layout_weight="1"
+            android:id="@+id/buttonScan" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Share results"
+            android:layout_weight="1"
+            android:id="@+id/buttonShare" />
+    </LinearLayout>
 
 
 </RelativeLayout>
