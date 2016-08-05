@@ -3,13 +3,9 @@ package pt.ulisboa.tecnico.basa.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import java.util.List;
-
-import pt.ulisboa.tecnico.basa.ui.secondary.TriggerIFTTTDialogFragment;
 
 /**
  * Created by joaosampaio on 28-03-2016.

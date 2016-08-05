@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class WifiLocationService extends Service {
 
     private static final long UPDATE_INTERVAL = 1 * 15 * 1000; //15s
     private static final long DELAY_INTERVAL = 0;
-
+    private PowerManager.WakeLock wl;
     private Handler handler;
     private Timer timer;
     WifiManager mWifiManager;
@@ -50,18 +51,23 @@ private int misses;
         handler = new Handler();
         misses = 0;
 
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BASA");
+        wl.acquire();
+
+
 
         handler.post(new Runnable() {
             @Override
             public void run() {
 
-                Log.d("wifi_Service", "RUN");
+                Log.d("wifi2", "RUN");
                 //DO YOUR CODE
                 boolean hasFound = false;
                 mWifiManager.startScan();
                 List<ScanResult> mScanResults =  mWifiManager.getScanResults();
                 List<Zone> zones = AppController.getInstance().loadZones();
-
+                Log.d("wifi2", "mScanResults:"+ mScanResults.size());
                 boolean foundDevice = false;
                 for(Zone zone : zones){
 
@@ -101,6 +107,7 @@ private int misses;
                 Log.d("wifi2", "misses:" + misses);
                 if(misses >= 20) {
                     misses = 0;
+                    wl.release();
                     stopSelf();
                 }else{
                     handler.postDelayed(this, UPDATE_INTERVAL * (misses+1));
@@ -114,7 +121,7 @@ private int misses;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("wifi_Service", "onStartCommand SERVICE");
+        Log.d("wifi22", "onStartCommand SERVICE");
 
 
         super.onStartCommand(intent, flags, startId);

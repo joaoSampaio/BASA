@@ -14,7 +14,8 @@ import java.util.UUID;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.model.UserLocation;
+import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
@@ -43,37 +44,37 @@ public class UserManager implements Manager {
 
 
 
-        interestLocation = new InterestEventAssociation(Event.USER_LOCATION, new EventManager.RegisterInterestEvent() {
-            @Override
-            public void onRegisteredEventTriggered(Event event) {
-                if(event instanceof EventUserLocation){
-                    int type =((EventUserLocation)event).getLocation();
-                    String userId = ((EventUserLocation) event).getUserId();
-                    if(type == EventUserLocation.TYPE_OFFICE) {
-
-                        if(((EventUserLocation)event).isInBuilding()){
-                            long time = ((EventUserLocation)event).getTime();
-                            officeLocation.put(userId, time);
-                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
-                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
-                        }else{
-                            officeLocation.remove(userId);
-                        }
-
-                    }else if(type == EventUserLocation.TYPE_BUILDING){
-                        if(((EventUserLocation)event).isInBuilding()){
-                            long time = ((EventUserLocation)event).getTime();
-                            buildingLocation.put(userId, time);
-                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
-                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
-                        }else{
-                            buildingLocation.remove(userId);
-                        }
-                    }
-                }
-            }
-        }, 0);
-        AppController.getInstance().getBasaManager().getEventManager().registerInterest(interestLocation);
+//        interestLocation = new InterestEventAssociation(Event.USER_LOCATION, new EventManager.RegisterInterestEvent() {
+//            @Override
+//            public void onRegisteredEventTriggered(Event event) {
+//                if(event instanceof EventUserLocation){
+//                    int type =((EventUserLocation)event).getLocation();
+//                    String userId = ((EventUserLocation) event).getUserId();
+//                    if(type == EventUserLocation.TYPE_OFFICE) {
+//
+//                        if(((EventUserLocation)event).isInBuilding()){
+//                            long time = ((EventUserLocation)event).getTime();
+//                            officeLocation.put(userId, time);
+//                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
+//                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
+//                        }else{
+//                            officeLocation.remove(userId);
+//                        }
+//
+//                    }else if(type == EventUserLocation.TYPE_BUILDING){
+//                        if(((EventUserLocation)event).isInBuilding()){
+//                            long time = ((EventUserLocation)event).getTime();
+//                            buildingLocation.put(userId, time);
+//                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
+//                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
+//                        }else{
+//                            buildingLocation.remove(userId);
+//                        }
+//                    }
+//                }
+//            }
+//        }, 0);
+//        AppController.getInstance().getBasaManager().getEventManager().registerInterest(interestLocation);
 
         interestTime = new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
@@ -86,7 +87,7 @@ public class UserManager implements Manager {
                     for ( Map.Entry<String, Long> entry : tmp.entrySet() ){
                         //when a timeout occurs
                         if(current > (entry.getValue() + TIMEOUT_BUILDING)){
-                            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_BUILDING));
+                            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_BUILDING, false));
                         }
                     }
 
@@ -94,7 +95,7 @@ public class UserManager implements Manager {
                     for ( Map.Entry<String, Long> entry : tmp.entrySet() ){
                         //when a timeout occurs
                         if(current > (entry.getValue() + TIMEOUT_OFFICE)){
-                            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_OFFICE));
+                            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_OFFICE, false));
                         }
                     }
 
@@ -131,6 +132,32 @@ public class UserManager implements Manager {
                 num++;
         }
         return num;
+    }
+
+    public boolean isUserInside(String userID, int type){
+        Long date = null;
+        Long current = System.currentTimeMillis();
+        if(EventUserLocation.TYPE_OFFICE == type){
+            date = officeLocation.get(userID);
+        }else{
+            date = buildingLocation.get(userID);
+        }
+
+        return (date != null && current < (date + TIMEOUT_OFFICE));
+    }
+
+    public void addUserHeartbeat(String userID, UserLocation userLocation){
+
+
+        AppController.getInstance().getBasaManager().getEventManager()
+                .addEvent(new EventUserLocation(userID,
+                        userLocation.isInBuilding(),
+                        userLocation.getType(),
+                        !isUserInside(userID, userLocation.getType())));
+
+
+
+
     }
 
 

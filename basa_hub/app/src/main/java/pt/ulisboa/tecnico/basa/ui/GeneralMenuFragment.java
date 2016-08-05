@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
-import pt.ulisboa.tecnico.basa.ui.secondary.IFTTTDialogFragment;
+import pt.ulisboa.tecnico.basa.ui.secondary.IFTTTMainFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.RegisterUserDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.SettingsTemperatureFragment;
 
@@ -68,8 +68,8 @@ public class GeneralMenuFragment extends Fragment implements View.OnClickListene
         String tag = " ";
         switch (v.getId()){
             case R.id.action_ifttt:
-                newFragment = IFTTTDialogFragment.newInstance();
-                tag = "IFTTTDialogFragment";
+                newFragment = IFTTTMainFragment.newInstance();
+                tag = "IFTTTMainFragment";
                 break;
             case R.id.action_settings:
                 ((Launch2Activity)getActivity()).openFragment(Global.PAGE_SETTINGS);

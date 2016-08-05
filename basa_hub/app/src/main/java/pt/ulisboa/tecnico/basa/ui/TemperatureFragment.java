@@ -18,7 +18,7 @@ import pt.ulisboa.tecnico.basa.manager.EventManager;
 import pt.ulisboa.tecnico.basa.manager.TemperatureManager;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.SeekArc;
 

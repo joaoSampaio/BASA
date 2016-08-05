@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:elevation="5dp">
 
     <include
         layout="@layout/layout_topbar_dialog"
@@ -10,169 +12,142 @@
         android:layout_height="wrap_content"
         android:id="@+id/topbar"></include>
 
-
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/topbar"
-        android:layout_centerInParent="true"
-        android:id="@+id/scroll"
-        android:layout_above="@+id/action_save_recipe">
-
-
-
-
-        <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/relativeLayout222"
+            android:clipChildren="false"
+            android:layout_centerInParent="true">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:id="@+id/container">
+                android:id="@+id/container"
+                android:clipChildren="false"
+                android:padding="10dp"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:gravity="clip_horizontal|center"
+                android:visibility="visible"
+                android:layout_centerHorizontal="true">
 
-                <LinearLayout
-                    android:orientation="horizontal"
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:id="@+id/linearLayout2"
-                    android:layout_alignParentLeft="true"
-                    android:padding="15dp"
-                    android:background="#df0000"
-                    android:layout_marginBottom="10dp"
-                    >
+                    android:text="if"
+                    android:id="@+id/textView11"
+                    android:textSize="50dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@android:color/black"
+                    android:layout_centerVertical="true" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="if"
-                        android:id="@+id/textView11"
-                        android:textSize="50dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/action_trigger"
-                        android:src="@drawable/ic_placeholder_trigger"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="10dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="≥"
-                        android:id="@+id/action_condition"
-                        android:textSize="50dp"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textStyle="bold"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="23º"
-                        android:id="@+id/action_condition_value"
-                        android:textSize="50dp"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textStyle="bold"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/linearLayout2"
-                    android:layout_alignParentRight="false"
-                    android:padding="15dp"
-                    android:background="#0575ff"
-                    android:id="@+id/linearLayout3"
-                    android:layout_marginBottom="10dp">
+                    android:id="@+id/action_trigger"
+                    android:src="@drawable/ic_placeholder_trigger"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/textView11"
+                    android:layout_centerVertical="true" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="then"
-                        android:id="@+id/textView12"
-                        android:textSize="50dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="10dp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/action_event"
-                        android:src="@drawable/ic_placeholder_trigger" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="≥"
-                        android:id="@+id/action_event_condition"
-                        android:textSize="50dp"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="then"
+                    android:id="@+id/textView12"
+                    android:textSize="50dp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/action_trigger"
+                    android:layout_centerVertical="true" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="23º"
-                        android:id="@+id/action_event_condition_value"
-                        android:textSize="50dp"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-                </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/action_event"
+                    android:src="@drawable/ic_placeholder_trigger"
+                    android:layout_toRightOf="@+id/textView12"
+                    android:layout_centerVertical="true" />
+
 
             </RelativeLayout>
 
-            <EditText
-                android:layout_width="400dp"
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                app:layout_widthPercent="70%"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextShort"
                 android:layout_below="@+id/container"
-                android:layout_alignParentStart="true"
-                android:imeOptions="actionDone"
-                android:hint="Recipe short name:" />
+                android:layout_centerHorizontal="true"
+                android:id="@+id/containerSave"
+                android:visibility="invisible">
 
-            <EditText
-                android:layout_width="400dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextDescription"
-                android:layout_below="@+id/editTextShort"
-                android:layout_alignParentStart="true"
-                android:imeOptions="actionDone"
-                android:hint="Recipe description:" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="If device is plugged in, then turn off WiFi"
 
-        </RelativeLayout>
+                    android:id="@+id/textViewRecipe"
+                    android:textSize="25sp"
+                    android:layout_centerHorizontal="true" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:text="Finish"
+                    android:id="@+id/action_save_recipe"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="false"
+                    android:background="@color/default_blue_light"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_below="@+id/textViewRecipe"
+                    android:layout_marginTop="40dp" />
+
+                <EditText
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextShort"
+                    android:layout_below="@+id/textViewRecipe"
+                    android:layout_alignParentStart="true"
+                    android:imeOptions="actionDone"
+                    android:hint="Recipe short name:"
+                    android:layout_marginTop="25dp"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextDescription"
+                    android:layout_below="@+id/editTextShort"
+                    android:layout_alignParentStart="true"
+                    android:imeOptions="actionDone"
+                    android:hint="Recipe description:"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
 
 
-    </HorizontalScrollView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="Add New Recipe"
-        android:id="@+id/action_save_recipe"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" />
+
+        </android.support.percent.PercentRelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" hjjjjjjjjj hj hj hjhjhjh jhjhjh jhjhjh,mm, fg fgf gfg ffg fg fgj hjhjhjhj hjh jhjhjhj"
+        android:id="@+id/textViewTriggerDescription"
+        android:paddingBottom="15dp"
+        android:background="@drawable/ic_bubble"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

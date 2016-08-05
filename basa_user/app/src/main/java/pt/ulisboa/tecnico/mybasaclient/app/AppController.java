@@ -90,7 +90,7 @@ public class AppController extends Application {
                         Log.d(TAG, eddy.namespace + ": eddy namespace:");
 
 
-                        for (Zone zone : zones) {
+                        for (Zone zone : loadZones()) {
 
                             for (BasaDevice device : zone.getDevices()) {
                                 for (String beaconId : device.getBeaconUuids()) {

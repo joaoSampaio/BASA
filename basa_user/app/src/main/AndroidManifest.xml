@@ -23,6 +23,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+
     <application
         android:name=".app.AppController"
         android:allowBackup="true"

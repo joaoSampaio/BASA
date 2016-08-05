@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.model;
+package pt.ulisboa.tecnico.basa.model.event;
 
 import pt.ulisboa.tecnico.basa.manager.EventManager;
 

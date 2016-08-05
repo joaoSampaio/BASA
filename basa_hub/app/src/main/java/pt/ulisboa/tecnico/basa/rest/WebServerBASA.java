@@ -30,7 +30,6 @@ import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.UserLocation;
-import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
 import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceInfo;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistration;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
@@ -308,7 +307,7 @@ public class WebServerBASA {
                 if(session != null && AppController.getInstance().getBasaManager().getUserManager().getUser(session) != null){
 
                     UserLocation userLocation = gson.fromJson(body, new TypeToken<UserLocation>() {}.getType());
-                    AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(session, userLocation.isInBuilding(), userLocation.getType()));
+                    AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(session, userLocation);
 
 //                    Log.d("servico", "users:"+gson.toJson(User.getUsers()));
                     return "{\"status\": true}";

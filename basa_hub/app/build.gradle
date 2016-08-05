@@ -40,6 +40,8 @@ dependencies {
     compile files('libs/TarsosDSP-Android-2.3.jar')
     compile files('libs/pocketsphinx-android-5prealpha-nolib.jar')
     //    compile 'com.ivona:ivona-speechcloud-sdk-java:1.0.0'
+    compile 'com.android.support:percent:23.3.0'
+    compile 'com.android.support:cardview-v7:23.3.0'
     compile files('libs/spark-core-1.1.2.jar')
     compile 'com.android.support:preference-v7:23.2.1'
     compile 'com.android.support:appcompat-v7:23.2.1'

@@ -5,11 +5,20 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
-
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
 
 public class ModelCache<T> {
 
@@ -49,4 +58,27 @@ public class ModelCache<T> {
         return sp.contains(key);
     }
 
+
+
+    public List<Recipe> loadRecipes(){
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+        String recipeString = sp.getString(Global.OFFLINE_RECIPES, "");
+
+        if(recipeString.isEmpty()){
+            return new ArrayList<Recipe>();
+        }
+        Log.d("json", "recipeString:"+recipeString);
+        RuntimeTypeAdapterFactory<TriggerAction> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+                .of(TriggerAction.class, "type")
+                .registerSubtype(LightOnAction.class)
+                .registerSubtype(LocationTrigger.class)
+                .registerSubtype(TemperatureTrigger.class);
+
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+
+        Type listType = new TypeToken<List<Recipe>>(){}.getType();
+        List<Recipe> fromJson = gson.fromJson(recipeString, listType);
+        return fromJson;
+    }
 }

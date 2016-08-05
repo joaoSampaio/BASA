@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.mybasaclient.model;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -139,6 +142,8 @@ public class BasaDevice {
     }
 
     public boolean isAnyLightOn(){
+
+        Log.d("json", "isAnyLightOn:" + new Gson().toJson(this.getLights()));
         for(boolean l : this.getLights()){
             if(l){
                 return true;

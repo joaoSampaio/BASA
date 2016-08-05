@@ -13,7 +13,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
-import pt.ulisboa.tecnico.basa.model.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;

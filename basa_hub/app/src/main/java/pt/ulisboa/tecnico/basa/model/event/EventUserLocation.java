@@ -10,6 +10,7 @@ public class EventUserLocation extends Event {
 
     private boolean isInBuilding;
     private int location;
+    private boolean isFirstArrive;
 
 
 
@@ -21,12 +22,17 @@ public class EventUserLocation extends Event {
         this.location = type;
     }
 
-    public EventUserLocation(String userId, boolean isInBuilding, int type) {
+    public EventUserLocation(String userId, boolean isInBuilding, int type, boolean isFirstArrive) {
         super(USER_LOCATION);
         this.userId = userId;
         this.time = System.currentTimeMillis();
         this.isInBuilding = isInBuilding;
         this.location = type;
+        this.isFirstArrive = isFirstArrive;
+    }
+
+    public boolean isFirstArrive() {
+        return isFirstArrive;
     }
 
     public String getUserId() {

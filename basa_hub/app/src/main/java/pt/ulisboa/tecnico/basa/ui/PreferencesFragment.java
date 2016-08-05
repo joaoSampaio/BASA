@@ -94,7 +94,13 @@ public class PreferencesFragment extends PreferenceFragment implements
             AppController.getInstance().saveDeviceConfig();
             new FirebaseHelper().updateDeviceLocationList();
 
-        }else if(key.equals("cam_time")){
+        }else if(key.equals("light_number")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig().setEdupNumLight(Integer.parseInt(preferences.getString("light_number", "1")));
+            AppController.getInstance().saveDeviceConfig();
+
+        }
+        else if(key.equals("cam_time")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Log.d("myapp", "cam_time: " + preferences.getString("cam_time", "2"));
 

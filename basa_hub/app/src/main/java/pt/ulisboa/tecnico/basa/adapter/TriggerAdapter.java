@@ -11,22 +11,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
-import pt.ulisboa.tecnico.basa.model.RecipeEvent;
-import pt.ulisboa.tecnico.basa.model.Trigger;
+import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerItemHolder>{
 
     private Context context;
-    private List<RecipeEvent> data = new ArrayList<>();
+    private List<TriggerAction> data = new ArrayList<>();
     private ViewClicked mListener;
 
-    public TriggerAdapter(Context context, List<RecipeEvent> data, ViewClicked mListener) {
+    public TriggerAdapter(Context context, List<TriggerAction> data, ViewClicked mListener) {
         this.context = context;
         this.data = data;
         this.mListener = mListener;
@@ -55,7 +53,7 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImg);
         holder.itemTitle.setText(data.get(position).getTitle());
-        holder.id = data.get(position).getEventId();
+        holder.id = data.get(position).getTriggerActionId();
     }
 
 

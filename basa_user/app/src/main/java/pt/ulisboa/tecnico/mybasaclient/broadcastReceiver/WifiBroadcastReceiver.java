@@ -69,6 +69,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
             Log.d("wifi", "SCAN_RESULTS_AVAILABLE_ACTION:" );
 
+            context.startService(new Intent(context, WifiLocationService.class));
+
+
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             List<ScanResult> mScanResults = mWifiManager.getScanResults();
 

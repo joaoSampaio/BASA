@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
+import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 /**
