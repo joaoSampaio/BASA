@@ -17,6 +17,7 @@ public class DialogEditText {
     String title;
     private String hint;
     private TextSelected textSelected;
+    private int inputType;
 
     public DialogEditText(){
 
@@ -27,6 +28,15 @@ public class DialogEditText {
         this.title = title;
         this.hint = hint;
         this.textSelected = textSelected;
+        inputType = InputType.TYPE_CLASS_NUMBER;
+    }
+
+    public DialogEditText(Context ctx, String title, String hint, TextSelected textSelected, int inputType) {
+        this.ctx = ctx;
+        this.title = title;
+        this.hint = hint;
+        this.textSelected = textSelected;
+        this.inputType = inputType;
     }
 
     public void show(){
@@ -40,7 +50,7 @@ public class DialogEditText {
         editText.setHint(hint);
         editText.setSelection(editText.getText().length());
 
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setInputType(inputType);
 
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)

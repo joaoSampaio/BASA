@@ -122,14 +122,29 @@
                     android:ellipsize="marquee"
                     android:maxLines="2" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="by Admin"
-                    android:id="@+id/textViewAuthor"
-                    android:layout_below="@+id/textViewDescription"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="20dp" />
+                    android:layout_below="@+id/textViewDescription">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="by Hub"
+                        android:id="@+id/textViewAuthor"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="20dp"
+                        android:layout_centerVertical="true" />
+
+                    <Switch
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active"
+                        android:id="@+id/switchActive"
+                        android:layout_alignTop="@+id/textViewAuthor"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
 
 
             </RelativeLayout>

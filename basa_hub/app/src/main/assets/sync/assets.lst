@@ -10,4 +10,12 @@ en-us-ptm/sendump
 en-us-ptm/transition_matrices
 en-us-ptm/variances
 menu.gram
+pt-br-dict/constituicao.dic
+pt-br-semi/feat.params
+pt-br-semi/mdef
+pt-br-semi/means
+pt-br-semi/mixture_weights
+pt-br-semi/noisedict
+pt-br-semi/transition_matrices
+pt-br-semi/variances
 weather.dmp

@@ -16,6 +16,7 @@ public class Zone {
 
     private String name;
     private List<BasaDevice> devices;
+    private boolean isUserInZone;
 
     public Zone(){
         devices = new ArrayList<>();
@@ -25,6 +26,7 @@ public class Zone {
     public Zone(String name) {
         this.name = name;
         devices = new ArrayList<>();
+        this.isUserInZone = false;
     }
 
     public String getName() {
@@ -46,6 +48,14 @@ public class Zone {
     public void addDevice(BasaDevice device){
         if(!containsDevice(device.getId()))
         devices.add(device);
+    }
+
+    public boolean isUserInZone() {
+        return isUserInZone;
+    }
+
+    public void setUserInZone(boolean userInZone) {
+        isUserInZone = userInZone;
     }
 
     public boolean containsDevice(String id){

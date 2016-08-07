@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="5dp"/>
+
+            <stroke
+                android:width="3dp"
+                android:color="@color/home_icon2" />
+        </shape>
+    </item>
+    <!--<item>-->
+        <!--<shape-->
+            <!--android:shape="ring"-->
+            <!--android:thickness="3dp"-->
+            <!--android:innerRadiusRatio="1"-->
+            <!--android:useLevel="false" >-->
+            <!--<gradient-->
+                <!--android:startColor="#2F000000"-->
+                <!--android:endColor="#2fDEDEDE"-->
+                <!--android:angle="180" />-->
+            <!--&lt;!&ndash;<stroke&ndash;&gt;-->
+                <!--&lt;!&ndash;android:width="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:color="@color/red" />&ndash;&gt;-->
+        <!--</shape>-->
+    <!--</item>-->
+    <item android:left="8dp"
+        android:right="8dp"
+        android:top="8dp"
+        android:bottom="8dp">
+        <shape android:shape="oval">
+
+            <!--<gradient-->
+                <!--android:startColor="#2F000000"-->
+                <!--android:endColor="#2fDEDEDE"-->
+                <!--android:angle="180" />-->
+
+            <solid android:color="@color/home_icon2"/>
+            <corners android:radius="5dp"/>
+        </shape>
+    </item>
+</layer-list>

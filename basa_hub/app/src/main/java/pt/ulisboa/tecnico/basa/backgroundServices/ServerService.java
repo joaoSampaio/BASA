@@ -1,10 +1,8 @@
 package pt.ulisboa.tecnico.basa.backgroundServices;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
@@ -67,7 +65,6 @@ public class ServerService extends Service {
             StrictMode.setThreadPolicy(policy);
         }
 
-        SharedPreferences sp = getSharedPreferences("tAPPitz", Activity.MODE_PRIVATE);
 
 
         isStarted = false;
@@ -173,7 +170,7 @@ public class ServerService extends Service {
                 @Override
                 public void run() {
                     time+=1;
-                    Log.d("servico", "time:"+time);
+//                    Log.d("servico", "time:"+time);
                     if(time > 2000){
                         stopserver();
 //                        server.stopServer();

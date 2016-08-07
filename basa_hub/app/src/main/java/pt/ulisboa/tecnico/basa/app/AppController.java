@@ -90,8 +90,8 @@ public class AppController extends Application {
         if(getDeviceConfig().getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON) {
 
             beaconManager = new BeaconManager(getApplicationContext());
-//        beaconManager.setBackgroundScanPeriod(1300, 25000);
-//        beaconManager.setForegroundScanPeriod(1000,5000);
+        beaconManager.setBackgroundScanPeriod(1300, 25000);
+        beaconManager.setForegroundScanPeriod(5000,25000);
 
 //        beaconManager.setBackgroundScanPeriod(1300, 25000);
 //        beaconManager.setForegroundScanPeriod(1000,5000);

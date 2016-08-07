@@ -11,6 +11,8 @@ public class Recipe {
     private List<TriggerAction> triggers;
     private List<TriggerAction> actions;
 
+    private boolean active;
+
     private String shortName;
     private String description;
 
@@ -60,6 +62,13 @@ public class Recipe {
         this.triggers = triggers;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public String getShortName() {
         return shortName;

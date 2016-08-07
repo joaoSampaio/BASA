@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.basa.ui.secondary;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,9 +68,7 @@ public class IFTTTActiveRecipesFragment extends Fragment {
 
         data = new ArrayList<>();
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mRecyclerView.setHasFixedSize(true);
 
         mAdapter = new PreMadeRecipeAdapter(getActivity(), data, this);

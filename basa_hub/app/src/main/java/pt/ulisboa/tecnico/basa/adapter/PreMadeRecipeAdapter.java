@@ -2,12 +2,15 @@ package pt.ulisboa.tecnico.basa.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -51,13 +54,29 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
     @Override
     public void onBindViewHolder(final RecipeItemHolder holder, final int position) {
 
-        Recipe recipe = data.get(position);
+        final Recipe recipe = data.get(position);
         if(!recipe.getTriggers().isEmpty() && !recipe.getActions().isEmpty()) {
             setIcon(recipe.getTriggers().get(0).getResId(), holder.imageTrigger);
             setIcon(recipe.getActions().get(0).getResId(), holder.imageAction);
             holder.textViewDescription.setText(recipe.getRecipeDescription());
-            holder.colorTrigger.setBackgroundColor(recipe.getTriggers().get(0).getColor());
-            holder.colorAction.setBackgroundColor(recipe.getActions().get(0).getColor());
+            holder.switchActive.setChecked(recipe.isActive());
+            holder.switchActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    recipe.setActive(isChecked);
+                    notifyDataSetChanged();
+                }
+            });
+            if(recipe.isActive()) {
+
+                holder.colorTrigger.setBackgroundColor(recipe.getTriggers().get(0).getColor());
+                holder.colorAction.setBackgroundColor(recipe.getActions().get(0).getColor());
+
+            }else{
+                int color = Color.parseColor("#bdbdbd");
+                holder.colorTrigger.setBackgroundColor(color);
+                holder.colorAction.setBackgroundColor(color);
+            }
         }
 
     }
@@ -80,6 +99,7 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
         ImageView imageTrigger, imageAction;
         TextView textViewDescription;
         View colorTrigger, colorAction;
+        Switch switchActive;
 
 
         public RecipeItemHolder(View itemView) {
@@ -89,6 +109,7 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
             textViewDescription = (TextView)itemView.findViewById(R.id.textViewDescription);
             colorTrigger = itemView.findViewById(R.id.layoutFirst);
             colorAction = itemView.findViewById(R.id.layoutSecond);
+            switchActive = (Switch)itemView.findViewById(R.id.switchActive);
 
         }
     }

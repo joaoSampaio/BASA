@@ -103,7 +103,7 @@ public class IFTTTMainFragment extends DialogFragment {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         IFTTTActiveRecipesFragment frag = IFTTTActiveRecipesFragment.newInstance();
-        adapter.addFragment(IFTTTActiveRecipesFragment.newInstance(), "Active Recipes");
+        adapter.addFragment(IFTTTActiveRecipesFragment.newInstance(), "User Recipes");
         adapter.addFragment(IFTTTPreMadeRecipesFragment.newInstance(), "Pré-made Recipes");
         viewPager.setAdapter(adapter);
     }

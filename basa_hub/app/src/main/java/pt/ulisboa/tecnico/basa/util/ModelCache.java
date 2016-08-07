@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
 
 public class ModelCache<T> {
@@ -73,6 +74,7 @@ public class ModelCache<T> {
                 .of(TriggerAction.class, "type")
                 .registerSubtype(LightOnAction.class)
                 .registerSubtype(LocationTrigger.class)
+                .registerSubtype(SpeechTrigger.class)
                 .registerSubtype(TemperatureTrigger.class);
 
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();

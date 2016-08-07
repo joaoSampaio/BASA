@@ -49,6 +49,7 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
         Glide.with(context).load(data.get(position).getResId())
                 .thumbnail(0.5f)
                 .override(200,200)
+                .fitCenter()
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImg);

@@ -33,9 +33,9 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
     View rootView;
     Toolbar toolbar;
     User user;
-    CheckBox checkboxFirebase;
+    CheckBox checkboxFirebase, checkboxTracking;
 
-    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out, R.id.enableFirebase};
+    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out, R.id.enableFirebase, R.id.enableTracking};
 
     public AccountFragment() {
         // Required empty public constructor
@@ -84,6 +84,9 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
         user = AppController.getInstance().getLoggedUser();
         checkboxFirebase = (CheckBox) rootView.findViewById(R.id.checkboxFirebase);
         checkboxFirebase.setChecked(user.isEnableFirebase());
+
+        checkboxTracking = (CheckBox) rootView.findViewById(R.id.checkboxTracking);
+        checkboxTracking.setChecked(user.isEnableTracking());
 
         for(int id : CLICK)
             rootView.findViewById(id).setOnClickListener(this);
@@ -150,6 +153,11 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
 
                 ((MainActivity)getActivity()).signOut();
 
+                break;
+
+            case R.id.enableTracking:
+                user.setEnableTracking(!user.isEnableTracking());
+                checkboxTracking.setChecked(user.isEnableTracking());
                 break;
 
             case R.id.enableFirebase:

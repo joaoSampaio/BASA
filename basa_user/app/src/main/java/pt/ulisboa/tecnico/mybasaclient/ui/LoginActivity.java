@@ -200,6 +200,7 @@ public class LoginActivity extends AppCompatActivity implements
                     userBasa.setEmail(user.getEmail());
                     userBasa.setUuid(user.getUid());
                     userBasa.setEnableFirebase(true);
+                    userBasa.setEnableTracking(true);
                     User.saveUser(userBasa);
                     goToMainActivity();
 

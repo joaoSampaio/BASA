@@ -15,13 +15,13 @@ public abstract class TriggerAction {
 
     public final static int TEMPERATURE = 0;
     public final static int LIGHT_ON = 1;
-    public final static int VOICE = 2;
+    public final static int SPEECH = 2;
     public final static int EMAIL = 3;
 
     public final static int CLAP = 100;
     public final static int SWITCH = 102;
     public final static int USER_LOCATION = 106;
-
+    public final static int TALK = 107;
     public static final int TRIGGER = 0;
     public static final int TRIGGER_ACTION = 1;
 
@@ -74,7 +74,10 @@ public abstract class TriggerAction {
             case TriggerAction.LIGHT_ON:
                 resId = R.drawable.ic_light_on;
                 break;
-            case TriggerAction.VOICE:
+            case TriggerAction.SPEECH:
+                resId = R.drawable.ic_speech;
+                break;
+            case TriggerAction.TALK:
                 resId = R.drawable.ic_talk;
                 break;
             case TriggerAction.EMAIL:
@@ -102,7 +105,7 @@ public abstract class TriggerAction {
             case TriggerAction.LIGHT_ON:
                 msg = "Turn Light";
                 break;
-            case TriggerAction.VOICE:
+            case TriggerAction.SPEECH:
                 msg = "Speech";
                 break;
             case CLAP:

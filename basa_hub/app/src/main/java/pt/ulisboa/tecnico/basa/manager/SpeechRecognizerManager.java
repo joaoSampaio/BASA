@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,7 +47,7 @@ import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 import pt.ulisboa.tecnico.basa.app.AppController;
-import pt.ulisboa.tecnico.basa.model.event.EventVoice;
+import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
@@ -55,26 +56,36 @@ public class SpeechRecognizerManager {
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "wakeup";
     /* Keyword we are looking for to activate menu */
-//    private static final String KEYPHRASE = "ok office";
-    private static final String KEYPHRASE = "ok big boss";
+    private static final String KEYPHRASE = "ok office";
+//    private static final String KEYPHRASE = "ok big boss";
+//    private static final String KEYPHRASE = "meu";
+
     private edu.cmu.pocketsphinx.SpeechRecognizer mPocketSphinxRecognizer;
     private static final String TAG = SpeechRecognizerManager.class.getSimpleName();
     protected Intent mSpeechRecognizerIntent;
     protected android.speech.SpeechRecognizer mGoogleSpeechRecognizer;
     private OnResultListener mOnResultListener;
     private BasaManager basaManager;
-
+    protected long mSpeechRecognizerStartListeningTime = 0;
+    private boolean mSuccess;
 
     public SpeechRecognizerManager( BasaManager basaManager) {
         this.basaManager = basaManager;
         Log.d(TAG, "SpeechRecognizerManager:");
-        initPockerSphinx();
-        initGoogleSpeechRecognizer();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initPockerSphinx();
+                initGoogleSpeechRecognizer();
+            }
+        },2000);
 
+//        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
     }
 
 
     private void initPockerSphinx() {
+        Log.d(TAG, "initPockerSphinx:");
 
         new AsyncTask<Void, Void, Exception>() {
             @Override
@@ -93,8 +104,17 @@ public class SpeechRecognizerManager {
                     speechRecognizerSetup.setAcousticModel(new File(assetDir, "en-us-ptm"));
                     speechRecognizerSetup.setDictionary(new File(assetDir, "cmudict-en-us.dict"));
 
+
+//                    speechRecognizerSetup.setAcousticModel(new File(assetDir, "pt-br-semi"))
+//                            .setDictionary(new File(assetDir, "pt-br-dict/constituicao.dic"));
+
+
+
+//                    speechRecognizerSetup.setRawLogDir(assetDir);
                     // Threshold to tune for keyphrase to balance between false positives and false negatives
-                    speechRecognizerSetup.setKeywordThreshold(1e-45f);
+//                    speechRecognizerSetup.setKeywordThreshold(1e-45f);
+                    speechRecognizerSetup.setKeywordThreshold(1e-25f);
+
 
                     //Creates a new SpeechRecognizer object based on previous set up.
                     mPocketSphinxRecognizer = speechRecognizerSetup.getRecognizer();
@@ -118,7 +138,7 @@ public class SpeechRecognizerManager {
                     restartSearch(KWS_SEARCH);
                 }
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -136,7 +156,8 @@ public class SpeechRecognizerManager {
         mSpeechRecognizerIntent = new Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
-        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"com.androiddev101.ep8");
+//        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"pt.ulisboa.tecnico.basa");
 
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
@@ -196,14 +217,20 @@ public class SpeechRecognizerManager {
             String text = hypothesis.getHypstr();
             Log.d(TAG, "onPartialResult:" + text);
             if (text.equals(KEYPHRASE)) {
+
+                Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
+                speechRecognizerStartListening(mSpeechRecognizerIntent);
+
+//                mPocketSphinxRecognizer.stop();
                 mPocketSphinxRecognizer.cancel();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
-                    }
-                },300);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
+//                        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+//                    }
+//                },1000);
 
 
 
@@ -245,46 +272,82 @@ public class SpeechRecognizerManager {
 
         @Override
         public void onBeginningOfSpeech() {
+            Log.d(TAG, "mGoogleSpeechRecognizer.onBeginningOfSpeech");
         }
 
         @Override
         public void onEndOfSpeech() {
+            Log.d(TAG, "mGoogleSpeechRecognizer.onEndOfSpeech:");
         }
 
         @Override
         public void onReadyForSpeech(Bundle params) {
+            Log.d(TAG, "mGoogleSpeechRecognizer.onReadyForSpeech:");
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
+//            Log.d(TAG, "mGoogleSpeechRecognizer.onRmsChanged:");
         }
 
         @Override
         public void onBufferReceived(byte[] buffer) {
-
+            Log.d(TAG, "mGoogleSpeechRecognizer.onBufferReceived:");
         }
 
         @Override
-        public void onError(int error) {
+        public synchronized void onError(int error) {
             Log.e(TAG, "onError:" + error);
-            mGoogleSpeechRecognizer.cancel();
-            getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
-            mPocketSphinxRecognizer.startListening(KWS_SEARCH);
 
+
+            if (mSuccess) {
+                Log.e(TAG, "Already success, ignoring error");
+                return;
+            }
+
+            long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
+            if (duration < 500 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+                Log.e(TAG, "Doesn't seem like the system tried to listen at all. duration = " + duration + "ms. This might be a bug with onError and startListening methods of SpeechRecognizer");
+                Log.e(TAG, "Going to ignore the error");
+                return;
+            }
+            if (duration > 5000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+                mGoogleSpeechRecognizer.cancel();
+                mPocketSphinxRecognizer.startListening(KWS_SEARCH);
+            }
+
+            speechRecognizerStartListening(mSpeechRecognizerIntent);
+//            mGoogleSpeechRecognizer.cancel();
+
+//
+            Log.d(TAG, "getBasaManager().getTextToSpeechManager():");
+//            if(getBasaManager().getTextToSpeechManager() != null)
+//                getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
+
+            Log.d(TAG, "mPocketSphinxRecognizer.startListening do erro google:");
+
+
+
+//            mPocketSphinxRecognizer.startListening(KWS_SEARCH);
+            //mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
 
         }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
-            Log.d(TAG, "onPartialResultsheard:");
+            Log.d(TAG, "onPartialResultsheard google:");
 
         }
 
         @Override
         public void onResults(Bundle results) {
+            Log.d(TAG, "mGoogleSpeechRecognizer.onResults:");
             if ((results != null)
                     && results
                     .containsKey(android.speech.SpeechRecognizer.RESULTS_RECOGNITION)) {
+
+                mSuccess = true;
+
                 ArrayList<String> heard = results
                         .getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
                 float[] scores = results
@@ -296,7 +359,7 @@ public class SpeechRecognizerManager {
 
                 }
 
-                getBasaManager().getEventManager().addEvent(new EventVoice(heard));
+                getBasaManager().getEventManager().addEvent(new EventSpeech(heard));
 
                 //send list of words to activity
                 if (mOnResultListener!=null){
@@ -304,19 +367,30 @@ public class SpeechRecognizerManager {
                 }
 
             }
-
+            Log.d(TAG, "mPocketSphinxRecognizer.startListening:");
             mPocketSphinxRecognizer.startListening(KWS_SEARCH);
-
+            mGoogleSpeechRecognizer.cancel();
+//            speechRecognizerStartListening(mSpeechRecognizerIntent);
 
         }
 
 
         @Override
         public void onEvent(int eventType, Bundle params) {
-
+            Log.d(TAG, "mGoogleSpeechRecognizer.onEvent:");
         }
 
     }
+
+
+    protected synchronized void speechRecognizerStartListening(Intent intent) {
+        if (mGoogleSpeechRecognizer != null) {
+            mSuccess = false;
+            this.mSpeechRecognizerStartListeningTime = System.currentTimeMillis();
+            this.mGoogleSpeechRecognizer.startListening(intent);
+        }
+    }
+
 
     public void setOnResultListner(OnResultListener onResultListener){
         mOnResultListener=onResultListener;

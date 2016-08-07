@@ -15,6 +15,7 @@ public class User {
     private String pin;
     private String uuid;
     private boolean enableFirebase;
+    private boolean enableTracking;
 
     public String getUserName() {
         return userName;
@@ -54,6 +55,14 @@ public class User {
 
     public void setEnableFirebase(boolean enableFirebase) {
         this.enableFirebase = enableFirebase;
+    }
+
+    public boolean isEnableTracking() {
+        return enableTracking;
+    }
+
+    public void setEnableTracking(boolean enableTracking) {
+        this.enableTracking = enableTracking;
     }
 
     public static User getLoggedUser(){

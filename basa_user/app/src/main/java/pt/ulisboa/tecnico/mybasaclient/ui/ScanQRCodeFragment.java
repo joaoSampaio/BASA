@@ -103,13 +103,22 @@ public class ScanQRCodeFragment extends DialogFragment {
 
         spinner = (Spinner) rootView.findViewById(R.id.spinner);
         List<String> list = new ArrayList<String>();
-        list.add("Casa");
-        list.add("Tagus");
-        list.add("Alameda");
+        Zone current = AppController.getInstance().getCurrentZone();
+        int selectedPos= 0;
+        for(Zone z : AppController.getInstance().loadZones()){
+            if(z.getName().equals(current.getName()))
+                selectedPos = list.size();
+            list.add(z.getName());
+        }
+
+//        list.add("Casa");
+//        list.add("Tagus");
+//        list.add("Alameda");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+        spinner.setSelection(selectedPos);
         showLayoutStart(true);
 
         save_device = (Button)rootView.findViewById(R.id.save_device);
@@ -245,6 +254,12 @@ public class ScanQRCodeFragment extends DialogFragment {
 
     private void registerUser(){
 
+        editTextName.setError(null);
+        if(editTextName.getText().toString().isEmpty()){
+            editTextName.setError("Name cannot be empty");
+            return;
+        }
+
         if(simpleBasaDevice != null && simpleBasaDevice.getToken() != null && !simpleBasaDevice.getToken().isEmpty()){
             save_device.setEnabled(false);
             progressBarRegister.setVisibility(View.VISIBLE);
@@ -252,7 +267,7 @@ public class ScanQRCodeFragment extends DialogFragment {
             if(!device.getUrl().startsWith("http")) {
                 device.setUrl("http://" + device.getUrl());
             }
-
+            device.setName(editTextName.getText().toString());
             String registrationUrl = device.getUrl();
             User user = AppController.getInstance().getLoggedUser();
             UserRegistration userRegistration = new UserRegistration(user.getEmail(), user.getUserName(), user.getUuid(), simpleBasaDevice.getToken());
@@ -263,14 +278,18 @@ public class ScanQRCodeFragment extends DialogFragment {
                     device.setBeaconUuids(response.getUuids());
                     device.setMacAddress(response.getMacAddress());
                     device.setLatestTemperature(response.getTemperature());
-                    Zone zone = AppController.getInstance().getCurrentZone();
+
+
+
+                    int selectedPos= spinner.getSelectedItemPosition();
+                    Zone zone = AppController.getInstance().loadZones().get(selectedPos);
+
+//                    Zone zone = AppController.getInstance().getCurrentZone();
 
 
                     List<Zone> zones = AppController.getInstance().loadZones();
-                    zone = Zone.getZoneByName(zone.getName(), zones);
                     zone.addDevice(device);
                     AppController.getInstance().saveZones(zones);
-                    AppController.getInstance().saveCurrentZone(zone);
                     if(getActivity() != null && ((MainActivity)getActivity()).getCommunicationHomeFragment() != null)
                         ((MainActivity)getActivity()).getCommunicationHomeFragment().updateZone(true);
                     if(getDialog() != null)

@@ -111,13 +111,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/checkboxFirebase"
+                android:clickable="false"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
                 android:layout_alignParentRight="true"
                 android:textColor="@color/primary_dark_material_light" />
         </RelativeLayout>
 
+        <RelativeLayout
+            style="@style/ListItemBASA"
+            android:id="@+id/enableTracking">
 
+            <TextView
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Track location"
+                android:id="@+id/textTracking"
+                android:layout_alignParentTop="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp" />
+
+            <CheckBox
+                style="@style/SettingsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:id="@+id/checkboxTracking"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/primary_dark_material_light" />
+        </RelativeLayout>
 
 
 

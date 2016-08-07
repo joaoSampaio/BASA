@@ -182,7 +182,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
             case R.id.action_save_recipe:
 
-
+                recipe.setActive(true);
 
                 Log.d("json", "json:"+new Gson().toJson(recipe));
                 Log.d("json", "json:"+new Gson().toJson(recipe.getTriggers()));

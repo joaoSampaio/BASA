@@ -37,8 +37,9 @@ public class BasaManager {
             Log.d("manager", "BasaManager start ");
             this.eventManager = new EventManager(this);
             this.lightingManager = new LightingManager();
-            this.speechRecognizerManager = new SpeechRecognizerManager(this);
             this.textToSpeechManager = new TextToSpeechManager();
+            this.speechRecognizerManager = new SpeechRecognizerManager(this);
+
             this.temperatureManager = new TemperatureManager(this);
             this.deviceDiscoveryManager = new DeviceDiscoveryManager();
             this.userManager = new UserManager();

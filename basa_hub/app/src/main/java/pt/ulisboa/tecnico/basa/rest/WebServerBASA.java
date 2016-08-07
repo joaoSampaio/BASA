@@ -79,7 +79,7 @@ public class WebServerBASA {
         transfer = new CameraSettingsDialogFragment.BitmapMotionTransfer() {
             @Override
             public void onBitMapAvailable(Bitmap bitmap) {
-                Log.d("servico", "onBitMapAvailable (live == bitmap)-> " + (live == bitmap));
+//                Log.d("servico", "onBitMapAvailable (live == bitmap)-> " + (live == bitmap));
                 live = bitmap;
             }
         };

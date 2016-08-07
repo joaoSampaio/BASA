@@ -83,11 +83,7 @@ public class IFTTTPreMadeRecipesFragment extends Fragment {
 
             data.add(new Recipe());
             data.add(new Recipe());
-            data.add(new Recipe());
 
-            data.add(new Recipe());
-            data.add(new Recipe());
-            data.add(new Recipe());
 
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));

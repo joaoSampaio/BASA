@@ -22,5 +22,11 @@
     <color name="red">#e2231a</color>
     <color name="dark_red">#ff510209</color>
 
+    <color name="home_icon">#64bdbdbd</color>
+
+    <color name="home_icon2">#2f606060</color>
+    <color name="home_icon3">#3d606060</color>
+    <!--<color name="home_icon2">#2fdedede</color>-->
+
 
 </resources>

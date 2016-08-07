@@ -51,25 +51,21 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         if(intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE") && isConnected){
 
 
-            context.startService(new Intent(context, WifiLocationService.class));
-
-
-
-
+            if(AppController.getInstance().getLoggedUser() != null &&
+                    AppController.getInstance().getLoggedUser().isEnableTracking()) {
+                context.startService(new Intent(context, WifiLocationService.class));
+            }
 
         }
-
-
-
-
-
-
 
 
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
             Log.d("wifi", "SCAN_RESULTS_AVAILABLE_ACTION:" );
 
-            context.startService(new Intent(context, WifiLocationService.class));
+            if(AppController.getInstance().getLoggedUser() != null &&
+                    AppController.getInstance().getLoggedUser().isEnableTracking()) {
+                context.startService(new Intent(context, WifiLocationService.class));
+            }
 
 
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);

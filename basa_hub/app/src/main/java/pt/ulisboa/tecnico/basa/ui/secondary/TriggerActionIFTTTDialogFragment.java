@@ -24,6 +24,7 @@ import pt.ulisboa.tecnico.basa.adapter.TriggerAdapter;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
 import pt.ulisboa.tecnico.basa.util.TriggerOrActionSelected;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
@@ -114,6 +115,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                             break;
                         case TriggerAction.TEMPERATURE:
                             showTriggerDetails(new TemperatureTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                            break;
+                        case TriggerAction.SPEECH:
+                            showTriggerDetails(new SpeechTrigger(triggerOrActionId), TriggerAction.TRIGGER);
                             break;
                     }
 
@@ -249,9 +253,10 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     private void populateDataTrigger(){
         data = new ArrayList<>();
         data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
+        data.add(new SpeechTrigger(TriggerAction.SPEECH));
 //        data.add(new Trigger(Trigger.CLAP));
 //        data.add(new Trigger(Trigger.SWITCH));
-//        data.add(new Trigger(Trigger.VOICE));
+//        data.add(new Trigger(Trigger.SPEECH));
         data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
     }
 
@@ -261,7 +266,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 //        data.add(new TriggerAction(TriggerAction.LIGHT_OFF, "Light OFF", R.drawable.ic_light));
 //        data.add(new TriggerAction(TriggerAction.TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
 //        data.add(new TriggerAction(TriggerAction.EMAIL, "Send Email", R.drawable.ic_mail));
-//        data.add(new TriggerAction(TriggerAction.VOICE, "Say", R.drawable.ic_talk));
+//        data.add(new TriggerAction(TriggerAction.SPEECH, "Say", R.drawable.ic_talk));
     }
 
 

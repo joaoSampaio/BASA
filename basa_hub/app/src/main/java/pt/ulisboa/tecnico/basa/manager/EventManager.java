@@ -13,7 +13,7 @@ import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
-import pt.ulisboa.tecnico.basa.model.event.EventVoice;
+import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
@@ -51,27 +51,22 @@ public class EventManager {
     }
 
     public void addEvent(Event event){
-        Log.d("EVENT", "****" + eventToString(event) + "****: ");
+//        Log.d("EVENT", "****" + eventToString(event) + "****: ");
 
         try {
-            int i = 0;
             for (InterestEventAssociation interest: interests){
                 if(interest.isType(event.getType())){
                     interest.getInterest().onRegisteredEventTriggered(event);
-                    i++;
-                    Log.d("EVENT", "****i= " + i);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            int i = 0;
             for (InterestEventAssociation interest: recipes){
                 if(interest.isType(event.getType())){
                     interest.getInterest().onRegisteredEventTriggered(event);
-                    i++;
-                    Log.d("EVENT", "****i= " + i);
+
                 }
             }
         } catch (Exception e) {
@@ -116,8 +111,8 @@ public class EventManager {
             case Event.TEMPERATURE:
                 result = "TEMPERATURE->" + ((EventTemperature)event).getTemperature();
                 break;
-            case Event.VOICE:
-                result = "VOICE->" + ((EventVoice)event).getVoice();
+            case Event.SPEECH:
+                result = "SPEECH->" + ((EventSpeech)event).getVoice();
                 break;
             case Event.CUSTOM_SWITCH:
                 result = "CUSTOM_SWITCH Pressed->" + ((EventCustomSwitchPressed)event).getId();
@@ -143,6 +138,8 @@ public class EventManager {
 
 
         for(Recipe re: recipes) {
+            if(!re.isActive())
+                continue;
             final Recipe recipeFinal = re;
             for (final TriggerAction trigger : re.getTriggers()) {
                 switch (trigger.getTriggerActionId()) {
@@ -202,6 +199,24 @@ public class EventManager {
                             }
                         }, 0));
                         break;
+
+                    case TriggerAction.SPEECH:
+                        registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new EventManager.RegisterInterestEvent() {
+                            @Override
+                            public void onRegisteredEventTriggered(Event event) {
+                                Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
+                                if (event instanceof EventSpeech) {
+                                    EventSpeech speech = (EventSpeech)event;
+                                    for( String s : speech.getVoice()){
+                                        if(s.toLowerCase().equals(trigger.getParameters().get(1).toLowerCase())){
+                                            doAction(recipeFinal);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }, 0));
+                        break;
 //                case Trigger.TEMPERATURE:
 //
 //                    registerInterestRecipe(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
@@ -247,19 +262,19 @@ public class EventManager {
 //                        }
 //                    }, 0));
 //                    break;
-//                case Trigger.VOICE:
-//                    Log.d("initSavedValues", "VOICE ");
-//                    registerInterestRecipe(new InterestEventAssociation(Event.VOICE, new RegisterInterestEvent() {
+//                case Trigger.SPEECH:
+//                    Log.d("initSavedValues", "SPEECH ");
+//                    registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new RegisterInterestEvent() {
 //                        @Override
 //                        public void onRegisteredEventTriggered(Event event) {
-//                            if (event instanceof EventVoice) {
-//                                List<String> voices = ((EventVoice) event).getVoice();
+//                            if (event instanceof EventSpeech) {
+//                                List<String> voices = ((EventSpeech) event).getVoice();
 //
 //                                Log.d("voice", "getConditionTriggerValue: " + recipeFinal.getConditionTriggerValue());
 //                                //se for o switch pretendido
 //                                for (String voice : voices) {
 //                                    if (recipeFinal.getConditionTriggerValue().equals(voice)) {
-//                                        Log.d("voice", "VOICE: correct voice ");
+//                                        Log.d("voice", "SPEECH: correct voice ");
 //                                        doAction(recipeFinal);
 //                                    }
 //                                }
@@ -314,7 +329,7 @@ public class EventManager {
 //                }
 //                break;
 
-//            case TriggerAction.VOICE:
+//            case TriggerAction.SPEECH:
 //
 //                String say = re.getConditionEventValue();
 //                getBasaManager().getTextToSpeechManager().speak(say);
