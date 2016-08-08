@@ -8,6 +8,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
@@ -19,6 +20,7 @@ import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 
 public class EventManager {
@@ -120,6 +122,9 @@ public class EventManager {
             case Event.CLAP:
                 result = "CLAP ->";
                 break;
+            case Event.BRIGHTNESS:
+                result = "BRIGHTNESS ->";
+                break;
         }
 
         return result;
@@ -216,6 +221,31 @@ public class EventManager {
                                 }
                             }
                         }, 0));
+                        break;
+                    case TriggerAction.LIGHT_SENSOR:
+                        registerInterestRecipe(new InterestEventAssociation(Event.BRIGHTNESS, new EventManager.RegisterInterestEvent() {
+                            @Override
+                            public void onRegisteredEventTriggered(Event event) {
+                                Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
+                                if (event instanceof EventBrightness) {
+                                    EventBrightness mLight = (EventBrightness)event;
+
+                                    if(LightSensorTrigger.LIGHT_BELLOW == trigger.getParametersInt(0) &&
+                                            mLight.getmBrightness() < trigger.getParametersInt(1)){
+                                        doAction(recipeFinal);
+                                    }
+
+                                    if(LightSensorTrigger.LIGHT_ABOVE == trigger.getParametersInt(0) &&
+                                            mLight.getmBrightness() >= trigger.getParametersInt(1)){
+                                        doAction(recipeFinal);
+                                    }
+                                }
+                            }
+                        }, 0));
+
+                        break;
+                    case TriggerAction.TEMPERATURE:
+
                         break;
 //                case Trigger.TEMPERATURE:
 //

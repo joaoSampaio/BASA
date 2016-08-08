@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     private TriggerOrActionSelected triggerOrActionSelected;
     private ImageView imageViewDetail;
     private Toolbar toolbar;
+    private LinearLayout layoutCustom;
     private int type = 0;
 
 
@@ -112,6 +114,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
 
         layout_header = rootView.findViewById(R.id.layout_header);
         layout_header.setBackgroundColor(triggerAction.getColor());
+        layoutCustom  = (LinearLayout)rootView.findViewById(R.id.layoutCustom);
         imageViewDetail = (ImageView)rootView.findViewById(R.id.imageViewDetail);
         Glide.with(this)
                 .load(triggerAction.getResId())
@@ -162,8 +165,26 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if(triggerAction != null){
+            triggerAction.setUpCustomView(layoutCustom);
+        }
+
+    }
+
+
+    @Override
     public void onPause() {
         super.onPause();
+
+
+        if(triggerAction != null){
+            triggerAction.destroyCustomView();
+            layoutCustom.removeAllViews();
+        }
+
     }
 
     @Override

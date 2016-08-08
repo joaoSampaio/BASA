@@ -116,6 +116,9 @@ public class BasaManager {
 
     }
 
+    public BasaSensorManager getBasaSensorManager() {
+        return basaSensorManager;
+    }
 
     public EventManager getEventManager() {
         return eventManager;

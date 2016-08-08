@@ -265,21 +265,6 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
 
 
-        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
-        data.add(new SpeechTrigger(TriggerAction.SPEECH));
-        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
-
-        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
-        data.add(new SpeechTrigger(TriggerAction.SPEECH));
-        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
-
-        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
-        data.add(new SpeechTrigger(TriggerAction.SPEECH));
-        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
-
-        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
-        data.add(new SpeechTrigger(TriggerAction.SPEECH));
-        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
     }
 
     private void populateDataTriggerAction(){

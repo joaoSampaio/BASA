@@ -147,7 +147,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
     private void setTrigger(int triggerId){
         Log.d("log", "setTrigger:"+triggerId);
-        int resId = TriggerAction.getResId(triggerId);
+        int resId = TriggerAction.getInvertedResId(triggerId);
 
         if(resId != -1) {
             Glide.with(this).load(resId)
@@ -179,9 +179,9 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 break;
 
             case R.id.action_save_recipe:
-
+                Log.d("json", "action_save_recipe:");
                 recipe.setActive(true);
-
+                Log.d("json", "recipe.setActive(true);:");
                 Log.d("json", "json:"+new Gson().toJson(recipe));
                 Log.d("json", "json:"+new Gson().toJson(recipe.getTriggers()));
 
@@ -192,10 +192,13 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 if(recipes == null)
                     recipes = new ArrayList<>();
                 recipes.add(recipe);
+                Log.d("json", "recipes.add(recipe);:");
                 AppController.getInstance().saveCustomRecipes(recipes);
                 if(listener != null)
                     listener.onNewRecipe();
+                Log.d("json", "listener.onNewRecipe():");
                 AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
+                Log.d("json", "reloadSavedRecipes:");
                 getDialog().dismiss();
 
 
@@ -230,7 +233,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                         public void run() {
                             applyToolTipPosition(action_trigger, textViewTriggerDescription);
                         }
-                    },200);
+                    },500);
 
                 }
 
@@ -250,7 +253,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                         public void run() {
                             applyToolTipPosition(action_event, textViewTriggerDescription);
                         }
-                    },200);
+                    },500);
 
 
                     textViewRecipe.setText(recipe.getRecipeDescription());

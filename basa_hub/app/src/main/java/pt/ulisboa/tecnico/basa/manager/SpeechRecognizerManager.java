@@ -190,10 +190,11 @@ public class SpeechRecognizerManager {
 
     private void restartSearch(String searchName) {
         Log.d(TAG, "restartSearch:");
-        mPocketSphinxRecognizer.stop();
+        if(mPocketSphinxRecognizer != null) {
+            mPocketSphinxRecognizer.stop();
 
-        mPocketSphinxRecognizer.startListening(searchName);
-
+            mPocketSphinxRecognizer.startListening(searchName);
+        }
     }
 
 

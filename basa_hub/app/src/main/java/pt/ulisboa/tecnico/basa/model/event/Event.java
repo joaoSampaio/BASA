@@ -12,6 +12,7 @@ public class Event {
     public final static int TIME = 5;
 
     public final static int USER_LOCATION = 6;
+    public final static int BRIGHTNESS = 7;
 
     private int type;
 

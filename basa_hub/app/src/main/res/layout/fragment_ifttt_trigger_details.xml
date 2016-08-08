@@ -60,6 +60,12 @@
                         android:textSize="18sp"
                         android:textColor="@color/white" />
 
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/layoutCustom"></LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout

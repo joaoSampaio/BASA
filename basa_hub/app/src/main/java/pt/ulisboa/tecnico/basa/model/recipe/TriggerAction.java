@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.basa.model.recipe;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -71,6 +72,11 @@ public abstract class TriggerAction {
 
     public abstract View.OnClickListener getListener(Context ctx, TriggerActionParameterSelected triggerActionParameterSelected);
 
+    public abstract void setUpCustomView(ViewGroup parent);
+    public abstract void destroyCustomView();
+
+
+
     public static int getResId(int triggerId){
         int resId = -1;
         switch (triggerId){
@@ -103,6 +109,41 @@ public abstract class TriggerAction {
                 resId = R.drawable.ic_brightness;
                 break;
 
+        }
+        return resId;
+    }
+
+    public static int getInvertedResId(int triggerId){
+        int resId = -1;
+        switch (triggerId){
+
+            case TEMPERATURE:
+                resId = R.drawable.ic_temperature_trigger;
+                break;
+            case TriggerAction.LIGHT_ON:
+                resId = R.drawable.ic_light_on;
+                break;
+            case TriggerAction.SPEECH:
+                resId = R.drawable.ic_speech;
+                break;
+            case TriggerAction.TALK:
+                resId = R.drawable.ic_talk;
+                break;
+            case TriggerAction.EMAIL:
+                resId = R.drawable.ic_mail;
+                break;
+            case CLAP:
+                resId = R.drawable.ic_clap;
+                break;
+            case SWITCH:
+                resId = R.drawable.ic_switch_on;
+                break;
+            case USER_LOCATION:
+                resId = R.drawable.ic_user_location;
+                break;
+            case LIGHT_SENSOR:
+                resId = R.drawable.ic_brightness_inv;
+                break;
 
         }
         return resId;

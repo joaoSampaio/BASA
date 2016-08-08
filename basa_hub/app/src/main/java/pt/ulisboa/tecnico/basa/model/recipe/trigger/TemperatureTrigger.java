@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.basa.model.recipe.trigger;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -57,6 +58,16 @@ public class TemperatureTrigger extends TriggerAction {
                 }
             }
         };
+    }
+
+    @Override
+    public void setUpCustomView(ViewGroup parent) {
+
+    }
+
+    @Override
+    public void destroyCustomView() {
+
     }
 
     @Override

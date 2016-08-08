@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -52,6 +53,16 @@ public class SpeechTrigger extends TriggerAction {
                 }
             }
         };
+    }
+
+    @Override
+    public void setUpCustomView(ViewGroup parent) {
+
+    }
+
+    @Override
+    public void destroyCustomView() {
+
     }
 
     @Override

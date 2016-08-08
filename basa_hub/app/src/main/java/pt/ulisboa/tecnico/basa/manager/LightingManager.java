@@ -111,7 +111,13 @@ public class LightingManager implements
 
     public void turnONLight(int lightId, boolean sendServer, boolean sendFireDB){
         Log.d("light", "turnONLight sendFireDB:"+sendFireDB);
+
+        //already on
+
         if(lightId < this.lights.size()){
+            if(this.lights.get(lightId)){
+                return;
+            }
             this.lights.set(lightId, true);
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightON(lightId);
@@ -128,6 +134,11 @@ public class LightingManager implements
     public void turnOFFLight(int lightId, boolean sendServer, boolean sendFireDB){
         Log.d("light", "turnOFFLight sendFireDB:"+sendFireDB);
         if(lightId < this.lights.size()){
+
+            //already off
+            if(!this.lights.get(lightId)){
+                return;
+            }
             this.lights.set(lightId, false);
             if(this.getLightChangedListener() != null)
                 this.getLightChangedListener().onLightOFF(lightId);
