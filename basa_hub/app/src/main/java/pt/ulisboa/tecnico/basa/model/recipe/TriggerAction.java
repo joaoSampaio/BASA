@@ -100,7 +100,7 @@ public abstract class TriggerAction {
                 resId = R.drawable.ic_user_location;
                 break;
             case LIGHT_SENSOR:
-                resId = R.drawable.ic_lux;
+                resId = R.drawable.ic_brightness;
                 break;
 
 
