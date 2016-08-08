@@ -56,7 +56,8 @@ public class SpeechRecognizerManager {
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "wakeup";
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "ok office";
+//    private static final String KEYPHRASE = "ok office";
+    private static final String KEYPHRASE = "my assistant";
 //    private static final String KEYPHRASE = "ok big boss";
 //    private static final String KEYPHRASE = "meu";
 
@@ -121,8 +122,13 @@ public class SpeechRecognizerManager {
 
                     mPocketSphinxRecognizer.addListener(new PocketSphinxRecognitionListener());
 
+
+                    File digitsGrammar = new File(assetDir, "keys.gram");
+                    mPocketSphinxRecognizer.addKeywordSearch(KWS_SEARCH, digitsGrammar);
+
+
                     // Create keyword-activation search.
-                    mPocketSphinxRecognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+//                    mPocketSphinxRecognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
                     Log.d(TAG, "initPockerSphinx end:");
                 } catch (IOException e) {
                     return e;
@@ -215,8 +221,10 @@ public class SpeechRecognizerManager {
 
 
             String text = hypothesis.getHypstr();
+            String[] results= text.split("  ");
             Log.d(TAG, "onPartialResult:" + text);
-            if (text.equals(KEYPHRASE)) {
+            Log.d(TAG, "last result:" + results[0]);
+            if (results[0].trim().equals(KEYPHRASE)) {
 
                 Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
                 speechRecognizerStartListening(mSpeechRecognizerIntent);
@@ -304,13 +312,19 @@ public class SpeechRecognizerManager {
                 Log.e(TAG, "Already success, ignoring error");
                 return;
             }
-
             long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
             if (duration < 500 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 Log.e(TAG, "Doesn't seem like the system tried to listen at all. duration = " + duration + "ms. This might be a bug with onError and startListening methods of SpeechRecognizer");
                 Log.e(TAG, "Going to ignore the error");
                 return;
             }
+            if (duration < 500 && error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
+
+                Log.e(TAG, "Going to ignore the error ERROR_RECOGNIZER_BUSY");
+
+                return;
+            }
+
             if (duration > 5000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 mGoogleSpeechRecognizer.cancel();
                 mPocketSphinxRecognizer.startListening(KWS_SEARCH);

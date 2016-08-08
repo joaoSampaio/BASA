@@ -36,7 +36,7 @@ public class UserManager implements Manager {
     private final static int TIMEOUT_OFFICE = 20 * 1000;
     private final static int TIMEOUT_BUILDING = 2*60*1000;
 
-    private InterestEventAssociation  interestLocation, interestTime;
+    private InterestEventAssociation interestTime;
     public UserManager() {
 
         this.buildingLocation = new HashMap<>();
@@ -148,15 +148,41 @@ public class UserManager implements Manager {
 
     public void addUserHeartbeat(String userID, UserLocation userLocation){
 
+        boolean isInside = isUserInside(userID, userLocation.getType());
+
+
+        int type = userLocation.getType();
+
+        if(type == UserLocation.TYPE_OFFICE) {
+//
+            if(userLocation.isInBuilding()){
+                long time = System.currentTimeMillis();
+                if(userLocation.getDuration() > 0){
+                    time = time + userLocation.getDuration();
+                }
+                officeLocation.put(userID, time);
+            }else{
+                officeLocation.remove(userID);
+            }
+
+        }else if(type == UserLocation.TYPE_BUILDING){
+
+            if(userLocation.isInBuilding()){
+                long time = System.currentTimeMillis();
+                if(userLocation.getDuration() > 0){
+                    time = time + userLocation.getDuration();
+                }
+                buildingLocation.put(userID, time);
+            }else{
+                buildingLocation.remove(userID);
+            }
+        }
 
         AppController.getInstance().getBasaManager().getEventManager()
                 .addEvent(new EventUserLocation(userID,
                         userLocation.isInBuilding(),
                         userLocation.getType(),
-                        !isUserInside(userID, userLocation.getType())));
-
-
-
+                        !isInside));
 
     }
 

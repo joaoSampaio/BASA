@@ -6,20 +6,20 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
-import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class EventManager {
 
@@ -132,7 +132,7 @@ public class EventManager {
 
 
     private void initSavedRecipes(){
-        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadRecipes();
+        List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
         if(recipes == null)
             recipes = new ArrayList<>();
 

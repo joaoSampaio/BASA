@@ -2,12 +2,14 @@ package pt.ulisboa.tecnico.basa.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import pt.ulisboa.tecnico.basa.R;
@@ -22,14 +24,21 @@ public class TriggerDetailsAdapter extends RecyclerView.Adapter<TriggerDetailsAd
     private TriggerAction trigger;
     private TriggerActionParameterSelected triggerActionParameterSelected;
 
-    public TriggerDetailsAdapter(Context context, Map<String, Object> data, TriggerAction trigger, TriggerActionParameterSelected triggerActionParameterSelected) {
+    public TriggerDetailsAdapter(Context context, LinkedHashMap<String, Object> data, TriggerAction trigger, TriggerActionParameterSelected triggerActionParameterSelected) {
         this.context = context;
         this.trigger = trigger;
         this.triggerActionParameterSelected = triggerActionParameterSelected;
         this.mListener = trigger.getListener(context, triggerActionParameterSelected);
         mData = new ArrayList();
-        mData.addAll(data.entrySet());
 
+        for(Map.Entry<String, Object> entry : data.entrySet()){
+            Log.d("trigger", "map:" + entry.getKey());
+        }
+
+        mData.addAll(data.entrySet());
+        for( Object entry : mData){
+            Log.d("trigger", "list:" + ((Map.Entry)entry).getKey());
+        }
     }
 
 

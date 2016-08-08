@@ -8,10 +8,22 @@ public class UserLocation {
 
     private boolean isInBuilding;
     private int type;
+    private long duration;
 
     public UserLocation(boolean isInBuilding, int type) {
         this.isInBuilding = isInBuilding;
         this.type = type;
+        this.duration = -1;
+    }
+
+    public UserLocation(boolean isInBuilding, int type, long duration) {
+        this.isInBuilding = isInBuilding;
+        this.type = type;
+        this.duration = duration;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public boolean isInBuilding() {

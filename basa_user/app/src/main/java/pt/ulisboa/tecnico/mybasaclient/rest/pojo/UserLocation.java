@@ -22,6 +22,10 @@ public class UserLocation {
         this.duration = duration;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
     public boolean isInBuilding() {
         return isInBuilding;
     }

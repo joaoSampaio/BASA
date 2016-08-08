@@ -6,9 +6,8 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.util.TriggerActionParameterSelected;
@@ -36,7 +35,7 @@ public class LocationTrigger extends TriggerAction {
     public LocationTrigger(int triggerId) {
         super(triggerId);
 
-        Map<String, Object> alt = new HashMap<>();
+        LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put(ARRIVES_OFFICE_STRING, ARRIVES_OFFICE);
         alt.put(ARRIVES_BUILDING_STRING, ARRIVES_BUILDING);
 
@@ -88,10 +87,10 @@ public class LocationTrigger extends TriggerAction {
                     msg = INSIDE_BUILDING_STRING;
                     break;
                 case EXIT_OFFICE:
-                    msg = INSIDE_BUILDING_STRING;
+                    msg = EXIT_OFFICE_STRING;
                     break;
                 case EXIT_BUILDING:
-                    msg = INSIDE_BUILDING_STRING;
+                    msg = EXIT_BUILDING_STRING;
                     break;
                 case ARRIVES_OFFICE:
                     msg = ARRIVES_OFFICE_STRING;

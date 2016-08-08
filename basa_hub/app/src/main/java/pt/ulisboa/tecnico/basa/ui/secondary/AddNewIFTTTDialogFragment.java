@@ -25,12 +25,10 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
 public class AddNewIFTTTDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -190,15 +188,15 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 //                    recipe.setDescription(editTextDescription.getText().toString());
 //                    recipe.setShortName(editTextShort.getText().toString());
 //
-                    List<Recipe> recipes = new ModelCache<List<Recipe>>().loadRecipes();
-                    if(recipes == null)
-                        recipes = new ArrayList<>();
-                    recipes.add(recipe);
-                    new ModelCache<List<Recipe>>().saveModel(recipes, Global.OFFLINE_RECIPES);
-                    if(listener != null)
-                        listener.onNewRecipe();
-                    AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
-                    getDialog().dismiss();
+                List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
+                if(recipes == null)
+                    recipes = new ArrayList<>();
+                recipes.add(recipe);
+                AppController.getInstance().saveCustomRecipes(recipes);
+                if(listener != null)
+                    listener.onNewRecipe();
+                AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
+                getDialog().dismiss();
 
 
                 break;

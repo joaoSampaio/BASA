@@ -17,9 +17,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.TriggerDetailsAdapter;
@@ -35,7 +34,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     private TriggerDetailsAdapter mAdapter;
     private TextView textViewDescription;
     private View layout_header;
-    private Map<String, Object> data;
+    private LinkedHashMap<String, Object> data;
     private TriggerAction triggerAction;
     private TriggerOrActionSelected triggerOrActionSelected;
     private ImageView imageViewDetail;
@@ -65,7 +64,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     public void setTriggerAction(TriggerAction trigger) {
         this.triggerAction = trigger;
         if(data == null)
-            data = new HashMap<>();
+            data = new LinkedHashMap<>();
         data.putAll(trigger.getAlternatives());
         if(mAdapter != null)
             mAdapter.notifyDataSetChanged();
@@ -122,7 +121,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
 
 
         if(data == null)
-            data = new HashMap<>();
+            data = new LinkedHashMap<>();
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

@@ -26,6 +26,7 @@ public class BasaManager {
     private Launch2Activity activity;
     private ValueEventListener fireListenner;
     private VideoManager videoManager;
+    private BasaSensorManager basaSensorManager;
 
     public BasaManager() {
         Log.d("manager", "BasaManager new ");
@@ -43,7 +44,7 @@ public class BasaManager {
             this.temperatureManager = new TemperatureManager(this);
             this.deviceDiscoveryManager = new DeviceDiscoveryManager();
             this.userManager = new UserManager();
-
+            this.basaSensorManager = new BasaSensorManager();
 //        if(getActivity() != null){
 //            videoManager = new VideoManager(getActivity());
 //        }
@@ -60,6 +61,10 @@ public class BasaManager {
     public void stop(){
 
         Log.d("manager", "basamanager stop:");
+
+        if(basaSensorManager != null){
+            basaSensorManager.destroy();
+        }
 
         if(fireListenner != null){
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();

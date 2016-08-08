@@ -15,8 +15,8 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.PreMadeRecipeAdapter;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
 public class IFTTTPreMadeRecipesFragment extends Fragment {
@@ -98,7 +98,7 @@ public class IFTTTPreMadeRecipesFragment extends Fragment {
     }
 
     private void refreshAdapter(){
-        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadRecipes();
+        List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
         if(recipes != null && recipes.size() > 0 && recipes.get(0) instanceof Recipe) {
             data.clear();
             Log.d("recipe", "recipes:"+recipes.size());

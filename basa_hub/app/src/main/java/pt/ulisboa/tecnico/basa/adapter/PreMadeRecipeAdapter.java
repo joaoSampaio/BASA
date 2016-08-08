@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 
 public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdapter.RecipeItemHolder>{
@@ -64,7 +65,9 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     recipe.setActive(isChecked);
+                    AppController.getInstance().saveCustomRecipes(data);
                     notifyDataSetChanged();
+                    AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
                 }
             });
             if(recipe.isActive()) {

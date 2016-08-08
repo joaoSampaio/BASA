@@ -5,9 +5,8 @@ import android.graphics.Color;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
@@ -26,7 +25,7 @@ public class LightOnAction extends TriggerAction {
         super(triggerActionId);
 
 
-        Map<String, Object> alt = new HashMap<>();
+        LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put("Turn on light", LIGHT_ON);
         alt.put("Turn off light", LIGHT_OFF);
 

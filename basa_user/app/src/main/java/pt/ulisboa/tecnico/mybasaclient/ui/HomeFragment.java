@@ -119,7 +119,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             mAdapter.notifyDataSetChanged();
 
             updateHomeAway();
-            showHomeAway(false, false);
+            if(!isHomeAwayOpen)
+                showHomeAway(false, false);
 
         }
 

@@ -15,8 +15,8 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.PreMadeRecipeAdapter;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
 public class IFTTTActiveRecipesFragment extends Fragment {
@@ -55,17 +55,6 @@ public class IFTTTActiveRecipesFragment extends Fragment {
     public void loadUI(){
 
 
-//        rootView.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
-//                data.clear();
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        });
-
-
-
         data = new ArrayList<>();
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -77,7 +66,7 @@ public class IFTTTActiveRecipesFragment extends Fragment {
     }
 
     private void refreshAdapter(){
-        List<Recipe> recipes = new ModelCache<List<Recipe>>().loadRecipes();
+        List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
         if(recipes != null && recipes.size() > 0 && recipes.get(0) instanceof Recipe) {
             data.clear();
             Log.d("recipe", "recipes:"+recipes.size());

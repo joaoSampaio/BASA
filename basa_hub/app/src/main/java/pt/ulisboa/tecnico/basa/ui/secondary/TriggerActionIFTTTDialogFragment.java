@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.TriggerAdapter;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
@@ -100,9 +101,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-        mRecyclerView.setHasFixedSize(true);
-
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(6, 20, true));
         Log.d("log", "--**--data trigger:" + data.size());
         mAdapter = new TriggerAdapter(getActivity(), data, new ViewClicked() {
             @Override
@@ -119,6 +120,11 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                         case TriggerAction.SPEECH:
                             showTriggerDetails(new SpeechTrigger(triggerOrActionId), TriggerAction.TRIGGER);
                             break;
+                        case TriggerAction.LIGHT_SENSOR:
+                            showTriggerDetails(new LightSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                            break;
+
+
                     }
 
                     return;
@@ -254,9 +260,25 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         data = new ArrayList<>();
         data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
         data.add(new SpeechTrigger(TriggerAction.SPEECH));
-//        data.add(new Trigger(Trigger.CLAP));
-//        data.add(new Trigger(Trigger.SWITCH));
-//        data.add(new Trigger(Trigger.SPEECH));
+        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
+        data.add(new LightSensorTrigger(TriggerAction.LIGHT_SENSOR));
+
+
+
+        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
+        data.add(new SpeechTrigger(TriggerAction.SPEECH));
+        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
+
+        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
+        data.add(new SpeechTrigger(TriggerAction.SPEECH));
+        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
+
+        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
+        data.add(new SpeechTrigger(TriggerAction.SPEECH));
+        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
+
+        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
+        data.add(new SpeechTrigger(TriggerAction.SPEECH));
         data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
     }
 

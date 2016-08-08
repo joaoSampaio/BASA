@@ -6,9 +6,8 @@ import android.text.InputType;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.util.DialogEditText;
@@ -25,7 +24,7 @@ public class SpeechTrigger extends TriggerAction {
     public SpeechTrigger(int triggerId) {
         super(triggerId);
 
-        Map<String, Object> alt = new HashMap<>();
+        LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put(SPEECH_FULL_STRING, SPEECH_FULL);
         super.setAlternatives(alt);
     }

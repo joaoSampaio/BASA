@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +22,13 @@ public abstract class TriggerAction {
     public final static int SWITCH = 102;
     public final static int USER_LOCATION = 106;
     public final static int TALK = 107;
+
+    public final static int LIGHT_SENSOR = 108;
+
+
+
+
+
     public static final int TRIGGER = 0;
     public static final int TRIGGER_ACTION = 1;
 
@@ -33,7 +40,7 @@ public abstract class TriggerAction {
     private int triggerActionId;
     private String title;
     private int resId;
-    private Map<String, Object> alternatives;
+    private LinkedHashMap<String, Object> alternatives;
     private List<String> parameters;
 
 
@@ -43,7 +50,7 @@ public abstract class TriggerAction {
         this.title = title;
         this.resId = resId;
         parameters = new ArrayList<>();
-        alternatives = new HashMap<>();
+        alternatives = new LinkedHashMap<>();
         type = this.getClass().getSimpleName();
 //        type = this.getClass().getName();
 
@@ -54,7 +61,7 @@ public abstract class TriggerAction {
         this.title = getTitle(triggerActionId);
         this.resId = getResId(triggerActionId);
         parameters = new ArrayList<>();
-        alternatives = new HashMap<>();
+        alternatives = new LinkedHashMap<>();
         type = this.getClass().getSimpleName();
     }
 
@@ -92,6 +99,11 @@ public abstract class TriggerAction {
             case USER_LOCATION:
                 resId = R.drawable.ic_user_location;
                 break;
+            case LIGHT_SENSOR:
+                resId = R.drawable.ic_lux;
+                break;
+
+
         }
         return resId;
     }
@@ -120,6 +132,11 @@ public abstract class TriggerAction {
             case USER_LOCATION:
                 msg = "Location";
                 break;
+            case LIGHT_SENSOR:
+                msg = "Light lvl";
+                break;
+
+
 
         }
         return msg;
@@ -153,7 +170,7 @@ public abstract class TriggerAction {
         return alternatives;
     }
 
-    public void setAlternatives(Map<String, Object> alternatives) {
+    public void setAlternatives(LinkedHashMap<String, Object> alternatives) {
         this.alternatives = alternatives;
     }
 

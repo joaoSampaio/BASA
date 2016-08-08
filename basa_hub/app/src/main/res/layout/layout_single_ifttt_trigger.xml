@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp">
 
-    <ImageView
-        android:id="@+id/item_img"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_margin="1dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+    <android.support.percent.PercentRelativeLayout
+        app:layout_widthPercent="65%"
+        app:layout_aspectRatio="100%"
+        app:layout_marginTopPercent="10%"
+        android:id="@+id/colorLayout"
+        android:background="@drawable/circle"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/item_img"
+            app:layout_widthPercent="50%"
+            app:layout_aspectRatio="100%"
+            android:layout_margin="1dp"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_user_location" />
+    </android.support.percent.PercentRelativeLayout>
+
+
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/item_title"
-        android:layout_below="@+id/item_img"
-        android:textSize="20dp"
-        android:layout_alignLeft="@+id/item_img"
-        android:layout_alignRight="@+id/item_img"
-        android:gravity="center" />
+        android:layout_below="@+id/colorLayout"
+        android:textSize="18sp"
+        app:layout_marginBottomPercent="10%"
+        android:gravity="center"
+        android:layout_marginTop="1dp"
+        android:layout_centerHorizontal="true" />
 
 
-</RelativeLayout>
+</android.support.percent.PercentRelativeLayout>

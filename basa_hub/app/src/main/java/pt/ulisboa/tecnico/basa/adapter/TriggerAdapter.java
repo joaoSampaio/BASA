@@ -16,6 +16,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
+import pt.ulisboa.tecnico.basa.util.ColorHelper;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerItemHolder>{
@@ -48,12 +49,17 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
 
         Glide.with(context).load(data.get(position).getResId())
                 .thumbnail(0.5f)
-                .override(200,200)
                 .fitCenter()
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImg);
+
+        ColorHelper.changeBackgroundColor(holder.colorLayout, data.get(position).getColor());
         holder.itemTitle.setText(data.get(position).getTitle());
+//        if(data.get(position).getTriggerActionId() == TriggerAction.USER_LOCATION){
+//            holder.itemTitle.setText("Android Phone Call");
+//        }
+
         holder.id = data.get(position).getTriggerActionId();
     }
 
@@ -65,6 +71,7 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
 
     public static class TriggerItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView mImg;
+        View colorLayout;
         TextView itemTitle;
         ViewClicked listener;
         int id;
@@ -74,6 +81,7 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
             this.listener = listener;
             itemTitle = (TextView)itemView.findViewById(R.id.item_title);
             mImg = (ImageView) itemView.findViewById(R.id.item_img);
+            colorLayout = itemView.findViewById(R.id.colorLayout);
             mImg.setOnClickListener(this);
         }
 

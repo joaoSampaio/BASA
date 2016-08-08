@@ -15,18 +15,16 @@ import pt.ulisboa.tecnico.basa.util.TriggerActionParameterSelected;
 /**
  * Created by Sampaio on 03/08/2016.
  */
-public class TemperatureTrigger extends TriggerAction {
+public class LightSensorTrigger extends TriggerAction {
 
-    public final static int TEMPERATURE_RISES = 0;
-    public final static int TEMPERATURE_DROPS = 1;
+    public final static int LIGHT = 0;
+    public final static String LIGHT_STRING = "Light sensor is";
 
-
-    public TemperatureTrigger(int triggerId) {
+    public LightSensorTrigger(int triggerId) {
         super(triggerId);
 
         LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
-        alt.put("Temperature rises above", TEMPERATURE_RISES);
-        alt.put("Temperature drops below", TEMPERATURE_DROPS);
+        alt.put(LIGHT_STRING, LIGHT);
         super.setAlternatives(alt);
     }
 
@@ -39,7 +37,7 @@ public class TemperatureTrigger extends TriggerAction {
                 if(choice != null){
                     final int choiceNum = (int) choice;
 
-                    new DialogEditText(ctx, "Select temperature", "temperature:", new DialogEditText.TextSelected() {
+                    new DialogEditText(ctx, "Select light level (lx)", "Light level:", new DialogEditText.TextSelected() {
                         @Override
                         public void onTextSelected(String text) {
 
@@ -61,21 +59,19 @@ public class TemperatureTrigger extends TriggerAction {
 
     @Override
     public int  getColor() {
-        return Color.parseColor("#ff33b5e5");
+        return Color.parseColor("#ffdb4d");
     }
 
     @Override
     public String getParameterTitle() {
 
-        String msg = "Temperature rises above ";
+        String msg = LIGHT_STRING;
         if(getParameters().size() == 2){
 
             int choice = Integer.parseInt( getParameters().get(0));
             String value = getParameters().get(1);
 
-            if(choice == TEMPERATURE_DROPS)
-                msg = "Temperature drops below ";
-            msg += value;
+            msg += " " + value;
 
         }
 

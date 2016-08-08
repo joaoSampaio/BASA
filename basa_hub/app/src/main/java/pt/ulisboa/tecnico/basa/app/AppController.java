@@ -16,11 +16,14 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.BroadcastReceiver.OnScreenOffReceiver;
+import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
+import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
 public class AppController extends Application {
@@ -50,6 +53,8 @@ public class AppController extends Application {
     private PowerManager.WakeLock wakeLock;
     private OnScreenOffReceiver onScreenOffReceiver;
     private BasaDeviceConfig deviceConfig;
+
+    private List<Recipe> customRecipes;
 
     @Override
     public void onCreate() {
@@ -223,6 +228,19 @@ public class AppController extends Application {
 
         return basaManager;
     }
+
+
+    public List<Recipe> getCustomRecipes(){
+        if(customRecipes == null){
+            customRecipes = new ModelCache<List<Recipe>>().loadRecipes();
+        }
+        return customRecipes;
+    }
+
+    public void saveCustomRecipes(List<Recipe> list){
+        new ModelCache<List<Recipe>>().saveModel(list, Global.OFFLINE_RECIPES);
+    }
+
 
 //    public void onTimerIntent(){
 //        if(interfaceToActivity != null){
