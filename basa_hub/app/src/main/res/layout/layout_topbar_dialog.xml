@@ -32,5 +32,23 @@
         android:layout_centerVertical="true"
         android:textColor="@color/white" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginRight="20dp">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Multiple"
+            android:id="@+id/checkMultiple"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
 </RelativeLayout>

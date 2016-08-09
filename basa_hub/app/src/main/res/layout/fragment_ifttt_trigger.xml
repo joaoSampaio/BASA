@@ -7,15 +7,14 @@
 
     <include
         layout="@layout/layout_topbar_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/topbar"></include>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/topbar"
-        android:padding="15dp">
+        android:padding="15dp"
+        android:layout_above="@+id/relativeLayout2">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
@@ -25,5 +24,44 @@
 
     </RelativeLayout>
 
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout2"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible">
+
+
+
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            app:layout_widthPercent="70%"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listSelected"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:text="Add selected triggers"
+                android:id="@+id/action_add"
+
+                android:background="@color/default_blue_light"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp" />
+
+
+        </LinearLayout>
+
+    </android.support.percent.PercentRelativeLayout>
 
 </RelativeLayout>

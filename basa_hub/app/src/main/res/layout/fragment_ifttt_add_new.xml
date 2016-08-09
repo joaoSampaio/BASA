@@ -8,8 +8,6 @@
 
     <include
         layout="@layout/layout_topbar_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/topbar"></include>
 
     <android.support.percent.PercentRelativeLayout

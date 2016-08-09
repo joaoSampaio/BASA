@@ -9,17 +9,21 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.adapter.HorizontalTriggerAdapter;
 import pt.ulisboa.tecnico.basa.adapter.TriggerAdapter;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
@@ -35,16 +39,20 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
 
 
-    private View rootView;
-    private RecyclerView mRecyclerView;
+    private View rootView, relativeLayout2;
+    private RecyclerView mRecyclerView, listSelected;
     private TriggerAdapter mAdapter;
-    List<TriggerAction> triggers;
-    List<TriggerAction> actions;
+
+    private HorizontalTriggerAdapter mHorizontalAdapter;
+
+    List<TriggerAction> triggersActions;
     private List<TriggerAction> data;
 //    private AddNewIFTTTDialogFragment.CommunicationIFTTT listener;
     private AddNewIFTTTDialogFragment.SelectedTriggerAction selectedTriggerAction;
     private int type = 0;
     private boolean isSimpleTrigger;
+    private CheckBox checkMultiple;
+
 
     public TriggerActionIFTTTDialogFragment() {
         // Required empty public constructor
@@ -73,8 +81,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
     public void loadUI(){
         isSimpleTrigger = true;
-        triggers = new ArrayList<>();
-        actions = new ArrayList<>();
+        triggersActions = new ArrayList<>();
         TextView textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
 
         textViewDescription.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +97,21 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                 getDialog().dismiss();
             }
         });
+        relativeLayout2 = rootView.findViewById(R.id.relativeLayout2);
+        checkMultiple = (CheckBox)rootView.findViewById(R.id.checkMultiple);
+        checkMultiple.setVisibility(View.VISIBLE);
+        checkMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isSimpleTrigger = !isChecked;
+                relativeLayout2.setVisibility(isSimpleTrigger? View.GONE : View.VISIBLE);
+
+
+
+            }
+        });
+
+
 
         if(type == TriggerAction.TRIGGER){
             populateDataTrigger();
@@ -139,44 +161,22 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                     }
                 }
 
-//                if(type == TRIGGER_ACTION && triggerOrActionId == TriggerAction.LIGHT_ON){
-//                    Log.d("log", "TriggerAction.LIGHT_ON:");
-//                    new DialogMultiSelect(getActivity(), getLights(), getLightsSelected(), "Select the Lights", new DialogMultiSelect.DialogMultiSelectResponse() {
-//                        @Override
-//                        public void onSucess(boolean[] checkedValues) {
-//
-//                            List<Integer> selectedMulti = new ArrayList<Integer>();
-//                            for(int i = 0; i<  checkedValues.length; i++){
-//                                if(checkedValues[i])
-//                                    selectedMulti.add(i);
-//                            }
-//
-//                            getDialog().dismiss();
-//                        }
-//                    }).show();
-//                }else if(type == TRIGGER && triggerOrActionId == Trigger.SWITCH){
-//                    Log.d("log", "Trigger.SWITCH:");
-//                    new DialogOneChoiceSelect(getActivity(), getCustomSwitches(), "Pick one switch", new DialogOneChoiceSelect.DialogOneSelectResponse() {
-//                        @Override
-//                        public void onSucess(int id, int type) {
-//                            List<Integer> selected = new ArrayList<Integer>();
-//                            //the id is the position of the switch
-//                            selected.add(id);
-//                            getDialog().dismiss();
-//                        }
-//                    }, type).show();
-//                }
-//                else {
-//                    getDialog().dismiss();
-//                }
-
-
-
-
             }
         });
         mRecyclerView.setAdapter(mAdapter);
 
+
+        listSelected = (RecyclerView) rootView.findViewById(R.id.listSelected);
+        listSelected.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+//        listSelected.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
+
+        mHorizontalAdapter = new HorizontalTriggerAdapter(getActivity(), triggersActions, new ViewClicked() {
+            @Override
+            public void onClick(int id) {
+
+            }
+        });
+        listSelected.setAdapter(mHorizontalAdapter);
 
 
     }
@@ -196,24 +196,28 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         newFragment.setTriggerOrActionSelected(new TriggerOrActionSelected() {
             @Override
             public void onTriggerSelected(TriggerAction trigger) {
-                triggers.add(trigger);
+                triggersActions.add(trigger);
                 if(isSimpleTrigger) {
-                    getSelectedTriggerAction().onSelectedTriggers(triggers);
+                    getSelectedTriggerAction().onSelectedTriggers(triggersActions);
 
 //                    listener.onTriggerSelected(triggers.get(0).getEventId(), type, null);
                     getDialog().dismiss();
+                }else{
+                    mHorizontalAdapter.notifyDataSetChanged();
                 }
 
             }
 
             @Override
             public void onActionSelected(TriggerAction action) {
-                actions.add(action);
+                triggersActions.add(action);
                 if(isSimpleTrigger) {
-                    getSelectedTriggerAction().onSelectedActions(actions);
+                    getSelectedTriggerAction().onSelectedActions(triggersActions);
 
 //                    listener.onTriggerSelected(triggers.get(0).getEventId(), type, null);
                     getDialog().dismiss();
+                }else{
+                    mHorizontalAdapter.notifyDataSetChanged();
                 }
             }
         });
