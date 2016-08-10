@@ -26,20 +26,45 @@ public class Recipe {
         this.actions = actions;
     }
 
+    public String getTriggersDescription(){
+        String msg = "";
+        String tmp;
+        for(int i=0; i< triggers.size(); i++){
+            tmp = triggers.get(i).getParameterTitle();
+            if(i > 0){
+                msg += " and ";
+            }
+            msg += Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
+
+        }
+
+
+        return msg;
+    }
+
+    public String getActionsDescription(){
+        String msg = "";
+        String tmp;
+        for(int i=0; i< actions.size(); i++){
+            tmp = actions.get(i).getParameterTitle();
+            if(i > 0){
+                msg += " and ";
+            }
+            msg += Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
+
+        }
+
+
+        return msg;
+    }
+
+
     public String getRecipeDescription(){
 
         String msg = "If ";
-        String tmp;
-        for(TriggerAction trigger: triggers){
-            tmp = trigger.getParameterTitle();
-            msg += Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
-        }
+        msg += getTriggersDescription();
         msg += ", then ";
-        for(TriggerAction action: actions){
-            tmp = action.getParameterTitle();
-            msg += Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
-        }
-
+        msg += getActionsDescription();
 
         return msg;
 

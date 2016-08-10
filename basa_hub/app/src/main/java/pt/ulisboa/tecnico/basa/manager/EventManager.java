@@ -53,7 +53,7 @@ public class EventManager {
     }
 
     public void addEvent(Event event){
-//        Log.d("EVENT", "****" + eventToString(event) + "****: ");
+        Log.d("EVENT", "****" + eventToString(event) + "****: ");
 
         try {
             for (InterestEventAssociation interest: interests){
@@ -125,6 +125,8 @@ public class EventManager {
             case Event.BRIGHTNESS:
                 result = "BRIGHTNESS ->";
                 break;
+            case Event.USER_LOCATION:
+                result = "USER_LOCATION ->" + ((EventCustomSwitchPressed)event);
         }
 
         return result;
@@ -157,31 +159,39 @@ public class EventManager {
 
                                     if(location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.INSIDE_BUILDING){
-                                        doAction(recipeFinal);
+
+
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
                                     if(location.getLocation() == EventUserLocation.TYPE_BUILDING && !location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.EXIT_BUILDING){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                     if(location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.INSIDE_OFFICE){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                     if(location.getLocation() == EventUserLocation.TYPE_OFFICE && !location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.EXIT_OFFICE){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                     if(location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_OFFICE){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                     if(location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_BUILDING){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                 }
@@ -197,7 +207,8 @@ public class EventManager {
                                 Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
                                 if (event instanceof EventClap) {
 
-                                    doAction(recipeFinal);
+                                    if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                        doAction(recipeFinal);
 
 
                                 }
@@ -214,7 +225,8 @@ public class EventManager {
                                     EventSpeech speech = (EventSpeech)event;
                                     for( String s : speech.getVoice()){
                                         if(s.toLowerCase().equals(trigger.getParameters().get(1).toLowerCase())){
-                                            doAction(recipeFinal);
+                                            if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                                doAction(recipeFinal);
                                             break;
                                         }
                                     }
@@ -232,12 +244,14 @@ public class EventManager {
 
                                     if(LightSensorTrigger.LIGHT_BELLOW == trigger.getParametersInt(0) &&
                                             mLight.getmBrightness() < trigger.getParametersInt(1)){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
 
                                     if(LightSensorTrigger.LIGHT_ABOVE == trigger.getParametersInt(0) &&
                                             mLight.getmBrightness() >= trigger.getParametersInt(1)){
-                                        doAction(recipeFinal);
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
                                     }
                                 }
                             }
@@ -384,6 +398,62 @@ public class EventManager {
     public BasaManager getBasaManager() {
         return basaManager;
     }
+
+    public boolean areOtherTriggersActive(List<TriggerAction> triggers, TriggerAction except){
+        for(TriggerAction trigger : triggers){
+            if(trigger.equals(except))
+                continue;
+            if(!isTriggerActive(trigger)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isTriggerActive(TriggerAction trigger){
+        switch (trigger.getTriggerActionId()) {
+            case TriggerAction.USER_LOCATION:
+
+                if ( trigger.getParametersInt(0) == LocationTrigger.INSIDE_BUILDING) {
+                    return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding() > 0);
+                }
+                if (trigger.getParametersInt(0) == LocationTrigger.EXIT_BUILDING) {
+                    return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding() == 0);
+                }
+
+                if (trigger.getParametersInt(0) == LocationTrigger.INSIDE_OFFICE) {
+                    return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() > 0);
+                }
+
+                if (trigger.getParametersInt(0) == LocationTrigger.EXIT_OFFICE) {
+                    return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0);
+                }
+
+
+                break;
+
+            case TriggerAction.LIGHT_SENSOR:
+
+                int brightness = AppController.getInstance().getBasaManager().getBasaSensorManager().getCurrentLightLvl();
+
+                if (LightSensorTrigger.LIGHT_BELLOW == trigger.getParametersInt(0) &&
+                        brightness < trigger.getParametersInt(1)) {
+                    return true;
+                }
+
+                if (LightSensorTrigger.LIGHT_ABOVE == trigger.getParametersInt(0) &&
+                        brightness >= trigger.getParametersInt(1)) {
+                    return true;
+                }
+
+                break;
+            case TriggerAction.TEMPERATURE:
+
+                break;
+        }
+        return false;
+    }
+
 
 
 //    public void setUpCalender(){

@@ -23,9 +23,9 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
 
     private Context context;
     private List<TriggerAction> data = new ArrayList<>();
-    private ViewClicked mListener;
+    private MultiTriggerSelected mListener;
 
-    public HorizontalTriggerAdapter(Context context, List<TriggerAction> data, ViewClicked mListener) {
+    public HorizontalTriggerAdapter(Context context, List<TriggerAction> data, MultiTriggerSelected mListener) {
         this.context = context;
         this.data = data;
         this.mListener = mListener;
@@ -37,7 +37,7 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
         TriggerItemHolder viewHolder;
         View v;
         v = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.layout_single_ifttt_trigger, parent, false);
+                R.layout.layout_single_ifttt_trigger_height, parent, false);
 
         viewHolder = new TriggerItemHolder(v, mListener);
 
@@ -45,7 +45,7 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
     }
 
     @Override
-    public void onBindViewHolder(TriggerItemHolder holder, int position) {
+    public void onBindViewHolder(TriggerItemHolder holder, final int position) {
 
 
         Glide.with(context).load(data.get(position).getResId())
@@ -56,12 +56,17 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
                 .into(holder.mImg);
 
         ColorHelper.changeBackgroundColor(holder.colorLayout, data.get(position).getColor());
-        holder.itemTitle.setVisibility(View.GONE);
-//        if(data.get(position).getTriggerActionId() == TriggerAction.USER_LOCATION){
-//            holder.itemTitle.setText("Android Phone Call");
-//        }
 
         holder.id = data.get(position).getTriggerActionId();
+
+        holder.colorLayout.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                mListener.onMultiSelected(view, position);
+            }
+        });
+
     }
 
 
@@ -70,26 +75,23 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
         return data.size();
     }
 
-    public static class TriggerItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class TriggerItemHolder extends RecyclerView.ViewHolder {
         ImageView mImg;
         View colorLayout;
-        TextView itemTitle;
-        ViewClicked listener;
+        MultiTriggerSelected listener;
         int id;
 
-        public TriggerItemHolder(View itemView, ViewClicked listener) {
+        public TriggerItemHolder(View itemView, MultiTriggerSelected listener) {
             super(itemView);
             this.listener = listener;
-            itemTitle = (TextView)itemView.findViewById(R.id.item_title);
             mImg = (ImageView) itemView.findViewById(R.id.item_img);
             colorLayout = itemView.findViewById(R.id.colorLayout);
-            mImg.setOnClickListener(this);
+
         }
 
-        @Override
-        public void onClick(View v) {
-            listener.onClick(id);
-        }
+    }
 
+    public interface MultiTriggerSelected{
+        void onMultiSelected(View view, int position);
     }
 }

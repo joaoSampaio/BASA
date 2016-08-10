@@ -45,8 +45,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listSelected"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
-                />
+                android:layout_height="75dp" />
 
             <Button
                 android:layout_width="match_parent"
@@ -63,5 +62,16 @@
         </LinearLayout>
 
     </android.support.percent.PercentRelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" hjjjjjjjjj hj hj hjhjhjh jhjhjh jhjhjh,mm, fg fgf gfg ffg fg fgj hjhjhjhj hjh jhjhjhj"
+        android:id="@+id/textViewBubble"
+        android:paddingBottom="15dp"
+        android:background="@drawable/ic_bubble"
+        android:visibility="invisible"/>
+
 
 </RelativeLayout>

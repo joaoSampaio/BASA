@@ -79,23 +79,39 @@
             </RelativeLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 app:layout_widthPercent="70%"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/container"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/containerSave"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                android:gravity="center_horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="If device is plugged in, then turn off WiFi"
 
                     android:id="@+id/textViewRecipe"
                     android:textSize="25sp"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:maxLines="3"
+                    android:scrollbars="vertical"
+                    android:gravity="center_horizontal" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextDescription"
+                    android:layout_alignParentStart="true"
+                    android:imeOptions="actionDone"
+                    android:hint="Recipe description (optional):"
+                    android:visibility="visible"
+                    android:layout_marginTop="15dp"
+                    android:maxLines="2" />
 
                 <Button
                     android:layout_width="match_parent"
@@ -108,30 +124,9 @@
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:layout_below="@+id/textViewRecipe"
-                    android:layout_marginTop="40dp" />
+                    android:layout_marginTop="10dp" />
 
-                <EditText
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editTextShort"
-                    android:layout_below="@+id/textViewRecipe"
-                    android:layout_alignParentStart="true"
-                    android:imeOptions="actionDone"
-                    android:hint="Recipe short name:"
-                    android:layout_marginTop="25dp"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:layout_width="400dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editTextDescription"
-                    android:layout_below="@+id/editTextShort"
-                    android:layout_alignParentStart="true"
-                    android:imeOptions="actionDone"
-                    android:hint="Recipe description:"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
+            </LinearLayout>
 
 
 

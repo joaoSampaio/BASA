@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
      <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
          xmlns:app="http://schemas.android.com/apk/res-auto"
-         android:orientation="vertical"
-         android:layout_width="match_parent"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:paddingTop="15dp">
+         >
      
          <android.support.percent.PercentRelativeLayout
-             app:layout_widthPercent="65%"
+             app:layout_heightPercent="100%"
              app:layout_aspectRatio="100%"
-             app:layout_marginTopPercent="10%"
+             app:layout_marginRightPercent="10%"
              android:id="@+id/colorLayout"
              android:background="@drawable/circle"
              android:layout_centerHorizontal="true">
@@ -25,19 +24,7 @@
          </android.support.percent.PercentRelativeLayout>
      
      
-     
-     
-         <TextView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="New Text"
-             android:id="@+id/item_title"
-             android:layout_below="@+id/colorLayout"
-             android:textSize="18sp"
-             app:layout_marginBottomPercent="10%"
-             android:gravity="center"
-             android:layout_marginTop="1dp"
-             android:layout_centerHorizontal="true" />
+
      
      
      </android.support.percent.PercentRelativeLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -31,6 +33,9 @@ import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
+import pt.ulisboa.tecnico.basa.util.GridSpacingItemDecoration;
+import pt.ulisboa.tecnico.basa.util.GridSpacingItemHorizontalDecoration;
+import pt.ulisboa.tecnico.basa.util.Tooltip;
 import pt.ulisboa.tecnico.basa.util.TriggerOrActionSelected;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
@@ -42,7 +47,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     private View rootView, relativeLayout2;
     private RecyclerView mRecyclerView, listSelected;
     private TriggerAdapter mAdapter;
-
+    private TextView textViewBubble;
     private HorizontalTriggerAdapter mHorizontalAdapter;
 
     List<TriggerAction> triggersActions;
@@ -51,6 +56,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     private AddNewIFTTTDialogFragment.SelectedTriggerAction selectedTriggerAction;
     private int type = 0;
     private boolean isSimpleTrigger;
+    private Button action_add;
     private CheckBox checkMultiple;
 
 
@@ -83,7 +89,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         isSimpleTrigger = true;
         triggersActions = new ArrayList<>();
         TextView textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
-
+        textViewBubble = (TextView)rootView.findViewById(R.id.textViewBubble);
         textViewDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,8 +117,23 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
             }
         });
 
+        action_add = (Button)rootView.findViewById(R.id.action_add);
+        action_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(type == TriggerAction.TRIGGER) {
+                    getSelectedTriggerAction().onSelectedTriggers(triggersActions);
+
+                }else{
+                    getSelectedTriggerAction().onSelectedActions(triggersActions);
+                }
+                getDialog().dismiss();
 
 
+
+            }
+        });
         if(type == TriggerAction.TRIGGER){
             populateDataTrigger();
             textViewDescription.setText("Select Trigger");
@@ -167,12 +188,24 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
 
         listSelected = (RecyclerView) rootView.findViewById(R.id.listSelected);
-        listSelected.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-//        listSelected.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
+//        listSelected.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        listSelected.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
+        listSelected.addItemDecoration(new GridSpacingItemHorizontalDecoration(1, 20, true));
 
-        mHorizontalAdapter = new HorizontalTriggerAdapter(getActivity(), triggersActions, new ViewClicked() {
+
+        mHorizontalAdapter = new HorizontalTriggerAdapter(getActivity(), triggersActions, new HorizontalTriggerAdapter.MultiTriggerSelected() {
             @Override
-            public void onClick(int id) {
+            public void onMultiSelected(final View v, int position) {
+
+                final String text = triggersActions.get(position).getParameterTitle();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewBubble.setText(text);
+                        Tooltip.applyToolTipPosition(v, textViewBubble);
+                    }
+                },50);
 
             }
         });

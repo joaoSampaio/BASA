@@ -29,6 +29,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
+import pt.ulisboa.tecnico.basa.util.Tooltip;
 
 
 public class AddNewIFTTTDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -98,9 +99,8 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
 
         editTextDescription = (EditText)rootView.findViewById(R.id.editTextDescription);
-        editTextShort = (EditText)rootView.findViewById(R.id.editTextShort);
         action_trigger.setOnClickListener(this);
-        action_save_recipe.setOnClickListener(this);
+
 
 
     }
@@ -225,13 +225,13 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 recipe.setTriggers(triggers);
                 if(!triggers.isEmpty()) {
                     setTrigger(triggers.get(0).getTriggerActionId());
-                    textViewTriggerDescription.setText(triggers.get(0).getParameterTitle());
+                    textViewTriggerDescription.setText(recipe.getTriggersDescription());
                     setClickListener(action_event);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            applyToolTipPosition(action_trigger, textViewTriggerDescription);
+                            Tooltip.applyToolTipPosition(action_trigger, textViewTriggerDescription);
                         }
                     },500);
 
@@ -245,19 +245,29 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 recipe.setActions(actions);
                 if(!actions.isEmpty()) {
                     setAction(actions.get(0).getTriggerActionId());
-                    textViewTriggerDescription.setText(actions.get(0).getParameterTitle());
+                    textViewTriggerDescription.setText(recipe.getActionsDescription());
 
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            applyToolTipPosition(action_event, textViewTriggerDescription);
+                            Tooltip.applyToolTipPosition(action_event, textViewTriggerDescription);
                         }
                     },500);
 
 
                     textViewRecipe.setText(recipe.getRecipeDescription());
+
+
+                    if(recipe.getTriggers().size() > 1 || recipe.getActions().size() > 1){
+                        editTextDescription.setVisibility(View.VISIBLE);
+                    }else{
+                        editTextDescription.setVisibility(View.GONE);
+                    }
+
                     containerSave.setVisibility(View.VISIBLE);
+
+                    action_save_recipe.setOnClickListener(AddNewIFTTTDialogFragment.this);
 
                 }
             }
@@ -277,77 +287,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     public void setListener(IFTTTActiveRecipesFragment.NewRecipeCreated listener) {
         this.listener = listener;
     }
-
-
-
-
-
-    private int mRelativeMasterViewY;
-
-    private int mRelativeMasterViewX;
-
-    private void applyToolTipPosition(final View mView, final View tooltip) {
-        final int[] masterViewScreenPosition = new int[2];
-        mView.getLocationOnScreen(masterViewScreenPosition);
-
-        final Rect viewDisplayFrame = new Rect();
-        mView.getWindowVisibleDisplayFrame(viewDisplayFrame);
-
-        final int[] parentViewScreenPosition = new int[2];
-        (tooltip).getLocationOnScreen(parentViewScreenPosition);
-
-        final int masterViewWidth = mView.getWidth();
-        final int masterViewHeight = mView.getHeight();
-
-        mRelativeMasterViewX = masterViewScreenPosition[0] - parentViewScreenPosition[0];
-        mRelativeMasterViewY = masterViewScreenPosition[1] - parentViewScreenPosition[1];
-        final int relativeMasterViewCenterX = mRelativeMasterViewX + masterViewWidth / 2;
-
-        int toolTipViewAboveY = mRelativeMasterViewY - tooltip.getHeight();
-        int toolTipViewBelowY = Math.max(0, mRelativeMasterViewY + masterViewHeight);
-
-//        int toolTipViewX = Math.max(0, relativeMasterViewCenterX - mWidth / 2);
-//        if (toolTipViewX + mWidth > viewDisplayFrame.right) {
-//            toolTipViewX = viewDisplayFrame.right - mWidth;
-//        }
-
-//        setX(toolTipViewX);
-//        setPointerCenterX(relativeMasterViewCenterX);
-//        tooltip.setX( relativeMasterViewCenterX - (int) mView.getX());
-
-//        tooltip.setX(mView.getX());
-//        tooltip.setX(relativeMasterViewCenterX);
-
-        Log.d("tool", "mView.masterViewScreenPosition[0]():"+masterViewScreenPosition[0]);
-        Log.d("tool", "tooltip.getX():"+tooltip.getX());
-        Log.d("tool", "mView.getHeight():"+mView.getHeight());
-        Log.d("tool", "tooltip.getHeight():"+tooltip.getHeight());
-        Log.d("tool", "tooltip.getWidth():"+tooltip.getWidth());
-        tooltip.setX(masterViewScreenPosition[0] + mView.getWidth()/2 - tooltip.getWidth()/2);
-        tooltip.setY(masterViewScreenPosition[1] - mView.getHeight()/2 - tooltip.getHeight()/2);
-        tooltip.setVisibility(View.VISIBLE);
-        Log.d("tool", "tooltip.getX() setX:"+tooltip.getX());
-        Log.d("tool", "tooltip.getY() setY:"+tooltip.getY());
-
-
-
-
-        final boolean showBelow = toolTipViewAboveY < 0;
-
-
-//        int toolTipViewY;
-//        if (showBelow) {
-//            toolTipViewY = toolTipViewBelowY;
-//        } else {
-//            toolTipViewY = toolTipViewAboveY;
-//        }
-//
-//        mView.setTranslationX(toolTipViewX);
-//        mView.setTranslationY( toolTipViewY);
-    }
-
-
-
 
 
 

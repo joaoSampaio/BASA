@@ -72,7 +72,6 @@ public class BasaSensorManager implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         float lux = event.values[0];
         mLightLvl = lux;
-        Log.d("BasaSensorManager", "lux->: "+lux);
     }
 
     @Override
