@@ -87,6 +87,7 @@ public class UserManager implements Manager {
                     for ( Map.Entry<String, Long> entry : tmp.entrySet() ){
                         //when a timeout occurs
                         if(current > (entry.getValue() + TIMEOUT_BUILDING)){
+                            buildingLocation.remove(entry.getKey());
                             AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_BUILDING, false));
                         }
                     }
@@ -95,6 +96,7 @@ public class UserManager implements Manager {
                     for ( Map.Entry<String, Long> entry : tmp.entrySet() ){
                         //when a timeout occurs
                         if(current > (entry.getValue() + TIMEOUT_OFFICE)){
+                            officeLocation.remove(entry.getKey());
                             AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventUserLocation(entry.getKey(), false, EventUserLocation.TYPE_OFFICE, false));
                         }
                     }

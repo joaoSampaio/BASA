@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,11 +28,12 @@ import pt.ulisboa.tecnico.basa.adapter.HorizontalTriggerAdapter;
 import pt.ulisboa.tecnico.basa.adapter.TriggerAdapter;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
-import pt.ulisboa.tecnico.basa.util.GridSpacingItemDecoration;
 import pt.ulisboa.tecnico.basa.util.GridSpacingItemHorizontalDecoration;
 import pt.ulisboa.tecnico.basa.util.Tooltip;
 import pt.ulisboa.tecnico.basa.util.TriggerOrActionSelected;
@@ -166,7 +166,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                         case TriggerAction.LIGHT_SENSOR:
                             showTriggerDetails(new LightSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
                             break;
-
+                        case TriggerAction.MOTION_SENSOR:
+                            showTriggerDetails(new MotionSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                            break;
 
                     }
 
@@ -177,6 +179,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                     switch (triggerOrActionId) {
                         case TriggerAction.LIGHT_ON:
                             showTriggerDetails(new LightOnAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
+                            break;
+                        case TriggerAction.TALK:
+                            showTriggerDetails(new SpeechAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
                             break;
 
                     }
@@ -299,7 +304,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         data.add(new SpeechTrigger(TriggerAction.SPEECH));
         data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
         data.add(new LightSensorTrigger(TriggerAction.LIGHT_SENSOR));
-
+        data.add(new MotionSensorTrigger(TriggerAction.MOTION_SENSOR));
 
 
     }
@@ -307,6 +312,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     private void populateDataTriggerAction(){
         data = new ArrayList<>();
         data.add(new LightOnAction(TriggerAction.LIGHT_ON));
+        data.add(new SpeechAction(TriggerAction.TALK));
 //        data.add(new TriggerAction(TriggerAction.LIGHT_OFF, "Light OFF", R.drawable.ic_light));
 //        data.add(new TriggerAction(TriggerAction.TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
 //        data.add(new TriggerAction(TriggerAction.EMAIL, "Send Email", R.drawable.ic_mail));

@@ -11,8 +11,10 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.eddystone.Eddystone;
+import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.BroadcastReceiver.OnScreenOffReceiver;
@@ -20,9 +22,11 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.EventHistory;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
@@ -55,6 +59,8 @@ public class AppController extends Application {
     private BasaDeviceConfig deviceConfig;
 
     private List<Recipe> customRecipes;
+
+    private List<EventHistory> history;
 
     @Override
     public void onCreate() {
@@ -242,10 +248,22 @@ public class AppController extends Application {
     }
 
 
-//    public void onTimerIntent(){
-//        if(interfaceToActivity != null){
-//            interfaceToActivity.getManager().getEventManager().addEvent(new EventTime(new Date()));
-//        }
-//    }
+    public void saveHistory(List<EventHistory> list){
+        new ModelCache<List<EventHistory>>().saveModel(list, Global.OFFLINE_HISTORY);
+    }
+
+    public List<EventHistory> getHistory() {
+
+        if(history == null){
+            history = new ModelCache<List<EventHistory>>().loadModel(new TypeToken<List<EventHistory>>(){}.getType(), Global.OFFLINE_HISTORY);
+            if(history == null)
+                history = new ArrayList<>();
+        }
+        return history;
+    }
+
+
+
+
 
 }

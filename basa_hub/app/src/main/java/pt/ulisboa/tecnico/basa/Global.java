@@ -44,6 +44,7 @@ public class Global {
     public static final String OFFLINE_IP_TEMPERATURE = "OFFLINE_IP_TEMPERATURE";
     public static final String OFFLINE_USERS = "OFFLINE_USERS";
     public static final String OFFLINE_TOKEN = "OFFLINE_TOKEN";
+    public static final String OFFLINE_HISTORY = "OFFLINE_HISTORY";
 
     public static final String KEY_SALT = "KEY_SALT";
 

@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.basa.ui.secondary;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -227,7 +226,10 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     setTrigger(triggers.get(0).getTriggerActionId());
                     textViewTriggerDescription.setText(recipe.getTriggersDescription());
                     setClickListener(action_event);
-
+                    Glide.with(AddNewIFTTTDialogFragment.this)
+                            .load(R.drawable.ic_add_ta_active)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(action_event);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

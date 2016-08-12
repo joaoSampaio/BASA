@@ -24,12 +24,17 @@ public class LocationTrigger extends TriggerAction {
     public final static int EXIT_BUILDING = 3;
     public final static int ARRIVES_OFFICE = 4;
     public final static int ARRIVES_BUILDING = 5;
+    public final static int NO_USER_IN_BUILDING = 6;
+    public final static int NO_USER_IN_OFFICE = 7;
 
     public final static String INSIDE_OFFICE_STRING = "User is inside office";
     public final static String INSIDE_BUILDING_STRING = "User is inside building";
     public final static String EXIT_OFFICE_STRING = "User leaves office";
     public final static String EXIT_BUILDING_STRING = "User leaves building";
     public final static String ARRIVES_OFFICE_STRING = "User arrives at office";
+    public final static String NO_USER_IN_BUILDING_STRING = "No user inside building";
+    public final static String NO_USER_IN_OFFICE_STRING = "No user inside office";
+
     public final static String ARRIVES_BUILDING_STRING = "User arrives at building";
     //////adicionar escolha de qual o utilizador se todos, se um especifico
 
@@ -44,6 +49,9 @@ public class LocationTrigger extends TriggerAction {
         alt.put(INSIDE_BUILDING_STRING, INSIDE_BUILDING);
         alt.put(EXIT_OFFICE_STRING, EXIT_OFFICE);
         alt.put(EXIT_BUILDING_STRING, EXIT_BUILDING);
+
+        alt.put(NO_USER_IN_BUILDING_STRING, NO_USER_IN_BUILDING);
+        alt.put(NO_USER_IN_OFFICE_STRING, NO_USER_IN_OFFICE);
         super.setAlternatives(alt);
     }
 

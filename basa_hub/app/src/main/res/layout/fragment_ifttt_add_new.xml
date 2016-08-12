@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/action_trigger"
-                    android:src="@drawable/ic_placeholder_trigger"
+                    android:src="@drawable/ic_add_ta_active"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/textView11"
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/action_event"
-                    android:src="@drawable/ic_placeholder_trigger"
+                    android:src="@drawable/ic_add_ta_inactive"
                     android:layout_toRightOf="@+id/textView12"
                     android:layout_centerVertical="true" />
 

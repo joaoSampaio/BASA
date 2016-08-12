@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.EventHistory;
+import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
@@ -22,6 +24,7 @@ import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
 
 public class EventManager {
 
@@ -31,6 +34,8 @@ public class EventManager {
     private Handler handler;
     private final static int PERIOD = 2000;
     private Runnable run;
+    private EventHistoryFragment.UpdateHistory updateHistory;
+
 
     public EventManager(BasaManager basaManager) {
         interests = new ArrayList<>();
@@ -74,10 +79,61 @@ public class EventManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        addEventToHistory(event);
+    }
 
+    private void addEventToHistory(Event event){
 
+        String result = "";
+        switch (event.getType()){
+            case Event.OCCUPANT_DETECTED:
+                if(((EventOccupantDetected)event).isDetected())
+                    result = "Movement detected";
+                break;
+            case Event.SPEECH:
+                result = "Voice cmd: " + ((EventSpeech)event).getVoice();
+                break;
+
+            case Event.USER_LOCATION:
+                Log.d("USER_LOCATION","USER_LOCATION");
+                if (event instanceof EventUserLocation) {
+                    Log.d("USER_LOCATION","instanceof");
+                    EventUserLocation location = (EventUserLocation) event;
+                    User user = AppController.getInstance().getBasaManager().getUserManager().getUser(location.getUserId());
+                    String name = user != null ? user.getName() : "unknown";
+                    if (location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()) {
+                        result = "User " + name + " arrived in building";
+                        Log.d("USER_LOCATION","User " + name + " arrived in building");
+                    }
+                    if (location.getLocation() == EventUserLocation.TYPE_BUILDING && !location.isInBuilding()) {
+                        result = "User " + name + " left the building";
+                        Log.d("USER_LOCATION","User " + name + " left the building");
+                    }
+
+                    if (location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()) {
+
+                        result = "User " + name + " arrived at office";
+                    }
+
+                    if (location.getLocation() == EventUserLocation.TYPE_OFFICE && !location.isInBuilding()) {
+
+                        result = "User " + name + " left the office";
+                    }
+                }
+
+                break;
+        }
+        Log.d("EVENT","User:---->result:" + result);
+        if(!result.isEmpty()){
+            Log.d("EVENT","User:---->getUpdateHistory() != null:" + (getUpdateHistory() != null) );
+            AppController.getInstance().getHistory().add(0,new EventHistory(result));
+            if(getUpdateHistory() != null)
+                getUpdateHistory().onUpdateHistory();
+
+        }
 
     }
+
 
     public void registerInterestRecipe(InterestEventAssociation interest){
         this.recipes.add(interest);
@@ -126,7 +182,7 @@ public class EventManager {
                 result = "BRIGHTNESS ->";
                 break;
             case Event.USER_LOCATION:
-                result = "USER_LOCATION ->" + ((EventCustomSwitchPressed)event);
+                result = "USER_LOCATION -> isInBuilding:" + ((EventUserLocation)event).isInBuilding() + " getLocation:" + ((EventUserLocation)event).getLocation();
         }
 
         return result;
@@ -193,6 +249,19 @@ public class EventManager {
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);
                                     }
+                                    int numBuilding = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding();
+                                    if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_BUILDING && numBuilding == 0){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    }
+
+                                    int numOffice = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice();
+                                    if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_OFFICE && numOffice == 0){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    }
+
+
 
                                 }
                             }
@@ -366,6 +435,10 @@ public class EventManager {
 //                }
 
                     break;
+                case TriggerAction.TALK:
+                    String msg = action.getParameters().get(1);
+                    getBasaManager().getTextToSpeechManager().speak(msg);
+                    break;
 //            case TriggerAction.LIGHT_OFF:
 //                for(int id: re.getSelectedAction()){
 //                    if(getBasaManager().getLightingManager() != null)
@@ -429,6 +502,16 @@ public class EventManager {
                     return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0);
                 }
 
+                int numBuilding = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding();
+                if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_BUILDING && numBuilding == 0){
+                    return true;
+                }
+
+                int numOffice = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice();
+                if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_OFFICE && numOffice == 0){
+                    return true;
+                }
+
 
                 break;
 
@@ -454,9 +537,16 @@ public class EventManager {
         return false;
     }
 
+    public EventHistoryFragment.UpdateHistory getUpdateHistory() {
+        return updateHistory;
+    }
+
+    public void setUpdateHistory(EventHistoryFragment.UpdateHistory updateHistory) {
+        this.updateHistory = updateHistory;
+    }
 
 
-//    public void setUpCalender(){
+    //    public void setUpCalender(){
 //
 //        Calendar midnightCalendar = Calendar.getInstance();
 //

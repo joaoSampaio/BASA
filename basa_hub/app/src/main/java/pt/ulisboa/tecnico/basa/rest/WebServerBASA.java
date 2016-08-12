@@ -295,19 +295,26 @@ public class WebServerBASA {
             @Override
             public Object handle(Request request, Response response) {
 
-                String body = request.body();
+                final String body = request.body();
                 Log.d("servico", "request.body():"+request.body());
 
 
 
 
-                String session = request.headers("session-id");
+                final String session = request.headers("session-id");
                 Log.d("servico", "session:"+session);
-                Gson gson = new Gson();
-                if(session != null && AppController.getInstance().getBasaManager().getUserManager().getUser(session) != null){
 
-                    UserLocation userLocation = gson.fromJson(body, new TypeToken<UserLocation>() {}.getType());
-                    AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(session, userLocation);
+                if(session != null && AppController.getInstance().getBasaManager().getUserManager().getUser(session) != null){
+                    Gson gson = new Gson();
+                    final UserLocation userLocation = gson.fromJson(body, new TypeToken<UserLocation>() {}.getType());
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(session, userLocation);
+                        }
+                    });
+
 
 //                    Log.d("servico", "users:"+gson.toJson(User.getUsers()));
                     return "{\"status\": true}";

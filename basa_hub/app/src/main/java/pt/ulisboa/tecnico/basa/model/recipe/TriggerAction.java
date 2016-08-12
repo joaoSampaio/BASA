@@ -25,7 +25,7 @@ public abstract class TriggerAction {
     public final static int TALK = 107;
 
     public final static int LIGHT_SENSOR = 108;
-
+    public final static int MOTION_SENSOR = 109;
 
 
 
@@ -108,7 +108,9 @@ public abstract class TriggerAction {
             case LIGHT_SENSOR:
                 resId = R.drawable.ic_brightness;
                 break;
-
+            case MOTION_SENSOR:
+                resId = R.drawable.ic_motion;
+                break;
         }
         return resId;
     }
@@ -144,6 +146,9 @@ public abstract class TriggerAction {
             case LIGHT_SENSOR:
                 resId = R.drawable.ic_brightness_inv;
                 break;
+            case MOTION_SENSOR:
+                resId = R.drawable.ic_motion_inv;
+                break;
 
         }
         return resId;
@@ -176,7 +181,9 @@ public abstract class TriggerAction {
             case LIGHT_SENSOR:
                 msg = "Light lvl";
                 break;
-
+            case MOTION_SENSOR:
+                msg = "Motion sensor";
+                break;
 
 
         }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event: User Joao Entered the office"
+            android:id="@+id/textViewEvent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="false"
+            android:layout_toRightOf="@+id/container_div"
+            android:paddingBottom="25dp"
+            android:paddingTop="15dp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/container_div"
+            android:layout_marginLeft="10dp"
+            android:layout_alignTop="@+id/textViewEvent"
+            android:layout_alignBottom="@+id/textViewEvent"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/container_date"
+            >
+
+                <View android:layout_width="2dp"
+                    android:layout_height="wrap_content"
+
+                    android:background="@color/material_grey_300"
+                    android:layout_centerHorizontal="true">
+
+                </View>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/vertical_line"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentStart="false"
+            android:id="@+id/container_date"
+            android:layout_alignTop="@+id/textViewEvent"
+            android:layout_alignBottom="@+id/textViewEvent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="19:10:39"
+                    android:id="@+id/textViewTime"
+                    android:layout_centerVertical="true"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="2016-08-12"
+                    android:id="@+id/textViewDate"
+                    android:textSize="10sp" />
+        </LinearLayout>
+
+</RelativeLayout>
