@@ -13,11 +13,12 @@ import java.util.List;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
-import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
 import pt.ulisboa.tecnico.basa.model.event.Event;
+import pt.ulisboa.tecnico.basa.model.event.EventChangeTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
+import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
@@ -190,6 +191,11 @@ public class TemperatureManager {
 
 
     public void changeTargetTemperature(int temperature){
+
+        targetTemperature = temperature;
+        AppController.getInstance().getBasaManager().getEventManager()
+                .addEvent(new EventChangeTemperature(temperature));
+
         if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
             FirebaseHelper mHelperFire = new FirebaseHelper();
             mHelperFire.changeTemperature(temperature);
@@ -197,6 +203,10 @@ public class TemperatureManager {
     }
 
     public void onChangeTargetTemperature(int temperature) {
+
+        if(temperature != targetTemperature)
+            AppController.getInstance().getBasaManager().getEventManager()
+                    .addEvent(new EventChangeTemperature(temperature));
 
         //TODO logic
         Log.d("tempera", "actionTemperatureManagerList:" + (actionTemperatureManagerList != null));

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.LightingControl;
 import pt.ulisboa.tecnico.basa.util.LightingControlEDUP;
@@ -128,6 +129,11 @@ public class LightingManager implements
             }
             if(sendServer)
                 lightingControl.sendLightCommand(convert(lights));
+
+            AppController.getInstance().getBasaManager().getEventManager()
+                    .addEvent(new EventLightSwitch(lightId,
+                            true));
+
         }
     }
 
@@ -148,6 +154,11 @@ public class LightingManager implements
             }
             if(sendServer)
                 lightingControl.sendLightCommand(convert(lights));
+
+            AppController.getInstance().getBasaManager().getEventManager()
+                    .addEvent(new EventLightSwitch(lightId,
+                            false));
+
         }
     }
 

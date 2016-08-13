@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
-import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 
 public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdapter.RecipeItemHolder>{
@@ -28,11 +27,13 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
     private List<Recipe> data = new ArrayList<>();
     private Context context;
     private Fragment fragmentContext;
+    private UpdateRecipeList updateRecipeList;
 
-    public PreMadeRecipeAdapter(Context context, List<Recipe> data, Fragment fragmentContext) {
+    public PreMadeRecipeAdapter(Context context, List<Recipe> data, Fragment fragmentContext, UpdateRecipeList updateRecipeList) {
         this.context = context;
         this.data = data;
         this.fragmentContext = fragmentContext;
+        this.updateRecipeList = updateRecipeList;
     }
 
 
@@ -56,20 +57,25 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
     public void onBindViewHolder(final RecipeItemHolder holder, final int position) {
 
         final Recipe recipe = data.get(position);
+        holder.position = position;
         if(!recipe.getTriggers().isEmpty() && !recipe.getActions().isEmpty()) {
             setIcon(recipe.getTriggers().get(0).getResId(), holder.imageTrigger);
             setIcon(recipe.getActions().get(0).getResId(), holder.imageAction);
             holder.textViewDescription.setText(recipe.getRecipeDescription());
+
+            holder.switchActive.setOnCheckedChangeListener(null);
             holder.switchActive.setChecked(recipe.isActive());
+
+
             holder.switchActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    recipe.setActive(isChecked);
-                    AppController.getInstance().saveCustomRecipes(data);
-                    notifyDataSetChanged();
-                    AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
+                    updateRecipeList.updateActiveRecipe(position, isChecked);
+
+
                 }
             });
+
             if(recipe.isActive()) {
 
                 holder.colorTrigger.setBackgroundColor(recipe.getTriggers().get(0).getColor());
@@ -88,7 +94,7 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
         if(resId != -1) {
             Glide.with(fragmentContext).load(resId)
                     .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(image);
         }
     }
@@ -98,11 +104,12 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
         return data.size();
     }
 
-    public static class RecipeItemHolder extends RecyclerView.ViewHolder{
+    public class RecipeItemHolder extends RecyclerView.ViewHolder{
         ImageView imageTrigger, imageAction;
         TextView textViewDescription;
         View colorTrigger, colorAction;
         Switch switchActive;
+        int position;
 
 
         public RecipeItemHolder(View itemView) {
@@ -114,11 +121,16 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
             colorAction = itemView.findViewById(R.id.layoutSecond);
             switchActive = (Switch)itemView.findViewById(R.id.switchActive);
 
+
         }
+
     }
 
 
 
+    public interface UpdateRecipeList{
+        void updateActiveRecipe(int position, boolean active);
+    }
 
 
 

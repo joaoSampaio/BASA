@@ -11,8 +11,10 @@ import pt.ulisboa.tecnico.basa.model.EventHistory;
 import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
+import pt.ulisboa.tecnico.basa.model.event.EventChangeTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
+import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
@@ -122,6 +124,12 @@ public class EventManager {
                 }
 
                 break;
+            case Event.LIGHT:
+                result = "Light (" + ((EventLightSwitch)event).getLightNum() + ") is " + (((EventLightSwitch)event).isStatus()? "on" : "off");
+                break;
+            case Event.CHANGE_TEMPERATURE:
+                result = "Temperature set to " + ((EventChangeTemperature)event).getTargetTemperature() + " Cº" ;
+                break;
         }
         Log.d("EVENT","User:---->result:" + result);
         if(!result.isEmpty()){
@@ -181,8 +189,16 @@ public class EventManager {
             case Event.BRIGHTNESS:
                 result = "BRIGHTNESS ->";
                 break;
+            case Event.LIGHT:
+                result = "LIGHT ->" + ((EventLightSwitch)event).getLightNum() + " is " + ((EventLightSwitch)event).isStatus();
+                break;
+            case Event.CHANGE_TEMPERATURE:
+                result = "CHANGE_TEMPERATURE  target->" + ((EventChangeTemperature)event).getTargetTemperature() ;
+                break;
+
             case Event.USER_LOCATION:
                 result = "USER_LOCATION -> isInBuilding:" + ((EventUserLocation)event).isInBuilding() + " getLocation:" + ((EventUserLocation)event).getLocation();
+                break;
         }
 
         return result;
@@ -439,6 +455,13 @@ public class EventManager {
                     String msg = action.getParameters().get(1);
                     getBasaManager().getTextToSpeechManager().speak(msg);
                     break;
+
+                case TriggerAction.CHANGE_TEMPERATURE:
+                    int value = action.getParametersInt(1);
+                    getBasaManager().getTemperatureManager().changeTargetTemperature(value);
+                    break;
+
+
 //            case TriggerAction.LIGHT_OFF:
 //                for(int id: re.getSelectedAction()){
 //                    if(getBasaManager().getLightingManager() != null)

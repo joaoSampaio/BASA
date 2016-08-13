@@ -29,6 +29,7 @@ import pt.ulisboa.tecnico.basa.adapter.TriggerAdapter;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.TemperatureAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
@@ -169,7 +170,6 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                         case TriggerAction.MOTION_SENSOR:
                             showTriggerDetails(new MotionSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
                             break;
-
                     }
 
                     return;
@@ -182,6 +182,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                             break;
                         case TriggerAction.TALK:
                             showTriggerDetails(new SpeechAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
+                            break;
+                        case TriggerAction.CHANGE_TEMPERATURE:
+                            showTriggerDetails(new TemperatureAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
                             break;
 
                     }
@@ -313,6 +316,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         data = new ArrayList<>();
         data.add(new LightOnAction(TriggerAction.LIGHT_ON));
         data.add(new SpeechAction(TriggerAction.TALK));
+        data.add(new TemperatureAction(TriggerAction.CHANGE_TEMPERATURE));
 //        data.add(new TriggerAction(TriggerAction.LIGHT_OFF, "Light OFF", R.drawable.ic_light));
 //        data.add(new TriggerAction(TriggerAction.TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
 //        data.add(new TriggerAction(TriggerAction.EMAIL, "Send Email", R.drawable.ic_mail));

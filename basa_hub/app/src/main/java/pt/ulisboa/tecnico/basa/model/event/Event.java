@@ -13,6 +13,8 @@ public class Event {
 
     public final static int USER_LOCATION = 6;
     public final static int BRIGHTNESS = 7;
+    public final static int LIGHT = 8;
+    public final static int CHANGE_TEMPERATURE = 9;
 
     private int type;
 

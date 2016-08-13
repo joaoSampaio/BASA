@@ -28,6 +28,8 @@ public abstract class TriggerAction {
     public final static int MOTION_SENSOR = 109;
 
 
+    public final static int CHANGE_TEMPERATURE = 110;
+
 
 
     public static final int TRIGGER = 0;
@@ -109,8 +111,13 @@ public abstract class TriggerAction {
                 resId = R.drawable.ic_brightness;
                 break;
             case MOTION_SENSOR:
-                resId = R.drawable.ic_motion;
+                resId = R.drawable.ic_motion2;
                 break;
+            case CHANGE_TEMPERATURE:
+                resId = R.drawable.ic_temperature_trigger;
+                break;
+
+
         }
         return resId;
     }
@@ -149,6 +156,9 @@ public abstract class TriggerAction {
             case MOTION_SENSOR:
                 resId = R.drawable.ic_motion_inv;
                 break;
+            case CHANGE_TEMPERATURE:
+                resId = R.drawable.ic_temperature_trigger;
+                break;
 
         }
         return resId;
@@ -166,8 +176,8 @@ public abstract class TriggerAction {
             case TriggerAction.SPEECH:
                 msg = "Speech";
                 break;
-            case CLAP:
-                msg = "Clap";
+            case TALK:
+                msg = "Say";
                 break;
             case SWITCH:
                 msg = "Light ON";
@@ -183,6 +193,9 @@ public abstract class TriggerAction {
                 break;
             case MOTION_SENSOR:
                 msg = "Motion sensor";
+                break;
+            case CHANGE_TEMPERATURE:
+                msg = "Change Temperature";
                 break;
 
 

@@ -60,7 +60,16 @@ public class IFTTTActiveRecipesFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new PreMadeRecipeAdapter(getActivity(), data, this);
+        mAdapter = new PreMadeRecipeAdapter(getActivity(), data, this, new PreMadeRecipeAdapter.UpdateRecipeList() {
+            @Override
+            public void updateActiveRecipe(int position, boolean active) {
+                final Recipe recipe = data.get(position);
+                recipe.setActive(active);
+                AppController.getInstance().saveCustomRecipes(data);
+                mAdapter.notifyDataSetChanged();
+                AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
         refreshAdapter();
     }
