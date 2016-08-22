@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
@@ -64,19 +61,15 @@ import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.ui.setup.MainSetupActivity;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
-import pt.ulisboa.tecnico.basa.util.LevenshteinDistance;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class Launch2Activity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
-    private final static int[] CLICKABLE = {R.id.action_gogo_lights, R.id.action_gogo_temperature, R.id.action_gogo_option};
-
     private Camera mCamera;
     private TextureView mTextureView;
     private Handler handler;
     private ImageView preview_img;
-
     private CameraHelper mHelper;
     private FrameLayout camera_preview;
 //    private EventManager eventManager;
@@ -219,35 +212,9 @@ public class Launch2Activity extends FragmentActivity implements
         preview_img = (ImageView)findViewById(R.id.preview_img);
         handler = new Handler();
 
-        View.OnClickListener click = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.action_gogo_lights:
-
-                        showPage(Global.PAGE_LIGHTS);
-
-                        break;
-                    case R.id.action_gogo_temperature:
-                        showPage(Global.PAGE_TEMPERATURE);
-                        break;
-                    case R.id.action_gogo_option:
-                        showPage(Global.PAGE_OPTIONS);
-                        break;
-                }
-            }
-        };
-
-        for(int id : CLICKABLE)
-            findViewById(id).setOnClickListener(click);
-
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                resetBackgroundBtns();
-                ImageView view = (ImageView) findViewById(CLICKABLE[position]);
-                view.setBackground(getResources().getDrawable(R.drawable.circle));
-                view.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
                 Fragment fragment = getFragmentManager().findFragmentByTag("PreferencesFragment");
                 if(fragment != null)
@@ -461,7 +428,6 @@ public class Launch2Activity extends FragmentActivity implements
         if(this.basaManager != null) {
             this.basaManager.stop();
             this.basaManager.setActivity(null);
-//            AppController.getInstance().basaManager = null;
         }
 
 
@@ -509,23 +475,8 @@ public class Launch2Activity extends FragmentActivity implements
         }
     }
 
-    private void resetBackgroundBtns(){
-        ImageView view;
-        for(int id : CLICKABLE) {
-            view = (ImageView)findViewById(id);
-            view.setBackground(null);
-            view.setColorFilter(getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
-        }
-    }
 
     private void showPage(int page){
-        resetBackgroundBtns();
-        ImageView view = (ImageView)findViewById(CLICKABLE[page]);
-        view.setBackground(getResources().getDrawable(R.drawable.circle));
-        view.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-
-
-
         mPager.setCurrentItem(page);
     }
 
@@ -575,16 +526,8 @@ public class Launch2Activity extends FragmentActivity implements
         }
     }
 
-    public ImageView getPreview_img() {
-        return preview_img;
-    }
-
     public CameraHelper getmHelper() {
         return mHelper;
-    }
-
-    public Camera getmCamera() {
-        return mCamera;
     }
 
     private void initSavedValues(){
@@ -608,12 +551,6 @@ public class Launch2Activity extends FragmentActivity implements
 
 
     public BasaManager getBasaManager(){
-//        if(this.basaManager  == null) {
-//            Log.d("basaManager", "basaManager");
-//            this.basaManager = new BasaManager(this);
-//            this.basaManager.start();
-//            AppController.getInstance().basaManager = this.basaManager;
-//        }
         return this.basaManager;
     }
 
@@ -643,166 +580,6 @@ public class Launch2Activity extends FragmentActivity implements
         void updateTemperature(double temperature);
 
         BasaManager getManager();
-    }
-
-    /**
-     * Showing google speech input dialog
-     * */
-    public void promptSpeechInput() {
-
-//        mSpeechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-BR");
-//        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.getPackageName());
-//
-//        // Given an hint to the recognizer about what the user is going to say
-//        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-//                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//        // Specify how many results you want to receive. The results will be sorted
-//        // where the first result is the one with higher confidence.
-//        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
-//        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-//
-//        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(Launch2Activity.this);
-//        SpeechListener mRecognitionListener = new SpeechListener(mSpeechRecognizer, mSpeechIntent);
-//        mSpeechRecognizer.setRecognitionListener(mRecognitionListener);
-//
-//
-//        mSpeechRecognizer.startListening(mSpeechIntent);
-
-
-
-
-
-
-
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(Launch2Activity.this);
-        SpeechListener2 mRecognitionListener = new SpeechListener2();
-        mSpeechRecognizer.setRecognitionListener(mRecognitionListener);
-        mSpeechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-BR");
-        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"com.androiddev101.ep8");
-
-        // Given an hint to the recognizer about what the user is going to say
-        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
-        // Specify how many results you want to receive. The results will be sorted
-        // where the first result is the one with higher confidence.
-        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
-
-
-        mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        mSpeechRecognizer.startListening(mSpeechIntent);
-
-    }
-
-
-
-    public class SpeechListener2 implements RecognitionListener {
-        String TAG = "SpeechListener";
-
-        //legal commands
-        private final String[] VALID_COMMANDS = {
-                "What time is it",
-                "que horas são",
-                "Ligar luzes",
-                "exit"
-        };
-        private final int VALID_COMMANDS_SIZE = VALID_COMMANDS.length;
-
-
-        public void onBufferReceived(byte[] buffer) {
-            Log.d(TAG, "buffer recieved ");
-        }
-
-        public void onError(int error) {
-            //if critical error then exit
-            if (error == SpeechRecognizer.ERROR_CLIENT || error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS) {
-                Log.d(TAG, "client error");
-            }
-            //else ask to repeats
-            else if(error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT){
-                Log.d(TAG, "other error:" + error);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSpeechRecognizer.startListening(mSpeechIntent);
-                    }
-                },500);
-            }
-            else {
-                Log.d(TAG, "other error:" + error);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSpeechRecognizer.startListening(mSpeechIntent);
-                    }
-                },5000);
-
-            }
-        }
-
-        public void onEvent(int eventType, Bundle params) {
-            Log.d(TAG, "onEvent");
-        }
-
-        public void onPartialResults(Bundle partialResults) {
-            Log.d(TAG, "partial results");
-        }
-
-        public void onReadyForSpeech(Bundle params) {
-            Log.d(TAG, "on ready for speech");
-        }
-
-        public void onResults(Bundle results) {
-            Log.d(TAG, "on results");
-            ArrayList<String> matches = null;
-            if (results != null) {
-                matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (matches != null) {
-                    Log.d(TAG, "results are " + matches.toString());
-                    final ArrayList<String> matchesStrings = matches;
-                    processCommand(matchesStrings);
-
-                    mSpeechRecognizer.startListening(mSpeechIntent);
-
-
-                }
-            }
-
-        }
-
-        public void onRmsChanged(float rmsdB) {
-            //			Log.d(TAG, "rms changed");
-        }
-
-        public void onBeginningOfSpeech() {
-            Log.d(TAG, "speach begining");
-        }
-
-        public void onEndOfSpeech() {
-            Log.d(TAG, "speach done");
-        }
-
-        private void processCommand(ArrayList<String> matchStrings) {
-            String response = "I'm sorry, Dave. I'm afraid I can't do that.";
-            int maxStrings = matchStrings.size();
-            boolean resultFound = false;
-            for (int i = 0; i < VALID_COMMANDS_SIZE && !resultFound; i++) {
-                for (int j = 0; j < maxStrings && !resultFound; j++) {
-                    if (LevenshteinDistance.getLevenshteinDistance(matchStrings.get(j), VALID_COMMANDS[i]) < (VALID_COMMANDS[i].length() / 3)) {
-                        Log.d("response", "found LevenshteinDistance, original:" + matchStrings.get(j) + "****: ");
-                        Log.d("response", "found LevenshteinDistance, VALID_COMMANDS:" + VALID_COMMANDS[i] + "****: ");
-                        resultFound = true;
-                        //response = getResponse(i);
-                    }
-                }
-            }
-            if (!resultFound)
-                Log.d("response", "****" + response + "****: ");
-
-
-        }
     }
 
     private boolean screenState = true;
@@ -840,7 +617,6 @@ public class Launch2Activity extends FragmentActivity implements
             }
         }
     }
-
 
     public VideoManager getVideoManager() {
         return videoManager;

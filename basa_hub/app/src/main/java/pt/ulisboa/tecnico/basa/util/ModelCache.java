@@ -17,10 +17,14 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.TemperatureAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TimeTrigger;
 
 public class ModelCache<T> {
 
@@ -77,6 +81,10 @@ public class ModelCache<T> {
                 .registerSubtype(LocationTrigger.class)
                 .registerSubtype(SpeechTrigger.class)
                 .registerSubtype(LightSensorTrigger.class)
+                .registerSubtype(MotionSensorTrigger.class)
+                .registerSubtype(SpeechAction.class)
+                .registerSubtype(TimeTrigger.class)
+                .registerSubtype(TemperatureAction.class)
                 .registerSubtype(TemperatureTrigger.class);
 
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();

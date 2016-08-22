@@ -38,7 +38,7 @@ public class TemperatureAction extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    final int choiceNum = (int) choice;
+                    final int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
 
                     new DialogEditText(ctx, "Set temperature", "temperature:", new DialogEditText.TextSelected() {
                         @Override

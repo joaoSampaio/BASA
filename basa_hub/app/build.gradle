@@ -63,6 +63,10 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.github.devlight.navigationtabbar:navigationtabbar:1.2.4'
+
+//    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+    compile 'net.danlew:android.joda:2.9.4.1'
 }
 
 

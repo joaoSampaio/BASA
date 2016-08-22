@@ -38,7 +38,7 @@ public class Global {
 
 
     public static final String OFFLINE_DEVICE_CONFIG = "OFFLINE_DEVICE_CONFIG";
-    public static final String OFFLINE_RECIPES = "OFFLINE_RECIPES7";
+    public static final String OFFLINE_RECIPES = "OFFLINE_RECIPES8";
     public static final String OFFLINE_WEATHER = "OFFLINE_WEATHER";
     public static final String OFFLINE_TEMPERATURE_OUTPUT = "OFFLINE_TEMPERATURE_OUTPUT";
     public static final String OFFLINE_IP_TEMPERATURE = "OFFLINE_IP_TEMPERATURE";
@@ -50,5 +50,15 @@ public class Global {
 
     public static final int COLOR_HEAT = Color.parseColor("#F57F17");
     public static final int COLOR_COLD = Color.parseColor("#ff33b5e5");
+
+
+
+
+
+
+    public final static int DIALOG_PICK_TIME = 0;
+
+
+
 
 }

@@ -45,8 +45,14 @@
             android:layout_height="wrap_content"
             android:text="Multiple"
             android:id="@+id/checkMultiple"
-            android:textColor="@color/white"
             android:textSize="18sp"
+            android:theme="@style/MyCheckBox"
+            android:visibility="gone" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
             android:visibility="gone" />
     </LinearLayout>
 

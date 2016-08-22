@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.app.Dialog;

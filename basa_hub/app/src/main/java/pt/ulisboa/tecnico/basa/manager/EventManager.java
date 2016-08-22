@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.basa.manager;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TimeTrigger;
 import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
 
 public class EventManager {
@@ -36,13 +39,14 @@ public class EventManager {
     private Handler handler;
     private final static int PERIOD = 2000;
     private Runnable run;
+    private List<Runnable> timerRunnable;
     private EventHistoryFragment.UpdateHistory updateHistory;
 
 
     public EventManager(BasaManager basaManager) {
         interests = new ArrayList<>();
         recipes = new ArrayList<>();
-
+        this.timerRunnable = new ArrayList<>();
         this.basaManager = basaManager;
         this.handler = new Handler();
         this.run = new Runnable() {
@@ -97,19 +101,19 @@ public class EventManager {
                 break;
 
             case Event.USER_LOCATION:
-                Log.d("USER_LOCATION","USER_LOCATION");
+                Log.d("TRIGGER_USER_LOCATION","TRIGGER_USER_LOCATION");
                 if (event instanceof EventUserLocation) {
-                    Log.d("USER_LOCATION","instanceof");
+                    Log.d("TRIGGER_USER_LOCATION","instanceof");
                     EventUserLocation location = (EventUserLocation) event;
                     User user = AppController.getInstance().getBasaManager().getUserManager().getUser(location.getUserId());
                     String name = user != null ? user.getName() : "unknown";
                     if (location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()) {
                         result = "User " + name + " arrived in building";
-                        Log.d("USER_LOCATION","User " + name + " arrived in building");
+                        Log.d("TRIGGER_USER_LOCATION","User " + name + " arrived in building");
                     }
                     if (location.getLocation() == EventUserLocation.TYPE_BUILDING && !location.isInBuilding()) {
                         result = "User " + name + " left the building";
-                        Log.d("USER_LOCATION","User " + name + " left the building");
+                        Log.d("TRIGGER_USER_LOCATION","User " + name + " left the building");
                     }
 
                     if (location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()) {
@@ -175,10 +179,10 @@ public class EventManager {
                 result = "OCCUPANT_DETECTED->" + ((EventOccupantDetected)event).isDetected();
                 break;
             case Event.TEMPERATURE:
-                result = "TEMPERATURE->" + ((EventTemperature)event).getTemperature();
+                result = "TRIGGER_TEMPERATURE->" + ((EventTemperature)event).getTemperature();
                 break;
             case Event.SPEECH:
-                result = "SPEECH->" + ((EventSpeech)event).getVoice();
+                result = "TRIGGER_SPEECH->" + ((EventSpeech)event).getVoice();
                 break;
             case Event.CUSTOM_SWITCH:
                 result = "CUSTOM_SWITCH Pressed->" + ((EventCustomSwitchPressed)event).getId();
@@ -193,11 +197,11 @@ public class EventManager {
                 result = "LIGHT ->" + ((EventLightSwitch)event).getLightNum() + " is " + ((EventLightSwitch)event).isStatus();
                 break;
             case Event.CHANGE_TEMPERATURE:
-                result = "CHANGE_TEMPERATURE  target->" + ((EventChangeTemperature)event).getTargetTemperature() ;
+                result = "ACTION_CHANGE_TEMPERATURE  target->" + ((EventChangeTemperature)event).getTargetTemperature() ;
                 break;
 
             case Event.USER_LOCATION:
-                result = "USER_LOCATION -> isInBuilding:" + ((EventUserLocation)event).isInBuilding() + " getLocation:" + ((EventUserLocation)event).getLocation();
+                result = "TRIGGER_USER_LOCATION -> isInBuilding:" + ((EventUserLocation)event).isInBuilding() + " getLocation:" + ((EventUserLocation)event).getLocation();
                 break;
         }
 
@@ -206,6 +210,7 @@ public class EventManager {
 
     public void reloadSavedRecipes(){
         recipes.clear();
+        clearTimerRunnable();
         initSavedRecipes();
     }
 
@@ -222,7 +227,7 @@ public class EventManager {
             final Recipe recipeFinal = re;
             for (final TriggerAction trigger : re.getTriggers()) {
                 switch (trigger.getTriggerActionId()) {
-                    case TriggerAction.USER_LOCATION:
+                    case TriggerAction.TRIGGER_USER_LOCATION:
                         registerInterestRecipe(new InterestEventAssociation(Event.USER_LOCATION, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
@@ -301,7 +306,7 @@ public class EventManager {
                         }, 0));
                         break;
 
-                    case TriggerAction.SPEECH:
+                    case TriggerAction.TRIGGER_SPEECH:
                         registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
@@ -319,7 +324,7 @@ public class EventManager {
                             }
                         }, 0));
                         break;
-                    case TriggerAction.LIGHT_SENSOR:
+                    case TriggerAction.TRIGGER_LIGHT_SENSOR:
                         registerInterestRecipe(new InterestEventAssociation(Event.BRIGHTNESS, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
@@ -343,12 +348,64 @@ public class EventManager {
                         }, 0));
 
                         break;
-                    case TriggerAction.TEMPERATURE:
+                    case TriggerAction.TRIGGER_TEMPERATURE:
 
                         break;
-//                case Trigger.TEMPERATURE:
+
+                    case TriggerAction.TRIGGER_MOTION_SENSOR:
+
+                        registerInterestRecipe(new InterestEventAssociation(Event.OCCUPANT_DETECTED, new EventManager.RegisterInterestEvent() {
+                            @Override
+                            public void onRegisteredEventTriggered(Event event) {
+                                if (event instanceof EventOccupantDetected) {
+                                    EventOccupantDetected motion = (EventOccupantDetected)event;
+                                    if(motion.isDetected() && trigger.getParametersInt(0) == MotionSensorTrigger.MOVEMENT){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    } else if(!motion.isDetected() && trigger.getParametersInt(0) == MotionSensorTrigger.NO_MOVEMENT
+                                            && trigger.getParametersInt(1) <= motion.getSecondsNoMovement()){
+
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+
+                                    }
+
+
+
+                                }
+                            }
+                        }, 0));
+
+                        break;
+
+                    case TriggerAction.TRIGGER_TIME:
+
+
+
+                        List<Long> timesToRun = ((TimeTrigger)trigger).getTimerDate();
+
+                        Log.d("time", "Eventmanager SystemClock.uptimeMillis():" + SystemClock.uptimeMillis());
+                        Log.d("time", "Eventmanager TriggerAction.TRIGGER_TIME:" + timesToRun.get(0));
+
+                        for (Long time : timesToRun){
+//                            LocalDateTime today = LocalDateTime.now();
+                            long timeShift = time - System.currentTimeMillis();
+                            Log.d("time", "Eventmanager timeShift:" + timeShift);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                        doAction(recipeFinal);
+                                    handler.postDelayed(this, 7*24*60*60*1000);
+                                }
+                            },timeShift);
+                        }
+
+                        break;
+
+//                case Trigger.TRIGGER_TEMPERATURE:
 //
-//                    registerInterestRecipe(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
+//                    registerInterestRecipe(new InterestEventAssociation(Event.TRIGGER_TEMPERATURE, new EventManager.RegisterInterestEvent() {
 //                        @Override
 //                        public void onRegisteredEventTriggered(Event event) {
 //                            if (event instanceof EventTemperature) {
@@ -391,9 +448,9 @@ public class EventManager {
 //                        }
 //                    }, 0));
 //                    break;
-//                case Trigger.SPEECH:
-//                    Log.d("initSavedValues", "SPEECH ");
-//                    registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new RegisterInterestEvent() {
+//                case Trigger.TRIGGER_SPEECH:
+//                    Log.d("initSavedValues", "TRIGGER_SPEECH ");
+//                    registerInterestRecipe(new InterestEventAssociation(Event.TRIGGER_SPEECH, new RegisterInterestEvent() {
 //                        @Override
 //                        public void onRegisteredEventTriggered(Event event) {
 //                            if (event instanceof EventSpeech) {
@@ -403,7 +460,7 @@ public class EventManager {
 //                                //se for o switch pretendido
 //                                for (String voice : voices) {
 //                                    if (recipeFinal.getConditionTriggerValue().equals(voice)) {
-//                                        Log.d("voice", "SPEECH: correct voice ");
+//                                        Log.d("voice", "TRIGGER_SPEECH: correct voice ");
 //                                        doAction(recipeFinal);
 //                                    }
 //                                }
@@ -428,10 +485,10 @@ public class EventManager {
         for (TriggerAction action : re.getActions()) {
             switch (action.getTriggerActionId()) {
 
-                case TriggerAction.TEMPERATURE:
+                case TriggerAction.TRIGGER_TEMPERATURE:
 
                     break;
-                case TriggerAction.LIGHT_ON:
+                case TriggerAction.ACTION_LIGHT_ON:
 
                     if(action.getParametersInt(0) == LightOnAction.LIGHT_ON){
                         for(int i=1; i< action.getParameters().size(); i++){
@@ -451,12 +508,12 @@ public class EventManager {
 //                }
 
                     break;
-                case TriggerAction.TALK:
+                case TriggerAction.ACTION_TALK:
                     String msg = action.getParameters().get(1);
                     getBasaManager().getTextToSpeechManager().speak(msg);
                     break;
 
-                case TriggerAction.CHANGE_TEMPERATURE:
+                case TriggerAction.ACTION_CHANGE_TEMPERATURE:
                     int value = action.getParametersInt(1);
                     getBasaManager().getTemperatureManager().changeTargetTemperature(value);
                     break;
@@ -469,7 +526,7 @@ public class EventManager {
 //                }
 //                break;
 
-//            case TriggerAction.SPEECH:
+//            case TriggerAction.TRIGGER_SPEECH:
 //
 //                String say = re.getConditionEventValue();
 //                getBasaManager().getTextToSpeechManager().speak(say);
@@ -487,8 +544,14 @@ public class EventManager {
     public void stop(){
         Log.d("EVENT", "EventManager stop ");
         handler.removeCallbacks(run);
+        clearTimerRunnable();
         interests.clear();
         recipes.clear();
+    }
+
+    private void clearTimerRunnable(){
+        for (Runnable r : timerRunnable)
+            handler.removeCallbacks(r);
     }
 
     public BasaManager getBasaManager() {
@@ -508,7 +571,7 @@ public class EventManager {
 
     public boolean isTriggerActive(TriggerAction trigger){
         switch (trigger.getTriggerActionId()) {
-            case TriggerAction.USER_LOCATION:
+            case TriggerAction.TRIGGER_USER_LOCATION:
 
                 if ( trigger.getParametersInt(0) == LocationTrigger.INSIDE_BUILDING) {
                     return (AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding() > 0);
@@ -538,7 +601,7 @@ public class EventManager {
 
                 break;
 
-            case TriggerAction.LIGHT_SENSOR:
+            case TriggerAction.TRIGGER_LIGHT_SENSOR:
 
                 int brightness = AppController.getInstance().getBasaManager().getBasaSensorManager().getCurrentLightLvl();
 
@@ -553,7 +616,24 @@ public class EventManager {
                 }
 
                 break;
-            case TriggerAction.TEMPERATURE:
+
+
+            case TriggerAction.TRIGGER_MOTION_SENSOR:
+
+                boolean detected = getBasaManager().getBasaSensorManager().isLatestMotionReading();
+                int secondsNoMovement = getBasaManager().getBasaSensorManager().getTimeSinceLastMovement();
+
+                if(detected && trigger.getParametersInt(0) == MotionSensorTrigger.MOVEMENT){
+                    return true;
+                } else if(!detected && trigger.getParametersInt(0) == MotionSensorTrigger.NO_MOVEMENT
+                        && trigger.getParametersInt(1) <= secondsNoMovement){
+                    return true;
+                }
+
+                break;
+
+
+            case TriggerAction.TRIGGER_TEMPERATURE:
 
                 break;
         }

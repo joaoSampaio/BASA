@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,9 +8,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,7 +35,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     private View rootView;
     private RecyclerView mRecyclerView;
     private TriggerDetailsAdapter mAdapter;
-    private TextView textViewDescription;
+    private TextView textViewDescription, textViewParameterTitle;
     private View layout_header;
     private LinkedHashMap<String, Object> data;
     private TriggerAction triggerAction;
@@ -42,6 +44,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
     private Toolbar toolbar;
     private LinearLayout layoutCustom;
     private int type = 0;
+    private Button action_delete;
 
 
     public IFTTTTriggerDetailsFragment() {
@@ -111,7 +114,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
         toolbar.setBackgroundColor(triggerAction.getColor());
         toolbar.setTitleTextColor(Color.WHITE);
         textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
-
+        textViewParameterTitle = (TextView)rootView.findViewById(R.id.textViewParameterTitle);
         layout_header = rootView.findViewById(R.id.layout_header);
         layout_header.setBackgroundColor(triggerAction.getColor());
         layoutCustom  = (LinearLayout)rootView.findViewById(R.id.layoutCustom);
@@ -122,6 +125,25 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
                 .fitCenter()
                 .into(imageViewDetail);
 
+        action_delete = (Button)rootView.findViewById(R.id.action_delete);
+
+        textViewDescription.setText(triggerAction.getDescription());
+
+        if(!triggerAction.getParameters().isEmpty()){
+
+            action_delete.setVisibility(View.VISIBLE);
+            textViewParameterTitle.setVisibility(View.VISIBLE);
+            textViewParameterTitle.setText(Html.fromHtml("<h2><b>Current trigger: </b></h2><br>" + triggerAction.getParameterTitle()));
+//            textViewParameterTitle.setText(triggerAction.getParameterTitle());
+            action_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getTriggerOrActionSelected().onTriggerActionDelete( triggerAction);
+                    getDialog().dismiss();
+                }
+            });
+
+        }
 
         if(data == null)
             data = new LinkedHashMap<>();
@@ -134,7 +156,7 @@ public class IFTTTTriggerDetailsFragment extends DialogFragment {
         mAdapter = new TriggerDetailsAdapter(getActivity(), data, triggerAction, new TriggerActionParameterSelected() {
             @Override
             public void onTriggerOrActionParameterSelected(List<String> parameter) {
-
+                triggerAction.getParameters().clear();
                 triggerAction.getParameters().addAll(parameter);
                 if(getTriggerOrActionSelected() != null) {
                     if(getType() == TriggerAction.TRIGGER)

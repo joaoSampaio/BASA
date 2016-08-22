@@ -14,22 +14,22 @@ import pt.ulisboa.tecnico.basa.util.TriggerActionParameterSelected;
 
 public abstract class TriggerAction {
 
-    public final static int TEMPERATURE = 0;
-    public final static int LIGHT_ON = 1;
-    public final static int SPEECH = 2;
+    public final static int TRIGGER_TEMPERATURE = 0;
+    public final static int ACTION_LIGHT_ON = 1;
+    public final static int TRIGGER_SPEECH = 2;
     public final static int EMAIL = 3;
 
     public final static int CLAP = 100;
     public final static int SWITCH = 102;
-    public final static int USER_LOCATION = 106;
-    public final static int TALK = 107;
+    public final static int TRIGGER_USER_LOCATION = 106;
+    public final static int ACTION_TALK = 107;
 
-    public final static int LIGHT_SENSOR = 108;
-    public final static int MOTION_SENSOR = 109;
+    public final static int TRIGGER_LIGHT_SENSOR = 108;
+    public final static int TRIGGER_MOTION_SENSOR = 109;
 
 
-    public final static int CHANGE_TEMPERATURE = 110;
-
+    public final static int ACTION_CHANGE_TEMPERATURE = 110;
+    public final static int TRIGGER_TIME = 111;
 
 
     public static final int TRIGGER = 0;
@@ -45,6 +45,7 @@ public abstract class TriggerAction {
     private int resId;
     private LinkedHashMap<String, Object> alternatives;
     private List<String> parameters;
+    private String description;
 
 
 
@@ -83,16 +84,16 @@ public abstract class TriggerAction {
         int resId = -1;
         switch (triggerId){
 
-            case TEMPERATURE:
+            case TRIGGER_TEMPERATURE:
                 resId = R.drawable.ic_temperature_trigger;
                 break;
-            case TriggerAction.LIGHT_ON:
+            case TriggerAction.ACTION_LIGHT_ON:
                 resId = R.drawable.ic_light_on;
                 break;
-            case TriggerAction.SPEECH:
+            case TriggerAction.TRIGGER_SPEECH:
                 resId = R.drawable.ic_speech;
                 break;
-            case TriggerAction.TALK:
+            case TriggerAction.ACTION_TALK:
                 resId = R.drawable.ic_talk;
                 break;
             case TriggerAction.EMAIL:
@@ -104,17 +105,21 @@ public abstract class TriggerAction {
             case SWITCH:
                 resId = R.drawable.ic_switch_on;
                 break;
-            case USER_LOCATION:
+            case TRIGGER_USER_LOCATION:
                 resId = R.drawable.ic_user_location;
                 break;
-            case LIGHT_SENSOR:
+            case TRIGGER_LIGHT_SENSOR:
                 resId = R.drawable.ic_brightness;
                 break;
-            case MOTION_SENSOR:
+            case TRIGGER_MOTION_SENSOR:
                 resId = R.drawable.ic_motion2;
                 break;
-            case CHANGE_TEMPERATURE:
+            case ACTION_CHANGE_TEMPERATURE:
                 resId = R.drawable.ic_temperature_trigger;
+                break;
+
+            case TRIGGER_TIME:
+                resId = R.drawable.ic_time_trigger;
                 break;
 
 
@@ -126,16 +131,16 @@ public abstract class TriggerAction {
         int resId = -1;
         switch (triggerId){
 
-            case TEMPERATURE:
-                resId = R.drawable.ic_temperature_trigger;
+            case TRIGGER_TEMPERATURE:
+                resId = R.drawable.ic_temperature_trigger_inv;
                 break;
-            case TriggerAction.LIGHT_ON:
+            case TriggerAction.ACTION_LIGHT_ON:
                 resId = R.drawable.ic_light_on;
                 break;
-            case TriggerAction.SPEECH:
+            case TriggerAction.TRIGGER_SPEECH:
                 resId = R.drawable.ic_speech;
                 break;
-            case TriggerAction.TALK:
+            case TriggerAction.ACTION_TALK:
                 resId = R.drawable.ic_talk;
                 break;
             case TriggerAction.EMAIL:
@@ -147,17 +152,20 @@ public abstract class TriggerAction {
             case SWITCH:
                 resId = R.drawable.ic_switch_on;
                 break;
-            case USER_LOCATION:
+            case TRIGGER_USER_LOCATION:
                 resId = R.drawable.ic_user_location;
                 break;
-            case LIGHT_SENSOR:
+            case TRIGGER_LIGHT_SENSOR:
                 resId = R.drawable.ic_brightness_inv;
                 break;
-            case MOTION_SENSOR:
+            case TRIGGER_MOTION_SENSOR:
                 resId = R.drawable.ic_motion_inv;
                 break;
-            case CHANGE_TEMPERATURE:
-                resId = R.drawable.ic_temperature_trigger;
+            case ACTION_CHANGE_TEMPERATURE:
+                resId = R.drawable.ic_temperature_trigger_inv;
+                break;
+            case TRIGGER_TIME:
+                resId = R.drawable.ic_time_trigger;
                 break;
 
         }
@@ -167,16 +175,16 @@ public abstract class TriggerAction {
     public static String getTitle(int triggerId) {
         String msg = "";
         switch (triggerId){
-            case TriggerAction.TEMPERATURE:
+            case TriggerAction.TRIGGER_TEMPERATURE:
                 msg = "Temperature";
                 break;
-            case TriggerAction.LIGHT_ON:
+            case TriggerAction.ACTION_LIGHT_ON:
                 msg = "Turn Light";
                 break;
-            case TriggerAction.SPEECH:
+            case TriggerAction.TRIGGER_SPEECH:
                 msg = "Speech";
                 break;
-            case TALK:
+            case ACTION_TALK:
                 msg = "Say";
                 break;
             case SWITCH:
@@ -185,17 +193,20 @@ public abstract class TriggerAction {
             case EMAIL:
                 msg = "Email";
                 break;
-            case USER_LOCATION:
+            case TRIGGER_USER_LOCATION:
                 msg = "Location";
                 break;
-            case LIGHT_SENSOR:
+            case TRIGGER_LIGHT_SENSOR:
                 msg = "Light lvl";
                 break;
-            case MOTION_SENSOR:
+            case TRIGGER_MOTION_SENSOR:
                 msg = "Motion sensor";
                 break;
-            case CHANGE_TEMPERATURE:
+            case ACTION_CHANGE_TEMPERATURE:
                 msg = "Change Temperature";
+                break;
+            case TRIGGER_TIME:
+                msg = "Date time";
                 break;
 
 
@@ -220,7 +231,7 @@ public abstract class TriggerAction {
     }
 
     public int getResId() {
-        return resId;
+        return getResId(triggerActionId);
     }
 
     public void setResId(int resId) {
@@ -247,6 +258,15 @@ public abstract class TriggerAction {
     public void setParameters(List<String> parameters) {
         this.parameters = parameters;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }
 
 

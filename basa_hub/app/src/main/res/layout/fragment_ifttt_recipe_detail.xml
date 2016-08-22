@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:elevation="5dp">
+
+    <include
+        layout="@layout/layout_topbar_dialog"
+        android:id="@+id/topbar"></include>
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2"
+        android:layout_below="@+id/topbar" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <android.support.percent.PercentRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relativeLayout222"
+                android:clipChildren="false"
+                android:background="@color/material_grey_300"
+                android:padding="15dp">
+
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_view"
+                    android:layout_gravity="center"
+                    app:layout_widthPercent="70%"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="15dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <android.support.percent.PercentRelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/upper">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_widthPercent="50%"
+                                android:id="@+id/layoutFirst"
+                                android:background="#df0000"
+                                android:orientation="vertical"
+                                android:paddingBottom="15dp"
+                                android:paddingRight="15dp"
+                                android:paddingLeft="15dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="if"
+                                    android:id="@+id/textView21"
+                                    android:layout_gravity="center_horizontal"
+                                    style="@style/IFTTT_layout"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="10dp" />
+
+                                <android.support.percent.PercentRelativeLayout android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal">
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:id="@+id/imageTrigger"
+                                        android:layout_centerHorizontal="true"
+                                        android:src="@drawable/ic_temperature_trigger"
+                                        app:layout_widthPercent="50%"
+                                        app:layout_aspectRatio="100%" />
+                                </android.support.percent.PercentRelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                app:layout_widthPercent="50%"
+                                android:layout_toRightOf="@+id/layoutFirst"
+                                android:background="#0575ff"
+                                android:id="@+id/layoutSecond"
+                                android:orientation="vertical"
+                                android:paddingLeft="15dp"
+                                android:paddingRight="15dp"
+                                android:paddingBottom="15dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="then"
+                                    android:id="@+id/textView22"
+                                    android:layout_gravity="center_horizontal"
+                                    style="@style/IFTTT_layout"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="10dp" />
+
+                                <android.support.percent.PercentRelativeLayout android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal">
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:id="@+id/imageAction"
+                                        android:layout_centerHorizontal="true"
+                                        android:src="@drawable/ic_temperature_trigger"
+                                        app:layout_widthPercent="50%"
+                                        app:layout_aspectRatio="100%" />
+                                </android.support.percent.PercentRelativeLayout>
+
+
+
+                            </LinearLayout>
+
+                        </android.support.percent.PercentRelativeLayout>
+
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="If any new Google Calendar event, create Todolist task"
+                    android:id="@+id/textViewRecipe"
+                    android:layout_below="@+id/card_view"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="15dp"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:ellipsize="marquee"
+                    android:maxLines="2" />
+
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <android.support.percent.PercentRelativeLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+              >
+                <LinearLayout
+                    android:orientation="vertical"
+                    app:layout_widthPercent="70%"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/white">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:text="Edit"
+                        android:id="@+id/action_edit_recipe"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/default_blue_light"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:text="Delete"
+                        android:id="@+id/action_delete_recipe"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/design_textinput_error_color_light"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp" />
+
+                </LinearLayout>
+            </android.support.percent.PercentRelativeLayout>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </ScrollView>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" hjjjjjjjjj hj hj hjhjhjh jhjhjh jhjhjh,mm, fg fgf gfg ffg fg fgj hjhjhjhj hjh jhjhjhj"
+        android:id="@+id/textViewTriggerDescription"
+        android:paddingBottom="15dp"
+        android:background="@drawable/ic_bubble"
+        android:visibility="invisible"/>
+
+
+
+</RelativeLayout>

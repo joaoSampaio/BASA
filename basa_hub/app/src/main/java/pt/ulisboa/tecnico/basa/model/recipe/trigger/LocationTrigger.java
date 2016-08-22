@@ -38,8 +38,8 @@ public class LocationTrigger extends TriggerAction {
     public final static String ARRIVES_BUILDING_STRING = "User arrives at building";
     //////adicionar escolha de qual o utilizador se todos, se um especifico
 
-    public LocationTrigger(int triggerId) {
-        super(triggerId);
+    public LocationTrigger() {
+        super(TRIGGER_USER_LOCATION);
 
         LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put(ARRIVES_OFFICE_STRING, ARRIVES_OFFICE);
@@ -53,6 +53,10 @@ public class LocationTrigger extends TriggerAction {
         alt.put(NO_USER_IN_BUILDING_STRING, NO_USER_IN_BUILDING);
         alt.put(NO_USER_IN_OFFICE_STRING, NO_USER_IN_OFFICE);
         super.setAlternatives(alt);
+
+        super.setDescription("By using the mobile app the assistant knows when you are in the building or office.\n" +
+                "You can setup what happens when you are present or when you leave.\n" +
+                "For example when you arrive in the building, turn on the heating to make the office more comfortable. Or when you leave the office turn off all the lights and heating");
     }
 
 
@@ -63,7 +67,10 @@ public class LocationTrigger extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    int choiceNum = (int) choice;
+
+                    Log.d("LocationTrigger", "choice:" + choice);
+
+                    int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
                     List<String> param = new ArrayList<>();
                     param.add(choiceNum+"");
                     triggerActionParameterSelected.onTriggerOrActionParameterSelected(param);
@@ -116,6 +123,12 @@ public class LocationTrigger extends TriggerAction {
                     break;
                 case ARRIVES_BUILDING:
                     msg = ARRIVES_BUILDING_STRING;
+                    break;
+                case NO_USER_IN_BUILDING:
+                    msg = NO_USER_IN_BUILDING_STRING;
+                    break;
+                case NO_USER_IN_OFFICE:
+                    msg = NO_USER_IN_OFFICE_STRING;
                     break;
             }
         }

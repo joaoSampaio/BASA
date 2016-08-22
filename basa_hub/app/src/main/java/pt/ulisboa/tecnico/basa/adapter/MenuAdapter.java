@@ -50,7 +50,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ItemHolder>{
         Glide.with(context).load(data.get(position).getResId())
                 .thumbnail(0.5f)
                 .fitCenter()
-                .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImg);
 

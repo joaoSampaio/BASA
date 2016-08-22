@@ -15,6 +15,9 @@ import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
  */
 public class BasaManager {
 
+    private static BasaManager instance = null;
+    private boolean isStarted;
+
     private EventManager eventManager;
     private LightingManager lightingManager;
     private SpeechRecognizerManager speechRecognizerManager;
@@ -28,12 +31,26 @@ public class BasaManager {
     private VideoManager videoManager;
     private BasaSensorManager basaSensorManager;
 
-    public BasaManager() {
+    public static BasaManager getInstance(){
+        if(instance == null) {
+            instance = new BasaManager();
+            instance.setStarted(false);
+        }
+        return instance;
+    }
+
+
+    protected BasaManager() {
         Log.d("manager", "BasaManager new ");
 //        start();
     }
 
     public void start(){
+        if(isStarted()){
+            Log.e("manager", "Manager already started... ");
+            return;
+        }
+
         if(eventManager == null && lightingManager == null) {
             Log.d("manager", "BasaManager start ");
             this.eventManager = new EventManager(this);
@@ -53,7 +70,7 @@ public class BasaManager {
                 FirebaseHelper mHelperFire = new FirebaseHelper();
                 fireListenner = mHelperFire.getZoneDevicesListener();
             }
-
+            instance.setStarted(true);
         }
 
     }
@@ -113,7 +130,7 @@ public class BasaManager {
         this.temperatureManager = null;
         this.deviceDiscoveryManager = null;
         this.userManager = null;
-
+        instance.setStarted(false);
     }
 
     public BasaSensorManager getBasaSensorManager() {
@@ -158,5 +175,13 @@ public class BasaManager {
 
     public void setActivity(Launch2Activity activity) {
         this.activity = activity;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
     }
 }

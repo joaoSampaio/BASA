@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,6 +42,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     private IFTTTActiveRecipesFragment.NewRecipeCreated listener;
     private EditText editTextDescription, editTextShort;
     Recipe recipe;
+    private boolean isEdit = false;
 
     public AddNewIFTTTDialogFragment() {
         // Required empty public constructor
@@ -68,7 +70,8 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     }
 
     public void loadUI(){
-        recipe = new Recipe();
+        if(recipe == null)
+            recipe = new Recipe();
         containerSave = rootView.findViewById(R.id.containerSave);
         textViewTriggerDescription = (TextView)rootView.findViewById(R.id.textViewTriggerDescription);
         textViewRecipe = (TextView)rootView.findViewById(R.id.textViewRecipe);
@@ -99,6 +102,14 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
         editTextDescription = (EditText)rootView.findViewById(R.id.editTextDescription);
         action_trigger.setOnClickListener(this);
+
+
+        if(!recipe.getActions().isEmpty()){
+            isEdit = true;
+            textViewDescription.setText("Edit Recipe");
+            setUpEdit();
+
+        }
 
 
 
@@ -150,7 +161,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
         if(resId != -1) {
             Glide.with(this).load(resId)
-                    .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(action_trigger);
         }
@@ -160,7 +170,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
         int resId = TriggerAction.getResId(actionId);
         if(resId != -1) {
             Glide.with(this).load(resId)
-                    .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(action_event);
         }
@@ -171,14 +180,23 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
         switch (v.getId()){
 
             case R.id.action_trigger:
-                showSelectAndEventDialog(TriggerAction.TRIGGER);
+                showSelectAndEventDialog(TriggerAction.TRIGGER, recipe.getTriggers());
                 break;
             case R.id.action_event:
-                showSelectAndEventDialog(TriggerAction.TRIGGER_ACTION);
+                showSelectAndEventDialog(TriggerAction.TRIGGER_ACTION, recipe.getActions());
                 break;
 
             case R.id.action_save_recipe:
                 Log.d("json", "action_save_recipe:");
+
+
+                if(recipe.getActions().isEmpty() || recipe.getTriggers().isEmpty()){
+                    Toast.makeText(AppController.getAppContext(), "Trigger or action missing!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+
                 recipe.setActive(true);
                 Log.d("json", "recipe.setActive(true);:");
                 Log.d("json", "json:"+new Gson().toJson(recipe));
@@ -190,7 +208,20 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
                 if(recipes == null)
                     recipes = new ArrayList<>();
-                recipes.add(recipe);
+                if(!isEdit) {
+                    recipes.add(recipe);
+                }else{
+
+                    Recipe recipeSaved = Recipe.findRecipeById(recipes, recipe.getId());
+                    if(recipeSaved != null){
+
+                        recipeSaved.setTriggers(recipe.getTriggers());
+                        recipeSaved.setActions(recipe.getActions());
+
+                    }
+
+
+                }
                 Log.d("json", "recipes.add(recipe);:");
                 AppController.getInstance().saveCustomRecipes(recipes);
                 if(listener != null)
@@ -209,7 +240,7 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
         view.setOnClickListener(this);
     }
 
-    private void showSelectAndEventDialog(int type){
+    private void showSelectAndEventDialog(int type, List<TriggerAction> triggerActions){
         TriggerActionIFTTTDialogFragment newFragment = TriggerActionIFTTTDialogFragment.newInstance();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         String TAG = (type == TriggerAction.TRIGGER)? "select_trigger" : "select_action";
@@ -218,37 +249,49 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
             ft.remove(prev);
         }
         ft.addToBackStack(null);
+        newFragment.setTriggersActions(triggerActions);
         newFragment.setSelectedTriggerAction(new SelectedTriggerAction() {
             @Override
             public void onSelectedTriggers(List<TriggerAction> triggers) {
                 recipe.setTriggers(triggers);
+
+                if(!recipe.getTriggers().isEmpty() && !recipe.getActions().isEmpty())
+                    textViewRecipe.setText(recipe.getRecipeDescription());
                 if(!triggers.isEmpty()) {
                     setTrigger(triggers.get(0).getTriggerActionId());
                     textViewTriggerDescription.setText(recipe.getTriggersDescription());
-                    setClickListener(action_event);
-                    Glide.with(AddNewIFTTTDialogFragment.this)
-                            .load(R.drawable.ic_add_ta_active)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(action_event);
+                    action_event.setOnClickListener(AddNewIFTTTDialogFragment.this);
+                    if(recipe.getActions().isEmpty())
+                        Glide.with(AddNewIFTTTDialogFragment.this)
+                                .load(R.drawable.ic_add_ta_active)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(action_event);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Tooltip.applyToolTipPosition(action_trigger, textViewTriggerDescription);
                         }
                     },500);
+                }else{
+                    Glide.with(AddNewIFTTTDialogFragment.this)
+                            .load(R.drawable.ic_add_ta_active)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(action_trigger);
+                    editTextDescription.setText("");
 
                 }
-
-
             }
 
             @Override
             public void onSelectedActions(List<TriggerAction> actions) {
                 recipe.setActions(actions);
+
+                if(!recipe.getTriggers().isEmpty() && !recipe.getActions().isEmpty())
+                    textViewRecipe.setText(recipe.getRecipeDescription());
+
                 if(!actions.isEmpty()) {
                     setAction(actions.get(0).getTriggerActionId());
                     textViewTriggerDescription.setText(recipe.getActionsDescription());
-
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -258,17 +301,12 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                     },500);
 
 
-                    textViewRecipe.setText(recipe.getRecipeDescription());
-
-
                     if(recipe.getTriggers().size() > 1 || recipe.getActions().size() > 1){
                         editTextDescription.setVisibility(View.VISIBLE);
                     }else{
                         editTextDescription.setVisibility(View.GONE);
                     }
-
                     containerSave.setVisibility(View.VISIBLE);
-
                     action_save_recipe.setOnClickListener(AddNewIFTTTDialogFragment.this);
 
                 }
@@ -277,6 +315,24 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
         newFragment.setType(type);
         newFragment.show(ft, TAG);
+    }
+
+
+    private void setUpEdit(){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setTrigger(recipe.getTriggers().get(0).getTriggerActionId());
+                setAction(recipe.getActions().get(0).getTriggerActionId());
+            }
+        },100);
+
+        action_save_recipe.setText("Finish edit");
+        textViewRecipe.setText(recipe.getRecipeDescription());
+        containerSave.setVisibility(View.VISIBLE);
+        action_save_recipe.setOnClickListener(AddNewIFTTTDialogFragment.this);
+        action_event.setOnClickListener(AddNewIFTTTDialogFragment.this);
     }
 
 
@@ -291,16 +347,12 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     }
 
 
+    public Recipe getRecipe() {
+        return recipe;
+    }
 
+    public void setRecipe(Recipe recipe) {
 
-
-
-
-
-
-
-
-
-
-
+        this.recipe = recipe.createCopy();
+    }
 }

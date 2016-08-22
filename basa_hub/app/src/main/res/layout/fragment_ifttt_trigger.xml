@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/topbar"
         android:padding="15dp"
-        android:layout_above="@+id/relativeLayout2">
+        android:layout_above="@+id/layout_multiple">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
@@ -27,9 +27,9 @@
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout2"
+        android:id="@+id/layout_multiple"
         android:layout_alignParentBottom="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
 
 

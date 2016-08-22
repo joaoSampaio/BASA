@@ -13,6 +13,7 @@ public class GeneralMenuItem {
     public final static int SETTINGS_TEMP = 3;
     public final static int REGISTER = 4;
     public final static int HISTORY = 5;
+    public final static int STATISTICS = 6;
 
     private int id;
 
@@ -47,6 +48,9 @@ public class GeneralMenuItem {
             case HISTORY:
                 msg = "Event History";
                 break;
+            case STATISTICS:
+                msg = "Statistics";
+                break;
 
         }
         return msg;
@@ -77,6 +81,9 @@ public class GeneralMenuItem {
                 break;
             case HISTORY:
                 resid =  R.drawable.ic_history;
+                break;
+            case STATISTICS:
+                resid =  R.drawable.ic_chart;
                 break;
 
         }

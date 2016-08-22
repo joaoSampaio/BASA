@@ -44,7 +44,7 @@ public class UserManager implements Manager {
 
 
 
-//        interestLocation = new InterestEventAssociation(Event.USER_LOCATION, new EventManager.RegisterInterestEvent() {
+//        interestLocation = new InterestEventAssociation(Event.TRIGGER_USER_LOCATION, new EventManager.RegisterInterestEvent() {
 //            @Override
 //            public void onRegisteredEventTriggered(Event event) {
 //                if(event instanceof EventUserLocation){

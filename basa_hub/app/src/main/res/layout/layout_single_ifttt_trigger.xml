@@ -5,11 +5,12 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:paddingTop="15dp">
-     
-         <android.support.percent.PercentRelativeLayout
+
+    <!--app:layout_marginTopPercent="10%"-->
+
+    <android.support.percent.PercentRelativeLayout
              app:layout_widthPercent="65%"
              app:layout_aspectRatio="100%"
-             app:layout_marginTopPercent="10%"
              android:id="@+id/colorLayout"
              android:background="@drawable/circle"
              android:layout_centerHorizontal="true">

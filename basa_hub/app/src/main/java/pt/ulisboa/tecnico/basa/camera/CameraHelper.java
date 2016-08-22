@@ -24,8 +24,6 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.detection.IMotionDetection;
 import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.detection.RgbMotionDetection;
-import pt.ulisboa.tecnico.basa.model.event.Event;
-import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 
@@ -125,7 +123,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
                 }
             }
 
-//            Log.d("MyCameraApp", "best size.width: " + sizeCamera.width + " size.height: " + sizeCamera.height);
             parameters.setPictureSize(sizeCamera.width, sizeCamera.height);
         }
 
@@ -294,8 +291,10 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
 
 
                 }else{
-
                     detected(false);
+//                    AppController.getInstance().getBasaManager().getEventManager().addEvent(new );
+
+
                 }
                 if(!getBitmapMotionTransfer().isEmpty()) {
                     final Bitmap b = ImageProcessing.rgbToBitmap(img, width, height);
@@ -325,8 +324,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if(((Launch2Activity)getActivity()).getBasaManager().getEventManager() != null)
-                        getActivity().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(Event.OCCUPANT_DETECTED, isDetected));
+
+                AppController.getInstance().getBasaManager().getBasaSensorManager().setMotionSensorDetected(isDetected);
+
                 }
             });
 

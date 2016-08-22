@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.PreMadeRecipeAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 
 public class IFTTTPreMadeRecipesFragment extends Fragment {
@@ -98,12 +99,23 @@ public class IFTTTPreMadeRecipesFragment extends Fragment {
                     mAdapter.notifyDataSetChanged();
                     AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
                 }
-            });            mRecyclerView.setAdapter(mAdapter);
+            }, new ViewClicked() {
+                @Override
+                public void onClick(int position) {
+
+                }
+            });
+
+            mRecyclerView.setAdapter(mAdapter);
         }
         mAdapter.notifyDataSetChanged();
 
 
     }
+
+
+
+
 
     private void refreshAdapter(){
         List<Recipe> recipes = AppController.getInstance().getCustomRecipes();

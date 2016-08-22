@@ -40,7 +40,7 @@ public class SpeechAction extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    final int choiceNum = (int) choice;
+                    final int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
 
                     new DialogEditText(ctx, "Say ...", "text to be said:", new DialogEditText.TextSelected() {
                         @Override
@@ -82,14 +82,16 @@ public class SpeechAction extends TriggerAction {
         if(getParameters().size() > 0){
 
             int choice = getParametersInt(0);
+            String value = getParameters().get(1);
 
-            if(getParameters().size() > 1) {
-                msg += "\"";
-                for (int i = 1; i < getParameters().size(); i++) {
-                    msg += " " + (getParametersInt(i) + 1);
-                }
-                msg += "\"";
-            }
+            msg += " \"" + value + "\"";
+//            if(getParameters().size() > 1) {
+//                msg += "\"";
+//                for (int i = 1; i < getParameters().size(); i++) {
+//                    msg += " " + (getParametersInt(i) + 1);
+//                }
+//                msg += "\"";
+//            }
         }
 
         return msg;

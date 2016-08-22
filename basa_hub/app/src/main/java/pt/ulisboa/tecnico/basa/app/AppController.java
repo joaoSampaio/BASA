@@ -14,6 +14,8 @@ import com.estimote.sdk.eddystone.Eddystone;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,6 @@ import pt.ulisboa.tecnico.basa.model.EventHistory;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
-import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 
@@ -70,7 +71,7 @@ public class AppController extends Application {
         mInstance = this;
         AppController.context = getApplicationContext();
         EstimoteSDK.enableDebugLogging(true);
-
+        JodaTimeAndroid.init(this);
         registerKioskModeScreenOffReceiver();
         startKioskService();
     }
@@ -228,7 +229,7 @@ public class AppController extends Application {
 
         if(basaManager == null){
             Log.d("getBasaManager", "getBasaManager is null ");
-            basaManager = new BasaManager();
+            basaManager = BasaManager.getInstance();
 //            basaManager.start();
         }
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -17,7 +16,6 @@ import java.util.List;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.util.ColorHelper;
-import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTriggerAdapter.TriggerItemHolder>{
 
@@ -67,6 +65,14 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
             }
         });
 
+        holder.colorLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mListener.onMultiLongSelected(v, position);
+                return true;
+            }
+        });
+
     }
 
 
@@ -93,5 +99,6 @@ public class HorizontalTriggerAdapter extends RecyclerView.Adapter<HorizontalTri
 
     public interface MultiTriggerSelected{
         void onMultiSelected(View view, int position);
+        void onMultiLongSelected(View view, int position);
     }
 }

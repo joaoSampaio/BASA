@@ -22,12 +22,14 @@ public class SpeechTrigger extends TriggerAction {
     public final static int SPEECH_FULL = 0;
     public final static String SPEECH_FULL_STRING = "Voice command is";
 
-    public SpeechTrigger(int triggerId) {
-        super(triggerId);
+    public SpeechTrigger() {
+        super(TRIGGER_SPEECH);
 
         LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put(SPEECH_FULL_STRING, SPEECH_FULL);
         super.setAlternatives(alt);
+        super.setDescription("The speech trigger is a very fun trigger to play with. All you do is say the keyword \"my assistant\" and after the beep you say the command.\n" +
+                "This a very powerful trigger for example you say \"my assistant, YOUR_COMMAND \" and all the lights turn on and the assistant says good morning.");
     }
 
     @Override
@@ -37,7 +39,7 @@ public class SpeechTrigger extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    final int choiceNum = (int) choice;
+                    final int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
 
                     new DialogEditText(ctx, "Voice command", "command:", new DialogEditText.TextSelected() {
                         @Override

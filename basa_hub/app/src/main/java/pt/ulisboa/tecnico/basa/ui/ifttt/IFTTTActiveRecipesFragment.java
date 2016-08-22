@@ -1,8 +1,9 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,8 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.PreMadeRecipeAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.util.TaskCompleted;
+import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 
 public class IFTTTActiveRecipesFragment extends Fragment {
@@ -69,6 +72,11 @@ public class IFTTTActiveRecipesFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
                 AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
             }
+        }, new ViewClicked() {
+            @Override
+            public void onClick(int position) {
+                showRecipeDetails(position);
+            }
         });
         mRecyclerView.setAdapter(mAdapter);
         refreshAdapter();
@@ -76,7 +84,7 @@ public class IFTTTActiveRecipesFragment extends Fragment {
 
     private void refreshAdapter(){
         List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
-        if(recipes != null && recipes.size() > 0 && recipes.get(0) instanceof Recipe) {
+        if(recipes != null) {
             data.clear();
             Log.d("recipe", "recipes:"+recipes.size());
             data.addAll(recipes);
@@ -117,6 +125,27 @@ public class IFTTTActiveRecipesFragment extends Fragment {
         super.onDetach();
     }
 
+
+
+    private void showRecipeDetails(int position){
+        RecipeDetailsFragment newFragment = RecipeDetailsFragment.newInstance();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        String TAG = "RecipeDetailsFragment";
+        Fragment prev = getFragmentManager().findFragmentByTag(TAG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        newFragment.setRecipe(data.get(position));
+        newFragment.setTaskCompleted(new TaskCompleted() {
+            @Override
+            public void onTaskCompleted() {
+                refreshAdapter();
+            }
+        });
+        newFragment.show(ft, TAG);
+    }
 
 
 

@@ -21,7 +21,6 @@ import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
-import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
@@ -216,43 +215,6 @@ public class TemperatureManager {
             }
         }
     }
-
-
-    private void updateLocation(){
-
-        new GetTemperatureListService(new CallbackMultiple<WeatherForecast, String>() {
-            @Override
-            public void success(WeatherForecast forecast) {
-                Log.d("web", "Deu:");
-
-                HourlyForecast hourlyOld = null;
-                WeatherForecast old = WeatherForecast.load();
-                if(old != null)
-                    hourlyOld = old.getCurrent();
-                if(hourlyOld != null){
-
-                    forecast.getHourly_forecast().add(0, hourlyOld);
-                }
-
-                forecast.save();
-                if(forecast != null && forecast.getCurrent() != null){
-                    HourlyForecast hourlyForecast = forecast.getCurrent();
-
-                    if(hourlyForecast != null && getGlobalTemperatureForecast() != null){
-                        getGlobalTemperatureForecast().onChangeForecast(hourlyForecast.getTemp().getTemperature(), hourlyForecast.getIcon(), hourlyForecast.getCondition());
-                    }
-                }
-            }
-
-            @Override
-            public void failed(String error) {
-                Log.d("web", "Fail:");
-            }
-        }).execute();
-
-
-    }
-
 
 
     public void setLatestTemperature(Temperature latestTemperature) {

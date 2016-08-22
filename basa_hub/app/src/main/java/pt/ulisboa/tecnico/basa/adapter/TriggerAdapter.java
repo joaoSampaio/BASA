@@ -50,13 +50,12 @@ public class TriggerAdapter extends RecyclerView.Adapter<TriggerAdapter.TriggerI
         Glide.with(context).load(data.get(position).getResId())
                 .thumbnail(0.5f)
                 .fitCenter()
-                .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImg);
 
         ColorHelper.changeBackgroundColor(holder.colorLayout, data.get(position).getColor());
         holder.itemTitle.setText(data.get(position).getTitle());
-//        if(data.get(position).getTriggerActionId() == TriggerAction.USER_LOCATION){
+//        if(data.get(position).getTriggerActionId() == TriggerAction.TRIGGER_USER_LOCATION){
 //            holder.itemTitle.setText("Android Phone Call");
 //        }
 

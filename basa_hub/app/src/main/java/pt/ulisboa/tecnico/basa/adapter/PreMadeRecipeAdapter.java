@@ -21,6 +21,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
+import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdapter.RecipeItemHolder>{
 
@@ -28,12 +29,14 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
     private Context context;
     private Fragment fragmentContext;
     private UpdateRecipeList updateRecipeList;
+    private ViewClicked listener;
 
-    public PreMadeRecipeAdapter(Context context, List<Recipe> data, Fragment fragmentContext, UpdateRecipeList updateRecipeList) {
+    public PreMadeRecipeAdapter(Context context, List<Recipe> data, Fragment fragmentContext, UpdateRecipeList updateRecipeList, ViewClicked listener) {
         this.context = context;
         this.data = data;
         this.fragmentContext = fragmentContext;
         this.updateRecipeList = updateRecipeList;
+        this.listener = listener;
     }
 
 
@@ -86,6 +89,15 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
                 holder.colorTrigger.setBackgroundColor(color);
                 holder.colorAction.setBackgroundColor(color);
             }
+
+            holder.recipeContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(position);
+                }
+            });
+
+
         }
 
     }
@@ -107,7 +119,7 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
     public class RecipeItemHolder extends RecyclerView.ViewHolder{
         ImageView imageTrigger, imageAction;
         TextView textViewDescription;
-        View colorTrigger, colorAction;
+        View colorTrigger, colorAction, recipeContainer;
         Switch switchActive;
         int position;
 
@@ -120,7 +132,7 @@ public class PreMadeRecipeAdapter extends RecyclerView.Adapter<PreMadeRecipeAdap
             colorTrigger = itemView.findViewById(R.id.layoutFirst);
             colorAction = itemView.findViewById(R.id.layoutSecond);
             switchActive = (Switch)itemView.findViewById(R.id.switchActive);
-
+            recipeContainer = itemView.findViewById(R.id.card_view);
 
         }
 

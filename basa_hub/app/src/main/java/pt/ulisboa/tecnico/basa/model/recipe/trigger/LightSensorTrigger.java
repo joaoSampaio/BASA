@@ -27,13 +27,16 @@ public class LightSensorTrigger extends TriggerAction {
     private transient Handler handler;
     private transient Runnable run;
 
-    public LightSensorTrigger(int triggerId) {
-        super(triggerId);
+    public LightSensorTrigger() {
+        super(TRIGGER_LIGHT_SENSOR);
 
         LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put(LIGHT_ABOVE_STRING, LIGHT_ABOVE);
         alt.put(LIGHT_BELLOW_STRING, LIGHT_BELLOW);
         super.setAlternatives(alt);
+
+        super.setDescription("The light sensor allows you to trigger an action if the light level is bellow or above the value you specify.\n" +
+                "You can for example turn on the lights only when it is turning dark in the office, or turn them off if its too bright.");
     }
 
     @Override
@@ -43,7 +46,7 @@ public class LightSensorTrigger extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    final int choiceNum = (int) choice;
+                    final int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
 
                     new DialogEditText(ctx, "Select light level (lx)", "Light level:", new DialogEditText.TextSelected() {
                         @Override

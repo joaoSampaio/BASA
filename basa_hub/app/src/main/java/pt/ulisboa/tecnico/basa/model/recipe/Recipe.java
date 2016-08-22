@@ -1,7 +1,24 @@
 package pt.ulisboa.tecnico.basa.model.recipe;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
+import pt.ulisboa.tecnico.basa.model.recipe.action.TemperatureAction;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TimeTrigger;
+import pt.ulisboa.tecnico.basa.util.RuntimeTypeAdapterFactory;
 
 /**
  * Created by joaosampaio on 27-03-2016.
@@ -13,17 +30,19 @@ public class Recipe {
 
     private boolean active;
 
-    private String shortName;
+    private String id;
     private String description;
 
     public Recipe() {
         triggers = new ArrayList<>();
         actions = new ArrayList<>();
+        this.id = UUID.randomUUID().toString();
     }
 
     public Recipe(List<TriggerAction> triggers, List<TriggerAction> actions) {
         this.triggers = triggers;
         this.actions = actions;
+        this.id = UUID.randomUUID().toString();
     }
 
     public String getTriggersDescription(){
@@ -95,12 +114,12 @@ public class Recipe {
         this.active = active;
     }
 
-    public String getShortName() {
-        return shortName;
+    public String getId() {
+        return id;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -110,4 +129,40 @@ public class Recipe {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    public static Recipe findRecipeById(List<Recipe> recipes, String idRecipe){
+        for(Recipe recipe : recipes){
+            if(recipe.getId().equals(idRecipe))
+                return recipe;
+        }
+        return null;
+    }
+
+
+    public Recipe createCopy(){
+
+        Gson gson = new Gson();
+        String recipeString = gson.toJson(this);
+
+        RuntimeTypeAdapterFactory<TriggerAction> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+                .of(TriggerAction.class, "type")
+                .registerSubtype(LightOnAction.class)
+                .registerSubtype(LocationTrigger.class)
+                .registerSubtype(SpeechTrigger.class)
+                .registerSubtype(LightSensorTrigger.class)
+                .registerSubtype(MotionSensorTrigger.class)
+                .registerSubtype(SpeechAction.class)
+                .registerSubtype(TimeTrigger.class)
+                .registerSubtype(TemperatureAction.class)
+                .registerSubtype(TemperatureTrigger.class);
+
+        gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+
+
+        Type listType = new TypeToken<Recipe>(){}.getType();
+        Recipe copy = gson.fromJson(recipeString, listType);
+        return copy;
+    }
+
 }

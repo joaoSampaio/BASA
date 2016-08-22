@@ -10,4 +10,8 @@ public interface TriggerOrActionSelected {
     void onTriggerSelected(TriggerAction trigger);
 
     void onActionSelected(TriggerAction action);
+
+    void onTriggerActionDelete(TriggerAction trigger);
+
+//    void onActionDelete(TriggerAction action);
 }

@@ -18,10 +18,11 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.MenuAdapter;
 import pt.ulisboa.tecnico.basa.model.GeneralMenuItem;
+import pt.ulisboa.tecnico.basa.ui.ifttt.IFTTTMainFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
-import pt.ulisboa.tecnico.basa.ui.secondary.IFTTTMainFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.RegisterUserDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.SettingsTemperatureFragment;
+import pt.ulisboa.tecnico.basa.ui.secondary.StatisticsFragment;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
 //import android.support.v4.app.DialogFragment;
@@ -63,6 +64,7 @@ public class GeneralMenuFragment extends Fragment {
         data.add(new GeneralMenuItem(GeneralMenuItem.REGISTER));
         data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS));
         data.add(new GeneralMenuItem(GeneralMenuItem.INTRUDER));
+        data.add(new GeneralMenuItem(GeneralMenuItem.STATISTICS));
 
         mAdapter = new MenuAdapter(getActivity(), data, new ViewClicked() {
             @Override
@@ -98,6 +100,10 @@ public class GeneralMenuFragment extends Fragment {
                     case GeneralMenuItem.HISTORY:
                         newFragment = EventHistoryFragment.newInstance();
                         tag = "EventHistoryFragment";
+                        break;
+                    case GeneralMenuItem.STATISTICS:
+                        newFragment = StatisticsFragment.newInstance();
+                        tag = "StatisticsFragment";
                         break;
 
                 }

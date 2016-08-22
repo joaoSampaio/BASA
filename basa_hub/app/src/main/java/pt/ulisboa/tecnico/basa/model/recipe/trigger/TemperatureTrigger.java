@@ -22,13 +22,15 @@ public class TemperatureTrigger extends TriggerAction {
     public final static int TEMPERATURE_DROPS = 1;
 
 
-    public TemperatureTrigger(int triggerId) {
-        super(triggerId);
+    public TemperatureTrigger() {
+        super(TRIGGER_TEMPERATURE);
 
         LinkedHashMap<String, Object> alt = new LinkedHashMap<>();
         alt.put("Temperature rises above", TEMPERATURE_RISES);
         alt.put("Temperature drops below", TEMPERATURE_DROPS);
         super.setAlternatives(alt);
+        super.setDescription("This trigger allows you to trigger an action when the office temperature is bellow or above a value you choose.\n" +
+                "For example if the temperature is bellow 12ºC and you are present in the building then turn on the heating.");
     }
 
     @Override
@@ -38,7 +40,7 @@ public class TemperatureTrigger extends TriggerAction {
             public void onClick(View v) {
                 Object choice = v.getTag();
                 if(choice != null){
-                    final int choiceNum = (int) choice;
+                    final int choiceNum = (choice instanceof Double)? ((Double)choice).intValue() : (int) choice;
 
                     new DialogEditText(ctx, "Select temperature", "temperature:", new DialogEditText.TextSelected() {
                         @Override

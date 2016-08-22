@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.ui.secondary;
+package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -35,6 +35,7 @@ import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TimeTrigger;
 import pt.ulisboa.tecnico.basa.util.GridSpacingItemHorizontalDecoration;
 import pt.ulisboa.tecnico.basa.util.Tooltip;
 import pt.ulisboa.tecnico.basa.util.TriggerOrActionSelected;
@@ -45,7 +46,7 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
 
 
-    private View rootView, relativeLayout2;
+    private View rootView, layout_multiple;
     private RecyclerView mRecyclerView, listSelected;
     private TriggerAdapter mAdapter;
     private TextView textViewBubble;
@@ -87,8 +88,12 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     }
 
     public void loadUI(){
-        isSimpleTrigger = true;
-        triggersActions = new ArrayList<>();
+
+        if(getTriggersActions() == null)
+            triggersActions = new ArrayList<>();
+
+        isSimpleTrigger = triggersActions.isEmpty()? true : false;
+
         TextView textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
         textViewBubble = (TextView)rootView.findViewById(R.id.textViewBubble);
         textViewDescription.setOnClickListener(new View.OnClickListener() {
@@ -104,14 +109,15 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                 getDialog().dismiss();
             }
         });
-        relativeLayout2 = rootView.findViewById(R.id.relativeLayout2);
+        layout_multiple = rootView.findViewById(R.id.layout_multiple);
         checkMultiple = (CheckBox)rootView.findViewById(R.id.checkMultiple);
+        checkMultiple.setChecked(!isSimpleTrigger);
         checkMultiple.setVisibility(View.VISIBLE);
         checkMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isSimpleTrigger = !isChecked;
-                relativeLayout2.setVisibility(isSimpleTrigger? View.GONE : View.VISIBLE);
+                layout_multiple.setVisibility(isSimpleTrigger? View.GONE : View.VISIBLE);
 
 
 
@@ -124,10 +130,10 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
             public void onClick(View view) {
 
                 if(type == TriggerAction.TRIGGER) {
-                    getSelectedTriggerAction().onSelectedTriggers(triggersActions);
+                    getSelectedTriggerAction().onSelectedTriggers(getTriggersActions());
 
                 }else{
-                    getSelectedTriggerAction().onSelectedActions(triggersActions);
+                    getSelectedTriggerAction().onSelectedActions(getTriggersActions());
                 }
                 getDialog().dismiss();
 
@@ -155,21 +161,25 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
                 if(type == TriggerAction.TRIGGER) {
                     switch (triggerOrActionId) {
-                        case TriggerAction.USER_LOCATION:
-                            showTriggerDetails(new LocationTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                        case TriggerAction.TRIGGER_USER_LOCATION:
+                            showTriggerDetails(new LocationTrigger(), TriggerAction.TRIGGER);
                             break;
-                        case TriggerAction.TEMPERATURE:
-                            showTriggerDetails(new TemperatureTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                        case TriggerAction.TRIGGER_TEMPERATURE:
+                            showTriggerDetails(new TemperatureTrigger(), TriggerAction.TRIGGER);
                             break;
-                        case TriggerAction.SPEECH:
-                            showTriggerDetails(new SpeechTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                        case TriggerAction.TRIGGER_SPEECH:
+                            showTriggerDetails(new SpeechTrigger(), TriggerAction.TRIGGER);
                             break;
-                        case TriggerAction.LIGHT_SENSOR:
-                            showTriggerDetails(new LightSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                        case TriggerAction.TRIGGER_LIGHT_SENSOR:
+                            showTriggerDetails(new LightSensorTrigger(), TriggerAction.TRIGGER);
                             break;
-                        case TriggerAction.MOTION_SENSOR:
-                            showTriggerDetails(new MotionSensorTrigger(triggerOrActionId), TriggerAction.TRIGGER);
+                        case TriggerAction.TRIGGER_MOTION_SENSOR:
+                            showTriggerDetails(new MotionSensorTrigger(), TriggerAction.TRIGGER);
                             break;
+                        case TriggerAction.TRIGGER_TIME:
+                            showTriggerDetails(new TimeTrigger(), TriggerAction.TRIGGER);
+                            break;
+
                     }
 
                     return;
@@ -177,13 +187,13 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
                 if(type == TriggerAction.TRIGGER_ACTION) {
                     switch (triggerOrActionId) {
-                        case TriggerAction.LIGHT_ON:
+                        case TriggerAction.ACTION_LIGHT_ON:
                             showTriggerDetails(new LightOnAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
                             break;
-                        case TriggerAction.TALK:
+                        case TriggerAction.ACTION_TALK:
                             showTriggerDetails(new SpeechAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
                             break;
-                        case TriggerAction.CHANGE_TEMPERATURE:
+                        case TriggerAction.ACTION_CHANGE_TEMPERATURE:
                             showTriggerDetails(new TemperatureAction(triggerOrActionId), TriggerAction.TRIGGER_ACTION);
                             break;
 
@@ -194,32 +204,42 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
-
         listSelected = (RecyclerView) rootView.findViewById(R.id.listSelected);
-//        listSelected.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         listSelected.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
         listSelected.addItemDecoration(new GridSpacingItemHorizontalDecoration(1, 20, true));
 
-
-        mHorizontalAdapter = new HorizontalTriggerAdapter(getActivity(), triggersActions, new HorizontalTriggerAdapter.MultiTriggerSelected() {
+        mHorizontalAdapter = new HorizontalTriggerAdapter(getActivity(), getTriggersActions(), new HorizontalTriggerAdapter.MultiTriggerSelected() {
             @Override
-            public void onMultiSelected(final View v, int position) {
+            public void onMultiSelected(View v, int position) {
+                showTriggerDetails(getTriggersActions().get(position), type);
 
-                final String text = triggersActions.get(position).getParameterTitle();
+            }
+
+            @Override
+            public void onMultiLongSelected(final View view, int position) {
+                final String text = getTriggersActions().get(position).getParameterTitle();
+
+                if(!textViewBubble.isShown()){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            textViewBubble.setText(text);
+                            Tooltip.applyToolTipPosition(view, textViewBubble);
+                        }
+                    },100);
+                }
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         textViewBubble.setText(text);
-                        Tooltip.applyToolTipPosition(v, textViewBubble);
+                        Tooltip.applyToolTipPosition(view, textViewBubble);
                     }
                 },50);
-
             }
         });
         listSelected.setAdapter(mHorizontalAdapter);
-
-
+        layout_multiple.setVisibility(isSimpleTrigger? View.GONE : View.VISIBLE);
     }
 
 
@@ -237,11 +257,10 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         newFragment.setTriggerOrActionSelected(new TriggerOrActionSelected() {
             @Override
             public void onTriggerSelected(TriggerAction trigger) {
-                triggersActions.add(trigger);
+                if(!getTriggersActions().contains(trigger))
+                    getTriggersActions().add(trigger);
                 if(isSimpleTrigger) {
-                    getSelectedTriggerAction().onSelectedTriggers(triggersActions);
-
-//                    listener.onTriggerSelected(triggers.get(0).getEventId(), type, null);
+                    getSelectedTriggerAction().onSelectedTriggers(getTriggersActions());
                     getDialog().dismiss();
                 }else{
                     mHorizontalAdapter.notifyDataSetChanged();
@@ -251,15 +270,24 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
             @Override
             public void onActionSelected(TriggerAction action) {
-                triggersActions.add(action);
-                if(isSimpleTrigger) {
-                    getSelectedTriggerAction().onSelectedActions(triggersActions);
 
-//                    listener.onTriggerSelected(triggers.get(0).getEventId(), type, null);
+                if(!getTriggersActions().contains(action))
+                    getTriggersActions().add(action);
+                if(isSimpleTrigger) {
+                    getSelectedTriggerAction().onSelectedActions(getTriggersActions());
                     getDialog().dismiss();
                 }else{
                     mHorizontalAdapter.notifyDataSetChanged();
                 }
+            }
+
+            @Override
+            public void onTriggerActionDelete(TriggerAction trigger) {
+                getTriggersActions().remove(trigger);
+                if(textViewBubble.isShown()){
+                    textViewBubble.setVisibility(View.INVISIBLE);
+                }
+                mHorizontalAdapter.notifyDataSetChanged();
             }
         });
         newFragment.show(ft, TAG);
@@ -303,24 +331,24 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
     private void populateDataTrigger(){
         data = new ArrayList<>();
-        data.add(new LocationTrigger(TriggerAction.USER_LOCATION));
-        data.add(new SpeechTrigger(TriggerAction.SPEECH));
-        data.add(new TemperatureTrigger(TriggerAction.TEMPERATURE));
-        data.add(new LightSensorTrigger(TriggerAction.LIGHT_SENSOR));
-        data.add(new MotionSensorTrigger(TriggerAction.MOTION_SENSOR));
-
+        data.add(new LocationTrigger());
+        data.add(new SpeechTrigger());
+        data.add(new TemperatureTrigger());
+        data.add(new LightSensorTrigger());
+        data.add(new MotionSensorTrigger());
+        data.add(new TimeTrigger());
 
     }
 
     private void populateDataTriggerAction(){
         data = new ArrayList<>();
-        data.add(new LightOnAction(TriggerAction.LIGHT_ON));
-        data.add(new SpeechAction(TriggerAction.TALK));
-        data.add(new TemperatureAction(TriggerAction.CHANGE_TEMPERATURE));
+        data.add(new LightOnAction(TriggerAction.ACTION_LIGHT_ON));
+        data.add(new SpeechAction(TriggerAction.ACTION_TALK));
+        data.add(new TemperatureAction(TriggerAction.ACTION_CHANGE_TEMPERATURE));
 //        data.add(new TriggerAction(TriggerAction.LIGHT_OFF, "Light OFF", R.drawable.ic_light));
-//        data.add(new TriggerAction(TriggerAction.TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
+//        data.add(new TriggerAction(TriggerAction.TRIGGER_TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
 //        data.add(new TriggerAction(TriggerAction.EMAIL, "Send Email", R.drawable.ic_mail));
-//        data.add(new TriggerAction(TriggerAction.SPEECH, "Say", R.drawable.ic_talk));
+//        data.add(new TriggerAction(TriggerAction.TRIGGER_SPEECH, "Say", R.drawable.ic_talk));
     }
 
 
@@ -329,9 +357,14 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
     }
 
 
+    public List<TriggerAction> getTriggersActions() {
+        return triggersActions;
+    }
 
+    public void setTriggersActions(List<TriggerAction> triggersActions) {
 
-
+        this.triggersActions = new ArrayList<>(triggersActions);
+    }
 
     public List<String> getCustomSwitches(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
