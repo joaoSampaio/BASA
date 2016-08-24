@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.basa.BroadcastReceiver.OnScreenOffReceiver;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.backgroundServices.KioskService;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
+import pt.ulisboa.tecnico.basa.model.AllStatisticalData;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.EventHistory;
 import pt.ulisboa.tecnico.basa.model.event.Event;
@@ -54,6 +55,7 @@ public class AppController extends Application {
     public int timeScanPeriod;
 
     private BasaManager basaManager;
+    private AllStatisticalData statisticalData;
 
     private PowerManager.WakeLock wakeLock;
     private OnScreenOffReceiver onScreenOffReceiver;
@@ -264,6 +266,11 @@ public class AppController extends Application {
     }
 
 
+    public AllStatisticalData getStatisticalData(){
+        if(statisticalData == null)
+            statisticalData = AllStatisticalData.load();
+        return statisticalData;
+    }
 
 
 

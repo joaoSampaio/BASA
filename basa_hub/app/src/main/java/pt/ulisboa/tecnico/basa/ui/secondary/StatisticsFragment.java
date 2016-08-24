@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,11 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.StatisticalEvent;
 
 
 public class StatisticsFragment extends DialogFragment  {
@@ -36,7 +40,8 @@ public class StatisticsFragment extends DialogFragment  {
     private View rootView;
     private LineChart mChart;
     private Spinner spinner;
-
+    private List<StatisticalEvent> lightsData;
+    private long mappingLargestValue;
 
     public StatisticsFragment() {
         // Required empty public constructor
@@ -112,10 +117,6 @@ public class StatisticsFragment extends DialogFragment  {
             }
         });
 
-
-
-
-
         mChart = (LineChart) rootView.findViewById(R.id.chart1);
 
         // no description text
@@ -137,28 +138,33 @@ public class StatisticsFragment extends DialogFragment  {
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setViewPortOffsets(0f, 0f, 0f, 0f);
 
-//        // add data
-//        setData(100, 30);
-//
-//        mChart.invalidate();
 
         XAxis xAxis = mChart.getXAxis();
 //        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(10f);
         xAxis.setTextColor(Color.BLACK);
-        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(false);
         xAxis.setDrawLabels(true);
 //        xAxis.setTextColor(Color.rgb(255, 192, 56));
 //        xAxis.setCenterAxisLabels(true);
-        xAxis.setGranularity(60000L); // one minute in millis
+//        xAxis.setGranularity(1000L); // one minute in millis
+
         xAxis.setValueFormatter(new AxisValueFormatter() {
 
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM HH:mm");
+            private SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM HH:mm:ss");
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return mFormat.format(new Date((long) value));
+
+                if(lightsData != null && !lightsData.isEmpty()){
+                    Log.d("stats", " value:"+value);
+
+                    long real = (long)(mappingLargestValue - value)*1000 + lightsData.get(0).getX();
+                    return mFormat.format(new Date(real));
+                }
+                return "nao sei";
+//                return mFormat.format(new Date((long) value));
             }
 
             @Override
@@ -321,33 +327,49 @@ public class StatisticsFragment extends DialogFragment  {
 
     private void setDataLights() {
         mChart.clear();
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        lightsData =  AppController.getInstance().getStatisticalData().getLights();
+
+
         long now = System.currentTimeMillis();
         long hourMillis = 3600000L;
-        long minuteMillis = 60000L;
-        ArrayList<Entry> values = new ArrayList<Entry>();
+//        lightsData.add(new StatisticalEvent(now + 32*hourMillis, 2));
 
 
-        values.add(new Entry(now, 0));
-        values.add(new Entry(now + 1*hourMillis, 1));
-        values.add(new Entry(now + 2*hourMillis, 1));
-        values.add(new Entry(now + 3*hourMillis, 2));
-        values.add(new Entry(now + 4*hourMillis, 0));
-        values.add(new Entry(now + 5*hourMillis, 0));
+        long xValue, largestValue, shiftValue;
 
+//        if(!lightsData.isEmpty())
+//            values.add( new Entry((System.currentTimeMillis() - lightsData.get(0).getX())/1000, lightsData.get(lightsData.size()-1).getY()));
+
+        largestValue = (lightsData.get(lightsData.size()-1).getX()- lightsData.get(0).getX())/1000;
+        mappingLargestValue = largestValue;
+        for(StatisticalEvent stat : lightsData){
+            Log.d("stats", "original x:"+stat.getX() + " y:"+stat.getY());
+
+            xValue = (stat.getX() - lightsData.get(0).getX())/1000;
+            shiftValue = largestValue - xValue;
+            values.add(0, new Entry(shiftValue , stat.getY()));
+        }
+
+
+
+        for(Entry stat : values){
+            Log.d("stats", " x:"+stat.getX() + " y:"+stat.getY());
+        }
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "Lights");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(Color.YELLOW);
+        set1.setColor(Color.BLUE);
         set1.setValueTextColor(Color.BLACK);
         set1.setLineWidth(1.5f);
         set1.setDrawCircles(false);
         set1.setDrawValues(false);
         set1.setFillAlpha(65);
-        set1.setFillColor(Color.YELLOW);
+        set1.setFillColor(Color.BLUE);
         set1.setHighLightColor(Color.rgb(244, 117, 117));
         set1.setDrawCircleHole(false);
         set1.setMode(LineDataSet.Mode.STEPPED);
-
+//        set1.setDrawFilled(true);
         // create a data object with the datasets
         LineData data = new LineData(set1);
         data.setValueTextColor(Color.BLACK);
@@ -363,15 +385,16 @@ public class StatisticsFragment extends DialogFragment  {
         long now = System.currentTimeMillis();
         long hourMillis = 3600000L;
         long minuteMillis = 60000L;
+        long secondMillis = 1000L;
         ArrayList<Entry> values = new ArrayList<Entry>();
 
 
         values.add(new Entry(now, 0));
-        values.add(new Entry(now + 1*hourMillis, 1));
-        values.add(new Entry(now + 2*hourMillis, 1));
-        values.add(new Entry(now + 3*hourMillis, 2));
-        values.add(new Entry(now + 4*hourMillis, 0));
-        values.add(new Entry(now + 5*hourMillis, 0));
+        values.add(new Entry(now + 1*secondMillis, 1));
+        values.add(new Entry(now + 2*secondMillis, 1));
+        values.add(new Entry(now + 3*secondMillis, 2));
+        values.add(new Entry(now + 4*secondMillis, 0));
+        values.add(new Entry(now + 5*secondMillis, 0));
 
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "Nº Occupants");

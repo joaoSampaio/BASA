@@ -129,7 +129,9 @@ public class EventManager {
 
                 break;
             case Event.LIGHT:
-                result = "Light (" + ((EventLightSwitch)event).getLightNum() + ") is " + (((EventLightSwitch)event).isStatus()? "on" : "off");
+                result = "Light (" + ((EventLightSwitch)event).getLightNum() + ") is " + (((EventLightSwitch)event).isOn()? "on" : "off");
+                AppController.getInstance().getStatisticalData().addLightsEvent(((EventLightSwitch)event));
+
                 break;
             case Event.CHANGE_TEMPERATURE:
                 result = "Temperature set to " + ((EventChangeTemperature)event).getTargetTemperature() + " Cº" ;
@@ -194,7 +196,7 @@ public class EventManager {
                 result = "BRIGHTNESS ->";
                 break;
             case Event.LIGHT:
-                result = "LIGHT ->" + ((EventLightSwitch)event).getLightNum() + " is " + ((EventLightSwitch)event).isStatus();
+                result = "LIGHT ->" + ((EventLightSwitch)event).getLightNum() + " is " + ((EventLightSwitch)event).isOn();
                 break;
             case Event.CHANGE_TEMPERATURE:
                 result = "ACTION_CHANGE_TEMPERATURE  target->" + ((EventChangeTemperature)event).getTargetTemperature() ;

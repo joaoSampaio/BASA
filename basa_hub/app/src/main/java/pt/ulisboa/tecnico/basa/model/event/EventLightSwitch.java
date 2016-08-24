@@ -11,7 +11,7 @@ public class EventLightSwitch extends Event {
         this.status = status;
     }
 
-    public boolean isStatus() {
+    public boolean isOn() {
         return status;
     }
 

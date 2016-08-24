@@ -63,6 +63,14 @@ public class LightingManager implements
         return array;
     }
 
+    public int lightsOn(){
+        int count = 0;
+        for(Boolean on : lights)
+            if(on)
+                count++;
+
+        return count;
+    }
 
     public Boolean getLightState(int lightId){
         if(this.lights != null && lightId < this.lights.size()){
