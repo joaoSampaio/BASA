@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
@@ -28,11 +29,13 @@ public class BasaDevice {
     private List<String> beaconUuids;
     private List<String> macAddress;
     private boolean supportsFirebase;
+    private HashMap<String, String> liveVideos;
 
     public BasaDevice() {
         this.beaconUuids = new ArrayList<>();
         this.macAddress = new ArrayList<>();
         this.lights = new ArrayList<>();
+        this.liveVideos = new HashMap<>();
     }
 
     public BasaDevice(String url, String name, String description) {
@@ -124,6 +127,21 @@ public class BasaDevice {
         this.latestTemperature = latestTemperature;
     }
 
+    public boolean isSupportsFirebase() {
+        return supportsFirebase;
+    }
+
+    public void setSupportsFirebase(boolean supportsFirebase) {
+        this.supportsFirebase = supportsFirebase;
+    }
+
+    public HashMap<String, String> getLiveVideos() {
+        return liveVideos;
+    }
+
+    public void setLiveVideos(HashMap<String, String> liveVideos) {
+        this.liveVideos = liveVideos;
+    }
 
     public List<Boolean> getLights() {
         return lights;
@@ -163,10 +181,17 @@ public class BasaDevice {
                     return d;
 
             }
-
-
         } catch (Exception e) {
 
+        }
+        return null;
+    }
+
+    public static BasaDevice getDeviceById(String id){
+
+        for(BasaDevice d : AppController.getInstance().getCurrentZone().getDevices()){
+            if(d.getId().equals(id))
+                return d;
         }
         return null;
     }

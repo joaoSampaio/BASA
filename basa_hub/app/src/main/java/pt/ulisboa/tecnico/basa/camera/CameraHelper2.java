@@ -9,9 +9,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -19,10 +17,14 @@ import android.view.Display;
 import android.view.TextureView;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+
+import org.bytedeco.javacv.FFmpegFrameRecorder;
+import org.bytedeco.javacv.Frame;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,17 +35,33 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.detection.IMotionDetection;
 import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.detection.RgbMotionDetection;
-import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.BitmapMotionTransfer;
-import pt.ulisboa.tecnico.basa.util.StorageHelper;
 
 /**
  * Created by joaosampaio on 21-02-2016.
  */
-public class CameraHelper implements TextureView.SurfaceTextureListener, CameraBasa {
+public class CameraHelper2 implements TextureView.SurfaceTextureListener, CameraBasa {
 
-    public static final int VIDEO_LENGTH = 30000;
+
+
+    final int RECORD_LENGTH = 5;
+    private final static String CLASS_LABEL = "RecordActivity";
+    private final static String LOG_TAG = CLASS_LABEL;
+    long startTime = 0;
+    boolean recording = false;
+    Frame[] images;
+    long[] timestamps;
+    ShortBuffer[] samples;
+    int imagesIndex, samplesIndex;
+//    private File ffmpeg_link = new File(Environment.getExternalStorageDirectory(), "stream.mp4");
+    private volatile FFmpegFrameRecorder recorder;
+    private boolean isPreviewOn = false;
+    private int sampleAudioRateInHz = 44100;
+    private int imageWidth = 320;
+    private int imageHeight = 240;
+    private int frameRate = 5;
+    private Frame yuvImage = null;
 
     private MediaRecorder mediaRecorder;
     private Camera mCamera;
@@ -55,49 +73,32 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private IMotionDetection detector = null;
     private SurfaceTexture surface;
     private long timeOld = 0;
-    private long timeOldVideo = 0;
     private long timeCurrent = 0;
     private String latestFilePath = "";
-    private String latestFileName = "";
-    private Camera.Size sizePreview;
-    private boolean recording = false;
-
-    private boolean startRecording = false;
-    private boolean callPreview = true;
     private Handler handler;
 
-    public CameraHelper(Launch2Activity act) {
+
+    private Runnable cameraTimer = new Runnable() {
+        @Override
+        public void run() {
+
+            stopRecording();
+            startRecording();
+
+            handler.postDelayed(this, 20000);
+        }
+    };
+
+    public CameraHelper2(Launch2Activity act) {
         this.activity = act;
         handler = new Handler();
-        recording = false;
         camera_preview = (FrameLayout)act.findViewById(R.id.camera_preview);
         bitmapMotionTransfer = new ArrayList<>();
         setUpSize();
         detector = new RgbMotionDetection();
         mediaRecorder = new MediaRecorder();
         setMuteAll(true);
-
-        String storage = StorageHelper.isExternalStorageReadableAndWritable()? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-        File mediaStorageDir = new File(storage + File.separator + "myAssistant/");
-        if ( !mediaStorageDir.exists() ) {
-            if ( !mediaStorageDir.mkdirs() ){
-                Log.d("err", "camera - failed to create directory");
-            }
-        }
-
-        AppController.getInstance().getBasaManager().getVideoManager().setCommandVideoCamera(new VideoManager.CommandVideoCamera() {
-            @Override
-            public void startRecording() {
-                startRecording = true;
-                startRecord();
-            }
-
-            @Override
-            public void stopRecording() {
-                startRecording = false;
-            }
-        });
-
+//        initRecorder();
     }
 
     private void setUpSize(){
@@ -115,11 +116,11 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         AppController.getInstance().skipRight = sp.getInt(Global.skipRight, 0);
     }
 
-    public static void setCameraDisplayOrientation(
-            int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+    public void setCameraDisplayOrientation(
+            int cameraId, Camera camera) {
+        Camera.CameraInfo info =
+                new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
         AppController app = AppController.getInstance();
         int degrees = 0;
         int result;
@@ -175,6 +176,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             }
             Log.d("camera", "setPictureSize sizeScreen.width:" + sizeScreen.width + " sizeScreen.height:"+sizeScreen.height);
             parameters.setPictureSize(sizeCamera.width, sizeCamera.height);
+            imageWidth = sizeCamera.width;
+            imageHeight = sizeCamera.height;
         }
 
         parameters.setPictureFormat(PixelFormat.JPEG);
@@ -192,24 +195,137 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
 
 
+
+
     public Launch2Activity getActivity() {
         return activity;
     }
 
+
     private void releaseMediaRecorder(){
         try {
-            if (mediaRecorder != null){
-                mediaRecorder.stop();
-
-                mediaRecorder.reset();   // clear recorder configuration
-                mediaRecorder.release(); // release the recorder object
-                mediaRecorder = null;
-                mCamera.lock();           // lock camera for later use
+            if (handler != null){
+                handler.removeCallbacks(cameraTimer);
+                handler = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    //---------------------------------------
+    // initialize ffmpeg_recorder
+    //---------------------------------------
+    private void initRecorder() {
+
+        Log.w(LOG_TAG, "init recorder");
+
+        if(RECORD_LENGTH > 0) {
+            imagesIndex = 0;
+            images = new Frame[RECORD_LENGTH * frameRate];
+            timestamps = new long[images.length];
+            for(int i = 0; i < images.length; i++) {
+                images[i] = new Frame(imageWidth, imageHeight, Frame.DEPTH_UBYTE, 2);
+                timestamps[i] = -1;
+            }
+        } else if(yuvImage == null) {
+            yuvImage = new Frame(imageWidth, imageHeight, Frame.DEPTH_UBYTE, 2);
+            Log.i(LOG_TAG, "create yuvImage");
+        }
+
+
+        File mediaStorageDir = new File("/sdcard/myAssistant/");
+        if ( !mediaStorageDir.exists() ) {
+            if ( !mediaStorageDir.mkdirs() ){
+                Log.d("err", "camera - failed to create directory");
+            }
+        }
+        latestFilePath = "/sdcard/myAssistant/" + System.currentTimeMillis() + ".mp4";
+
+
+        Log.i(LOG_TAG, "ffmpeg_url: " + latestFilePath);
+        recorder = new FFmpegFrameRecorder(latestFilePath, imageWidth, imageHeight, 0);
+        recorder.setFormat("mp4");
+        recorder.setSampleRate(sampleAudioRateInHz);
+        // Set in the surface changed method
+        recorder.setFrameRate(frameRate);
+
+        Log.i(LOG_TAG, "recorder initialize success");
+
+
+    }
+
+    public void startRecording() {
+        initRecorder();
+
+        try {
+            recorder.start();
+            startTime = System.currentTimeMillis();
+            recording = true;
+        } catch(FFmpegFrameRecorder.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopRecording() {
+
+        if(recorder != null && recording) {
+            if(RECORD_LENGTH > 0) {
+                Log.v(LOG_TAG, "Writing frames");
+                try {
+                    int firstIndex = imagesIndex % samples.length;
+                    int lastIndex = (imagesIndex - 1) % images.length;
+                    if(imagesIndex <= images.length) {
+                        firstIndex = 0;
+                        lastIndex = imagesIndex - 1;
+                    }
+                    if((startTime = timestamps[lastIndex] - RECORD_LENGTH * 1000000L) < 0) {
+                        startTime = 0;
+                    }
+                    if(lastIndex < firstIndex) {
+                        lastIndex += images.length;
+                    }
+                    for(int i = firstIndex; i <= lastIndex; i++) {
+                        long t = timestamps[i % timestamps.length] - startTime;
+                        if(t >= 0) {
+                            if(t > recorder.getTimestamp()) {
+                                recorder.setTimestamp(t);
+                            }
+                            recorder.record(images[i % images.length]);
+                        }
+                    }
+
+                    firstIndex = samplesIndex % samples.length;
+                    lastIndex = (samplesIndex - 1) % samples.length;
+                    if(samplesIndex <= samples.length) {
+                        firstIndex = 0;
+                        lastIndex = samplesIndex - 1;
+                    }
+                    if(lastIndex < firstIndex) {
+                        lastIndex += samples.length;
+                    }
+                    for(int i = firstIndex; i <= lastIndex; i++) {
+                        recorder.recordSamples(samples[i % samples.length]);
+                    }
+                } catch(FFmpegFrameRecorder.Exception e) {
+                    Log.v(LOG_TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            recording = false;
+            Log.v(LOG_TAG, "Finishing recording, calling stop and release on recorder");
+            try {
+                recorder.stop();
+                recorder.release();
+            } catch(FFmpegFrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
+            recorder = null;
+
+        }
+    }
+
 
     private void setMuteAll(boolean mute) {
         AudioManager manager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
@@ -223,89 +339,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             manager.setStreamMute(stream, mute);
     }
 
-    private boolean prepareMediaRecorder(){
-
-        if(mediaRecorder == null)
-            mediaRecorder = new MediaRecorder();
-
-        mCamera.unlock();
-        mediaRecorder.setCamera(mCamera);
-
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
-
-        mediaRecorder.setVideoFrameRate(15);
-
-        String storage = StorageHelper.isExternalStorageReadableAndWritable()? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-        File mediaStorageDir = new File(storage + File.separator + "myAssistant/history/");
-//        File mediaStorageDir = new File("/sdcard/myAssistant/");
-        if ( !mediaStorageDir.exists() ) {
-            if ( !mediaStorageDir.mkdirs() ){
-                Log.d("err", "camera - failed to create directory");
-            }
-        }
-        latestFileName = System.currentTimeMillis()/1000 + ".mp4";
-        latestFilePath = storage + File.separator + "myAssistant/history/" + latestFileName;
-
-        mediaRecorder.setOutputFile(latestFilePath);
-
-        mediaRecorder.setMaxDuration(VIDEO_LENGTH); // Set max duration 5 sec.
-        mediaRecorder.setMaxFileSize(5000000); // Set max file size 5M
 
 
-        try {
-            mediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            releaseMediaRecorder();
-            return false;
-        } catch (IOException e) {
-            releaseMediaRecorder();
-            return false;
-        }
-        return true;
-
-    }
-
-    public void startRecord(){
-        Log.d("camera", "startRecord:");
-
-        if(recording){
-            Log.d("camera", "startRecord false, already recording");
-            return;
-        }
-
-        if(!prepareMediaRecorder()){
-            Toast.makeText(getActivity(),
-                    "Fail in prepareMediaRecorder()!\n - Ended -",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        mediaRecorder.start();
-        recording = true;
-        startRecording = false;
-        mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
-            @Override
-            public void onInfo(MediaRecorder mr, int what, int extra) {
-                if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-                    Log.v("camera","Maximum Duration Reached");
-                    mediaRecorder.reset();
-                    String path = new String(latestFilePath);
-                    String filename = new String(latestFileName);
-                    recording = false;
-                    if(startRecording) {
-                        Log.v("camera","startRecording is true*****************************");
-                        startRecord();
-                    }
-
-                    if(AppController.getInstance().getBasaManager().getVideoManager() != null){
-                        AppController.getInstance().getBasaManager().getVideoManager().addNewHistoryVideo(path, filename.replace(".mp4", ""), filename);
-                    }
-
-                }
-            }
-        });
-    }
 
 
 
@@ -324,27 +359,21 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         int camera = 1;
         mCamera = Camera.open(camera);
         try {
-            CameraHelper.setCameraDisplayOrientation(camera, mCamera);
-            sizePreview = mCamera.getParameters().getPreviewSize();
-            mTextureView.getLayoutParams().width = sizePreview.width;
-            mTextureView.getLayoutParams().height = sizePreview.height;
-            mTextureView.requestLayout();
+            setCameraDisplayOrientation(camera, mCamera);
             mCamera.setPreviewTexture(getSurface());
             mCamera.startPreview();
-//            mCamera.setPreviewCallback(getPreviewCallback());
+            mCamera.setPreviewCallback(getPreviewCallback());
             AppController.getInstance().mCameraReady = true;
-
-
-            handler.postDelayed(timerVideoFrame, 100);
 
         } catch (IOException ioe) {
             Log.d("cam", "ioe" + ioe.getMessage());
             // Something bad happened
         }
-        //startRecord();
+        startRecording();
+        handler.postDelayed(cameraTimer, 20000);
+
+
     }
-
-
 
     public void stop_camera(){
         if(mCamera != null) {
@@ -358,8 +387,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     }
 
     public void destroy(){
-        AppController.getInstance().getBasaManager().getVideoManager().setCommandVideoCamera(null);
-        handler.removeCallbacks(timerVideoFrame);
         releaseMediaRecorder();
         stop_camera();
         if( mTextureView != null){
@@ -368,34 +395,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         }
     }
 
-    private Runnable timerVideoFrame = new Runnable() {
-        @Override
-        public void run() {
-            long t1 = System.currentTimeMillis();
-            Log.v("camera","timerVideoFrame");
-            Bitmap pic = mTextureView.getBitmap();
-
-            if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
-                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-                final String latestFileNameF = System.currentTimeMillis() / 100 + ".jpeg";
-                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-                Log.d("storage", "latestFilePathF:" + latestFilePathF);
-                new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
-                    @Override
-                    public void onPhotoBeenSaved(Uri file) {
-                        if (AppController.getInstance().getBasaManager().getVideoManager() != null) {
-                            AppController.getInstance().getBasaManager().getVideoManager().addNewLivePhoto(latestFilePathF, latestFileNameF.replace(".jpeg", ""), latestFileNameF);
-                        }
-                    }
-                }).start();
-            }
-            processCameraFrame(pic);
-            handler.postDelayed(this, 1000);
-        }
-
-    };
-
-
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
 
         /**
@@ -403,74 +402,67 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
          */
         @Override
         public void onPreviewFrame(byte[] data, Camera cam) {
-            Log.d("camera", "previewCallback");
-//            boolean doDetection = false;
-//            if(recording && callPreview){
-//                Log.d("camera", "inside preview");
-//                callPreview = false;
-//                doDetection = true;
-//                startRecord();
+
+            Log.d("preview", "startTime:"+startTime);
+            if(startTime == 0) {
+                startTime = System.currentTimeMillis();
+                return;
+            }
+            if(RECORD_LENGTH > 0) {
+                int i = imagesIndex++ % images.length;
+                yuvImage = images[i];
+                timestamps[i] = 1000 * (System.currentTimeMillis() - startTime);
+            }
+            /* get video data */
+            if(yuvImage != null && recording) {
+                ((ByteBuffer) yuvImage.image[0].position(0)).put(data);
+
+                if(RECORD_LENGTH <= 0) {
+                    try {
+                        Log.v(LOG_TAG, "Writing Frame");
+                        long t = 1000 * (System.currentTimeMillis() - startTime);
+                        if(t > recorder.getTimestamp()) {
+                            recorder.setTimestamp(t);
+                        }
+                        recorder.record(yuvImage);
+                    } catch(FFmpegFrameRecorder.Exception e) {
+                        Log.v(LOG_TAG, e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+
+
+
+            Log.d("Cam", "previewCallback");
+            if(timeOld == 0){
+                timeOld = System.currentTimeMillis();
+                timeCurrent = timeOld;
+                return;
+            }
+            timeCurrent = System.currentTimeMillis();
+            long elapsedTimeNs = timeCurrent - timeOld;
+            if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
+                timeOld = timeCurrent;
+
+
+                if (data == null) return;
+                Camera.Size size = cam.getParameters().getPreviewSize();
+                if (size == null) return;
+
+                AppController.getInstance().widthPreview = size.width;
+                AppController.getInstance().heightPreview = size.height;
+//            if (!GlobalData.isPhoneInMotion()) {
+                DetectionThread thread = new DetectionThread(data, size.width, size.height);
+                thread.start();
+
+
 //            }
-
-
-            processCameraFrame(data);
-
+            }
         }
     };
-
-
-    private void processCameraFrame(byte[] data){
-        Log.d("camera", "processCameraFrame");
-        if(timeOld == 0){
-            timeOld = System.currentTimeMillis();
-            timeOldVideo = System.currentTimeMillis();
-        }
-        timeCurrent = System.currentTimeMillis();
-
-        if((timeCurrent - timeOldVideo)/1000 >= 0.2){
-
-        }
-        long elapsedTimeNs = timeCurrent - timeOld;
-        if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
-            timeOld = timeCurrent;
-            Log.d("camera", "inside preview detection");
-
-            if (data == null) return;
-            Camera.Size size = sizePreview;
-            if (size == null) return;
-
-            AppController.getInstance().widthPreview = size.width;
-            AppController.getInstance().heightPreview = size.height;
-//            if (!GlobalData.isPhoneInMotion()) {
-            DetectionThread thread = new DetectionThread(data, size.width, size.height);
-            thread.start();
-
-
-//            }
-        }
-    }
-
-    private void processCameraFrame(Bitmap data){
-//        Log.d("camera", "processCameraFrame");
-        if(timeOld == 0){
-            timeOld = System.currentTimeMillis();
-        }
-        timeCurrent = System.currentTimeMillis();
-        long elapsedTimeNs = timeCurrent - timeOld;
-        if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
-            timeOld = timeCurrent;
-            Log.d("camera", "inside preview detection");
-            if (data == null) return;
-
-//            ImageProcessing.bitmapToRGB(data);
-
-
-
-            DetectionThread thread = new DetectionThread(data);
-            thread.start();
-        }
-    }
-
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
@@ -481,7 +473,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
-        Log.d("Cam", "onSurfaceTextureSizeChanged");
+
     }
 
     @Override
@@ -493,7 +485,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-//        Log.d("Cam", "onSurfaceTextureUpdated");
+
     }
 
 
@@ -535,7 +527,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     public final class DetectionThread extends Thread {
 
         private byte[] data;
-        private Bitmap pic;
         private int width;
         private int height;
 
@@ -545,29 +536,21 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             this.height = height;
         }
 
-        public DetectionThread(Bitmap bitmap) {
-            this.pic = bitmap;
-            this.width = bitmap.getWidth();
-            this.height = bitmap.getHeight();
-        }
-
         /**
          * {@inheritDoc}
          */
         @Override
         public void run() {
 
-            Log.d("camera", "DetectionThread");
+
             if (!processing.compareAndSet(false, true)) return;
-            Log.d("camera", "BEGIN PROCESSING.");
+
             // Log.d(TAG, "BEGIN PROCESSING...");
             try {
 
                 int[] img = null;
-                if(data != null)
-                    img = ImageProcessing.decodeYUV420SPtoRGB(data, width, height);
-                else
-                    img = ImageProcessing.bitmapToRGB(pic);
+                img = ImageProcessing.decodeYUV420SPtoRGB(data, width, height);
+
 
 //                Log.d("teste", "width->" + width + " height->" + height);
 //                Log.i(TAG, "img != null ->" + (img != null));
@@ -609,7 +592,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     };
 
     private void detected(final boolean isDetected){
-        Log.d("camera", "isDetected->"+isDetected);
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {

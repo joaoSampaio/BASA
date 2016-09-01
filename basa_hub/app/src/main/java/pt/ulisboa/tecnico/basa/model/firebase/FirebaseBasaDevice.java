@@ -14,6 +14,7 @@ public class FirebaseBasaDevice {
     private List<String> macList;
     private List<String> beaconList;
     private List<Boolean> lights;
+    private boolean record;
 
     public FirebaseBasaDevice() {
     }
@@ -72,5 +73,13 @@ public class FirebaseBasaDevice {
 
     public void setBeaconList(List<String> beaconList) {
         this.beaconList = beaconList;
+    }
+
+    public boolean isRecord() {
+        return record;
+    }
+
+    public void setRecord(boolean record) {
+        this.record = record;
     }
 }

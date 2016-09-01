@@ -96,7 +96,7 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
     public void loadUI(){
 
         basaDeviceConfig = new BasaDeviceConfig();
-        AppController.getInstance().setDeviceConfig(basaDeviceConfig);
+        AppController.getInstance().setDeviceConfig(basaDeviceConfig, false);
         config = (Button) findViewById(R.id.action_load_config);
         indicator = findViewById(R.id.indicator);
         action_next = findViewById(R.id.action_next);
@@ -138,23 +138,6 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
                 return false;
             }
         });
-
-
-        BasaDeviceLoad load = new BasaDeviceLoad();
-        load.setName("Office Tagus 2.N.11.5");
-        load.setDescription("uma descrição");
-        load.setEdupLightId("ZH037CC7097B7CA91");
-        load.setEdupNumLight(3);
-        load.setPin(1234);
-        load.setBeaconList("");
-        load.setMacList("");
-
-        load.setTemperatureChoice(1);
-        load.setBeaconOrIp("2a11a5a1111111111111");
-        Gson gson = new Gson();
-        Log.d("conf", " " + gson.toJson(load));
-
-
 
     }
 
@@ -210,8 +193,7 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
         }
 
 
-
-        BasaDeviceConfig.save(basaDeviceConfig);
+        AppController.getInstance().setDeviceConfig(basaDeviceConfig, true);
             Intent intent = new Intent(this, Launch2Activity.class);
             startActivity(intent);
             finish();
@@ -326,7 +308,24 @@ public class MainSetupActivity extends FragmentActivity implements View.OnClickL
         final EditText editTextConfig = (EditText) promptView.findViewById(R.id.editTextConfig);
 
 
-        editTextConfig.setText("{\"BeaconList\":\"beacccccccc\",\"beaconOrIp\":\"2a11a5a1111111111111\",\"description\":\"uma descrição\",\"edupLightId\":\"ZH037CC7097B7CA91\",\"edupNumLight\":3,\"macList\":\"\",\"name\":\"Office Tagus 2.N.11.5\",\"pin\":1234,\"temperatureChoice\":1}");
+        BasaDeviceLoad load = new BasaDeviceLoad();
+        load.setName("Office Tagus 2.N.11.5");
+        load.setDescription("uma descrição");
+        load.setEdupLightId("ZH037CC7097B7CA91");
+        load.setEdupNumLight(3);
+        load.setPin(1234);
+        load.setBeaconList("");
+        load.setMacList("");
+
+        load.setTemperatureChoice(1);
+        load.setBeaconOrIp("2a11a5a1111111111111");
+        Gson gson = new Gson();
+        Log.d("conf", " " + gson.toJson(load));
+
+        editTextConfig.setText(gson.toJson(load));
+
+
+//        editTextConfig.setText("{\"BeaconList\":\"beacccccccc\",\"beaconOrIp\":\"2a11a5a1111111111111\",\"description\":\"uma descrição\",\"edupLightId\":\"ZH037CC7097B7CA91\",\"edupNumLight\":3,\"macList\":\"\",\"name\":\"Office Tagus 2.N.11.5\",\"pin\":1234,\"temperatureChoice\":1}");
 
         editTextUrl.setText("https://dl.dropboxusercontent.com/u/68830630/config.txt");
 

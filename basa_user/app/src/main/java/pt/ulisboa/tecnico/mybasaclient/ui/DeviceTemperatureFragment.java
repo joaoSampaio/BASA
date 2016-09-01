@@ -94,8 +94,9 @@ public class DeviceTemperatureFragment extends DialogFragment implements View.On
 
         listener = new GenericCommunicationToFragment() {
             @Override
-            public void onDataChanged() {
-                refreshTemperature();
+            public void onDataChanged(String deviceId) {
+                if(deviceId.equals(device.getId()))
+                    refreshTemperature();
             }
         };
 

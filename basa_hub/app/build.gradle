@@ -59,14 +59,30 @@ dependencies {
     //    compile 'com.firebase:firebase-client-android:2.3.1'
     compile 'com.google.firebase:firebase-database:9.2.1'
     compile 'com.google.firebase:firebase-auth:9.2.1'
+    compile 'com.google.firebase:firebase-storage:9.2.1'
     compile 'com.google.android.gms:play-services-auth:9.2.1'
-
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.github.devlight.navigationtabbar:navigationtabbar:1.2.4'
-
-//    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+    //    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'net.danlew:android.joda:2.9.4.1'
+    compile 'com.googlecode.mp4parser:isoparser:1.1.21'
+
+
+    compile group: 'org.bytedeco', name: 'javacv', version: '1.0'
+//    compile group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '2.4.11-0.11', classifier: 'android-arm'
+//    compile group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '2.6.1-0.11', classifier: 'android-arm'
+
+//    compile files('libs/artoolkitplus-android-arm.jar')
+//    compile files('libs/artoolkitplus-android-x86.jar')
+//    compile files('libs/ffmpeg-android-arm.jar')
+//    compile files('libs/ffmpeg-android-x86.jar')
+//    compile files('libs/flandmark-android-arm.jar')
+//    compile files('libs/flandmark-android-x86.jar')
+//    compile files('libs/javacpp.jar')
+//    compile files('libs/javacv.jar')
+//    compile files('libs/opencv-android-arm.jar')
+//    compile files('libs/opencv-android-x86.jar')
 }
 
 

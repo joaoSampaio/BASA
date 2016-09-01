@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import pt.ulisboa.tecnico.basa.R;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.LightingManager;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 
@@ -106,6 +107,7 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
     private void refreshLightLayout(){
         lightsIds = new TreeMap<>();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        numLights = AppController.getInstance().getDeviceConfig().getEdupNumLight();
         numLights = Integer.parseInt(preferences.getString("light_number", "1"));
         containerLightSwitch.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(getActivity());

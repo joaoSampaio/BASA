@@ -58,11 +58,7 @@ public class BasaSensorManager implements SensorEventListener {
 
                 timeLastNoMovement = System.currentTimeMillis();
             }
-
-
         }
-
-
     }
 
 

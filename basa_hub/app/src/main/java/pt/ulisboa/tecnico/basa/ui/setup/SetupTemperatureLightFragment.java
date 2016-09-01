@@ -164,6 +164,7 @@ public class SetupTemperatureLightFragment extends Fragment{
         spinnerTemperature.setSelection(conf.getTemperatureChoice());
         editTextArduino.setText(conf.getArduinoIP());
         editTextBeacon.setText(conf.getBeaconUuidTemperature());
+        Log.d("setup", "conf.getEdupLightId():" + conf.getEdupLightId() );
         editTextLight.setText(conf.getEdupLightId());
 
     }

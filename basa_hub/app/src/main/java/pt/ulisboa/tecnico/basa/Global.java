@@ -52,8 +52,8 @@ public class Global {
     public static final int COLOR_COLD = Color.parseColor("#ff33b5e5");
 
 
-
-
+    public final static int VIDEO_LIVE= 0;
+    public final static int VIDEO_HISTORY= 1;
 
 
     public final static int DIALOG_PICK_TIME = 0;

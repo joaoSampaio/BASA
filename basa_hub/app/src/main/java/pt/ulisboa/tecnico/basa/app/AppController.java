@@ -174,9 +174,10 @@ public class AppController extends Application {
         }
     }
 
-    public void setDeviceConfig(BasaDeviceConfig deviceConfig) {
+    public void setDeviceConfig(BasaDeviceConfig deviceConfig, boolean save) {
         this.deviceConfig = deviceConfig;
-        BasaDeviceConfig.save(deviceConfig);
+        if(save)
+            BasaDeviceConfig.save(deviceConfig);
     }
 
     public void saveDeviceConfig() {

@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.camera.RectangleView;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
+import pt.ulisboa.tecnico.basa.util.BitmapMotionTransfer;
 
 
 public class CameraSettingsDialogFragment extends DialogFragment {
@@ -211,8 +212,6 @@ public class CameraSettingsDialogFragment extends DialogFragment {
     }
 
 
-    public interface BitmapMotionTransfer{
-        void onBitMapAvailable(Bitmap bitmap);
-    }
+
 
 }

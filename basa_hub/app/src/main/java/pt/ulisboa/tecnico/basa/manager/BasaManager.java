@@ -6,6 +6,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
@@ -27,7 +29,7 @@ public class BasaManager {
     private WebServerManager webServerManager;
     private UserManager userManager;
     private Launch2Activity activity;
-    private ValueEventListener fireListenner;
+    private List<ValueEventListener> fireListener;
     private VideoManager videoManager;
     private BasaSensorManager basaSensorManager;
 
@@ -54,6 +56,7 @@ public class BasaManager {
         if(eventManager == null && lightingManager == null) {
             Log.d("manager", "BasaManager start ");
             this.eventManager = new EventManager(this);
+
             this.lightingManager = new LightingManager();
             this.textToSpeechManager = new TextToSpeechManager();
             this.speechRecognizerManager = new SpeechRecognizerManager(this);
@@ -62,13 +65,10 @@ public class BasaManager {
             this.deviceDiscoveryManager = new DeviceDiscoveryManager();
             this.userManager = new UserManager();
             this.basaSensorManager = new BasaSensorManager();
-//        if(getActivity() != null){
-//            videoManager = new VideoManager(getActivity());
-//        }
-
+            this.videoManager = new VideoManager(this);
             if (AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
                 FirebaseHelper mHelperFire = new FirebaseHelper();
-                fireListenner = mHelperFire.getZoneDevicesListener();
+                fireListener = mHelperFire.getDeviceListener();
             }
             instance.setStarted(true);
         }
@@ -83,15 +83,22 @@ public class BasaManager {
             basaSensorManager.destroy();
         }
 
-        if(fireListenner != null){
+        if(fireListener != null){
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-            mDatabase.removeEventListener(fireListenner);
-            fireListenner = null;
+            for(ValueEventListener value: fireListener){
+                mDatabase.removeEventListener(value);
+            }
+
+            fireListener = null;
         }
 
 //        if(videoManager != null){
 //            videoManager.destroy();
 //        }
+        if(videoManager != null){
+            videoManager.destroy();
+        }
+
 
         if(lightingManager != null){
             lightingManager.destroy();
@@ -183,5 +190,9 @@ public class BasaManager {
 
     public void setStarted(boolean started) {
         isStarted = started;
+    }
+
+    public VideoManager getVideoManager() {
+        return videoManager;
     }
 }

@@ -20,7 +20,7 @@ import pt.ulisboa.tecnico.mybasaclient.util.FirebaseHelper;
  */
 public class DeviceManager {
 
-    private Map<String , ValueEventListener> firebaseListenners;
+    private Map<String , List<ValueEventListener>> firebaseListenners;
     private FirebaseHelper mHelper;
 
     public DeviceManager(FirebaseHelper mHelper){
@@ -73,8 +73,9 @@ public class DeviceManager {
     public void clearAllListeners(){
         Log.d("fire", "clearAllListeners");
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        for (Map.Entry<String, ValueEventListener> entry: firebaseListenners.entrySet()) {
-            mDatabase.removeEventListener(entry.getValue());
+        for (Map.Entry<String, List<ValueEventListener>> entry: firebaseListenners.entrySet()) {
+            for (ValueEventListener v : entry.getValue())
+                mDatabase.removeEventListener(v);
         }
         firebaseListenners.clear();
 

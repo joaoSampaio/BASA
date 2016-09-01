@@ -102,9 +102,9 @@ public class DeviceLightsFragment extends DialogFragment {
 
         listener = new GenericCommunicationToFragment() {
             @Override
-            public void onDataChanged() {
-
-                mAdapter.notifyDataSetChanged();
+            public void onDataChanged(String deviceId) {
+                if(deviceId.equals(device.getId()))
+                    mAdapter.notifyDataSetChanged();
 
             }
         };

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="105dp"
+    android:id="@+id/container">
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:id="@+id/linearLayout2"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="false"
+            android:padding="15dp"
+            android:background="#df0000"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/linearLayout2"
+            android:background="#0575ff"
+            android:id="@+id/linearLayout3"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+        </LinearLayout>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/action_info"
+        android:src="@drawable/ic_info"
+        android:layout_alignRight="@+id/linearLayout3"
+        android:tint="@color/white"
+        android:layout_alignBottom="@+id/linearLayout3"
+        android:layout_alignTop="@+id/linearLayout3"
+        android:layout_marginRight="15dp" />
+
+    <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/switch1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="if"
+        android:id="@+id/textViewShortName"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignLeft="@+id/linearLayout2"
+        android:layout_alignRight="@+id/action_info"
+        android:layout_alignBottom="@+id/linearLayout2"
+        android:layout_alignTop="@+id/linearLayout2"
+        android:gravity="center" />
+
+
+</RelativeLayout>

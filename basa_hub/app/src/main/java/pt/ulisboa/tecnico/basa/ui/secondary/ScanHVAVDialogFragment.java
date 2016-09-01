@@ -184,7 +184,7 @@ public class ScanHVAVDialogFragment extends DialogFragment {
 
                 AppController.getInstance().getDeviceConfig().setArduinoIP(location);
                 AppController.getInstance().getDeviceConfig().setTemperatureChoice(BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO);
-                AppController.getInstance().setDeviceConfig(AppController.getInstance().getDeviceConfig());
+                AppController.getInstance().setDeviceConfig(AppController.getInstance().getDeviceConfig(), true);
 
 
                 ((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager().requestUpdateTemperature();

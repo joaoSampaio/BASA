@@ -7,24 +7,18 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.speech.SpeechRecognizer;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
@@ -42,10 +36,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.basa.Global;
@@ -53,9 +44,9 @@ import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.adapter.MainPagerAdapter;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.backgroundServices.ServerService;
+import pt.ulisboa.tecnico.basa.camera.CameraBasa;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
-import pt.ulisboa.tecnico.basa.manager.VideoManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.ui.setup.MainSetupActivity;
@@ -66,29 +57,13 @@ import pt.ulisboa.tecnico.basa.util.ModelCache;
 public class Launch2Activity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
-    private Camera mCamera;
-    private TextureView mTextureView;
-    private Handler handler;
-    private ImageView preview_img;
-    private CameraHelper mHelper;
-    private FrameLayout camera_preview;
-//    private EventManager eventManager;
-    public final static int REQ_CODE_SPEECH_INPUT = 100;
+
+
+    private CameraBasa mHelper;
 
     private ClapListener clapListener;
-//    private LightingManager lightingManager;
-    private VideoManager videoManager;
-
-    private SpeechRecognizer mSpeechRecognizer;
-
     private BasaManager basaManager;
 
-
-    //handler to post changes to progress bar
-    private Handler mHandler = new Handler();
-
-    //intent for speech recogniztion
-    Intent mSpeechIntent;
 
     ServerService mService;
     boolean mBound = true;
@@ -104,14 +79,24 @@ public class Launch2Activity extends FragmentActivity implements
      */
     private PagerAdapter mPagerAdapter;
 
-    TextToSpeech t1;
     private FirebaseAuth.AuthStateListener mAuthListener;
     String TAG = "main";
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 9001;
     private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference mDatabase;
     private FirebaseHelper helper = null;
+
+    private Handler handler;
+    private Runnable cameraRun = new Runnable() {
+        @Override
+        public void run() {
+            if (mHelper == null) {
+                mHelper = new CameraHelper(Launch2Activity.this);
+                mHelper.start_camera();
+            }
+        }
+    };
+
 // ...
 
 
@@ -166,8 +151,7 @@ public class Launch2Activity extends FragmentActivity implements
                         Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                         BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
                         config.setUuid(user.getUid());
-                        BasaDeviceConfig.save(config);
-                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        AppController.getInstance().setDeviceConfig(config, true);
                         helper = new FirebaseHelper();
 
 
@@ -183,14 +167,9 @@ public class Launch2Activity extends FragmentActivity implements
 
                             }
                         });
-
-//                        helper.registerDevice(user.getUid());
-
                     } else {
-                        // User is signed out
                         Log.d(TAG, "onAuthStateChanged:signed_out");
                     }
-                    // ...
                 }
             };
             if(mAuth.getCurrentUser() == null) {
@@ -208,9 +187,6 @@ public class Launch2Activity extends FragmentActivity implements
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         showPage(Global.PAGE_LIGHTS);
-        camera_preview = (FrameLayout)findViewById(R.id.camera_preview);
-        preview_img = (ImageView)findViewById(R.id.preview_img);
-        handler = new Handler();
 
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -381,23 +357,19 @@ public class Launch2Activity extends FragmentActivity implements
     public void onResume(){
         super.onResume();
         Log.d("myapp_new", "****onResume onResume onResume: ");
+        this.handler = new Handler();
         BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
         if(config != null) {
-            if (mHelper == null)
-                mHelper = new CameraHelper(this);
+
 
             this.basaManager = AppController.getInstance().getBasaManager();
             this.basaManager.setActivity(this);
             this.basaManager.start();
+            handler.postDelayed(cameraRun, 2000);
 
             initSavedValues();
 
-
-            start_camera();
-            this.videoManager = new VideoManager(this);
             //clapListener = new ClapListener(this);
-
-            getVideoManager().start();
 
             SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
@@ -412,30 +384,20 @@ public class Launch2Activity extends FragmentActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("checkIsSignedIn", "**onPause**** ");
-        Log.d("KioskService2", "onPause:");
+        Log.d("app", "onPause activity");
+        if(handler != null)
+            handler.removeCallbacks(cameraRun);
+
         if(mHelper != null) {
+            mHelper.destroy();
             mHelper = null;
         }
-        if(mCamera != null) {
-            stop_camera();
-
-        }
-        destroyView();
 
         AppController.getInstance().beaconDisconect();
-
         if(this.basaManager != null) {
             this.basaManager.stop();
             this.basaManager.setActivity(null);
         }
-
-
-
-        //restoreApp();
-
-
-        //clapListener.stop();
     }
 
     public void restoreApp() {
@@ -482,51 +444,9 @@ public class Launch2Activity extends FragmentActivity implements
 
 
 
-    public void start_camera(){
-        Log.d("cam", "start_camera " + (mCamera == null));
-        if(mCamera != null)
-            return;
 
 
-        if( mTextureView == null){
-            mTextureView = new TextureView(this);
-            mTextureView.setSurfaceTextureListener(mHelper);
-            camera_preview.addView(mTextureView);
-            return;
-        }
-        mCamera = Camera.open(1);
-        try {
-            CameraHelper.setCameraDisplayOrientation(1, mCamera);
-            mCamera.setPreviewTexture(mHelper.getSurface());
-            mCamera.startPreview();
-            mCamera.setPreviewCallback(mHelper.getPreviewCallback());
-            AppController.getInstance().mCameraReady = true;
-
-        } catch (IOException ioe) {
-            Log.d("cam", "ioe" + ioe.getMessage());
-            // Something bad happened
-        }
-    }
-
-    public void stop_camera(){
-        if(mCamera != null) {
-            mCamera.setPreviewCallback(null);
-            mCamera.stopPreview();
-            mCamera.release();
-            mCamera = null;
-            AppController.getInstance().mCameraReady = false;
-
-        }
-    }
-
-    public void destroyView(){
-        if( mTextureView != null){
-            camera_preview.removeAllViews();
-            mTextureView = null;
-        }
-    }
-
-    public CameraHelper getmHelper() {
+    public CameraBasa getmHelper() {
         return mHelper;
     }
 
@@ -545,6 +465,10 @@ public class Launch2Activity extends FragmentActivity implements
         if(!ModelCache.keyExists(Global.OFFLINE_USERS)){
             new ModelCache<>().saveModel(new ArrayList<>(), Global.OFFLINE_USERS);
         }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("light_number", AppController.getInstance().getDeviceConfig().getEdupNumLight()+"");
+        editor.commit();
 
     }
 
@@ -616,9 +540,5 @@ public class Launch2Activity extends FragmentActivity implements
                 enableDisableViewGroup((ViewGroup) view, enabled);
             }
         }
-    }
-
-    public VideoManager getVideoManager() {
-        return videoManager;
     }
 }

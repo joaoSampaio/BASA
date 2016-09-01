@@ -36,7 +36,7 @@ import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationAnswer;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ChangeTemperatureLights;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
-import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
+import pt.ulisboa.tecnico.basa.util.BitmapMotionTransfer;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import spark.Request;
 import spark.Response;
@@ -53,7 +53,7 @@ public class WebServerBASA {
     private final static String STARTING_TEXT = "7e7e0d02";
     private final static String ENDING_TEXT = "7f7f";
     private Launch2Activity activity;
-    private CameraSettingsDialogFragment.BitmapMotionTransfer transfer;
+    private BitmapMotionTransfer transfer;
     Future longRunningTaskFuture;
     ExecutorService threadPoolExecutor;
     Runnable runnable;
@@ -76,7 +76,7 @@ public class WebServerBASA {
     public WebServerBASA(Launch2Activity activity){
         Log.d("webserver", "WebServerBASA");
         this.activity =  activity;
-        transfer = new CameraSettingsDialogFragment.BitmapMotionTransfer() {
+        transfer = new BitmapMotionTransfer() {
             @Override
             public void onBitMapAvailable(Bitmap bitmap) {
 //                Log.d("servico", "onBitMapAvailable (live == bitmap)-> " + (live == bitmap));

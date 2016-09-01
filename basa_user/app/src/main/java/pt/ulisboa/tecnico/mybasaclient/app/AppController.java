@@ -182,8 +182,10 @@ public class AppController extends Application {
     }
 
     public Zone getCurrentZone(){
-        if(this.currentZone == null)
+        if(this.currentZone == null) {
             this.currentZone = Zone.getCurrentZone();
+
+        }
         return this.currentZone;
     }
 

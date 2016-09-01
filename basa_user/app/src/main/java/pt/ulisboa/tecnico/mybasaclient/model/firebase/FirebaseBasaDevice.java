@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.mybasaclient.model.firebase;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -12,6 +13,9 @@ public class FirebaseBasaDevice {
     private int currentTemperature;
     private int changeTemperature;
     private List<Boolean> lights;
+    private HashMap<String, String> liveVideo;
+    private HashMap<String, String> videos;
+    private boolean record;
 
     public FirebaseBasaDevice() {
     }
@@ -54,5 +58,29 @@ public class FirebaseBasaDevice {
 
     public void setLights(List<Boolean> lights) {
         this.lights = lights;
+    }
+
+    public HashMap<String, String> getLiveVideo() {
+        return liveVideo;
+    }
+
+    public void setLiveVideo(HashMap<String, String> liveVideo) {
+        this.liveVideo = liveVideo;
+    }
+
+    public HashMap<String, String> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(HashMap<String, String> videos) {
+        this.videos = videos;
+    }
+
+    public boolean isRecord() {
+        return record;
+    }
+
+    public void setRecord(boolean record) {
+        this.record = record;
     }
 }

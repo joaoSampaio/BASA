@@ -5,8 +5,10 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.MainActivity;
@@ -24,6 +26,10 @@ public class FirebaseHelper {
     String TAG = "main";
     private DatabaseReference mDatabase;
     private MainActivity activity;
+
+    public FirebaseHelper() {
+        this.mDatabase =  FirebaseDatabase.getInstance().getReference();
+    }
 
     public FirebaseHelper(DatabaseReference mDatabase) {
         this.mDatabase = mDatabase;
@@ -55,7 +61,13 @@ public class FirebaseHelper {
 
     }
 
-//    public void getZoneDevicesOnce(String deviceId){
+    public void enableLiveStream(String deviceId, boolean enable){
+
+        mDatabase.child("devices").child(deviceId).child("record").setValue(enable);
+
+    }
+
+//    public void getVideoHistory(String deviceId){
 //
 //        mDatabase.child("users").child(deviceId).addListenerForSingleValueEvent(
 //                new ValueEventListener() {
@@ -91,9 +103,99 @@ public class FirebaseHelper {
 //    }
 
 
-    public ValueEventListener getZoneDevicesListener(String deviceId){
+
+
+
+    public List<ValueEventListener> getZoneDevicesListener(final String deviceId){
 
 //        mDatabase.child("devices").child(deviceId).child("changeTemperature").setValue(temperature);
+
+
+//        ValueEventListener lightsListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Get Post object and use the values to update the UI
+//
+//                GenericTypeIndicator<List<Boolean>> t = new GenericTypeIndicator<List<Boolean>>() {};
+//                List<Boolean> lights = dataSnapshot.getValue(t);
+//                List<Zone> zones = AppController.getInstance().loadZones();
+//
+//                Zone current = AppController.getInstance().getCurrentZone();
+//                for (Zone z: zones) {
+//                    for (BasaDevice d : z.getDevices()) {
+//                        if (d.getId().equals(deviceId)) {
+//                            d.setNumLights(lights.size());
+//                            d.setLights(lights);
+//                            if(getActivity() != null){
+//                                for(GenericCommunicationToFragment generic: getActivity().getGenericCommunicationList()){
+//                                    generic.onDataChanged(deviceId);
+//                                }
+//                                if(getActivity().getCommunicationHomeFragment() != null
+//                                        && current != null
+//                                        && current.getName().equals(z.getName()))
+//                                    getActivity().getCommunicationHomeFragment().updateZone(false);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Getting Post failed, log a message
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                // ...
+//            }
+//        };
+
+//        ValueEventListener liveVideoListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Get Post object and use the values to update the UI
+//                Log.d("fire", "liveVideoListener->"+dataSnapshot.toString());
+//                GenericTypeIndicator<HashMap<String, String>> t = new GenericTypeIndicator<HashMap<String, String>>() {};
+//
+//                HashMap<String, String> videos = dataSnapshot.getValue(t);
+//                if(videos != null) {
+////                BasaDevice device = BasaDevice.getDeviceById(deviceId);
+//
+////                device.setLiveVideos(videos);
+//
+//
+//                    List<Zone> zones = AppController.getInstance().loadZones();
+//
+//                    BasaDevice device = null;
+//                    for (Zone z : zones) {
+//                        for (BasaDevice d : z.getDevices()) {
+//                            if (d.getId().equals(deviceId)) {
+//                                d.setLiveVideos(videos);
+//                                device = d;
+//                            }
+//                        }
+//                    }
+//
+//                    TreeMap<String, String> v = new TreeMap<>();
+//                    v.putAll(device.getLiveVideos());
+//                    Log.d("key fire:", "device:" + device.getId());
+//                    for (Map.Entry<String, String> entry : v.entrySet())
+//                        Log.d("key fire:", "key:" + entry.getKey());
+//                    Log.d("key fire:", "lastEntry:" + v.lastEntry().getKey());
+//                    Log.d("key fire:", "firstEntry:" + v.firstEntry().getKey());
+//
+//                    Log.d("fire", "liveVideoListener device.getLiveVideos()->" + device.getLiveVideos().size());
+//                    for (GenericCommunicationToFragment generic : getActivity().getGenericCommunicationList()) {
+//                        generic.onDataChanged(deviceId);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Getting Post failed, log a message
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                // ...
+//            }
+//        };
 
 
         ValueEventListener postListener = new ValueEventListener() {
@@ -113,13 +215,10 @@ public class FirebaseHelper {
                             d.setNumLights(firebaseBasaDevice.getLights().size());
                             d.setLights(firebaseBasaDevice.getLights());
                             d.setChangeTemperature(firebaseBasaDevice.getChangeTemperature());
-                            if(getActivity() != null && getActivity().getCommunicationHomeFragment() != null){
-                                getActivity().getCommunicationHomeFragment().updateZone(false);
-                            }
                             if(getActivity() != null){
 
                                 for(GenericCommunicationToFragment generic: getActivity().getGenericCommunicationList()){
-                                    generic.onDataChanged();
+                                    generic.onDataChanged(deviceId);
                                 }
                                 if(getActivity().getCommunicationHomeFragment() != null)
                                     getActivity().getCommunicationHomeFragment().updateZone(false);
@@ -128,8 +227,6 @@ public class FirebaseHelper {
                         }
                     }
                 }
-
-                // ...
             }
 
             @Override
@@ -139,9 +236,13 @@ public class FirebaseHelper {
                 // ...
             }
         };
-        mDatabase.child("devices").child(deviceId).addValueEventListener(postListener);
 
-        return postListener;
+        List<ValueEventListener> list = new ArrayList<>();
+//        mDatabase.child("devices").child(deviceId).child("lights").addValueEventListener(lightsListener);
+//        list.add(mDatabase.child("live").child(deviceId).addValueEventListener(liveVideoListener));
+        list.add(mDatabase.child("devices").child(deviceId).addValueEventListener(postListener));
+
+        return list;
     }
 
 

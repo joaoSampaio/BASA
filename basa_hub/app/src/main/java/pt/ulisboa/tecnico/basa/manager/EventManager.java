@@ -137,7 +137,6 @@ public class EventManager {
                 result = "Temperature set to " + ((EventChangeTemperature)event).getTargetTemperature() + " Cº" ;
                 break;
         }
-        Log.d("EVENT","User:---->result:" + result);
         if(!result.isEmpty()){
             Log.d("EVENT","User:---->getUpdateHistory() != null:" + (getUpdateHistory() != null) );
             AppController.getInstance().getHistory().add(0,new EventHistory(result));
