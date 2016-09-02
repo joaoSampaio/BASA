@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +63,7 @@ public class ScanNetworkFragment extends DialogFragment {
         rootView = inflater.inflate(R.layout.fragment_scan_network, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if (toolbar!=null) {
-            toolbar.setTitle("Add Zone");
+            toolbar.setTitle("Scan wifi networks");
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -148,8 +150,15 @@ public class ScanNetworkFragment extends DialogFragment {
 
     private void reScan(){
         mWifiManager.startScan();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<ScanResult> mScanResults =  mWifiManager.getScanResults();
+                Log.d("wifi", "mScanResults22: " + mScanResults.size());
+            }
+        },1000);
         List<ScanResult> mScanResults =  mWifiManager.getScanResults();
-
+        Log.d("wifi", "mScanResults: " + mScanResults.size());
 //        devices.clear();
 
         List<IPNetwork> received = new ArrayList<>();

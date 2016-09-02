@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.model.firebase.FirebaseBasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.firebase.UserFirebase;
+import pt.ulisboa.tecnico.mybasaclient.rest.pojo.UserLocation;
 
 /**
  * Created by Sampaio on 20/07/2016.
@@ -67,49 +68,15 @@ public class FirebaseHelper {
 
     }
 
-//    public void getVideoHistory(String deviceId){
-//
-//        mDatabase.child("users").child(deviceId).addListenerForSingleValueEvent(
-//                new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        // Get user value
-//                        FirebaseBasaDevice firebaseBasaDevice = dataSnapshot.getValue(FirebaseBasaDevice.class);
-//                        List<Zone> zones = AppController.getInstance().loadZones();
-//                        String id = firebaseBasaDevice.getUuid();
-//
-//                        for (Zone z: zones) {
-//                            for (BasaDevice d: z.getDevices()) {
-//                                if(d.getId().equals(id)){
-//                                    d.setLatestTemperature(firebaseBasaDevice.getCurrentTemperature());
-//                                    d.setNumLights(firebaseBasaDevice.getLights().size());
-//                                    d.setLights(firebaseBasaDevice.getLights());
-//
-//                                    if(getActivity() != null && getActivity().getCommunicationHomeFragment() != null){
-//                                        getActivity().getCommunicationHomeFragment().updateZone();
-//                                    }
-//                                    return;
-//                                }
-//                            }
-//                        }
-//                        // ...
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-//                    }
-//                });
-//    }
+    public void updateLocation(String deviceId, String userId, UserLocation location){
 
+        mDatabase.child("location").child(deviceId).child(userId).setValue(location);
 
+    }
 
 
 
     public List<ValueEventListener> getZoneDevicesListener(final String deviceId){
-
-//        mDatabase.child("devices").child(deviceId).child("changeTemperature").setValue(temperature);
-
 
 //        ValueEventListener lightsListener = new ValueEventListener() {
 //            @Override
@@ -136,55 +103,6 @@ public class FirebaseHelper {
 //                                    getActivity().getCommunicationHomeFragment().updateZone(false);
 //                            }
 //                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Getting Post failed, log a message
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                // ...
-//            }
-//        };
-
-//        ValueEventListener liveVideoListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Get Post object and use the values to update the UI
-//                Log.d("fire", "liveVideoListener->"+dataSnapshot.toString());
-//                GenericTypeIndicator<HashMap<String, String>> t = new GenericTypeIndicator<HashMap<String, String>>() {};
-//
-//                HashMap<String, String> videos = dataSnapshot.getValue(t);
-//                if(videos != null) {
-////                BasaDevice device = BasaDevice.getDeviceById(deviceId);
-//
-////                device.setLiveVideos(videos);
-//
-//
-//                    List<Zone> zones = AppController.getInstance().loadZones();
-//
-//                    BasaDevice device = null;
-//                    for (Zone z : zones) {
-//                        for (BasaDevice d : z.getDevices()) {
-//                            if (d.getId().equals(deviceId)) {
-//                                d.setLiveVideos(videos);
-//                                device = d;
-//                            }
-//                        }
-//                    }
-//
-//                    TreeMap<String, String> v = new TreeMap<>();
-//                    v.putAll(device.getLiveVideos());
-//                    Log.d("key fire:", "device:" + device.getId());
-//                    for (Map.Entry<String, String> entry : v.entrySet())
-//                        Log.d("key fire:", "key:" + entry.getKey());
-//                    Log.d("key fire:", "lastEntry:" + v.lastEntry().getKey());
-//                    Log.d("key fire:", "firstEntry:" + v.firstEntry().getKey());
-//
-//                    Log.d("fire", "liveVideoListener device.getLiveVideos()->" + device.getLiveVideos().size());
-//                    for (GenericCommunicationToFragment generic : getActivity().getGenericCommunicationList()) {
-//                        generic.onDataChanged(deviceId);
 //                    }
 //                }
 //            }
@@ -238,8 +156,6 @@ public class FirebaseHelper {
         };
 
         List<ValueEventListener> list = new ArrayList<>();
-//        mDatabase.child("devices").child(deviceId).child("lights").addValueEventListener(lightsListener);
-//        list.add(mDatabase.child("live").child(deviceId).addValueEventListener(liveVideoListener));
         list.add(mDatabase.child("devices").child(deviceId).addValueEventListener(postListener));
 
         return list;

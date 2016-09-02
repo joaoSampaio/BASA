@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ import java.util.TreeMap;
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
+import pt.ulisboa.tecnico.basa.model.UserLocation;
 import pt.ulisboa.tecnico.basa.model.firebase.FirebaseBasaDevice;
 import pt.ulisboa.tecnico.basa.model.firebase.FirebaseFileLink;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
@@ -195,7 +197,48 @@ public class FirebaseHelper {
         };
 
 
-//        mDatabase.child("devices").child(AppController.getInstance().getDeviceConfig().getUuid()).addValueEventListener(lightListener);
+
+        ChildEventListener locationListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                UserLocation userLocation = dataSnapshot.getValue(UserLocation.class);
+                if((System.currentTimeMillis() - userLocation.getDate())  <  30000 )
+                    AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(dataSnapshot.getKey(), userLocation);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+                UserLocation userLocation = dataSnapshot.getValue(UserLocation.class);
+                if((System.currentTimeMillis() - userLocation.getDate())  <  30000 )
+                    AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(dataSnapshot.getKey(), userLocation);
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+
+
+
+
+        mDatabase.child("location").child(AppController.getInstance().getDeviceConfig().getUuid()).addChildEventListener(locationListener);
         mDatabase.child("devices").child(AppController.getInstance().getDeviceConfig().getUuid()).child("lights").addValueEventListener(lightListener);
         mDatabase.child("devices").child(AppController.getInstance().getDeviceConfig().getUuid()).child("changeTemperature").addValueEventListener(temperatureListener);
         mDatabase.child("devices").child(AppController.getInstance().getDeviceConfig().getUuid()).child("record").addValueEventListener(liveStreamListener);

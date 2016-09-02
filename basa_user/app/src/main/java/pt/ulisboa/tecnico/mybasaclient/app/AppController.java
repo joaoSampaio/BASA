@@ -99,7 +99,7 @@ public class AppController extends Application {
                                     if (beaconId.toLowerCase().equals(eddy.namespace.toLowerCase())) {
                                         //enviar mensagem
                                         Log.d(TAG, ": is near office sending msg...");
-                                        new UpdateLocationService(device.getUrl(), new UserLocation(true, UserLocation.TYPE_OFFICE), new CallbackFromService() {
+                                        new UpdateLocationService(device, new UserLocation(true, UserLocation.TYPE_OFFICE), new CallbackFromService() {
                                             @Override
                                             public void success(Object response) {}
                                             @Override

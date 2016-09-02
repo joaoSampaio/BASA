@@ -62,6 +62,8 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
             Log.d("wifi", "SCAN_RESULTS_AVAILABLE_ACTION:" );
 
+
+
             if(AppController.getInstance().getLoggedUser() != null &&
                     AppController.getInstance().getLoggedUser().isEnableTracking()) {
                 context.startService(new Intent(context, WifiLocationService.class));
@@ -70,7 +72,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             List<ScanResult> mScanResults = mWifiManager.getScanResults();
-
+            Log.d("wifi", "mScanResults3: " + mScanResults.size());
 
             if(AppController.getInstance().getScanResultAvailableListener() != null)
                 AppController.getInstance().getScanResultAvailableListener().onResultsAvailable(mScanResults);

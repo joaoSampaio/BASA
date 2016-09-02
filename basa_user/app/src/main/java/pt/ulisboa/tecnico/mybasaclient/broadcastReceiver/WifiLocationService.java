@@ -82,7 +82,7 @@ private int misses;
                                 if(mac.toLowerCase().equals(result.BSSID.toLowerCase())){
                                     Log.d("wifi2", ": is in building sending msg...");
                                     //enviar mensagem
-                                    new UpdateLocationService(device.getUrl(), new UserLocation(true, UserLocation.TYPE_BUILDING), new CallbackFromService() {
+                                    new UpdateLocationService(device, new UserLocation(true, UserLocation.TYPE_BUILDING), new CallbackFromService() {
                                         @Override
                                         public void success(Object response) {}
                                         @Override
