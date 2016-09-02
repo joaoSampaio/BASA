@@ -27,6 +27,7 @@ public class BasaSensorManager implements SensorEventListener {
     public final static long NO_MOVEMENT_PERIOD = 20000; //20s
     private long timeLastNoMovement = 0;
     private boolean latestMotionReading;
+    private long timeStartUp = System.currentTimeMillis();
 
     public BasaSensorManager() {
         mSensorManager = (SensorManager) AppController.getAppContext().getSystemService(Context.SENSOR_SERVICE);
@@ -45,6 +46,13 @@ public class BasaSensorManager implements SensorEventListener {
 
     public void setMotionSensorDetected(boolean isDetected){
         long current = System.currentTimeMillis();
+
+        if((current - timeStartUp) < 5000)
+        {
+            Log.d("BasaSensorManager", "ignoring first 5s since start app");
+            return;
+        }
+
         if (isDetected) {
             timeLastMovement = current;
             timeLastNoMovement = current;

@@ -545,6 +545,7 @@ public class EventManager {
 
     public void stop(){
         Log.d("EVENT", "EventManager stop ");
+        AppController.getInstance().saveHistory(AppController.getInstance().getHistory());
         handler.removeCallbacks(run);
         clearTimerRunnable();
         interests.clear();

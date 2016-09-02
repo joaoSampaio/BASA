@@ -21,6 +21,7 @@ import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
@@ -38,6 +39,8 @@ public class TemperatureManager {
     private Temperature latestTemperature;
     private BasaManager basaManager;
     Handler handler;
+    private long lastCheck = 0;
+    private boolean calledUpdate = false;
     private String urlTemperature;
     private InterestEventAssociation interest;
 
@@ -46,7 +49,6 @@ public class TemperatureManager {
     public TemperatureManager(BasaManager basaManager){
         this.basaManager = basaManager;
         actionTemperatureManagerList = new ArrayList<>();
-        Log.d("tempera", "TemperatureManager:"+(actionTemperatureManagerList != null));
         preferences = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
         handler = new Handler();
 
@@ -67,22 +69,40 @@ public class TemperatureManager {
         preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
 //        updateLocation();
 
+
+        WeatherForecast forecast = WeatherForecast.load();
+        if(forecast != null)
+            Log.d("TemperatureManager", "forecast.isUpToDate():" + forecast.isUpToDate());
+
+        if(forecast == null || !forecast.isUpToDate()){
+            updateWeather();
+        }
+
+
         getBasaManager().getEventManager().registerInterest(new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {
 
                 if(event instanceof EventTime){
                     EventTime time = (EventTime)event;
-
+                    if((time.getDate() - lastCheck) > 45*60*1000)
+                        lastCheck = time.getDate();
                     if(getGlobalTemperatureForecast() != null) {
 
                         WeatherForecast forecast = WeatherForecast.load();
+
+                        if(forecast == null || !forecast.isUpToDate()){
+                            if(forecast != null)
+                                Log.d("TemperatureManager", "forecast.isUpToDate()222:" + forecast.isUpToDate());
+                                updateWeather();
+                            return;
+                        }
+
                         if(forecast != null && forecast.getCurrent() != null){
                             HourlyForecast hourlyForecast = forecast.getCurrent();
                             if(hourlyForecast != null){
                                 getGlobalTemperatureForecast().onChangeForecast(hourlyForecast.getTemp().getTemperature(), hourlyForecast.getIcon(), hourlyForecast.getCondition());
                             }
-
                         }
                     }
                 }
@@ -119,6 +139,28 @@ public class TemperatureManager {
 
 
 
+    }
+
+    private void updateWeather(){
+        calledUpdate = true;
+        new GetTemperatureListService(new CallbackMultiple<WeatherForecast, Object>() {
+            @Override
+            public void success(WeatherForecast forecast) {
+                forecast.save();
+                if(forecast != null && forecast.getCurrent() != null){
+                    HourlyForecast hourlyForecast = forecast.getCurrent();
+                    if(hourlyForecast != null){
+                        getGlobalTemperatureForecast().onChangeForecast(hourlyForecast.getTemp().getTemperature(), hourlyForecast.getIcon(), hourlyForecast.getCondition());
+                    }
+                }
+                calledUpdate = false;
+            }
+
+            @Override
+            public void failed(Object error) {
+                calledUpdate = false;
+            }
+        }).execute();
     }
 
     public interface ActionTemperatureManager{

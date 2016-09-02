@@ -226,14 +226,14 @@ public class Launch2Activity extends FragmentActivity implements
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_temperature),
                         Color.parseColor(colors[1]))
-                        .selectedIcon(getResources().getDrawable(R.drawable.ic_light))
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_temperature))
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
                         getResources().getDrawable(R.drawable.ic_option),
                         Color.parseColor(colors[2]))
-                        .selectedIcon(getResources().getDrawable(R.drawable.ic_light))
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_option))
                         .build()
         );
 
@@ -358,6 +358,7 @@ public class Launch2Activity extends FragmentActivity implements
         super.onResume();
         Log.d("myapp_new", "****onResume onResume onResume: ");
         this.handler = new Handler();
+        findViewById(R.id.viewRecording).setVisibility(View.GONE);
         BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
         if(config != null) {
 

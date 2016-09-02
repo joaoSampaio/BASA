@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Display;
 import android.view.TextureView;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -284,6 +285,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
         mediaRecorder.start();
         recording = true;
+        getActivity().findViewById(R.id.viewRecording).setVisibility(View.VISIBLE);
         startRecording = false;
         mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
             @Override
@@ -294,6 +296,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                     String path = new String(latestFilePath);
                     String filename = new String(latestFileName);
                     recording = false;
+//                    if(getActivity() != null)
+                    getActivity().findViewById(R.id.viewRecording).setVisibility(View.GONE);
                     if(startRecording) {
                         Log.v("camera","startRecording is true*****************************");
                         startRecord();

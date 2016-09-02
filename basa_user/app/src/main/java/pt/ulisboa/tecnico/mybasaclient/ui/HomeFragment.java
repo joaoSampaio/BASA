@@ -220,7 +220,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 updateHomeAway();
                 showHomeAway(false, true);
                 for(BasaDevice device : current.getDevices()) {
-                    new UpdateLocationService(device, new UserLocation(current.isUserInZone(), UserLocation.TYPE_BUILDING), new CallbackFromService() {
+                    new UpdateLocationService(device, new UserLocation(current.isUserInZone(), UserLocation.TYPE_OFFICE), new CallbackFromService() {
                         @Override
                         public void success(Object response) {
                         }

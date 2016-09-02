@@ -163,9 +163,18 @@ public class UserManager implements Manager {
                     time = time + userLocation.getDuration();
                 }
                 officeLocation.put(userID, time);
+
+                //add heartbeat to building
+                addUserHeartbeat(userID, new UserLocation(true, UserLocation.TYPE_BUILDING ));
+
+
+
             }else{
                 officeLocation.remove(userID);
             }
+
+
+
 
         }else if(type == UserLocation.TYPE_BUILDING){
 

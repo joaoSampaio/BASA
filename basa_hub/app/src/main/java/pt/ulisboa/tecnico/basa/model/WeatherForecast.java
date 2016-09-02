@@ -1,11 +1,8 @@
 package pt.ulisboa.tecnico.basa.model;
 
-import android.util.Log;
-
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.Global;
@@ -39,16 +36,32 @@ public class WeatherForecast {
     public void save(){
         new  ModelCache<WeatherForecast>().saveModel(this, Global.OFFLINE_WEATHER);
     }
+
+    public boolean isUpToDate(){
+        if(!hourly_forecast.isEmpty()){
+
+            HourlyForecast lastOne = hourly_forecast.get(hourly_forecast.size()-1);
+
+//            Log.d("web", "lastOne getEpoch:"+lastOne.getFCTTIME().getEpoch());
+//            Log.d("web", "currentTimeMil():"+System.currentTimeMillis());
+//            Log.d("web", "diff():"+(System.currentTimeMillis()/1000 - lastOne.getFCTTIME().getEpoch()));
+            return (System.currentTimeMillis()/1000 - lastOne.getFCTTIME().getEpoch() < 60*60*1000);
+
+
+        }
+        return false;
+    }
+
 //    1461773681
 //    1461776400
     public HourlyForecast getCurrent(){
-        long currentTime = new Date().getTime() / 1000;
-        Log.d("web", "epoch:"+currentTime);
+        long currentTime = System.currentTimeMillis()/1000;
+//        Log.d("web", "epoch:"+currentTime);
         for (HourlyForecast forecast: hourly_forecast){
             long oneHour = 60*60;
-            long difference = forecast.getFCTTIME().getEpoch() - currentTime;
-            Log.d("web", "getEpoch:"+forecast.getFCTTIME().getEpoch());
-            Log.d("web", "difference:"+difference);
+            long difference = currentTime - forecast.getFCTTIME().getEpoch() ;
+//            Log.d("web", "getEpoch:"+forecast.getFCTTIME().getEpoch());
+//            Log.d("web", "difference:"+difference + "      " + forecast.getFCTTIME().getHour_padded());
             if(difference> 0 && difference < oneHour){
                 return forecast;
             }

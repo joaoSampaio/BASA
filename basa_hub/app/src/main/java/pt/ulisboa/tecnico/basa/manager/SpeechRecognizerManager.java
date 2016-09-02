@@ -323,7 +323,7 @@ public class SpeechRecognizerManager {
                 return;
             }
             long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
-            if (duration < 500 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+            if (duration < 2000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 Log.e(TAG, "Doesn't seem like the system tried to listen at all. duration = " + duration + "ms. This might be a bug with onError and startListening methods of SpeechRecognizer");
                 Log.e(TAG, "Going to ignore the error");
                 return;
@@ -338,23 +338,9 @@ public class SpeechRecognizerManager {
             if (duration > 5000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 mGoogleSpeechRecognizer.cancel();
                 mPocketSphinxRecognizer.startListening(KWS_SEARCH);
+            }else {
+                speechRecognizerStartListening(mSpeechRecognizerIntent);
             }
-
-            speechRecognizerStartListening(mSpeechRecognizerIntent);
-//            mGoogleSpeechRecognizer.cancel();
-
-//
-            Log.d(TAG, "getBasaManager().getTextToSpeechManager():");
-//            if(getBasaManager().getTextToSpeechManager() != null)
-//                getBasaManager().getTextToSpeechManager().speak("I'm sorry please repeat");
-
-            Log.d(TAG, "mPocketSphinxRecognizer.startListening do erro google:");
-
-
-
-//            mPocketSphinxRecognizer.startListening(KWS_SEARCH);
-            //mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
-
         }
 
         @Override
@@ -382,6 +368,8 @@ public class SpeechRecognizerManager {
                             + " confidence:" + scores[i]);
 
                 }
+                if(!heard.isEmpty())
+                    Toast.makeText(AppController.getAppContext(), "You said: " + heard.get(0), Toast.LENGTH_SHORT).show();
 
                 getBasaManager().getEventManager().addEvent(new EventSpeech(heard));
 

@@ -45,6 +45,15 @@
 
     </FrameLayout>
 
+    <View
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/viewRecording"
+        android:layout_alignTop="@+id/camera_preview"
+        android:layout_alignLeft="@+id/camera_preview"
+        android:background="@drawable/recording_red"
+         />
+
     <com.gigamole.navigationtabbar.ntb.NavigationTabBar
         android:id="@+id/ntb_vertical"
         android:layout_width="75dp"
