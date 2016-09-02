@@ -13,8 +13,8 @@ public class FirebaseBasaDevice {
     private int currentTemperature;
     private int changeTemperature;
     private List<Boolean> lights;
-    private HashMap<String, String> liveVideo;
-    private HashMap<String, String> videos;
+    private List<String> macList;
+    private List<String> beaconList;
     private boolean record;
 
     public FirebaseBasaDevice() {
@@ -60,20 +60,20 @@ public class FirebaseBasaDevice {
         this.lights = lights;
     }
 
-    public HashMap<String, String> getLiveVideo() {
-        return liveVideo;
+    public List<String> getBeaconList() {
+        return beaconList;
     }
 
-    public void setLiveVideo(HashMap<String, String> liveVideo) {
-        this.liveVideo = liveVideo;
+    public void setBeaconList(List<String> beaconList) {
+        this.beaconList = beaconList;
     }
 
-    public HashMap<String, String> getVideos() {
-        return videos;
+    public List<String> getMacList() {
+        return macList;
     }
 
-    public void setVideos(HashMap<String, String> videos) {
-        this.videos = videos;
+    public void setMacList(List<String> macList) {
+        this.macList = macList;
     }
 
     public boolean isRecord() {

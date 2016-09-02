@@ -102,11 +102,13 @@ private int misses;
                     misses++;
                 else {
                     AppController.getInstance().beaconStart();
-
+                    misses = 0;
                 }
                 Log.d("wifi2", "misses:" + misses);
                 if(misses >= 20) {
                     misses = 0;
+                    //in case beacon was on
+                    AppController.getInstance().beaconDisconect();
                     wl.release();
                     stopSelf();
                 }else{

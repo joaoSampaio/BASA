@@ -40,7 +40,8 @@ public class AppController extends Application {
     private Zone currentZone;
     private BasaDevice currentDevice;
     private boolean isBLEStarted;
-
+    private long timeLastBeaconFound;
+    private final static long SHUTDOWN_TIMEOUT_BLE = 60*60*1000; //1hour in case it is not shutdown before
     private ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener;
 
     @Override
@@ -53,6 +54,7 @@ public class AppController extends Application {
 
         EstimoteSDK.enableDebugLogging(true);
         isBLEStarted = false;
+        beaconStart();
 
     }
 
@@ -81,11 +83,14 @@ public class AppController extends Application {
             beaconManager.setBackgroundScanPeriod(1000, 5000);
             beaconManager.setForegroundScanPeriod(1000, 5000);
 
-
+            timeLastBeaconFound = System.currentTimeMillis();
             beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
                 @Override
                 public void onEddystonesFound(List<Eddystone> list) {
                     Log.d(TAG, "list:" + list.size());
+
+
+
                     for (Eddystone eddy : list) {
                         Log.d(TAG, eddy.namespace + ": eddy namespace:");
 
@@ -105,12 +110,22 @@ public class AppController extends Application {
                                             @Override
                                             public void failed(Object error) {}
                                         }).execute();
+                                        timeLastBeaconFound = System.currentTimeMillis();
+
                                         break;
                                     }
                                 }
                             }
                         }
                     }
+
+
+                    if((System.currentTimeMillis() - timeLastBeaconFound) > SHUTDOWN_TIMEOUT_BLE){
+
+                        beaconDisconect();
+
+                    }
+
                 }
             });
 

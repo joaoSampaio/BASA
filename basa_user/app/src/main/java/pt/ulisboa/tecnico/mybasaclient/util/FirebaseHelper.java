@@ -129,6 +129,8 @@ public class FirebaseHelper {
                 for (Zone z: zones) {
                     for (BasaDevice d: z.getDevices()) {
                         if(d.getId().equals(id)){
+                            d.setBeaconUuids(firebaseBasaDevice.getBeaconList());
+                            d.setMacAddress(firebaseBasaDevice.getMacList());
                             d.setLatestTemperature(firebaseBasaDevice.getCurrentTemperature());
                             d.setNumLights(firebaseBasaDevice.getLights().size());
                             d.setLights(firebaseBasaDevice.getLights());
