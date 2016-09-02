@@ -468,7 +468,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             if (data == null) return;
 
 //            ImageProcessing.bitmapToRGB(data);
-
+            AppController.getInstance().widthPreview = data.getWidth();
+            AppController.getInstance().heightPreview = data.getHeight();
 
 
             DetectionThread thread = new DetectionThread(data);

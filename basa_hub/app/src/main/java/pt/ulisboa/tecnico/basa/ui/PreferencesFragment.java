@@ -90,13 +90,18 @@ public class PreferencesFragment extends PreferenceFragment implements
 
         }else if(key.equals("LOCATION_BLE")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            AppController.getInstance().getDeviceConfig().setMacList(getList(preferences.getString("LOCATION_BLE", "")));
+            AppController.getInstance().getDeviceConfig().setBeaconList(getList(preferences.getString("LOCATION_BLE", "")));
             AppController.getInstance().saveDeviceConfig();
             new FirebaseHelper().updateDeviceLocationList();
 
         }else if(key.equals("light_number")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             AppController.getInstance().getDeviceConfig().setEdupNumLight(Integer.parseInt(preferences.getString("light_number", "1")));
+            AppController.getInstance().saveDeviceConfig();
+
+        }else if(key.equals("BEACON_UUID")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature(preferences.getString("BEACON_UUID", ""));
             AppController.getInstance().saveDeviceConfig();
 
         }

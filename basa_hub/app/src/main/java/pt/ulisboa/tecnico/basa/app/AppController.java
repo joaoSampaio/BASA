@@ -105,7 +105,7 @@ public class AppController extends Application {
 
             beaconManager = new BeaconManager(getApplicationContext());
         beaconManager.setBackgroundScanPeriod(1300, 25000);
-        beaconManager.setForegroundScanPeriod(5000,25000);
+        beaconManager.setForegroundScanPeriod(13000,1000);
 
 //        beaconManager.setBackgroundScanPeriod(1300, 25000);
 //        beaconManager.setForegroundScanPeriod(1000,5000);

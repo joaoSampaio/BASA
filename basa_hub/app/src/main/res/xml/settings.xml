@@ -65,6 +65,11 @@
             android:key="btn_scan_hvac"
             android:summary="Scan for compatible HVAC in local network"/>
 
+        <EditTextPreference
+            android:key="BEACON_UUID"
+            android:title="Beacon namespace"
+            android:summary="The estimote beacon namespace to retrieve the temperature."
+            android:dialogTitle="Beacon namespace" />
 
 
     </PreferenceCategory>
@@ -83,7 +88,7 @@
             android:key="LOCATION_BLE"
             android:title="Room location"
             android:summary="List of beacon uuid, the beacons are spaced near the room and allow finer location control."
-            android:dialogTitle="Firebase account email" />
+            android:dialogTitle="Room location" />
     </PreferenceCategory>
 
 

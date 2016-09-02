@@ -72,6 +72,7 @@ public class SpeechRecognizerManager {
     private BasaManager basaManager;
     protected long mSpeechRecognizerStartListeningTime = 0;
     private boolean mSuccess;
+    private boolean isGoogleRunning = false;
 
     public SpeechRecognizerManager( BasaManager basaManager) {
         this.basaManager = basaManager;
@@ -231,14 +232,21 @@ public class SpeechRecognizerManager {
             if (results[0].trim().equals(KEYPHRASE)) {
 
 
-                AudioManager manager = (AudioManager) AppController.getAppContext().getSystemService(Context.AUDIO_SERVICE);
-                manager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-
-
-                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+//                AudioManager manager = (AudioManager) AppController.getAppContext().getSystemService(Context.AUDIO_SERVICE);
+//                manager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+//
+//
+//                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+//                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
                 Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
-                speechRecognizerStartListening(mSpeechRecognizerIntent);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        speechRecognizerStartListening(mSpeechRecognizerIntent);
+                    }
+                }, 800);
+
 
 //                mPocketSphinxRecognizer.stop();
                 mPocketSphinxRecognizer.cancel();
@@ -291,6 +299,7 @@ public class SpeechRecognizerManager {
         @Override
         public void onBeginningOfSpeech() {
             Log.d(TAG, "mGoogleSpeechRecognizer.onBeginningOfSpeech");
+            isGoogleRunning = true;
         }
 
         @Override
@@ -316,16 +325,24 @@ public class SpeechRecognizerManager {
         @Override
         public synchronized void onError(int error) {
             Log.e(TAG, "onError:" + error);
-
+            isGoogleRunning = false;
 
             if (mSuccess) {
                 Log.e(TAG, "Already success, ignoring error");
                 return;
             }
             long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
-            if (duration < 2000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+            if (duration < 500 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 Log.e(TAG, "Doesn't seem like the system tried to listen at all. duration = " + duration + "ms. This might be a bug with onError and startListening methods of SpeechRecognizer");
                 Log.e(TAG, "Going to ignore the error");
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if(!isGoogleRunning){
+//                            speechRecognizerStartListening(mSpeechRecognizerIntent);
+//                        }
+//                    }
+//                },1500);
                 return;
             }
             if (duration < 500 && error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
@@ -335,7 +352,7 @@ public class SpeechRecognizerManager {
                 return;
             }
 
-            if (duration > 5000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+            if (duration > 7000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 mGoogleSpeechRecognizer.cancel();
                 mPocketSphinxRecognizer.startListening(KWS_SEARCH);
             }else {

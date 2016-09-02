@@ -68,7 +68,9 @@ public class VideoManager {
                 if (event instanceof EventOccupantDetected) {
                     EventOccupantDetected motion = (EventOccupantDetected)event;
 
-                    if(motion.isDetected()){
+                    //movement detected and no user in office
+                    if(motion.isDetected() &&
+                            AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0){
                         timeLastMovement = System.currentTimeMillis();
                         startVideoRecording();
                     }

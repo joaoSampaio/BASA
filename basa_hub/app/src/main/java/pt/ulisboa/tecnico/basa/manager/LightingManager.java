@@ -109,7 +109,6 @@ public class LightingManager implements
         Log.d("light", "toggleLight");
         if(this.lights != null && lightId < this.lights.size()){
 
-//            this.lights.set(lightId, !this.lights.get(lightId));
             if (!this.lights.get(lightId))
                 turnONLight(lightId, true, true);
             else

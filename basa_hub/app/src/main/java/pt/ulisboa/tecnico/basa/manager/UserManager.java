@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.basa.manager;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.WriterException;
@@ -93,6 +94,7 @@ public class UserManager implements Manager {
                     }
 
                     tmp = new HashMap<>(officeLocation);
+                    Log.d("sss","check timeout " + officeLocation.size() );
                     for ( Map.Entry<String, Long> entry : tmp.entrySet() ){
                         //when a timeout occurs
                         if(current > (entry.getValue() + TIMEOUT_OFFICE)){

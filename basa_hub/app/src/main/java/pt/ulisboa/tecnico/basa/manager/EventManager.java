@@ -236,48 +236,77 @@ public class EventManager {
                                 if (event instanceof EventUserLocation) {
                                     EventUserLocation location = (EventUserLocation)event;
 
+                                    String t = "sss";
+                                    //User arrives at building
+                                    if(location.getLocation() == EventUserLocation.TYPE_BUILDING
+                                            && location.isInBuilding()
+                                            && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_BUILDING
+                                            && location.isFirstArrive()){
+                                        Log.d(t,"User arrives at building" );
+
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+
+                                        //needs return because inside building would also be triggered
+                                        return;
+                                    }
+
+                                    //User arrives at office
+                                    if(location.getLocation() == EventUserLocation.TYPE_OFFICE
+                                            && location.isInBuilding()
+                                            && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_OFFICE
+                                            && location.isFirstArrive()){
+                                        Log.d(t,"User arrives at office" );
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+
+                                        //needs return because inside office would also be triggered
+                                        return;
+                                    }
+
+                                    //User is inside office
+                                    if(location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()
+                                            && trigger.getParametersInt(0) == LocationTrigger.INSIDE_OFFICE){
+                                        Log.d(t,"User is inside office" );
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    }
+
+                                    //User is inside building
                                     if(location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.INSIDE_BUILDING){
 
-
+                                        Log.d(t,"User is inside building" );
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);
                                     }
+
+                                    //User leaves building
                                     if(location.getLocation() == EventUserLocation.TYPE_BUILDING && !location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.EXIT_BUILDING){
+                                        Log.d(t,"User leaves building" );
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);
                                     }
 
-                                    if(location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()
-                                            && trigger.getParametersInt(0) == LocationTrigger.INSIDE_OFFICE){
-                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
-                                            doAction(recipeFinal);
-                                    }
-
+                                    //User leaves office
                                     if(location.getLocation() == EventUserLocation.TYPE_OFFICE && !location.isInBuilding()
                                             && trigger.getParametersInt(0) == LocationTrigger.EXIT_OFFICE){
+                                        Log.d(t,"User leaves office" );
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);
                                     }
 
-                                    if(location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()
-                                            && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_OFFICE){
-                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
-                                            doAction(recipeFinal);
-                                    }
 
-                                    if(location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()
-                                            && trigger.getParametersInt(0) == LocationTrigger.ARRIVES_BUILDING){
-                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
-                                            doAction(recipeFinal);
-                                    }
+
+                                    //No user inside building
                                     int numBuilding = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersBuilding();
                                     if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_BUILDING && numBuilding == 0){
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);
                                     }
 
+                                    //No user inside office
                                     int numOffice = AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice();
                                     if(trigger.getParametersInt(0) == LocationTrigger.NO_USER_IN_OFFICE && numOffice == 0){
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))

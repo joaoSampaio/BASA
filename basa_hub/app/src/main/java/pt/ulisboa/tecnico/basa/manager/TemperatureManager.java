@@ -32,6 +32,7 @@ public class TemperatureManager {
     public final static int COLD = 0;
     public final static int HEAT = 1;
     public final static int COLD_AND_HEAT = 2;
+    WeatherForecast forecast;
     private List<ActionTemperatureManager> actionTemperatureManagerList;
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
     private GlobalTemperatureForecast globalTemperatureForecast;
@@ -70,7 +71,7 @@ public class TemperatureManager {
 //        updateLocation();
 
 
-        WeatherForecast forecast = WeatherForecast.load();
+        forecast = WeatherForecast.load();
         if(forecast != null)
             Log.d("TemperatureManager", "forecast.isUpToDate():" + forecast.isUpToDate());
 
@@ -88,8 +89,6 @@ public class TemperatureManager {
                     if((time.getDate() - lastCheck) > 45*60*1000)
                         lastCheck = time.getDate();
                     if(getGlobalTemperatureForecast() != null) {
-
-                        WeatherForecast forecast = WeatherForecast.load();
 
                         if(forecast == null || !forecast.isUpToDate()){
                             if(forecast != null)
@@ -145,7 +144,8 @@ public class TemperatureManager {
         calledUpdate = true;
         new GetTemperatureListService(new CallbackMultiple<WeatherForecast, Object>() {
             @Override
-            public void success(WeatherForecast forecast) {
+            public void success(WeatherForecast forecastWeb) {
+                forecast = forecastWeb;
                 forecast.save();
                 if(forecast != null && forecast.getCurrent() != null){
                     HourlyForecast hourlyForecast = forecast.getCurrent();
