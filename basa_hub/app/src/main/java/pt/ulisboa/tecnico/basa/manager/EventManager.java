@@ -125,6 +125,7 @@ public class EventManager {
 
                         result = "User " + name + " left the office";
                     }
+                    AppController.getInstance().getStatisticalData().addOccupantEvent(((EventUserLocation)event));
                 }
 
                 break;

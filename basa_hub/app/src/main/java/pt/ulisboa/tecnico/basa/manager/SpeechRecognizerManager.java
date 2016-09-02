@@ -30,7 +30,10 @@
 
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -227,6 +230,13 @@ public class SpeechRecognizerManager {
             Log.d(TAG, "last result:" + results[0]);
             if (results[0].trim().equals(KEYPHRASE)) {
 
+
+                AudioManager manager = (AudioManager) AppController.getAppContext().getSystemService(Context.AUDIO_SERVICE);
+                manager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+
+
+                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
                 Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
                 speechRecognizerStartListening(mSpeechRecognizerIntent);
 
@@ -243,7 +253,7 @@ public class SpeechRecognizerManager {
 
 
 
-                Toast.makeText(AppController.getAppContext(), "You said: " + text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppController.getAppContext(), "You said: " + results[0].trim(), Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -276,8 +286,7 @@ public class SpeechRecognizerManager {
     protected class GoogleRecognitionListener implements
             android.speech.RecognitionListener {
 
-        private final String TAG = GoogleRecognitionListener.class
-                .getSimpleName();
+        private final String TAG = "SpeechRecognizerManager";
 
         @Override
         public void onBeginningOfSpeech() {

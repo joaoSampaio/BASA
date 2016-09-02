@@ -88,8 +88,10 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         AppController.getInstance().getBasaManager().getVideoManager().setCommandVideoCamera(new VideoManager.CommandVideoCamera() {
             @Override
             public void startRecording() {
-                startRecording = true;
-                startRecord();
+                if(!recording) {
+                    startRecording = true;
+                    startRecord();
+                }
             }
 
             @Override
@@ -215,10 +217,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         AudioManager manager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         int[] streams = new int[] { AudioManager.STREAM_ALARM,
-                AudioManager.STREAM_DTMF, AudioManager.STREAM_MUSIC,
+                AudioManager.STREAM_DTMF,
                 AudioManager.STREAM_RING, AudioManager.STREAM_SYSTEM,
                 AudioManager.STREAM_VOICE_CALL };
-
         for (int stream : streams)
             manager.setStreamMute(stream, mute);
     }

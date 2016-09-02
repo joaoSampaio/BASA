@@ -330,16 +330,11 @@ public class StatisticsFragment extends DialogFragment  {
         ArrayList<Entry> values = new ArrayList<Entry>();
         lightsData =  AppController.getInstance().getStatisticalData().getLights();
 
-
+        Log.d("stats", " setDataLights:" + lightsData.size());
         long now = System.currentTimeMillis();
         long hourMillis = 3600000L;
-//        lightsData.add(new StatisticalEvent(now + 32*hourMillis, 2));
-
 
         long xValue, largestValue, shiftValue;
-
-//        if(!lightsData.isEmpty())
-//            values.add( new Entry((System.currentTimeMillis() - lightsData.get(0).getX())/1000, lightsData.get(lightsData.size()-1).getY()));
 
         largestValue = (lightsData.get(lightsData.size()-1).getX()- lightsData.get(0).getX())/1000;
         mappingLargestValue = largestValue;
@@ -382,34 +377,44 @@ public class StatisticsFragment extends DialogFragment  {
 
     private void setDataOccupancy() {
         mChart.clear();
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        lightsData =  AppController.getInstance().getStatisticalData().getOccupantsBuilding();
+
+        Log.d("stats", " setDataLights:" + lightsData.size());
         long now = System.currentTimeMillis();
         long hourMillis = 3600000L;
-        long minuteMillis = 60000L;
-        long secondMillis = 1000L;
-        ArrayList<Entry> values = new ArrayList<Entry>();
+
+        long xValue, largestValue, shiftValue;
+
+        largestValue = (lightsData.get(lightsData.size()-1).getX()- lightsData.get(0).getX())/1000;
+        mappingLargestValue = largestValue;
+        for(StatisticalEvent stat : lightsData){
+            Log.d("stats", "original x:"+stat.getX() + " y:"+stat.getY());
+
+            xValue = (stat.getX() - lightsData.get(0).getX())/1000;
+            shiftValue = largestValue - xValue;
+            values.add(0, new Entry(shiftValue , stat.getY()));
+        }
 
 
-        values.add(new Entry(now, 0));
-        values.add(new Entry(now + 1*secondMillis, 1));
-        values.add(new Entry(now + 2*secondMillis, 1));
-        values.add(new Entry(now + 3*secondMillis, 2));
-        values.add(new Entry(now + 4*secondMillis, 0));
-        values.add(new Entry(now + 5*secondMillis, 0));
 
+        for(Entry stat : values){
+            Log.d("stats", " x:"+stat.getX() + " y:"+stat.getY());
+        }
         // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(values, "Nº Occupants");
+        LineDataSet set1 = new LineDataSet(values, "Building occupants");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(ColorTemplate.getHoloBlue());
-        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setColor(Color.BLUE);
+        set1.setValueTextColor(Color.BLACK);
         set1.setLineWidth(1.5f);
         set1.setDrawCircles(false);
         set1.setDrawValues(false);
         set1.setFillAlpha(65);
-        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setFillColor(Color.BLUE);
         set1.setHighLightColor(Color.rgb(244, 117, 117));
         set1.setDrawCircleHole(false);
         set1.setMode(LineDataSet.Mode.STEPPED);
-
+//        set1.setDrawFilled(true);
         // create a data object with the datasets
         LineData data = new LineData(set1);
         data.setValueTextColor(Color.BLACK);

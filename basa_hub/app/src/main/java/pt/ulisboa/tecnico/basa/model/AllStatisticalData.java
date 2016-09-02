@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.manager.UserManager;
 import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
+import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 /**
@@ -68,14 +70,21 @@ public class AllStatisticalData {
         getTemperature().add(event);
     }
 
-    public void addOccupantOfficeEvent(StatisticalEvent event){
-        getOccupantsOffice().add(event);
-    }
+    public void addOccupantEvent(EventUserLocation location){
+        StatisticalEvent statisticalEvent = null;
+        UserManager userManager = AppController.getInstance().getBasaManager().getUserManager();
+        if (location.getLocation() == EventUserLocation.TYPE_BUILDING ) {
+            statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), userManager.numActiveUsersBuilding());
+            getOccupantsBuilding().add(statisticalEvent);
+        }else{
+            statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), userManager.numActiveUsersOffice());
+            getOccupantsOffice().add(statisticalEvent);
+        }
 
-    public void addOccupantBuildingEvent(StatisticalEvent event){
-        getOccupantsBuilding().add(event);
-    }
 
+        save(this);
+
+    }
 
     public static AllStatisticalData load(){
         AllStatisticalData stats = new ModelCache<AllStatisticalData>().loadModel(new TypeToken<AllStatisticalData>(){}.getType(), "stats_4");
