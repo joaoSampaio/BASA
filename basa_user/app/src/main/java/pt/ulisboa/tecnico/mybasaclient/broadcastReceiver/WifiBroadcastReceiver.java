@@ -7,14 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-
-import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
@@ -38,9 +35,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 mobile != null && mobile.isConnectedOrConnecting();
         if (isConnected) {
             Log.d("Network Available ", "YES");
-//            Intent background = new Intent(AppController.getAppContext(), BackgroundService.class);
-//            background.putExtra("origin","receiver");
-//            AppController.getAppContext().startService(background);
         } else {
             Log.d("Network Available ", "NO");
         }
@@ -52,8 +46,13 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
 
             if(AppController.getInstance().getLoggedUser() != null &&
-                    AppController.getInstance().getLoggedUser().isEnableTracking()) {
-                context.startService(new Intent(context, WifiLocationService.class));
+                    AppController.getInstance().getLoggedUser().isEnableTracking() && isConnected) {
+
+                Alarm alarm = new Alarm();
+                alarm.cancelAlarm(context);
+                alarm.setAlarm(context);
+
+                //context.startService(new Intent(context, WifiLocationService.class));
             }
 
         }
@@ -62,68 +61,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
             Log.d("wifi", "SCAN_RESULTS_AVAILABLE_ACTION:" );
 
-
-
-            if(AppController.getInstance().getLoggedUser() != null &&
-                    AppController.getInstance().getLoggedUser().isEnableTracking()) {
-                context.startService(new Intent(context, WifiLocationService.class));
-            }
-
-
-            WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            List<ScanResult> mScanResults = mWifiManager.getScanResults();
-            Log.d("wifi", "mScanResults3: " + mScanResults.size());
-
-            if(AppController.getInstance().getScanResultAvailableListener() != null)
-                AppController.getInstance().getScanResultAvailableListener().onResultsAvailable(mScanResults);
-
-//            List<Zone> zones = AppController.getInstance().loadZones();
-//            boolean hasFound = false;
-//            for (ScanResult result:mScanResults) {
-//                Log.d("wifi", "result.SSID:" + result.SSID);
-//                Log.d("wifi", "result.BSSID:" + result.BSSID);
-//
-//
-//                for(Zone zone : zones) {
-//
-//                    for (BasaDevice device : zone.getDevices()) {
-//                        for (String mac : device.getMacAddress()) {
-//                            if (mac.toLowerCase().equals(result.BSSID.toLowerCase())) {
-//                                //enviar mensagem
-//
-//                                hasFound = true;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//
-//
-//                //The device is in a target building start monitoring
-//                if(hasFound) {
-//                    createNotification(result.SSID, result.BSSID, context);
-//                    context.startService(new Intent(context, WifiLocationService.class));
-//                    break;
-//                }
-//            }
-            // add your logic here
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         if (WifiManager.NETWORK_STATE_CHANGED_ACTION .equals(action)) {
@@ -169,47 +107,10 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
                 }
             }
-
-
-
-//            NetworkInfo netInfo = intent.getParcelableExtra (WifiManager.EXTRA_NETWORK_INFO);
-//            Log.d("wifi", "netInfo.getType ():" + netInfo.getType());
-//            if (ConnectivityManager.TYPE_WIFI == netInfo.getType ()) {
-//                boolean connected = checkConnectedToDesiredWifi(context);
-//            }
-
-
-//            SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-//            if (SupplicantState.isValidState(state)
-//                    && state == SupplicantState.COMPLETED) {
-//
-//                boolean connected = checkConnectedToDesiredWifi(context);
-//            }
         }
     }
 
-    /** Detect you are connected to a specific network. */
-    private boolean checkConnectedToDesiredWifi(Context context) {
-        boolean connected = false;
 
-        String desiredMacAddress = "router mac address";
-
-        WifiManager wifiManager =
-                (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-
-        WifiInfo wifi = wifiManager.getConnectionInfo();
-        Log.d("wifi", "wifi != null:" + (wifi != null));
-        if (wifi != null) {
-            // get current router Mac address
-            Log.d("wifi", "SSID:" + wifi.getSSID());
-
-
-            String bssid = wifi.getBSSID();
-            connected = desiredMacAddress.equals(bssid);
-        }
-
-        return connected;
-    }
     /**
      * Creates a notification displaying the SSID & MAC addr
      */

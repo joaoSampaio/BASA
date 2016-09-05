@@ -45,7 +45,7 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceLoad;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
-import pt.ulisboa.tecnico.basa.rest.GetConfigService;
+import pt.ulisboa.tecnico.basa.rest.services.GetConfigService;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 

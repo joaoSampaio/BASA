@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.rest;
+package pt.ulisboa.tecnico.basa.rest.services;
 
 
 import android.util.Log;
@@ -10,8 +10,9 @@ import com.google.gson.reflect.TypeToken;
 
 
 import pt.ulisboa.tecnico.basa.model.WeatherForecast;
-import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.RestClient;
 import retrofit2.Call;
 
 public class GetTemperatureListService extends ServerCommunicationService {

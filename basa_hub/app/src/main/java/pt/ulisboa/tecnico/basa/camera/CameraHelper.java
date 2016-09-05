@@ -299,7 +299,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 //                    if(getActivity() != null)
                     getActivity().findViewById(R.id.viewRecording).setVisibility(View.GONE);
                     if(startRecording) {
-                        Log.v("camera","startRecording is true*****************************");
                         startRecord();
                     }
 
@@ -315,7 +314,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
 
     public void start_camera(){
-        Log.d("cam", "start_camera " + (mCamera == null));
         if(mCamera != null)
             return;
 
@@ -377,14 +375,12 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         @Override
         public void run() {
             long t1 = System.currentTimeMillis();
-            Log.v("camera","timerVideoFrame");
             Bitmap pic = mTextureView.getBitmap();
 
             if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
                 String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
                 final String latestFileNameF = System.currentTimeMillis() / 100 + ".jpeg";
                 final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-                Log.d("storage", "latestFilePathF:" + latestFilePathF);
                 new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
                     @Override
                     public void onPhotoBeenSaved(Uri file) {
@@ -408,7 +404,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
          */
         @Override
         public void onPreviewFrame(byte[] data, Camera cam) {
-            Log.d("camera", "previewCallback");
 //            boolean doDetection = false;
 //            if(recording && callPreview){
 //                Log.d("camera", "inside preview");
@@ -425,7 +420,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
 
     private void processCameraFrame(byte[] data){
-        Log.d("camera", "processCameraFrame");
         if(timeOld == 0){
             timeOld = System.currentTimeMillis();
             timeOldVideo = System.currentTimeMillis();
@@ -438,7 +432,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         long elapsedTimeNs = timeCurrent - timeOld;
         if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
             timeOld = timeCurrent;
-            Log.d("camera", "inside preview detection");
 
             if (data == null) return;
             Camera.Size size = sizePreview;
@@ -563,10 +556,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         @Override
         public void run() {
 
-            Log.d("camera", "DetectionThread");
             if (!processing.compareAndSet(false, true)) return;
-            Log.d("camera", "BEGIN PROCESSING.");
-            // Log.d(TAG, "BEGIN PROCESSING...");
             try {
 
                 int[] img = null;
@@ -615,7 +605,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     };
 
     private void detected(final boolean isDetected){
-        Log.d("camera", "isDetected->"+isDetected);
         new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {

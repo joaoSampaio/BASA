@@ -13,6 +13,9 @@ import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
 import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.Pojo.FcmNotificationData;
+import pt.ulisboa.tecnico.basa.rest.services.SendNotificationService;
 
 /**
  * Created by Sampaio on 05/08/2016.
@@ -54,10 +57,33 @@ public class BasaSensorManager implements SensorEventListener {
         }
 
         if (isDetected) {
+
+
+            String topic = AppController.getInstance().getDeviceConfig().getUuid();
+            String senderID = topic;
+            int code = FcmNotificationData.MOVEMENT_DETECTED;
+            if(AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0
+                    && (current - timeLastNoMovement) > 60000 ) {
+
+                new SendNotificationService(topic, "Movement has been detected", senderID, code, new CallbackMultiple() {
+                    @Override
+                    public void success(Object response) {
+
+                    }
+
+                    @Override
+                    public void failed(Object error) {
+
+                    }
+                }).execute();
+            }
+
             timeLastMovement = current;
             timeLastNoMovement = current;
             AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(true));
             latestMotionReading = true;
+
+
 
         }else {
             latestMotionReading = false;

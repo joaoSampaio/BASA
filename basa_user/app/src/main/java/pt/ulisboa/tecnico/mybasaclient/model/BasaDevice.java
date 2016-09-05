@@ -196,5 +196,29 @@ public class BasaDevice {
         return null;
     }
 
+    public static Zone getDeviceZone(String id){
+
+        for (Zone z :AppController.getInstance().loadZones()){
+            for (BasaDevice device : z.getDevices()){
+                if(device.getId().equals(id)) {
+                    return z;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    public static List<BasaDevice> getAllDevicesAllZones(){
+        List<BasaDevice> devices = new ArrayList<>();
+        for (Zone z :AppController.getInstance().loadZones()){
+            for (BasaDevice device : z.getDevices()){
+                devices.add(device);
+            }
+        }
+        return devices;
+    }
+
 
 }

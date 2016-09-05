@@ -146,9 +146,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.MyItemHold
                     holder.addDevice.setPadding(5,5,5,5);
 
 
-
-
-
                     if(device.isAnyLightOn()){
                         changeBackgroundColor(holder.addDevice, COLOR_LIGHT_ON);
                         holder.addDevice.setColorFilter(Color.rgb(0, 0, 0));

@@ -8,10 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,6 +32,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,24 +41,15 @@ import java.util.List;
 import pt.ulisboa.tecnico.mybasaclient.adapter.PagerAdapter;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
 import pt.ulisboa.tecnico.mybasaclient.manager.DeviceManager;
+import pt.ulisboa.tecnico.mybasaclient.model.BasaDevice;
 import pt.ulisboa.tecnico.mybasaclient.model.User;
 import pt.ulisboa.tecnico.mybasaclient.model.Zone;
-import pt.ulisboa.tecnico.mybasaclient.ui.AccountFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart1Fragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.AddZonePart2Fragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.DeviceCameraFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.DeviceFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.DeviceLightsFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.DeviceSettingsFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.DeviceTemperatureFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.HomeFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.InfoFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.LoginActivity;
-import pt.ulisboa.tecnico.mybasaclient.ui.ScanNetworkFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ScanQRCodeFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.UserFragment;
 import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsFragment;
-import pt.ulisboa.tecnico.mybasaclient.ui.ZoneSettingsInfoFragment;
+import pt.ulisboa.tecnico.mybasaclient.util.CreateDialogHelper;
 import pt.ulisboa.tecnico.mybasaclient.util.FirebaseHelper;
 import pt.ulisboa.tecnico.mybasaclient.util.GenericCommunicationToFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.VerticalViewPager;
@@ -79,7 +69,8 @@ public class MainActivity extends AppCompatActivity
     private List<GenericCommunicationToFragment> toFragmentList;
     private VerticalViewPager viewPager;
     private CoordinatorLayout coordinatorLayout;
-
+    private Bundle extras;
+    private boolean isRunning = false;
 
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 9001;
@@ -102,7 +93,6 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        Log.d("Main", "nao devia: ");
         pageListener = new ArrayList<>();
         toFragmentList = new ArrayList<>();
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorLayout);
@@ -130,7 +120,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.d("viewpager", "onPageScrollStateChanged: "+state);
             }
         });
 
@@ -152,7 +141,9 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        AppController.getInstance().resetData();
+        String token = FirebaseInstanceId.getInstance().getToken();
+//        AppController.getInstance().resetData();
+        subscribeToDevices();
     }
 
     @Override
@@ -235,6 +226,33 @@ public class MainActivity extends AppCompatActivity
         if(mAuth.getCurrentUser() == null)
             signIn();
 
+        isRunning = true;
+
+        try {
+            extras = getIntent().getExtras();
+            Log.d("main", "getCommunicationHomeFragment2():" + (getCommunicationHomeFragment() != null));
+            Log.d("main", "getCommunicationUserFragment2():" + (getCommunicationUserFragment() != null));
+            Log.d("main", "oncreate extras:" + (extras != null) );
+            if(extras != null && !extras.isEmpty()) {
+                int action = extras.getInt("code", -1);
+
+                switch (action){
+                    case 0:
+                        //alert movement
+                        openSecurity(extras.getString("senderId", ""));
+                        break;
+
+                }
+            }
+//            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.cancel(Global.NOTIFICATION_ID);
+//            NotificationCount.resetCount(getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     @Override
@@ -259,99 +277,18 @@ public class MainActivity extends AppCompatActivity
 
 
     public void openPage(int id){
-        DialogFragment newFragment = null;
-        String tag = "";
+        CreateDialogHelper.openPage(id, this);
+        Log.d("main", "openPage():" + id);
+    }
 
-        if (id == Global.DIALOG_ADD_DEVICE) {
-            newFragment = ScanQRCodeFragment.newInstance();
-            tag = "ScanQRCodeFragment";
-        } else if(id == Global.DIALOG_ADD_ZONE_PART1){
-            newFragment = AddZonePart1Fragment.newInstance();
-            tag = "AddZonePart1Fragment";
-        } else if(id == Global.DIALOG_ADD_ZONE_PART2){
-            newFragment = AddZonePart2Fragment.newInstance();
-            tag = "AddZonePart2Fragment";
-        } else if(id == Global.DIALOG_SETTINGS_ZONE){
-            newFragment = ZoneSettingsFragment.newInstance();
-            tag = "ZoneSettingsFragment";
-        } else if(id == Global.DIALOG_SETTINGS_ZONE_INFO){
-            newFragment = ZoneSettingsInfoFragment.newInstance();
-            tag = "ZoneSettingsInfoFragment";
-        } else if(id == Global.DIALOG_DEVICE){
-            newFragment = DeviceFragment.newInstance();
-            tag = "DeviceFragment";
-        } else if(id == Global.DIALOG_INFO){
-            newFragment = InfoFragment.newInstance();
-            tag = "InfoFragment";
-        } else if(id == Global.DIALOG_ACCOUNT){
-            newFragment = AccountFragment.newInstance();
-            tag = "AccountFragment";
-        } else if(id == Global.DIALOG_DEVICE_TEMPERATURE){
-            newFragment = DeviceTemperatureFragment.newInstance();
-            tag = "DeviceTemperatureFragment";
-        } else if(id == Global.DIALOG_DEVICE_SETTINGS){
-            newFragment = DeviceSettingsFragment.newInstance();
-            tag = "DeviceSettingsFragment";
-        } else if(id == Global.DIALOG_DEVICE_LIGHT){
-            newFragment = DeviceLightsFragment.newInstance();
-            tag = "DeviceLightsFragment";
-        } else if(id == Global.DIALOG_DEVICE_CAMERA){
-            newFragment = DeviceCameraFragment.newInstance();
-            tag = "DeviceCameraFragment";
-        }else if(id == Global.DIALOG_DEVICE_SCAN_WIFI){
-            newFragment = ScanNetworkFragment.newInstance();
-            tag = "ScanNetworkFragment";
-        }
-
-        if(newFragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
-            newFragment.show(ft, tag);
-        }
-
+    public void dismissAllDialogs(FragmentManager manager) {
+        CreateDialogHelper.dismissAllDialogs(manager);
     }
 
     public void dismissAllDialogs() {
-
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-
-        if (fragments == null)
-            return;
-
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof DialogFragment) {
-                DialogFragment dialogFragment = (DialogFragment) fragment;
-                dialogFragment.dismissAllowingStateLoss();
-            }
-
-            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
-            if (childFragmentManager != null)
-                dismissAllDialogs(childFragmentManager);
-        }
+        CreateDialogHelper.dismissAllDialogs(getSupportFragmentManager());
     }
 
-    public static void dismissAllDialogs(FragmentManager manager) {
-
-        List<Fragment> fragments = manager.getFragments();
-
-        if (fragments == null)
-            return;
-
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof DialogFragment) {
-                DialogFragment dialogFragment = (DialogFragment) fragment;
-                dialogFragment.dismissAllowingStateLoss();
-            }
-
-            FragmentManager childFragmentManager = fragment.getChildFragmentManager();
-            if (childFragmentManager != null)
-                dismissAllDialogs(childFragmentManager);
-        }
-    }
 
     private static final int REQUEST_CAMERA = 20;
 
@@ -423,9 +360,6 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("main", "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w("main", "signInWithCredential", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
@@ -466,8 +400,62 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
+    }
+
+    public void subscribeToDevices(){
+        List<BasaDevice> basaDevices = BasaDevice.getAllDevicesAllZones();
+        for (BasaDevice device : basaDevices)
+            FirebaseMessaging.getInstance().subscribeToTopic(device.getId());
 
     }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        try {
+            super.onNewIntent(intent);
+            extras = intent.getExtras();
+            Log.d("main", "onNewIntent:" + extras.size() + " isRunning:"+isRunning);
+            if(isRunning) {
+                int action = intent.getExtras().getInt("code", -1);
+
+                switch (action){
+                    case 0:
+                        //alert movement
+                        openSecurity(intent.getExtras().getString("senderId", ""));
+                        break;
+
+                }
+            }
+//            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.cancel(Global.NOTIFICATION_ID);
+//            NotificationCount.resetCount(getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //find device zone, open zone, open device camera
+    private void openSecurity(String deviceId){
+        Log.d("main", "openSecurity:" + deviceId);
+        if(!deviceId.isEmpty()){
+
+            Zone zone = BasaDevice.getDeviceZone(deviceId);
+            Log.d("main", "zone:" + (zone != null));
+            Log.d("main", "getCommunicationHomeFragment():" + (getCommunicationHomeFragment() != null));
+            Log.d("main", "getCommunicationUserFragment():" + (getCommunicationUserFragment() != null));
+            if(zone != null){
+                Log.d("main", "zone:" + zone.getName());
+                if(getCommunicationHomeFragment() != null && getCommunicationUserFragment() != null) {
+                    getCommunicationHomeFragment().changeZone(zone.getName());
+                    getCommunicationUserFragment().refreshZones();
+                }
+                AppController.getInstance().saveCurrentDevice(BasaDevice.getCurrentDevice().getDeviceById(deviceId));
+                openPage(Global.DIALOG_DEVICE_CAMERA);
+            }
+        }
+    }
+
 
 
     public void addPageListener(ViewPagerPageScroll listener){

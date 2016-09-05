@@ -1,28 +1,29 @@
-package pt.ulisboa.tecnico.basa.rest;
+package pt.ulisboa.tecnico.basa.rest.services;
 
 
 import android.util.Log;
 
-import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
+import pt.ulisboa.tecnico.basa.rest.RestClient;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class PostServerLocationService extends ServerCommunicationService {
+public class GetTemperatureOfficeService extends ServerCommunicationService {
 
     private CallbackMultiple callback;
-    private String url, server;
-    private ServerLocation serverLocation;
-    public PostServerLocationService(String url, ServerLocation serverLocation, CallbackMultiple callback){
+    private String url;
+    public GetTemperatureOfficeService(String url, CallbackMultiple callback){
         this.callback = callback;
-        this.url = url;
-        this.serverLocation = serverLocation;
+        this.url = url.replace("\"", "");
     }
 
     @Override
     public void execute() {
 
-        Call<Temperature> call = RestClient.getService().giveLocationToArduino(url, serverLocation);
+        if(url == null || url.isEmpty())
+            return;
+        Call<Temperature> call = RestClient.getService().requestTemperatureOffice(url);
             call.enqueue(new retrofit2.Callback<Temperature>() {
 
 
@@ -31,7 +32,7 @@ public class PostServerLocationService extends ServerCommunicationService {
 
                     Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
                     if (response.isSuccessful()) {
-                        callback.success(null);
+                        callback.success(response.body());
 
                     } else {
                         callback.failed(null);

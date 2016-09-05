@@ -211,7 +211,8 @@ public class FirebaseHelper {
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
                 UserLocation userLocation = dataSnapshot.getValue(UserLocation.class);
-                if((System.currentTimeMillis() - userLocation.getDate())  <  30000 )
+                if((System.currentTimeMillis() - userLocation.getDate())  <  30000
+                        && AppController.getInstance().getBasaManager().getUserManager() != null)
                     AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(dataSnapshot.getKey(), userLocation);
 
             }

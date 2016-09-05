@@ -273,6 +273,15 @@ public class AppController extends Application {
         return statisticalData;
     }
 
+    private String serverKey = null;
+    public String getServerKey(){
+        if(serverKey == null){
+            serverKey = "AIzaSyCY4HnknljxJX_CoZHuMVO6TEslMs2_tNo";
+//            serverKey = getResources().getString(R.string.google_api_key);
+        }
+        return serverKey;
+    }
+
 
 
 }

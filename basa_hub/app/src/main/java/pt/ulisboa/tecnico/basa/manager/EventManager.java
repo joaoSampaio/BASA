@@ -101,30 +101,27 @@ public class EventManager {
                 break;
 
             case Event.USER_LOCATION:
-                Log.d("TRIGGER_USER_LOCATION","TRIGGER_USER_LOCATION");
                 if (event instanceof EventUserLocation) {
-                    Log.d("TRIGGER_USER_LOCATION","instanceof");
                     EventUserLocation location = (EventUserLocation) event;
                     User user = AppController.getInstance().getBasaManager().getUserManager().getUser(location.getUserId());
                     String name = user != null ? user.getName() : "unknown";
-                    if (location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding()) {
+                    if (location.getLocation() == EventUserLocation.TYPE_BUILDING && location.isInBuilding() && location.isFirstArrive()) {
                         result = "User " + name + " arrived in building";
-                        Log.d("TRIGGER_USER_LOCATION","User " + name + " arrived in building");
                     }
                     if (location.getLocation() == EventUserLocation.TYPE_BUILDING && !location.isInBuilding()) {
                         result = "User " + name + " left the building";
-                        Log.d("TRIGGER_USER_LOCATION","User " + name + " left the building");
                     }
 
-                    if (location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding()) {
+                    if (location.getLocation() == EventUserLocation.TYPE_OFFICE && location.isInBuilding() && location.isFirstArrive()) {
 
-                        result = "User " + name + " arrived at office";
+                        result = "User " + name + " arrived in office";
                     }
 
                     if (location.getLocation() == EventUserLocation.TYPE_OFFICE && !location.isInBuilding()) {
 
                         result = "User " + name + " left the office";
                     }
+                    if(!result.isEmpty())
                     AppController.getInstance().getStatisticalData().addOccupantEvent(((EventUserLocation)event));
                 }
 
@@ -325,7 +322,6 @@ public class EventManager {
                         registerInterestRecipe(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
-                                Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
                                 if (event instanceof EventClap) {
 
                                     if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
@@ -341,7 +337,6 @@ public class EventManager {
                         registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
-                                Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
                                 if (event instanceof EventSpeech) {
                                     EventSpeech speech = (EventSpeech)event;
                                     for( String s : speech.getVoice()){
@@ -359,7 +354,6 @@ public class EventManager {
                         registerInterestRecipe(new InterestEventAssociation(Event.BRIGHTNESS, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
-                                Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
                                 if (event instanceof EventBrightness) {
                                     EventBrightness mLight = (EventBrightness)event;
 

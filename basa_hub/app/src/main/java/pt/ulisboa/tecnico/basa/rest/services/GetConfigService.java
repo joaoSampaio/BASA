@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.rest;
+package pt.ulisboa.tecnico.basa.rest.services;
 
 
 import android.util.Log;
@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import pt.ulisboa.tecnico.basa.model.registration.BasaDeviceLoad;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.RestClient;
 import retrofit2.Call;
 import retrofit2.Response;
 

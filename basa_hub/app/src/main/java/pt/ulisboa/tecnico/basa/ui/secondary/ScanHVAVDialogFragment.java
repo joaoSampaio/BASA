@@ -33,7 +33,7 @@ import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.SSDP;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
-import pt.ulisboa.tecnico.basa.rest.PostServerLocationService;
+import pt.ulisboa.tecnico.basa.rest.services.PostServerLocationService;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 

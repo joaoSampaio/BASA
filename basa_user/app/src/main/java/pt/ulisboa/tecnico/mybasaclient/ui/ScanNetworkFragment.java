@@ -133,18 +133,6 @@ public class ScanNetworkFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-//        AppController.getInstance().setScanResultAvailableListener(new ScanResultAvailableListener() {
-//            @Override
-//            public void onResultsAvailable(List<ScanResult> mScanResults) {
-//                devices.clear();
-//                for(ScanResult result: mScanResults)
-//                    devices.add(IPNetwork.convert(result));
-//
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        });
-
     }
 
 
@@ -175,7 +163,6 @@ public class ScanNetworkFragment extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().setScanResultAvailableListener(null);
     }
 
 

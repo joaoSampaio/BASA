@@ -19,7 +19,6 @@ import pt.ulisboa.tecnico.mybasaclient.model.Zone;
 import pt.ulisboa.tecnico.mybasaclient.rest.pojo.UserLocation;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.CallbackFromService;
 import pt.ulisboa.tecnico.mybasaclient.rest.services.UpdateLocationService;
-import pt.ulisboa.tecnico.mybasaclient.ui.ScanNetworkFragment;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
 
@@ -31,7 +30,6 @@ public class AppController extends Application {
     private BeaconManager beaconManager;
     private String idEdge;
     private String namespace = "edd1ebeac04e5defa017";
-    public int currentCameraId;
     public int width;
     public int height;
 
@@ -42,7 +40,6 @@ public class AppController extends Application {
     private boolean isBLEStarted;
     private long timeLastBeaconFound;
     private final static long SHUTDOWN_TIMEOUT_BLE = 60*60*1000; //1hour in case it is not shutdown before
-    private ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener;
 
     @Override
     public void onCreate() {
@@ -54,7 +51,7 @@ public class AppController extends Application {
 
         EstimoteSDK.enableDebugLogging(true);
         isBLEStarted = false;
-        beaconStart();
+//        beaconStart();
 
     }
 
@@ -222,6 +219,7 @@ public class AppController extends Application {
             new ModelCache<String>().saveModel(device.getId(), Global.DATA_CURRENT_DEVICE);
     }
 
+
     public void saveUser(User user){
         this.loggedUser = user;
         User.saveUser(user);
@@ -240,11 +238,4 @@ public class AppController extends Application {
         this.zones = null;
     }
 
-    public ScanNetworkFragment.ScanResultAvailableListener getScanResultAvailableListener() {
-        return scanResultAvailableListener;
-    }
-
-    public void setScanResultAvailableListener(ScanNetworkFragment.ScanResultAvailableListener scanResultAvailableListener) {
-        this.scanResultAvailableListener = scanResultAvailableListener;
-    }
 }

@@ -69,9 +69,6 @@ public abstract class ImageProcessing {
     public static int[] bitmapToRGB(Bitmap bmp){
         int[] rgbValues = new int[bmp.getWidth() * bmp.getHeight()];
         long t1 = System.currentTimeMillis();
-        Log.d("camera", "bitmapToRGB ");
-
-
         bmp.getPixels(rgbValues, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
 
 

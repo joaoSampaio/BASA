@@ -22,7 +22,7 @@ import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
-import pt.ulisboa.tecnico.basa.rest.SendEmailService;
+import pt.ulisboa.tecnico.basa.rest.services.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;

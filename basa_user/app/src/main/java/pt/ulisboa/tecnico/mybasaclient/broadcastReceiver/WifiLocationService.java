@@ -16,7 +16,6 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.List;
-import java.util.Timer;
 
 import pt.ulisboa.tecnico.mybasaclient.R;
 import pt.ulisboa.tecnico.mybasaclient.app.AppController;
@@ -35,10 +34,8 @@ public class WifiLocationService extends Service {
     private final IBinder mBinder = new LocalBinder();
 
     private static final long UPDATE_INTERVAL = 1 * 15 * 1000; //15s
-    private static final long DELAY_INTERVAL = 0;
     private PowerManager.WakeLock wl;
     private Handler handler;
-    private Timer timer;
     WifiManager mWifiManager;
 
 private int misses;
@@ -133,7 +130,6 @@ private int misses;
 
     @Override
     public void onDestroy() {
-        timer.cancel();
 
         super.onDestroy();
     }

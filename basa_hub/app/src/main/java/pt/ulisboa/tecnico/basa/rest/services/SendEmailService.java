@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.rest;
+package pt.ulisboa.tecnico.basa.rest.services;
 
 
 import android.util.Base64;
@@ -9,6 +9,9 @@ import com.google.gson.JsonElement;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.EmailServer;
+import pt.ulisboa.tecnico.basa.rest.services.ServerCommunicationService;
 import retrofit2.Call;
 
 public class SendEmailService extends ServerCommunicationService {

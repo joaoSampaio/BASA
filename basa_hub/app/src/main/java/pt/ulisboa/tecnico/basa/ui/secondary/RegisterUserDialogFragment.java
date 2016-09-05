@@ -27,7 +27,7 @@ import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.model.registration.RegisterAndroidQRCode;
 import pt.ulisboa.tecnico.basa.model.registration.UserRegistrationToken;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
-import pt.ulisboa.tecnico.basa.rest.SendEmailService;
+import pt.ulisboa.tecnico.basa.rest.services.SendEmailService;
 import pt.ulisboa.tecnico.basa.rest.mail.WelcomeTemplate;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.QRCodeGenerator;

@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.basa.rest;
+package pt.ulisboa.tecnico.basa.rest.services;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
