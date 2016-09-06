@@ -4,34 +4,34 @@ package pt.ulisboa.tecnico.basa.model.event;
 
 public class EventTemperature extends Event {
 
-    private double temperature;
-    private double humidity;
+    private int temperature;
+    private int humidity;
 
 
-    public EventTemperature(int type, double temperature) {
+    public EventTemperature(int type, int temperature) {
         super(type);
         this.temperature = temperature;
     }
 
-    public EventTemperature(int type, double temperature, double humidity) {
+    public EventTemperature(int type, int temperature, int humidity) {
         super(type);
         this.temperature = temperature;
         this.humidity = humidity;
     }
 
-    public double getTemperature() {
+    public int getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(double temperature) {
+    public void setTemperature(int temperature) {
         this.temperature = temperature;
     }
 
-    public double getHumidity() {
+    public int getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(double humidity) {
+    public void setHumidity(int humidity) {
         this.humidity = humidity;
     }
 }

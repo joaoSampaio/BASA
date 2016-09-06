@@ -22,6 +22,13 @@
 char packetBuffer[255]; //buffer to hold incoming packet
 WiFiUDP Udp;
 HTTPClient http;
+
+#define CH1 D8     // what digital pin we're connected to
+#define CH2 D7     // what digital pin we're connected to
+#define CH3 D6     // what digital pin we're connected to
+#define CH4 D5     // what digital pin we're connected to
+
+
 #define DHTPIN D4     // what digital pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 ESP8266WebServer server(80);
@@ -46,6 +53,10 @@ void handle_root() {
 void setup(void)
 {
 
+  pinMode(CH1, OUTPUT);
+  pinMode(CH2, OUTPUT);
+  pinMode(CH3, OUTPUT);
+  pinMode(CH4, OUTPUT);
 
   humidity = 50;
   temp_f = 20;
@@ -194,25 +205,6 @@ void retransmitUDPToServer(String message){
  
 void loop(void)
 {
-
-  String input = Serial.readString();
-  if (input.equals("liga")) {
-        Serial.write("server -> Online\n");
-        Serial.print("status ");
-        Serial.println(WiFi.status());
-        digitalWrite(BUILTIN_LED, LOW);
-        Serial.write("\nLOW:");
-        Serial.print(LOW);
-        Serial.write("\nHIGH:");
-        Serial.print(HIGH);
-  }
-  if (input.equals("on")) {       
-        digitalWrite(BUILTIN_LED, HIGH);      
-  }
-  if (input.equals("off")) {     
-        digitalWrite(BUILTIN_LED, LOW);
-  }
-
   server.handleClient();
   gettemperature();
   receiveUDPBroadcast();
@@ -232,9 +224,21 @@ void action(){
         
             // it->value contains the JsonVariant which can be casted as usual
             const char* value = it->value;
-        
-            if(String(key) == "light1")
-              light1 = it->value;
+
+            Serial.print("key: " + String(key));
+            if(String(key) == "ch1"){
+              Serial.print("ch1");
+              if(String(value) == "1"){
+                Serial.print("ch1 1");
+                digitalWrite(CH1, HIGH);
+                digitalWrite(BUILTIN_LED, HIGH);
+              }
+              else{
+                Serial.print("ch1 else");
+                digitalWrite(CH1, LOW);
+                digitalWrite(BUILTIN_LED, LOW);
+              }
+            }
 
             if(String(key) == "light2")
               light2 = it->value;
@@ -292,10 +296,10 @@ void home(){
 void updateLights(){
 
 //led is reversed
-  if(light1 == 1)
+  /*if(light1 == 1)
     digitalWrite(BUILTIN_LED, LOW);
   else
-    digitalWrite(BUILTIN_LED, HIGH);
+    digitalWrite(BUILTIN_LED, HIGH);*/
 }
 
  

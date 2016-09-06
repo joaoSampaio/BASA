@@ -126,6 +126,12 @@ public class EventManager {
                 }
 
                 break;
+            case Event.TEMPERATURE:
+                if (event instanceof EventTemperature) {
+                    AppController.getInstance().getStatisticalData().addTemperatureEvent(((EventTemperature) event));
+                }
+                break;
+
             case Event.LIGHT:
                 result = "Light (" + ((EventLightSwitch)event).getLightNum() + ") is " + (((EventLightSwitch)event).isOn()? "on" : "off");
                 AppController.getInstance().getStatisticalData().addLightsEvent(((EventLightSwitch)event));

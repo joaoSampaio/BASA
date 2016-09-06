@@ -30,10 +30,7 @@
 
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -172,6 +169,11 @@ public class SpeechRecognizerManager {
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
         mSpeechRecognizerIntent.putExtra( RecognizerIntent. EXTRA_CONFIDENCE_SCORES, true);
+
+//        mSpeechRecognizerIntent.putExtra("android.speech.extra.DICTATION_MODE", true);
+//        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false);
+
+
     }
 
 

@@ -8,6 +8,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.UserManager;
 import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
+import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
@@ -66,8 +67,21 @@ public class AllStatisticalData {
         save(this);
     }
 
-    public void addTemperatureEvent(StatisticalEvent event){
-        getTemperature().add(event);
+    public void addTemperatureEvent(EventTemperature event){
+
+        StatisticalEvent statisticalEvent = null;
+        if(!getTemperature().isEmpty()){
+            long timeSinceLast = System.currentTimeMillis() - getTemperature().get(getTemperature().size()-1).getX();
+            if(timeSinceLast > 5000){
+                statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getTemperature());
+                getTemperature().add(statisticalEvent);
+                save(this);
+            }
+        }else{
+            statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getTemperature());
+            getTemperature().add(statisticalEvent);
+            save(this);
+        }
     }
 
     public void addOccupantEvent(EventUserLocation location){

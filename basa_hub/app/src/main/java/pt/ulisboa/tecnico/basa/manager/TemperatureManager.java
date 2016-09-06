@@ -211,7 +211,7 @@ public class TemperatureManager {
                         @Override
                         public void success(Temperature response) {
                             if (response != null && getBasaManager() != null && response.isValid()) {
-                                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, response.getTemperature(), response.getHumidity()));
+                                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, (int)response.getTemperature(), (int)response.getHumidity()));
                                 //latestTemperature = response;
                             }
                         }
