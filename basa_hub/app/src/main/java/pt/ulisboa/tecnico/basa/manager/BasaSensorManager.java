@@ -28,7 +28,7 @@ public class BasaSensorManager implements SensorEventListener {
     private InterestEventAssociation interestTime;
     private long timeLastMovement = 0;
     public final static long NO_MOVEMENT_PERIOD = 20000; //20s
-    private long timeLastNoMovement = 0;
+    private long timeLastNoMovement = 0, timeLastNotification;
     private boolean latestMotionReading;
     private long timeStartUp = System.currentTimeMillis();
 
@@ -43,6 +43,7 @@ public class BasaSensorManager implements SensorEventListener {
     private void setUpMotionSensor(){
         timeLastMovement = System.currentTimeMillis();
         timeLastNoMovement = System.currentTimeMillis();
+        timeLastNotification = System.currentTimeMillis();
         latestMotionReading = false;
 
     }
@@ -58,14 +59,14 @@ public class BasaSensorManager implements SensorEventListener {
 
         if (isDetected) {
 
-
             String topic = AppController.getInstance().getDeviceConfig().getUuid();
             String senderID = topic;
             int code = FcmNotificationData.MOVEMENT_DETECTED;
             if(AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0
-                    && (current - timeLastNoMovement) > 60000 ) {
+                    && (current - timeLastNotification) > 60000 ) {
 
-                new SendNotificationService(topic, "Movement has been detected", senderID, code, new CallbackMultiple() {
+                timeLastNotification = System.currentTimeMillis();
+                new SendNotificationService(topic, "Movement has been detected2", senderID, code, new CallbackMultiple() {
                     @Override
                     public void success(Object response) {
 

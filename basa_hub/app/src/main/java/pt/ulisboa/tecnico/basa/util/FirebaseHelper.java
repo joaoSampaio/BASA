@@ -159,7 +159,7 @@ public class FirebaseHelper {
                 BasaManager manager = AppController.getInstance().getBasaManager();
 
                 if(manager.getTemperatureManager() != null){
-                    manager.getTemperatureManager().onChangeTargetTemperature(changeTemperature);
+                    manager.getTemperatureManager().onChangeTargetTemperatureFromClient(changeTemperature);
                 }
 
             }

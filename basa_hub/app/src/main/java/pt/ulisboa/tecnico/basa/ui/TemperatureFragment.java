@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
-
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.R;
 import pt.ulisboa.tecnico.basa.app.AppController;
@@ -19,7 +17,6 @@ import pt.ulisboa.tecnico.basa.manager.TemperatureManager;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
-import pt.ulisboa.tecnico.basa.util.ModelCache;
 import pt.ulisboa.tecnico.basa.util.SeekArc;
 
 
@@ -30,7 +27,7 @@ public class TemperatureFragment extends Fragment {
     private TextView forecastTemp, forecastSummary;
     private InterestEventAssociation interest;
     private SeekArc mSeekArc;
-    private ImageView image_temperature_mode, imageForecast;
+    private ImageView imageForecast;
     private View action_increase, action_decrease;
       public TemperatureFragment() {
         // Required empty public constructor
@@ -46,7 +43,6 @@ public class TemperatureFragment extends Fragment {
         mSeekArc = (SeekArc) rootView.findViewById(R.id.seekArc);
         mSeekArc.setCurrentTemperature("Waiting...: ");
 
-        image_temperature_mode = (ImageView)rootView.findViewById(R.id.image_temperature_mode);
         forecastTemp = (TextView) rootView.findViewById(R.id.forecastTemp);
         forecastSummary = (TextView) rootView.findViewById(R.id.forecastSummary);
         imageForecast = (ImageView) rootView.findViewById(R.id.imageForecast);
@@ -70,7 +66,7 @@ public class TemperatureFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekArc seekArc) {
-                AppController.getInstance().getBasaManager().getTemperatureManager().changeTargetTemperature(seekArc.getProgress());
+                AppController.getInstance().getBasaManager().getTemperatureManager().changeTargetTemperatureFromUI(seekArc.getProgress());
             }
 
             @Override
@@ -84,11 +80,16 @@ public class TemperatureFragment extends Fragment {
             }
         });
 
+        setEcoTemperatureRange();
+
         return rootView;
     }
 
 
 
+    private void setEcoTemperatureRange(){
+        mSeekArc.setLeafLimit(20, 26);
+    }
 
 
 
@@ -104,7 +105,6 @@ public class TemperatureFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        setUp(-1);
         interest = new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {
@@ -128,7 +128,7 @@ public class TemperatureFragment extends Fragment {
             ((Launch2Activity)getActivity()).getBasaManager().getTemperatureManager().addListenner(new TemperatureManager.ActionTemperatureManager() {
                 @Override
                 public void onTemperatureOutputChange(int change) {
-                    setUp(change);
+                    //setUp(change);
                 }
 
                 @Override
@@ -148,33 +148,6 @@ public class TemperatureFragment extends Fragment {
             }
         });
     }
-
-
-
-    private void setUp(int change){
-
-        if(change < 0)
-            change = new ModelCache<Integer>().loadModel(new TypeToken<Integer>(){}.getType(), Global.OFFLINE_TEMPERATURE_OUTPUT, "0");
-
-        int color, resId;
-        if (change == TemperatureManager.COLD) {
-            color = Global.COLOR_COLD;
-            resId = R.drawable.ic_snowflake;
-        }
-        else if (change == TemperatureManager.HEAT) {
-            color = Global.COLOR_HEAT;
-            resId = R.drawable.ic_fire;
-        }
-        else {
-            color = Global.COLOR_HEAT;
-            resId = R.drawable.ic_fire;
-        }
-        //mSeekArc.setBackgroundColor(color);
-
-        image_temperature_mode.setImageResource(resId);
-
-    }
-
 
 
     @Override

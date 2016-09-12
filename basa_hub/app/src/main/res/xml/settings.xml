@@ -53,6 +53,19 @@
             android:key="btn_camera_advanced"
             android:summary="Specify a camera zone where detection will not be used"/>
 
+        <CheckBoxPreference
+            android:key="cam_recording"
+            android:title="Video recording"
+            android:summary="Allow recording when no user is present and movement is detected"
+            android:defaultValue="true"
+            />
+
+        <CheckBoxPreference
+            android:key="cam_live"
+            android:title="User app live preview"
+            android:summary="Allow the user app to watch the office in real time."
+            android:defaultValue="true"
+            />
 
 
     </PreferenceCategory>

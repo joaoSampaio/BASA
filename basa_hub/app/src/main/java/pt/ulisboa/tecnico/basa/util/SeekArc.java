@@ -62,6 +62,11 @@ public class SeekArc extends View {
 	private int colorBackground = Global.COLOR_COLD;
 
 	/**
+	 * The Drawable for the seek arc leaf icon
+	 */
+	private Drawable mLeaf;
+
+	/**
 	 * The Drawable for the seek arc thumbnail
 	 */
 	private Drawable mThumb;
@@ -131,6 +136,22 @@ public class SeekArc extends View {
 	 * is the control enabled/touchable
 	 */
 	private boolean mEnabled = true;
+
+	/**
+	 * is leaf icon enabled
+	 */
+	private boolean mShowLeaf = false;
+
+	/**
+	 * The value where the leaf is visible, above or equal mLeafDownRange, bellow or equal mLeafUpperRange
+	 */
+	private int mLeafDownRange = 0;
+
+	/**
+	 * The value where the leaf is visible, above or equal mLeafDownRange, bellow or equal mLeafUpperRange
+	 */
+	private int mLeafUpperRange = 0;
+
 
 	// Internal variables
 	private int mArcRadius = 0;
@@ -223,6 +244,7 @@ public class SeekArc extends View {
 		int thumbHalfheight = 0;
 		int thumbHalfWidth = 0;
 		mThumb = res.getDrawable(R.drawable.seek_arc_control_selector);
+		mLeaf = res.getDrawable(R.drawable.icon_leaf);
 		// Convert progress width to pixels for current density
 		mProgressWidth = (int) (mProgressWidth * density);
 
@@ -370,18 +392,36 @@ public class SeekArc extends View {
 		canvas.drawText(""+(mSelectedTemperature+mMin), mTranslateX - mTextXPos  ,  mTranslateY - mTextYPos  , paintText);
 
 
-		RectF bounds = new RectF(0, 0, getWidth(), getHeight());
+		RectF centerTemperature = new RectF(0, 0, getWidth(), getHeight());
 		float textHeight = paintTextCurrent.descent() - paintTextCurrent.ascent();
 		float textOffset = (textHeight / 2) - paintTextCurrent.descent();
-		canvas.drawText(""+currentTemperature, bounds.centerX(), bounds.centerY() + textOffset, paintTextCurrent);
+		canvas.drawText(""+currentTemperature, centerTemperature.centerX(), centerTemperature.centerY() + textOffset, paintTextCurrent);
 
 
 
 		float textHeightLabel = paintLabel.descent() - paintLabel.ascent();
 		float textOffsetLabel = (textHeightLabel / 2) - paintLabel.descent();
-		canvas.drawText("Currrent", bounds.centerX(), bounds.centerY()  - textHeightLabel - getScaledSize(50), paintLabel);
+		float yCurrent = centerTemperature.centerY()  - textHeightLabel - getScaledSize(50);
+		canvas.drawText("Currrent", centerTemperature.centerX(), yCurrent, paintLabel);
 
+		Log.d("tempera", "getProgress():" + getProgress());
+		Log.d("tempera", "mLeafDownRange:" + mLeafDownRange);
+		Log.d("tempera", "mLeafUpperRange:" + mLeafUpperRange);
+		Log.d("tempera", "getProgress() >= mLeafDownRange && getProgress() <= mLeafUpperRange:" + (getProgress() >= mLeafDownRange && getProgress() <= mLeafUpperRange));
+		if(getProgress() >= mLeafDownRange && getProgress() <= mLeafUpperRange) {
+			int mLeafHalfheight = (int) mLeaf.getIntrinsicHeight() / 2;
+			int mLeafHalfWidth = (int) mLeaf.getIntrinsicWidth() / 2;
 
+			mLeafHalfheight = (int) (mLeafHalfheight * ((smallest / density) / 500));
+			mLeafHalfWidth = (int) (mLeafHalfWidth * ((smallest / density) / 500));
+
+			int left = (int) (centerTemperature.centerX() - mLeafHalfWidth);
+			int right = (int) (centerTemperature.centerX() + mLeafHalfWidth);
+			int top = (int) (centerTemperature.centerY() + textOffset + getScaledSize(50));
+			int bottom = (int) (top + mLeafHalfheight * 2);
+			mLeaf.setBounds(left, top, right, bottom);
+			mLeaf.draw(canvas);
+		}
 //		int centreX = ((int)(bounds.width()  - arrowUp.getWidth()) /2);
 //		Paint paint = new Paint();
 //		paint.setAntiAlias(true);
@@ -751,4 +791,12 @@ public class SeekArc extends View {
 	public void setMin(int mMin) {
 		this.mMin = mMin;
 	}
+
+	public void setLeafLimit(int downLimit, int upperLimit ){
+		mLeafDownRange = downLimit;
+		mLeafUpperRange = upperLimit;
+		invalidate();
+	}
+
+
 }

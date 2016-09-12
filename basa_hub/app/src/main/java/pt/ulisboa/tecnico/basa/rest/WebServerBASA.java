@@ -192,7 +192,7 @@ public class WebServerBASA {
                                 public void run() {
                                     BasaManager manager = AppController.getInstance().getBasaManager();
                                     if(temperature > 0 && manager.getTemperatureManager() != null)
-                                        manager.getTemperatureManager().onChangeTargetTemperature(temperature);
+                                        manager.getTemperatureManager().onChangeTargetTemperatureFromClient(temperature);
                                     if(lights != null && lights.length > 0 && manager.getLightingManager() != null)
                                         manager.getLightingManager().setLightState(lights, true, true);
 
@@ -234,12 +234,12 @@ public class WebServerBASA {
                                     .getLightingManager().getLights();
 
                             Log.d("servico", "getLatestTemperature:" + (AppController.getInstance().getBasaManager()
-                                    .getTemperatureManager().getLatestTemperature() != null));
+                                    .getTemperatureManager().getCurrentTemperature()));
 
-                            double temperature = (AppController.getInstance().getBasaManager()
-                                    .getTemperatureManager().getLatestTemperature() != null)?
+                            int temperature = (AppController.getInstance().getBasaManager()
+                                    .getTemperatureManager().getCurrentTemperature() > 0)?
                                     AppController.getInstance().getBasaManager().getTemperatureManager()
-                                            .getLatestTemperature().getTemperature() : -100;
+                                            .getCurrentTemperature() : -100;
 //                            double temperature = AppController.getInstance().basaManager.getTemperatureManager().getLatestTemperature().getTemperature();
                             DeviceStatus deviceStatus = new DeviceStatus(lights, temperature);
 

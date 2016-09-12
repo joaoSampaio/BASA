@@ -225,19 +225,28 @@ void action(){
             // it->value contains the JsonVariant which can be casted as usual
             const char* value = it->value;
 
+            int pinSelected = -1;
             Serial.print("key: " + String(key));
-            if(String(key) == "ch1"){
-              Serial.print("ch1");
+
+            String mKey = String(key) ;
+            if(mKey == "ch1"){
+              pinSelected = CH1;
+            }else if(mKey == "ch2"){
+              pinSelected = CH2;
+            } else if(mKey == "ch3"){
+              pinSelected = CH3;
+            } else if(mKey == "ch4"){
+              pinSelected = CH4;
+            }
+           
+           
+            if(pinSelected >= 0 ){
               if(String(value) == "1"){
-                Serial.print("ch1 1");
-                digitalWrite(CH1, HIGH);
-                digitalWrite(BUILTIN_LED, HIGH);
+                digitalWrite(pinSelected, HIGH);
               }
               else{
-                Serial.print("ch1 else");
-                digitalWrite(CH1, LOW);
-                digitalWrite(BUILTIN_LED, LOW);
-              }
+                digitalWrite(pinSelected, LOW);
+              }              
             }
 
             if(String(key) == "light2")

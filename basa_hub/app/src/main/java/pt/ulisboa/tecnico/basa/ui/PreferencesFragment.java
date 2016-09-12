@@ -111,6 +111,20 @@ public class PreferencesFragment extends PreferenceFragment implements
 
             AppController.getInstance().timeScanPeriod = Integer.parseInt(preferences.getString("cam_time", "2"));
 
+        }else if(key.equals("cam_recording")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean record =  preferences.getBoolean("cam_recording", true);
+            Log.d("myapp", "cam_recording: " + record);
+
+            AppController.getInstance().getDeviceConfig().setEnableRecording(record);
+
+        }else if(key.equals("cam_live")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean live =  preferences.getBoolean("cam_live", true);
+            Log.d("myapp", "cam_live: " + live);
+
+            AppController.getInstance().getDeviceConfig().setEnableLiveView(live);
+
         }else if(key.equals("enable_kiosk")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean enableKiosk = preferences.getBoolean("enable_kiosk", false);

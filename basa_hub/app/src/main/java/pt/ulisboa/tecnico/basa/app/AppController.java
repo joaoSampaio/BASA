@@ -26,8 +26,6 @@ import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.AllStatisticalData;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.EventHistory;
-import pt.ulisboa.tecnico.basa.model.event.Event;
-import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
@@ -43,6 +41,7 @@ public class AppController extends Application {
     public AsyncHttpServer server;
 //    private String namespace = "edd1ebeac04e5defa017";
     private String namespace;
+    private int temperature;
 
     String uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     public int width;
@@ -71,6 +70,7 @@ public class AppController extends Application {
         Log.d("AppController", "onCreate (mInstance == null->" + (mInstance == null));
 //        Firebase.setAndroidContext(this);
         mInstance = this;
+        temperature = -99;
         AppController.context = getApplicationContext();
         EstimoteSDK.enableDebugLogging(true);
         JodaTimeAndroid.init(this);
@@ -150,10 +150,11 @@ public class AppController extends Application {
                                 Log.d(TAG, "temperatura:" + eddy.telemetry.temperature);
                                 Utils.Proximity proximity = Utils.computeProximity(eddy);
                                 Log.d(TAG, "basaManager != null:" + (basaManager != null));
-                                if (getBasaManager() != null) {
-                                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
-
-                                }
+                                temperature =  (int)eddy.telemetry.temperature;
+//                                if (getBasaManager() != null) {
+//                                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
+//
+//                                }
                                 double accuracy = Utils.computeAccuracy(eddy);
                                 Log.d("temp", "proximity.toString():" + proximity.toString());
                                 Log.d("temp", "accuracy:" + accuracy);
@@ -277,11 +278,13 @@ public class AppController extends Application {
     public String getServerKey(){
         if(serverKey == null){
             serverKey = "AIzaSyCY4HnknljxJX_CoZHuMVO6TEslMs2_tNo";
+            serverKey = "AIzaSyCY4HnknljxJX_CoZHuMVO6TEslMs2_tNo";
 //            serverKey = getResources().getString(R.string.google_api_key);
         }
         return serverKey;
     }
 
-
-
+    public int getTemperature() {
+        return temperature;
+    }
 }

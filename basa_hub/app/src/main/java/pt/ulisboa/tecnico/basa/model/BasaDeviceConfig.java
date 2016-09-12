@@ -26,6 +26,8 @@ public class BasaDeviceConfig {
     private List<String> beaconList;
     private boolean firebaseEnabled;
     private String edupLightId;
+    private boolean enableRecording;
+    private boolean enableLiveView;
     private int edupNumLight;
     private int lightLevel = 50;
 
@@ -143,6 +145,22 @@ public class BasaDeviceConfig {
 
     public void setBeaconList(List<String> beaconList) {
         this.beaconList = beaconList;
+    }
+
+    public boolean isEnableLiveView() {
+        return enableLiveView;
+    }
+
+    public void setEnableLiveView(boolean enableLiveView) {
+        this.enableLiveView = enableLiveView;
+    }
+
+    public boolean isEnableRecording() {
+        return enableRecording;
+    }
+
+    public void setEnableRecording(boolean enableRecording) {
+        this.enableRecording = enableRecording;
     }
 
     public static BasaDeviceConfig getConfig(){

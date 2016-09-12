@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.basa.rest;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +38,9 @@ public class NotificationServer {
                     Request.Builder newRequest;
 
                     newRequest = request.newBuilder()
-                            .addHeader("Content-type", "application/json;charset=UTF-8")
+                            .addHeader("Content-Type", "application/json")
                             .addHeader("Authorization", "key=" + AppController.getInstance().getServerKey());
+                    Log.d("sever", "server key:" + AppController.getInstance().getServerKey());
                     return chain.proceed(newRequest.build());
                 }
             };

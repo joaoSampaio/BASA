@@ -68,6 +68,7 @@ public class EventManager {
 
         try {
             for (InterestEventAssociation interest: interests){
+
                 if(interest.isType(event.getType())){
                     interest.getInterest().onRegisteredEventTriggered(event);
                 }
@@ -162,8 +163,15 @@ public class EventManager {
 
     public void registerInterest(InterestEventAssociation interest){
         try {
+
+            Log.d("EVENT", "registerInterest******************************************(interest != null): " + (interest != null));
+            if(interest == null)
+                throw new RuntimeException();
+
+
             this.interests.add(interest);
         }catch (Exception e){
+            e.printStackTrace();
             Log.d("Exception","registerInterest");
         }
     }
@@ -178,7 +186,7 @@ public class EventManager {
     }
 
     public static String eventToString(Event event){
-        String result = "unknown";
+        String result = "unknown:" + event.getType();
         switch (event.getType()){
             case Event.OCCUPANT_DETECTED:
                 result = "OCCUPANT_DETECTED->" + ((EventOccupantDetected)event).isDetected();
@@ -207,6 +215,9 @@ public class EventManager {
 
             case Event.USER_LOCATION:
                 result = "TRIGGER_USER_LOCATION -> isInBuilding:" + ((EventUserLocation)event).isInBuilding() + " getLocation:" + ((EventUserLocation)event).getLocation();
+                break;
+            case Event.TIME:
+                result = "TIME -> ";
                 break;
         }
 
@@ -546,7 +557,7 @@ public class EventManager {
 
                 case TriggerAction.ACTION_CHANGE_TEMPERATURE:
                     int value = action.getParametersInt(1);
-                    getBasaManager().getTemperatureManager().changeTargetTemperature(value);
+                    getBasaManager().getTemperatureManager().changeTargetTemperatureFromUI(value);
                     break;
 
 

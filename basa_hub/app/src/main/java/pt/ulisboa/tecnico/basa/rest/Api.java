@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.basa.rest;
 
 import com.google.gson.JsonElement;
 
+import pt.ulisboa.tecnico.basa.rest.Pojo.ArduinoChangeTemperature;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import retrofit2.Call;
@@ -20,6 +21,9 @@ public interface Api {
 
     @GET
     Call<Temperature> requestTemperatureOffice(@Url String url);
+
+    @POST
+    Call<Temperature> changeArduinoTemperature(@Url String url, @Body ArduinoChangeTemperature arduino);
 
     @POST
     Call<Temperature> giveLocationToArduino(@Url String url, @Body ServerLocation server);

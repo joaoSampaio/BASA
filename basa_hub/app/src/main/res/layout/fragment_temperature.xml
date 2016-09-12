@@ -32,7 +32,6 @@
                 seekarc:max="35"
                 seekarc:min="15"
                 seekarc:progressWidth="10dp"
-                seekarc:thumb="@drawable/bar_temperature"
                 seekarc:arcWidth="5dp"
                 seekarc:rotation="180"
                 seekarc:startAngle="60"
@@ -88,14 +87,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/image_temperature_mode"
-            android:src="@drawable/ic_snowflake"
-            android:layout_toRightOf="@+id/containnerT"
-            android:layout_centerVertical="true"
-            android:tint="@color/white" />
     </RelativeLayout>
 
     <RelativeLayout

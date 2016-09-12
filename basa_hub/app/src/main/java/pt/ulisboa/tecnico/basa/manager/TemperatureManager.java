@@ -21,6 +21,8 @@ import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.weather.HourlyForecast;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
+import pt.ulisboa.tecnico.basa.rest.Pojo.ArduinoChangeTemperature;
+import pt.ulisboa.tecnico.basa.rest.services.ChangeTemperatureService;
 import pt.ulisboa.tecnico.basa.rest.services.GetTemperatureListService;
 import pt.ulisboa.tecnico.basa.rest.services.GetTemperatureOfficeService;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
@@ -37,10 +39,13 @@ public class TemperatureManager {
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
     private GlobalTemperatureForecast globalTemperatureForecast;
     SharedPreferences preferences;
-    private Temperature latestTemperature;
+
+    private int currentTemperature;
+    private int currentHumidity;
+    private long timeStartHvac = 0;
     private BasaManager basaManager;
     Handler handler;
-    private long lastCheck = 0;
+    private long lastCheck = 0, lastHVACCmd = 0;
     private boolean calledUpdate = false;
     private String urlTemperature;
     private InterestEventAssociation interest;
@@ -108,35 +113,7 @@ public class TemperatureManager {
             }
         },0));
 
-
-        interest = new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
-            @Override
-            public void onRegisteredEventTriggered(Event event) {
-                if(event instanceof EventTemperature){
-                    double temperature = ((EventTemperature)event).getTemperature();
-                    Log.d("servico", "latest temp:" + temperature);
-
-
-                    setLatestTemperature(new Temperature(temperature, -1));
-
-
-
-                }
-            }
-        }, 0);
-
-        Log.d("servico", "TemperatureManager:" + (getBasaManager().getEventManager() != null));
-        if(getBasaManager().getEventManager() != null) {
-            Log.d("servico", "TemperatureManager register:" );
-            getBasaManager().getEventManager().registerInterest(interest);
-
-        }
-
-
-
         requestUpdateTemperature();
-
-
 
     }
 
@@ -201,27 +178,45 @@ public class TemperatureManager {
 //        urlTemperature = preferences.getString(Global.OFFLINE_IP_TEMPERATURE, "");
 
         handler.removeCallbacksAndMessages(null);
-
-        if(AppController.getInstance().getDeviceConfig().getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO) {
+        BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
+        if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO ||
+                conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON) {
             urlTemperature = AppController.getInstance().getDeviceConfig().getArduinoIP();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
-                        @Override
-                        public void success(Temperature response) {
-                            if (response != null && getBasaManager() != null && response.isValid()) {
-                                getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, (int)response.getTemperature(), (int)response.getHumidity()));
-                                //latestTemperature = response;
+
+
+                    BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
+                    if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO) {
+
+                        new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
+                            @Override
+                            public void success(Temperature response) {
+                                if (response != null && getBasaManager() != null && response.isValid()) {
+                                    setLatestTemperature((int)response.getTemperature());
+                                    currentHumidity = (int)response.getHumidity();
+                                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, (int)response.getTemperature(), (int)response.getHumidity()));
+                                    //latestTemperature = response;
+                                }
                             }
+
+                            @Override
+                            public void failed(String error) {
+                            }
+
+                        }).execute();
+
+                    } else if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON){
+
+                        if(AppController.getInstance().getTemperature() > -99) {
+                            setLatestTemperature(AppController.getInstance().getTemperature());
+                            getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, AppController.getInstance().getTemperature(), -1));
+
                         }
 
-                        @Override
-                        public void failed(String error) {
+                    }
 
-                        }
-
-                    }).execute();
                     handler.postDelayed(this, 30 * 1000);
                 }
             });
@@ -231,47 +226,110 @@ public class TemperatureManager {
 
 
 
-    public void changeTargetTemperature(int temperature){
+    public void changeTargetTemperatureFromUI(int temperature){
 
         targetTemperature = temperature;
         AppController.getInstance().getBasaManager().getEventManager()
                 .addEvent(new EventChangeTemperature(temperature));
 
-        if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
+        if(AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
             FirebaseHelper mHelperFire = new FirebaseHelper();
             mHelperFire.changeTemperature(temperature);
         }
+        handleTemperatureTarget();
     }
 
-    public void onChangeTargetTemperature(int temperature) {
+    public void onChangeTargetTemperatureFromClient(int temperature) {
 
-        if(temperature != targetTemperature)
+        if(temperature != targetTemperature) {
             AppController.getInstance().getBasaManager().getEventManager()
                     .addEvent(new EventChangeTemperature(temperature));
 
+            targetTemperature = temperature;
+        }
+
         //TODO logic
+
         Log.d("tempera", "actionTemperatureManagerList:" + (actionTemperatureManagerList != null));
         if (actionTemperatureManagerList != null) {
             for (ActionTemperatureManager listenner : actionTemperatureManagerList) {
                 listenner.onTargetTemperatureChange(temperature);
             }
         }
+        handleTemperatureTarget();
     }
 
+    private void handleTemperatureTarget(){
 
-    public void setLatestTemperature(Temperature latestTemperature) {
-        Log.d("servico", "setLatestTemperature:" + (latestTemperature != null));
-        this.latestTemperature = latestTemperature;
+        //timeStartHvac
 
-        if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
-            FirebaseHelper mHelperFire = new FirebaseHelper();
-            mHelperFire.setLatestTemperature((int)latestTemperature.getTemperature());
+
+        ArduinoChangeTemperature arduinoChangeTemperature = new ArduinoChangeTemperature();
+        if(currentTemperature > targetTemperature){
+
+            arduinoChangeTemperature.turnOnCold(((currentTemperature - targetTemperature ) > 4) ? ArduinoChangeTemperature.SPEED3 : ArduinoChangeTemperature.SPEED1);
+
+
+        }else if(currentTemperature < targetTemperature){
+
+            arduinoChangeTemperature.turnOnHot(((targetTemperature - currentTemperature ) > 4) ? ArduinoChangeTemperature.SPEED3 : ArduinoChangeTemperature.SPEED1);
+
+        }else {
+            //stop hvac reached target temperature
+            arduinoChangeTemperature.turnOff();
+
+        }
+        lastHVACCmd = System.currentTimeMillis();
+        new ChangeTemperatureService(AppController.getInstance().getDeviceConfig().getArduinoIP(), arduinoChangeTemperature, new CallbackMultiple() {
+            @Override
+            public void success(Object response) {
+
+            }
+
+            @Override
+            public void failed(Object error) {
+
+            }
+        }).execute();
+
+    }
+
+    private void handleCurrentTemperature(){
+
+        if((System.currentTimeMillis() - lastHVACCmd) > 1*60*1000){
+
+            if(currentTemperature > targetTemperature){
+                targetTemperature++;
+            } else if(currentTemperature < targetTemperature){
+                targetTemperature--;
+            }
+            onChangeTargetTemperatureFromClient(targetTemperature);
         }
 
+
+        //time: every 10m
+
+
     }
 
-    public Temperature getLatestTemperature() {
-        return latestTemperature;
+
+    public void setLatestTemperature(int latestTemperature) {
+        Log.d("servico", "setLatestTemperature:" + latestTemperature);
+        this.currentTemperature = latestTemperature;
+
+        if(AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+            FirebaseHelper mHelperFire = new FirebaseHelper();
+            mHelperFire.setLatestTemperature(latestTemperature);
+        }
+        handleCurrentTemperature();
+    }
+
+    public int getCurrentHumidity() {
+        return currentHumidity;
+    }
+
+    public int getCurrentTemperature() {
+        return currentTemperature;
     }
 
     public GlobalTemperatureForecast getGlobalTemperatureForecast() {

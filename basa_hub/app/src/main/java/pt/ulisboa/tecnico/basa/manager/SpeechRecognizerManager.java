@@ -30,7 +30,10 @@
 
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,11 +72,28 @@ public class SpeechRecognizerManager {
     private BasaManager basaManager;
     protected long mSpeechRecognizerStartListeningTime = 0;
     private boolean mSuccess;
-    private boolean isGoogleRunning = false;
+    private Handler handler;
+    private Runnable run = new Runnable() {
+        @Override
+        public void run() {
+
+            if(!isGoogleRunning && !isPockerSphinxRunning){
+
+                mGoogleSpeechRecognizer.cancel();
+                mPocketSphinxRecognizer.startListening(KWS_SEARCH);
+
+            }
+
+
+        }
+    };
+    private boolean isGoogleRunning = false, isPockerSphinxRunning = false;
 
     public SpeechRecognizerManager( BasaManager basaManager) {
         this.basaManager = basaManager;
         Log.d(TAG, "SpeechRecognizerManager:");
+        AudioManager manager = (AudioManager) AppController.getAppContext().getSystemService(Context.AUDIO_SERVICE);
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -82,6 +102,8 @@ public class SpeechRecognizerManager {
             }
         },2000);
 
+        handler = new Handler();
+        handler.postDelayed(run, 10000);
 //        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
     }
 
@@ -170,9 +192,8 @@ public class SpeechRecognizerManager {
 
         mSpeechRecognizerIntent.putExtra( RecognizerIntent. EXTRA_CONFIDENCE_SCORES, true);
 
-//        mSpeechRecognizerIntent.putExtra("android.speech.extra.DICTATION_MODE", true);
-//        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false);
-
+        mSpeechRecognizerIntent.putExtra("android.speech.extra.DICTATION_MODE", true);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false);
 
     }
 
@@ -220,6 +241,8 @@ public class SpeechRecognizerManager {
          */
         @Override
         public void onPartialResult(Hypothesis hypothesis) {
+
+            isPockerSphinxRunning = true;
             if (hypothesis == null)
             {
                 Log.d(TAG, "hypothesis == null:");
@@ -233,35 +256,18 @@ public class SpeechRecognizerManager {
             Log.d(TAG, "last result:" + results[0]);
             if (results[0].trim().equals(KEYPHRASE)) {
 
-
-//                AudioManager manager = (AudioManager) AppController.getAppContext().getSystemService(Context.AUDIO_SERVICE);
-//                manager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-//
-//
-//                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-//                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
                 Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        isPockerSphinxRunning = false;
                         speechRecognizerStartListening(mSpeechRecognizerIntent);
                     }
-                }, 800);
-
+                }, 500);
 
 //                mPocketSphinxRecognizer.stop();
                 mPocketSphinxRecognizer.cancel();
-
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.d(TAG, "mGoogleSpeechRecognizer.startListening:");
-//                        mGoogleSpeechRecognizer.startListening(mSpeechRecognizerIntent);
-//                    }
-//                },1000);
-
-
 
                 Toast.makeText(AppController.getAppContext(), "You said: " + results[0].trim(), Toast.LENGTH_SHORT).show();
 
@@ -307,6 +313,9 @@ public class SpeechRecognizerManager {
         @Override
         public void onEndOfSpeech() {
             Log.d(TAG, "mGoogleSpeechRecognizer.onEndOfSpeech:");
+
+            isGoogleRunning = false;
+
         }
 
         @Override
@@ -333,6 +342,8 @@ public class SpeechRecognizerManager {
                 Log.e(TAG, "Already success, ignoring error");
                 return;
             }
+
+
             long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
             if (duration < 500 && error == SpeechRecognizer.ERROR_NO_MATCH) {
                 Log.e(TAG, "Doesn't seem like the system tried to listen at all. duration = " + duration + "ms. This might be a bug with onError and startListening methods of SpeechRecognizer");
@@ -355,9 +366,11 @@ public class SpeechRecognizerManager {
             }
 
             if (duration > 7000 && error == SpeechRecognizer.ERROR_NO_MATCH) {
+                Log.e(TAG, "duration > 7000 && error == SpeechRecognizer.ERROR_NO_MATCH");
                 mGoogleSpeechRecognizer.cancel();
                 mPocketSphinxRecognizer.startListening(KWS_SEARCH);
             }else {
+                Log.e(TAG, "speechRecognizerStartListening(mSpeechRecognizerIntent);");
                 speechRecognizerStartListening(mSpeechRecognizerIntent);
             }
         }
@@ -417,6 +430,10 @@ public class SpeechRecognizerManager {
     protected synchronized void speechRecognizerStartListening(Intent intent) {
         if (mGoogleSpeechRecognizer != null) {
             mSuccess = false;
+            ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+            toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+
+
             this.mSpeechRecognizerStartListeningTime = System.currentTimeMillis();
             this.mGoogleSpeechRecognizer.startListening(intent);
         }

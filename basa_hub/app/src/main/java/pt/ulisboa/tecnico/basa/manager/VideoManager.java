@@ -69,7 +69,7 @@ public class VideoManager {
                     EventOccupantDetected motion = (EventOccupantDetected)event;
 
                     //movement detected and no user in office
-                    if(motion.isDetected() &&
+                    if(AppController.getInstance().getDeviceConfig().isEnableRecording() && motion.isDetected() &&
                             AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0){
                         timeLastMovement = System.currentTimeMillis();
                         startVideoRecording();
@@ -96,8 +96,9 @@ public class VideoManager {
     public void addNewLivePhoto(String path, final String time, final String filename){
 
 
+        BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
 
-        if(BasaDeviceConfig.getConfig().isFirebaseEnabled() && liveStream) {
+        if(conf.isFirebaseEnabled() && conf.isEnableLiveView() && liveStream) {
             FirebaseHelper mHelperFire = new FirebaseHelper();
             mHelperFire.uploadFile(path, Global.VIDEO_HISTORY, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -125,7 +126,7 @@ public class VideoManager {
 
     public void addNewHistoryVideo(final String path, final String time, final String filename){
 
-        if(BasaDeviceConfig.getConfig().isFirebaseEnabled()) {
+        if(AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
             FirebaseHelper mHelperFire = new FirebaseHelper();
             mHelperFire.uploadFile(path, Global.VIDEO_HISTORY, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
