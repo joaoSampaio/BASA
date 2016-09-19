@@ -5,7 +5,7 @@ package pt.ulisboa.tecnico.basa.model.event;
 public class Event {
 
     public final static int TEMPERATURE = 0;
-    public final static int OCCUPANT_DETECTED = 1;
+    public final static int MOTION = 1;
     public final static int SPEECH = 2;
     public final static int CUSTOM_SWITCH = 3;
     public final static int CLAP = 4;

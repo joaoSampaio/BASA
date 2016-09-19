@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.basa.model.event.EventChangeTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
-import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.EventMotion;
 import pt.ulisboa.tecnico.basa.model.event.EventSpeech;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
@@ -93,8 +93,8 @@ public class EventManager {
 
         String result = "";
         switch (event.getType()){
-            case Event.OCCUPANT_DETECTED:
-                if(((EventOccupantDetected)event).isDetected())
+            case Event.MOTION:
+                if(((EventMotion)event).isDetected())
                     result = "Movement detected";
                 break;
             case Event.SPEECH:
@@ -188,8 +188,8 @@ public class EventManager {
     public static String eventToString(Event event){
         String result = "unknown:" + event.getType();
         switch (event.getType()){
-            case Event.OCCUPANT_DETECTED:
-                result = "OCCUPANT_DETECTED->" + ((EventOccupantDetected)event).isDetected();
+            case Event.MOTION:
+                result = "MOTION->" + ((EventMotion)event).isDetected();
                 break;
             case Event.TEMPERATURE:
                 result = "TRIGGER_TEMPERATURE->" + ((EventTemperature)event).getTemperature();
@@ -396,11 +396,11 @@ public class EventManager {
 
                     case TriggerAction.TRIGGER_MOTION_SENSOR:
 
-                        registerInterestRecipe(new InterestEventAssociation(Event.OCCUPANT_DETECTED, new EventManager.RegisterInterestEvent() {
+                        registerInterestRecipe(new InterestEventAssociation(Event.MOTION, new EventManager.RegisterInterestEvent() {
                             @Override
                             public void onRegisteredEventTriggered(Event event) {
-                                if (event instanceof EventOccupantDetected) {
-                                    EventOccupantDetected motion = (EventOccupantDetected)event;
+                                if (event instanceof EventMotion) {
+                                    EventMotion motion = (EventMotion)event;
                                     if(motion.isDetected() && trigger.getParametersInt(0) == MotionSensorTrigger.MOVEMENT){
                                         if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
                                             doAction(recipeFinal);

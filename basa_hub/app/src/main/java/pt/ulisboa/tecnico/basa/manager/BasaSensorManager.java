@@ -10,7 +10,7 @@ import android.util.Log;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
-import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.EventMotion;
 import pt.ulisboa.tecnico.basa.model.event.EventTime;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
@@ -81,7 +81,7 @@ public class BasaSensorManager implements SensorEventListener {
 
             timeLastMovement = current;
             timeLastNoMovement = current;
-            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(true));
+            AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventMotion(true));
             latestMotionReading = true;
 
 
@@ -89,7 +89,7 @@ public class BasaSensorManager implements SensorEventListener {
         }else {
             latestMotionReading = false;
             if((current - timeLastNoMovement > NO_MOVEMENT_PERIOD)){
-                AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventOccupantDetected(false, (int)(current - timeLastMovement)/1000));
+                AppController.getInstance().getBasaManager().getEventManager().addEvent(new EventMotion(false, (int)(current - timeLastMovement)/1000));
 
                 timeLastNoMovement = System.currentTimeMillis();
             }

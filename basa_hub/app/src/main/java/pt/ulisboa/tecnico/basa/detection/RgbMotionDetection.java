@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.basa.detection;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 
@@ -135,7 +136,7 @@ public class RgbMotionDetection implements IMotionDetection {
         // long bDetection = System.currentTimeMillis();
         boolean motionDetected = isDifferent(rgb, width, height);
         // long aDetection = System.currentTimeMillis();
-        // Log.d(TAG, "Detection "+(aDetection-bDetection));
+         Log.d("motion--", "mThreshold "+ mThreshold);
 
         // Replace the current image with the previous.
         mPrevious = original;

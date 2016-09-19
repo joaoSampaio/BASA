@@ -1,43 +1,76 @@
 \chapter{Introduction}
 \label{chapter:introduction}
-The introduction is certainly the most read section of any deliverable, and it largely determines the attitude of the reader/reviewer will have toward the work. Therefore, it is probably the most delicate part of the writing of a report.
+Buildings represent a large portion of the total energy consumed. According to the International Energy Agency building represents 32\% of total final energy consumption~\cite{iea}. One way to contribute to reducing the energy consumption is the use of \ac{BAS} to improve their efficiency. Unfortunately, not all buildings are equipped with such systems. Most times these systems offer limited functionality and can only be controlled by the building manager.
+
+Human behavior influences the amount of energy a building requires. Depending on the occupant behavior, the building's energy cost can increase or decrease by one-third of its design performance ~\cite{ocupancy2}. Simple actions such as leaving the lighting system always on, even after the occupant has gone home, has an impact on the wasted energy used by the building. The lack of occupant detection systems in buildings prevents further energy savings, by knowing when a room is unoccupied it is possible to shutdown unnecessary electric systems.
+
+Nowadays, consumer smart home systems are becoming more popular, the ability to remote control the house lighting and electric devices is very appealing to consumers. At the same time smart phones and tablets flood the market at very accessible price ranges. 
 
 \section{Background}
 \label{section:background}
-Nesta secção devem descrever a área em que a vossa tese se insere, de forma
-a contextualizar o problema que vão resolver. No âmbito da área devem
-identificar os principais problemas que existem.
+Nowadays, home and office building are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in the office building, where the occupant isn't usually the one paying (directly the bills, there is no incentive to reduce electricity consumption.
 
-Caso queiram usar acrónimos é assim \ac{IEEE}.
-Proxima vez que usarem \ac{IEEE} já não expande.
+
+Current solutions suffer from a set of problems:
+\begin{itemize}
+\item \textbf{User Neglect} - These are the major responsible for the extra energy consumption and as such they must be the focus in order to reduce energy consumption, while still delivering the same or better comfort levels to the occupants.
+\item \textbf{Limited Flexibility} - Currently installed BAS are not open source and require specialized installation and configuration. Because of that, they are limited to pre-installed functions and have the risk of easily becoming outdated.
+\item \textbf{Limited Customization} - Current solutions do not take in consideration the individual needs of the rooms and occupants they manage. Different rooms can required different luminous and thermal requirements. 
+\item \textbf{Expensive installation} - One problem facing BAS is the cost of the devices and their installation. Some require rewiring  and dedicated conduits. Due to the large costs associated, the sensors and actuators are usually installed in building zones rather then offices.
+\item \textbf{Lack of security and access control} - When we think of a personal office we assume it is always safe, yet during the time we are away the office may be opened by the cleaning staff, lock-piked or access by someone that should not have access to it.  
+\end{itemize}
+
+
 
 \section{Proposed Solution}
 \label{section:proposed}
-Nesta secção devem identificar objectivamente o problema que vão resolver e o
-tipo de solução que vão adoptar.
-Exemplos de problemas que podem ser endereçados e tipos de soluções:
+
+The goal of this work is to implement a system capable of reducing an office power consumption, give its occupants higher levels of comfort and the ability to remotely access certain functionalities of the office.
+
+
+The proposed solution must satisfy the following set of requirements:
 
 \begin{itemize}
-\item Esta situação ainda não tem solução --- vou propor uma nova
-\item Existem soluções para aspectos específicos, mas não existe uma que integre
-os vários aspectos --- vou integrar as várias
-\item Existem demonstrações matemáticas ou validações por simulação, mas
-será que funcionam na realidade (quando as aproximações que se fizerem
-deixarem de ser válidas) --- vou fazer um protótipo experimental
-\item Existem demasiadas propostas de soluções, validadas em diferentes
-condições --- vou fazer um estudo comparativo que as avalie sob diferentes
-perspectivas
-\item Existe uma boa solução, mas com um desempenho variável em função da
-configuração --- vou fazer um estudo que permita verificar em que medida é
-possível ajustar os parâmetros automaticamente às diferentes situações.
-\item Existe uma teccnologia que ainda não está devidamente explorada --- vou
-fazer um protótipo que ilustre o seu uso.
+  \item \textbf{Scalable:} The system must be horizontally scalable and offer rapid deployment of new nodes.
+  
+  \item \textbf{Isolation:} The control and automation of the offices must be independent and work regardless the state of the rest of the system.
+  
+  \item \textbf{Multiuser:} The system must be able to maintain multiple user preferences, in the eventuality of multiple users occupying the room at the same time the system must be capable of adjusting the ambient settings to minimize their discomfort. 
+  
+  \item \textbf{Manual control:} People expect to be some form of manual control over the room such a light switch or thermostat, the system must provide a graphical interface embedded in the wall that allows manual control of some basic services such as HVAC and lighting.
+  
+  \item \textbf{Remote control:} It should provide a authenticated user status and remote control over the room's services, by the use of an Android app.
+  
+  \item \textbf{Automate tasks:} The user should be able to configure recipes where tasks are triggered by a single or multiple events (sensor reading, user location, time).
+  
+  \item \textbf{Load-aware:} The system must be able to adjust services such as HVAC and lighting in a energy efficient way.
+  
+  \item \textbf{User aware:} It must capable of detecting if the user is inside the building with a medium/low accuracy and the user presence in the room with high Accuracy.
+  
+  \item \textbf{Motion aware:} It must capable of detecting if someone enters the line of sight. It must also provide the means to ignore part of the room where motion can be ignored because of false positives. For example a window with line of sight to the street by can be ignored.
+  
+  \item \textbf{Energy Efficient:} The system must be able to adjust it's own energy footprint during long periods when no occupant is within the room, such as nigh time.  
+  
+  \item \textbf{Cost:} The hardware cost must be affordable for small/medium businesses in order for the monetary return time for the energy saving not be too long, thus be more attractive to office owners.
+  
 \end{itemize}
+
+
+
+
 
 \section{Thesis Contribution}
 \label{section:contribution}
-Nesta secção devem identificar como é que a vossa solução vai contribuir para
-resolver o problema.
+
+The following list presents the expected contributions of this work:
+
+\begin{itemize}
+    \item Hardware Architecture - Design of the architecture with all the hardware components needed and the network interfaces for communication.
+    \item Software Architecture - Design of the applications to run on the target hardware, that offers manual and remote control of the HVAC and lighting systems. As well as intrusion detection and notification.
+    \item An Android based BAS, creating a proof of concept of integrating Android devices as part of an automation system.
+    \item An Android based security system, capable of detecting intrusion detection and monitoring and notification capabilities.
+    
+\end{itemize}
 
 \section{Outline}
 This document describes the research and work developed and it is organized as follows:

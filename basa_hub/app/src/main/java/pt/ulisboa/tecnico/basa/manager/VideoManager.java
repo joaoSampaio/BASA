@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.event.Event;
-import pt.ulisboa.tecnico.basa.model.event.EventOccupantDetected;
+import pt.ulisboa.tecnico.basa.model.event.EventMotion;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.model.firebase.FirebaseFileLink;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
@@ -62,11 +62,11 @@ public class VideoManager {
         storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
 
 
-        interest = new InterestEventAssociation(Event.OCCUPANT_DETECTED, new EventManager.RegisterInterestEvent() {
+        interest = new InterestEventAssociation(Event.MOTION, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {
-                if (event instanceof EventOccupantDetected) {
-                    EventOccupantDetected motion = (EventOccupantDetected)event;
+                if (event instanceof EventMotion) {
+                    EventMotion motion = (EventMotion)event;
 
                     //movement detected and no user in office
                     if(AppController.getInstance().getDeviceConfig().isEnableRecording() && motion.isDetected() &&

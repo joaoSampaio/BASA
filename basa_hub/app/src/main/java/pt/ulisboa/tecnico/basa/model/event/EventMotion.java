@@ -2,19 +2,19 @@ package pt.ulisboa.tecnico.basa.model.event;
 
 
 
-public class EventOccupantDetected extends Event {
+public class EventMotion extends Event {
 
     private boolean detected;
     private int secondsNoMovement;
 
 
-    public EventOccupantDetected(boolean detected) {
-        super(OCCUPANT_DETECTED);
+    public EventMotion(boolean detected) {
+        super(MOTION);
         this.detected = detected;
     }
 
-    public EventOccupantDetected(boolean detected, int secondsNoMovement) {
-        super(OCCUPANT_DETECTED);
+    public EventMotion(boolean detected, int secondsNoMovement) {
+        super(MOTION);
         this.detected = detected;
         this.secondsNoMovement = secondsNoMovement;
     }
