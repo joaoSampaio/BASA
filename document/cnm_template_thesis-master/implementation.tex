@@ -153,7 +153,7 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 
 There were a couple of changes in regard to the starting software architecture, we will present the current implementation:
 
-\paragraph{Event Manager}\mbox{}\\
+\subsubsection{Event Manager}\mbox{}\\
 
 The Event Manager  operates in a publish/subscriber basis. Other managers register their interest in certain events and when whose events happen they are notified. The events can be published to the event manager by any other manager. For example the Sensor Manager can publish and motion detected event, that the video manager is interested.
 
@@ -195,7 +195,7 @@ The actions available are:
 \end{itemize}
 
 
-\paragraph{Speech Recognition Manager}\mbox{}\\
+\subsubsection{Speech Recognition Manager}\mbox{}\\
 
 This manager uses the CMU Sphinx offline keyword speech recognizer, meaning it will detect one word in our case "my assistant". When it detects the keyword it shuts down and we launch google online speech recognition. We use this other speech recognition because it offer good results, the reason the manager uses two different speech recognizes is because using only google recognizer has higher bandwidth cost since we would be constantly sending audio.The other reason is privacy, we don't know if google is going to disclose our audio files to third parties.
 
@@ -204,7 +204,7 @@ When we successfully say the keyword a beep sound is played and google speech re
 There were several problems with both recognizer, the Sphinx has a lot of false positives for small words, for our current keyword we sometimes need to repeat more than once for it to recognize. This problem can perhaps be attributed to the fact we are not native English speakers. 
 Google speech recognizer is plagued with problems since a few version ago, it sometimes will not listen and shutdown after some 100 ms. To try to minimize the problem by run a check every 10 seconds. If both speech recognizes are not running we relaunch Sphinx.
 
-\paragraph{Sensor Manager}\mbox{}\\
+\subsubsection{Sensor Manager}\mbox{}\\
 
 The Sensor Manager is responsible for the light sensor and virtual motion sensor.
 
@@ -215,7 +215,7 @@ Since the tablet does not have a motion sensor, we use the front camera and anal
 A problem that motion detecting cameras have are the false positives specially when there is a windows to the outside. A strong light can trigger the sensor, because of that we designed the sensor be able to ignore an area of the camera frame. It is possible to specify the area to ignore in the HUB APP settings.
 
 
-\paragraph{Video Manager}\mbox{}\\
+\subsubsection{Video Manager}\mbox{}\\
 
 The Video manager does two jobs, it records 30 seconds videos when no user is present in the office and motion is detected. The other job is offering a live preview of the office, an user can use the USER APP to watch in real time the office.
 
@@ -225,7 +225,7 @@ The video manager can be enabled and disabled in the HUB settings for privacy re
 
 
 
-\paragraph{Lighting Manager}\mbox{}\\
+\subsubsection{Lighting Manager}\mbox{}\\
 
 This manager is responsible for turning on/off the room lights and keeping their status updated when a user uses the manual switch.
 
@@ -252,7 +252,7 @@ One other problem arised when we quickly turned on/off all the lights in quick s
 \end{figure}
 
 
-\paragraph{Temperature Manager}\mbox{}\\
+\subsubsection{Temperature Manager}\mbox{}\\
 
 
 The Temperature Manager is responsible for keeping an updated weather forecast, keeping an updated temperature reading and turning on/off the Arduino \ac{HVAC}.
@@ -279,7 +279,7 @@ To turn on/off the \ac{HVAC} we send send a POST request containing a \ac{JSON} 
 \end{figure}
 
 
-\paragraph{User Manager}\mbox{}\\
+\subsubsection{User Manager}\mbox{}\\
 
 
 The User Manager keeps track of the user location (in building, in office) and is responsible for registering new users.
@@ -293,7 +293,7 @@ There are two types of user that can register. Users with the mobile USER APP an
 
 
 
-\paragraph{Web Server and Google Firebase}\mbox{}\\
+\subsubsection{Web Server and Google Firebase}\mbox{}\\
 
 These independent modules are responsible for communication with the USER APP.
 
@@ -329,21 +329,107 @@ The database allows us to store and sync data in a NoSQL cloud database. Using a
 
 Firebase solves us two problems, one is users can access our solution from their home and access the live camera, it uses firebase as a middle man to communicate. The second problem it fixed was the user location tracking, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our HUB and notify of it's presence since they were in different networks, we use Firebase to add our location messages that are then received by the HUB and building location is achieved.
 
-We ended having two ways to communicate with the HUB APP, each has some strong and weak points. The major negative point with Firebase is it requires internet to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
+We ended having two ways to communicate with the HUB APP, each has some strong and weak points. 
+
+The negative points with Firebase are it requires internet to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tear only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and HUB devices connect at each moment.
+
+One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
+
+
+
+\subsubsection{User interface}
+
+
+The \ac{UI} of the HUB APP is composed of three main screens. There are a lighting screen, a temperature and general menu that contains several advanced features.
+
+The \textbf{lighting screen}, shown in Figure~\ref{screen_lights} allows the user to control the lighting environment in the room.
+
+The \textbf{temperature screen}, shown in Figure~\ref{screen_temperature} gives visual information about the current weather outside. There is also a virtual thermostat where the user can select the temperature he desires. The thermostat shows a leaf icon when the selected temperature is inside the range of temperature where most people have comfort as described in section~\ref{related:adaptive_heating}. 
+
+There is a \textbf{general menu} that contains the other screens that enable additional features. This menu contains:
+\begin{itemize}
+  \item \textbf{User registration:} Allows the a person to setup an account in HUB. 
+  \item \textbf{Recipe management:} Contains a list of the current recipes in the HUB and allows the user to create, edit, disable/enable and delete them.
+  
+  \item \textbf{Event history} Shows a list events ordered chronologically. 
+  
+  \item \textbf{Statistics screen} Shows temperature, lighting and occupation graphs. 
+  
+  \item \textbf{Settings screen} Allows the user to configure the HUB APP.
+\end{itemize}
+
+
+
+The \textbf{user registration screen} allows the user to register using the USER APP or an email address.
+If the user uses the Android USER APP to register, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the HUB server. This temporary id is latter needed when the user registers and exists  only to ensure only people inside the office can register a new user and not just anyone that knows the IP address.
+
+In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. In Figures \ref{create_recipe}, \ref{screen_triggers}, \ref{screen_actions} and \ref{screen_completed_recipe} the steps needed to create a recipe are shown, the resulting recipe turns on all the room lights if a user is inside the office and the light level is low. 
+
+The \textbf{settings screen}, (falar do kiosk e de todas as opçoes)
 
 
 
 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/screen_lights}
+\caption{Light screen.}
+\label{screen_lights}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/screen_temperature}
+\caption{Temperature screen.}
+\label{screen_temperature}
+\end{figure}
 
 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/create_recipe}
+\caption{Temperature screen.}
+\label{create_recipe}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/screen_trigger}
+\caption{Temperature screen.}
+\label{screen_triggers}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/screen_actions}
+\caption{Temperature screen.}
+\label{screen_actions}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/screen_completed_recipe}
+\caption{Temperature screen.}
+\label{screen_completed_recipe}
+\end{figure}
 
 
-
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=0.7\textwidth]{Figures/screen_qr_code}
+%\caption{Registration screen when using USER APP.}
+%\label{screen_qr_code}
+%\end{figure}
 
 
 \subsection{USER APP}
+
+
+
+
 
 if the user is inside the building (mobile app installed), it sends a message every 60 seconds. There is a timeout of 120 consecutive seconds, if no message is received in this time we assume the user has left the building.
 
