@@ -134,8 +134,10 @@ public class LightingManager implements
                 FirebaseHelper mHelperFire = new FirebaseHelper();
                 mHelperFire.changeLights(lights);
             }
-            if(sendServer)
+            if(sendServer) {
+                //timeOld = 0;
                 lightingControl.sendLightCommand(convert(lights));
+            }
 
             AppController.getInstance().getBasaManager().getEventManager()
                     .addEvent(new EventLightSwitch(lightId,
@@ -160,8 +162,10 @@ public class LightingManager implements
                 FirebaseHelper mHelperFire = new FirebaseHelper();
                 mHelperFire.changeLights(lights);
             }
-            if(sendServer)
+            if(sendServer) {
+                //timeOld = 0;
                 lightingControl.sendLightCommand(convert(lights));
+            }
 
             if(AppController.getInstance().getBasaManager().getEventManager() != null)
                 AppController.getInstance().getBasaManager().getEventManager()
