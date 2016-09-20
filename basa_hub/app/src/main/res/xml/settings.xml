@@ -14,6 +14,12 @@
             android:entryValues="@array/light_number">
         </ListPreference>
 
+        <EditTextPreference
+            android:key="EDUP_ID"
+            android:title="Edup light Id"
+            android:summary="The id of the Edup light."
+            android:dialogTitle="Edup light Id" />
+
         <ListPreference
             android:key="custom_button_number"
             android:title="Custom Switches"

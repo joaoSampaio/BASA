@@ -104,6 +104,13 @@ public class PreferencesFragment extends PreferenceFragment implements
             AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature(preferences.getString("BEACON_UUID", ""));
             AppController.getInstance().saveDeviceConfig();
 
+        }else if(key.equals("EDUP_ID")){
+
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig().setEdupLightId(preferences.getString("EDUP_ID", ""));
+            AppController.getInstance().saveDeviceConfig();
+
         }
         else if(key.equals("cam_time")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

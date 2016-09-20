@@ -227,17 +227,125 @@ The video manager can be enabled and disabled in the HUB settings for privacy re
 
 \paragraph{Lighting Manager}\mbox{}\\
 
+This manager is responsible for turning on/off the room lights and keeping their status updated when a user uses the manual switch.
+
+
+The lights in the room are controlled by the Edup Light Switch, the switch must be connected to a WiFi network and automatically establishes a connection to Edup servers to enable remote control over the switch.
+
+In order for our app to control the light switch we must send a byte array with the data shown in Figure~\ref{edup_imp}.
+The message starts and ends with specific hex strings, the middle part of the message seems to always start with "ZH03", followed by the light switch id then a 1 and finally the lights sate we want to change. For example if the ending part of the middle message is "101" then the first and last lights will be turned on, and the middle one turned off.
+
+At this point we achieved control over the lights, but since there is a physical light switch interface we must update our application status if a button is pressed outside our app.
+The Edup Light Switch sends a \ac{UDP} multicast message when the lights are changed. A \ac{UDP} server was implemented, when any message was received its content is verified in order to determine if it is a Edup Light switch message. The message must start with "7e7e000d0002" and end with "7f7f". The middle text is "1101", the first character is always the same and the three other represent the current status of the lights.
+
+There were some difficulties since there is no official API. In order to understand how the light switch worked, we used Wireshark to sniff the connection and try to replicate the messages.
+
+One other problem arised when we quickly turned on/off all the lights in quick succession. When we turn off the first light at the app the light switch sends the multicast message to notify the network, but if we have already turned off the second light then by the time the \ac{UDP} multicast message arrives the state is already different and some lights my turn on back again. To fix this problem when a light is pressed in the app we ignore any \ac{UDP} message for 3 seconds.
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/Edup_imp}
+\caption{Edup packet to set the light state.}
+\label{edup_imp}
+\end{figure}
+
+
 \paragraph{Temperature Manager}\mbox{}\\
+
+
+The Temperature Manager is responsible for keeping an updated weather forecast, keeping an updated temperature reading and turning on/off the Arduino \ac{HVAC}.
+
+The forecast uses wunderground service API and is used to give information to the user about the current weather conditions.
+
+There are two different configurations to access the temperature in our solution, using an Estimote beacon or the Arduino \ac{HVAC}. 
+The beacon sends a Eddystone telemetry packet containing the current temperature, it is intended for situations when we just want to display the temperature.
+The Arduino option gives the temperature and humidity and allows us to control the \ac{HVAC} system.
+
+
+In order to obtain the beacon temperature, it must be configured to the Eddystone-UID primary packet type using the Estimote mobile app. Then the beacon id must be set in the HUB APP settings.
+
+To get temperature readings from the Arduino \ac{HVAC} and we do a \ac{HTTP}  GET request to the Arduino device IP address at the "/data" endpoint. We receive a \ac{JSON} message containing the temperature/humidity. There is a discovery mechanism to setup the Arduino location it will be mentioned in detail later.
+
+To turn on/off the \ac{HVAC} we send send a POST request containing a \ac{JSON} message containing the relay channels we want to turn on/off. In Figure~\ref{arduino_post_imp} the channel configuration is shown. If we want cold air we set the "ch1" to 1 and "ch3" to 1, the other channels must be set o zero ,the \ac{HVAC} starts sending cold air at slow speed.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/temperature_post_imp}
+\caption{Arduino HVAC configuration.}
+\label{arduino_post_imp}
+\end{figure}
+
 
 \paragraph{User Manager}\mbox{}\\
 
 
+The User Manager keeps track of the user location (in building, in office) and is responsible for registering new users.
+
+The location system works in the following simplified manner, it receives two types of location messages in-building or in-office, there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 1 second, the timeouts are 120 seconds and 20 seconds respectively.
+
+Since the location is mainly done in the USER APP, it will be explained in detail later.
+
+
+There are two types of user that can register. Users with the mobile USER APP and users without it. If a user has the app, it just needs to open the app and there is an semi-automatic register process. If the user does not have the app he will receive an email with an QR-Code that will act as an identification card, when the user places the card in front of the HUB camera he is logged on for a certain amount of minutes specified by the user. Since we can't track the user whereabouts without the app, the user will have to manually turn the lights and \ac{HVAC} if he leaves while logged on.
+
+
+
 \paragraph{Web Server and Google Firebase}\mbox{}\\
+
+These independent modules are responsible for communication with the USER APP.
+
+The HUB runs a JAVA Spark server at port 5002 and offer an \ac{JSON} API.
+
+\begin{itemize}
+  \item \textbf{GET /register:} Returns the HUB UUID, description and name.
+  \item \textbf{POST /register:} Receives the name, email and UUID of a new user. Returns a status true/false depending if the registration was successful.
+  \item \textbf{POST /location} Receives an UserLocation object, Figure~\ref{user_location_class}.
+  \item \textbf{POST /make-changes:} Receives the temperature value we want "targetTemperature", and receives an boolean array representing the lights we want to change "lightsState";
+   \item \textbf{GET /status:} Returns the current temperature and a boolean array representing the lights.
+   \item \textbf{GET /alive:} Returns a status "true" signifying the server is running.
+\end{itemize}
+
+
+
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/userlocation_class}
+\caption{UserLocation Class parameters.}
+\label{user_location_class}
+\end{figure}
+
+
+
+Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the HUB it did not receive any request, then we changed to a private wireless network it all worked normally.
+
+The solution we found was Google Firebase, it is a platform that offers multiple services. We use two services, the real-time database and the storage.
+The database allows us to store and sync data in a NoSQL cloud database. Using an Android library developed by them we can store JAVA objects directly to the database. The storage service is used to upload the recorded videos and live preview images, captured by the Video Manager.
+
+Firebase solves us two problems, one is users can access our solution from their home and access the live camera, it uses firebase as a middle man to communicate. The second problem it fixed was the user location tracking, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our HUB and notify of it's presence since they were in different networks, we use Firebase to add our location messages that are then received by the HUB and building location is achieved.
+
+We ended having two ways to communicate with the HUB APP, each has some strong and weak points. The major negative point with Firebase is it requires internet to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
+
+
+
+
+
+
+
+
+
+
+
 
 
 \subsection{USER APP}
 
-
+if the user is inside the building (mobile app installed), it sends a message every 60 seconds. There is a timeout of 120 consecutive seconds, if no message is received in this time we assume the user has left the building.
 
 
 

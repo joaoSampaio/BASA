@@ -132,7 +132,8 @@ public class FirebaseHelper {
 
                 Log.d(TAG, "lightListener->"+dataSnapshot.toString());
                 BasaManager manager = AppController.getInstance().getBasaManager();
-                if(manager.getLightingManager() != null && manager.getLightingManager().hasLightChanged(lights)){
+                if(manager.getLightingManager() != null &&
+                        manager.getLightingManager().hasLightChanged(lights) ){
 
                     boolean[] tmp = new boolean[lights.size()];
                     for(int i = 0; i < lights.size(); i++) tmp[i] = lights.get(i);

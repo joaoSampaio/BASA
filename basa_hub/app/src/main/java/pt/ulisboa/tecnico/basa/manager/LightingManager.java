@@ -119,7 +119,7 @@ public class LightingManager implements
 
     public void turnONLight(int lightId, boolean sendServer, boolean sendFireDB){
         Log.d("light", "turnONLight sendFireDB:"+sendFireDB);
-
+        timeOld = System.currentTimeMillis();
         //already on
 
         if(lightId < this.lights.size()){
@@ -145,6 +145,7 @@ public class LightingManager implements
     }
 
     public void turnOFFLight(int lightId, boolean sendServer, boolean sendFireDB){
+        timeOld = System.currentTimeMillis();
         Log.d("light", "turnOFFLight sendFireDB:"+sendFireDB);
         if(lightId < this.lights.size()){
 
@@ -162,9 +163,10 @@ public class LightingManager implements
             if(sendServer)
                 lightingControl.sendLightCommand(convert(lights));
 
-            AppController.getInstance().getBasaManager().getEventManager()
-                    .addEvent(new EventLightSwitch(lightId,
-                            false));
+            if(AppController.getInstance().getBasaManager().getEventManager() != null)
+                AppController.getInstance().getBasaManager().getEventManager()
+                        .addEvent(new EventLightSwitch(lightId,
+                                false));
 
         }
     }
@@ -201,6 +203,10 @@ public class LightingManager implements
         }
     }
 
+
+    public long getTimeLastLightClick() {
+        return timeOld;
+    }
 
     public boolean hasLightChanged(List<Boolean> received){
 

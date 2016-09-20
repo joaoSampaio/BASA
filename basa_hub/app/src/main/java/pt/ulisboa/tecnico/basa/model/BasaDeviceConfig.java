@@ -120,7 +120,14 @@ public class BasaDeviceConfig {
     }
 
     public void setEdupLightId(String edupLightId) {
-        this.edupLightId = edupLightId;
+
+        //ZH037CC7097B7CA91
+        if(!edupLightId.startsWith("ZH03")){
+            edupLightId = "ZH03" + edupLightId + "1";
+        }
+
+
+        this.edupLightId = edupLightId.toUpperCase();
     }
 
     public String getArduinoIP() {

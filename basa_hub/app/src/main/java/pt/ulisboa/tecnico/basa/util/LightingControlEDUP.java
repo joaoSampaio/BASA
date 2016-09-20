@@ -241,7 +241,9 @@ public class LightingControlEDUP implements LightingControl {
                             Log.d("ListenEDUPMulticast", "receive:-> " + s);
                             Log.d("ListenEDUPMulticast", "length:-> " + s.length());
                             broadcast = broadcast.toLowerCase();
-                            if(broadcast.startsWith(STARTING_TEXT) && broadcast.endsWith(ENDING_TEXT)){
+                            if(broadcast.startsWith(STARTING_TEXT) &&
+                                    broadcast.endsWith(ENDING_TEXT) &&
+                                    (System.currentTimeMillis() - getLightingManager().getTimeLastLightClick())> 3000){
                                 String valuableContent = broadcast.replace(STARTING_TEXT, "").replace(ENDING_TEXT, "");
 
                                 String hexString = hexToASCII(valuableContent);
