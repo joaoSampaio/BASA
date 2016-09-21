@@ -142,6 +142,45 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 
 \section{Software Architecture}
 
+
+The USER APP works side by side with the HUB to enable location tracking, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
+
+
+\subsection{User Detection}
+
+One energy wasting problem is having lighting and \ac{HVAC} systems turned on when no one is present.
+
+
+In order for our system to take informed actions to cut wasted energy consumption we need to know the location of users inside the building.
+
+
+The location detection is handled solely by the USER APP. After it confirms the user is inside the building or office it communicates with the HUB. The HUB on the other hand has a timeout system. When a user fails to communicate for a certain amount of time, we presumed he is outside the office or building.
+
+\mbox{}\\
+\textbf{In the building}
+
+The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC address} of the \ac{AP} matches a list of pre-scanned \ac{AP}s. This list of pre-scanned \ac{AP}s is sent to the USER APP by the HUB.  
+
+Scanning for \ac{AP}s is battery draining and should be kept to a minimum. We could scan every minute all the time, but decided to start scanning only when a phone connectivity changed. For example when a user enters a building his phone connects to a known \ac{WiFi} network, we use this event to start scanning if the user is inside the target building.
+
+
+This solution ensures the scanning would start when the user is near a known \ac{WiFi} network. One problem with just this solution is the scanning would go on forever even if we left the office and went home. If after the first five scans (5 minutes), no \ac{MAC address} matches then the scanning is disabled until a new connectivity change happens. 
+
+
+In order to implement the above solution we use an Android BroadcastReceiver to be informed when the phone changes connectivity. Then we use an AlarmManager to trigger the scanning code every minute.
+
+\mbox{}\\
+\textbf{In the office}
+
+We use
+
+
+
+
+\subsection{Communication}
+(Retrofit, web server and FIrebase)
+
+
 \subsection{HUB APP}
 
 \begin{figure}[h]
@@ -204,7 +243,7 @@ When we successfully say the keyword a beep sound is played and google speech re
 There were several problems with both recognizer, the Sphinx has a lot of false positives for small words, for our current keyword we sometimes need to repeat more than once for it to recognize. This problem can perhaps be attributed to the fact we are not native English speakers. 
 Google speech recognizer is plagued with problems since a few version ago, it sometimes will not listen and shutdown after some 100 ms. To try to minimize the problem by run a check every 10 seconds. If both speech recognizes are not running we relaunch Sphinx.
 
-\subsubsection{Sensor Manager}\mbox{}\\
+\subsubsection{Sensor Manager}\label{sensor_manager_imp}\mbox{}\\
 
 The Sensor Manager is responsible for the light sensor and virtual motion sensor.
 
@@ -252,7 +291,7 @@ One other problem arised when we quickly turned on/off all the lights in quick s
 \end{figure}
 
 
-\subsubsection{Temperature Manager}\mbox{}\\
+\subsubsection{Temperature Manager}\label{temperature_manager_imp}\mbox{}\\
 
 
 The Temperature Manager is responsible for keeping an updated weather forecast, keeping an updated temperature reading and turning on/off the Arduino \ac{HVAC}.
@@ -344,7 +383,7 @@ The \ac{UI} of the HUB APP is composed of three main screens. There are a lighti
 
 The \textbf{lighting screen}, shown in Figure~\ref{screen_lights} allows the user to control the lighting environment in the room.
 
-The \textbf{temperature screen}, shown in Figure~\ref{screen_temperature} gives visual information about the current weather outside. There is also a virtual thermostat where the user can select the temperature he desires. The thermostat shows a leaf icon when the selected temperature is inside the range of temperature where most people have comfort as described in section~\ref{related:adaptive_heating}. 
+The \textbf{temperature screen}, shown in Figure~\ref{screen_temperature} gives visual information about the current weather outside. There is also a virtual thermostat where the user can select the temperature he desires. The thermostat shows a leaf icon when the selected temperature is inside the range of temperature where people are comfortable as described in section~\ref{related:adaptive_heating}. 
 
 There is a \textbf{general menu} that contains the other screens that enable additional features. This menu contains:
 \begin{itemize}
@@ -353,7 +392,7 @@ There is a \textbf{general menu} that contains the other screens that enable add
   
   \item \textbf{Event history} Shows a list events ordered chronologically. 
   
-  \item \textbf{Statistics screen} Shows temperature, lighting and occupation graphs. 
+  \item \textbf{Statistics screen} Shows temperature, lighting and occupation graphics. 
   
   \item \textbf{Settings screen} Allows the user to configure the HUB APP.
 \end{itemize}
@@ -361,12 +400,39 @@ There is a \textbf{general menu} that contains the other screens that enable add
 
 
 The \textbf{user registration screen} allows the user to register using the USER APP or an email address.
-If the user uses the Android USER APP to register, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the HUB server. This temporary id is latter needed when the user registers and exists  only to ensure only people inside the office can register a new user and not just anyone that knows the IP address.
+If the user uses the Android USER APP, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the HUB server. This temporary id is latter needed when the user registers and exists  only to ensure only people inside the office can register and not just anyone that knows the IP address.
 
 In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. In Figures \ref{create_recipe}, \ref{screen_triggers}, \ref{screen_actions} and \ref{screen_completed_recipe} the steps needed to create a recipe are shown, the resulting recipe turns on all the room lights if a user is inside the office and the light level is low. 
 
-The \textbf{settings screen}, (falar do kiosk e de todas as opçoes)
-
+The \textbf{settings screen} allows the user to change:
+\begin{itemize}
+  \item Number of lights.
+  \item Edit the Edup light id.
+  
+  \item Set the motion detection threshold (percentage of different frames for positive detection)
+  
+  \item The camera detection period, the time between consecutive motion detection.
+  
+  \item Specify an area in the camera frame where motion is ignored, described in Section \ref{sensor_manager_imp}. 
+  
+  \item Video recording, enable/disable recording when no user is present and movement is detected.
+  
+  \item Live preview, allow users to watch the office in real time, using the USER APP.
+  
+  \item Scan for Arduino/HVAC, as mentioned in Section\ref{temperature_manager_imp} there is discovery mechanism to add the Arduino and control it. We use \ac{SSDP} to discover supported Arduino devices and list the discovered device/s. The user then selects the device specific to his office.
+  For an Arduino device to be shown, they have to been programmed to be discoverable using the protocol and have the search target equal to "schemas-basa-pt:service:climate:1".
+  
+  \item Estimote beacon namespace, the id of the estimote beacon we want to get the temperature reading.
+  
+  \item Building location, the list of \ac{MAC address} separated by comma of the building. Used by the User app to determine if they are in the correct building.
+  
+  \item Room location, the list of Estimote beacon namespace associated to the office.
+  
+  
+  \item Enable Kiosk mode, this mode disables the home and power button of the Android device. It prevents a user from closing the app. 
+    
+  
+\end{itemize}
 
 
 
@@ -426,6 +492,11 @@ The \textbf{settings screen}, (falar do kiosk e de todas as opçoes)
 
 
 \subsection{USER APP}
+
+
+The USER APP works side by side with the HUB to enable location tracking, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
+
+
 
 
 

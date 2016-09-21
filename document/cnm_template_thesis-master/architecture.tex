@@ -248,28 +248,3 @@ It offers the other Managers with an AsyncTask message sending service, the mess
 \caption{User APP architecture }
 \label{software3}
 \end{figure}
-
-
-\section{Evaluation} % Section
-
-The proposed system will be tested using a prototype. We will use an Android tablet connected to an Arduino microcontroller to control a set of actuators, these components are the HUB. An User Android phone will be also used to interact with the HUB.
-The phone and tablet will run two separate apps, one is the HUB App the other the User app. The programming language for both app is java, since its the native language supported by Android. The Arduino microcontroller will use the C++ programming language.
-
-
-We proposed a set of tests to validate the system:
-
-\subsection{Device Wasted Energy Savings}
-In order to test if our system reduces energy consumption, we will monitor the HVAC and lighting systems.  The test consists in registering the neglectful operational time of the the lighting and HVAC when no occupant is using the room. This test has the duration of several days and at the end we will know how many extra minutes the HVAC and lighs were let running with no occupant. The system will not allow energy to be wasted, when no user is detected but the lights are turned on, they will be turn off and the total time of wasted energy saving will be the time when the system turns them off until the time the next occupant arrives at the room.
-
-\subsection{Intrusion detection}
-This test consists in determining if any intruder has entered the room. The camera will analyze if movement is detected and if is a human person. The tests will be made at different times of the day with different ambient lighting present to simulate intrusions at the day and night, the test is successful anytime the system notifies the office user of an unauthorized intrusion within one minute.
-The test will result in atleast 10 intrusion attempts at day and night each in order to determine meaningful accuracy of the system detection capability.
-%To determine the percentage of false posives in human detection
-
-
-\subsection{HUB internal energy savings}
-During long periods  of the day the room will be unoccupied, yet the HUB is always operating. During long period when no user is detected some features could be turned off and when the user is detected they could be quickly turned back on. For instance at night the touch screen could be off or at very low brightness in order to save energy. The test consists in the following, an electric smart plug will register the HUB's energy consumption during two days afterwords an energy saving feature is activated in the HUB and the same test is repeated, at the end we observe the amount of energy saved by this feature.
-
-\subsection{User detection}
-  When the user first enter the building the mobile notifies the HUB of the user presence, when the user is in close proximity the HUB it also informs the HUB.
-The test consists in determining the system reaction time to user presence in the building and in the office. The user will enter the building several times each time the User APP detects the buildings WI-FI network it will communicate with the HUB and for test purposes the HUB will send an email notification with the time the detection was received. If the user enter the building at 10 in the morning and receives an email with the server time 10:02, then it took 2 minutes to determine the user detection. Both User APP and HUB APP are synchronized. There will be a a set of 30 measurements.
