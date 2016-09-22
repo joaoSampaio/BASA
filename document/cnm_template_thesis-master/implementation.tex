@@ -13,8 +13,8 @@ The next sections provide the implementation choices for the hardware architectu
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/top_view}
-\caption{Architecture of the system}
+\includegraphics[width=0.8\textwidth]{Figures/harware_arch_imp}
+\caption{Hardware implementation architecture}
 \label{architecture_system}
 \end{figure}
 
@@ -131,7 +131,7 @@ From the alternatives seen in Section~\ref{ocupacy_detection}, we  determined th
 
 There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrolers and commercial beacon products.
 
-We decided to use a Estimote beacon, the reason it was chosen was because we had one extra around. Since it is portable we can position it anywhere in the room, enabling better coverage.
+We decided to use a Estimote beacon, the reason it was chosen was because we had one extra around. This beacon also has the advantage of providing temperature readings if needed. Since it is portable we can position it anywhere in the room, enabling better coverage.
 
 
 
@@ -141,6 +141,13 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 
 
 \section{Software Architecture}
+
+
+
+overview do sistema
+
+
+Our solution is divided into two separate Android applications, the HUB and the USER apps. Both apps work side by side in order to achieve the following functions: location detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring & security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
 
 
 \subsection{User Detection}\label{user_detection_imp}
@@ -175,13 +182,27 @@ The \ac{BLE} signal scanning runs for 1 second and then waits 4 seconds before r
 
 While Bluetooth LE is a lower-energy system than traditional Bluetooth, scanning is still a fairly power-intensive operation. If our app constantly scans for beacons, it drains the battery at a similar rate as the phone cellular radio. To limit the battery drain we only start scanning when the user is in the building and stop after he leaves.
 
+\subsection{Lighting control}
 
-\subsection{Office security}
+
+
+
+\subsection{HVAC control}
+
+
+\subsection{Automation}
+(falar do event manager aqui???)
+
+\subsection{Video monitoring and security}
 (falar de como detectamos movimento e alertamos o utilizador (notifications e video))
+
+
 
 
 \subsection{Communication}
 (Retrofit, web server and Firebase)
+
+
 
 
 \subsection{HUB APP}
@@ -193,7 +214,7 @@ While Bluetooth LE is a lower-energy system than traditional Bluetooth, scanning
 \label{software_imp}
 \end{figure}
 
-There were a couple of changes in regard to the starting software architecture, we will present the current implementation:
+There were a couple of changes in regard to the starting software architecture, we will present the current implementation in the following sections.:
 
 \subsubsection{Event Manager}\mbox{}\\
 

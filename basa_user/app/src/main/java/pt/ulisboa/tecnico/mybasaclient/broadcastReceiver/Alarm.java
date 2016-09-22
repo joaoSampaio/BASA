@@ -30,6 +30,7 @@ public class Alarm extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
+        Log.d("wifi", "onReceive alarm");
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
         wl.acquire();
@@ -43,6 +44,7 @@ public class Alarm extends BroadcastReceiver
 
     public void setAlarm(Context context)
     {
+        Log.d("wifi", "setAlarm");
         AlarmManager am =( AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, Alarm.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
@@ -51,6 +53,7 @@ public class Alarm extends BroadcastReceiver
 
     public void cancelAlarm(Context context)
     {
+        Log.d("wifi", "cancelAlarm");
         Intent intent = new Intent(context, Alarm.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -60,6 +63,7 @@ public class Alarm extends BroadcastReceiver
 
     private void checkLocation(Context context){
 
+        Log.d("wifi", "checkLocation");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
         int misses = sp.getInt("location_misses", 0);
 

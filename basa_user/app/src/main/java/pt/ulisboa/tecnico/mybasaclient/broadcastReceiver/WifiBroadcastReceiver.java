@@ -44,9 +44,13 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
         if(intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE") && isConnected){
 
+            Log.d("wifi", "AppController.getInstance().getLoggedUser() != null" + (AppController.getInstance().getLoggedUser() != null));
+            Log.d("wifi", "isConnected" + (isConnected));
 
             if(AppController.getInstance().getLoggedUser() != null &&
                     AppController.getInstance().getLoggedUser().isEnableTracking() && isConnected) {
+
+                Log.d("wifi", "entrou no new Alarm");
 
                 Alarm alarm = new Alarm();
                 alarm.cancelAlarm(context);

@@ -90,6 +90,13 @@
             android:name=".broadcastReceiver.WifiLocationService"
             android:exported="false"/>
 
+        <receiver android:name=".broadcastReceiver.Alarm">
+            <intent-filter>
+                <action android:name="com.project.action.ALERM"/>
+            </intent-filter>
+        </receiver>
+
+
 
     </application>
 
