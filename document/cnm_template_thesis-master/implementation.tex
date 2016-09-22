@@ -7,7 +7,7 @@ This chapter addresses the main decisions taken in order to implement the hardwa
 \section{Hardware Architecture}
 
 
-The next sections provide the implementation choices for the hardware architecture described in Chapter \ref{chapter:architecture}. As shown in Figure~\ref{architecture_system} we require tablet to run the HUB app, HVAC control, lighting control and a \ac{BLE} beacon for user location tracking.
+The next sections provide the implementation choices for the hardware architecture. As shown in Figure~\ref{architecture_system} we require tablet to run the HUB app, HVAC control, lighting control and a \ac{BLE} beacon for user location tracking.
 
 
 
@@ -39,7 +39,7 @@ Table~\ref{table:tablet} shows some examples of tablets running the major operat
 
 In terms of price Apple tablets have the largest cost, since there is such a big gap in cost the iPad Mini 4 does not fit our needs. There are many types of Windows and Android tablets with very affordable prices. The Nexus was chosen because it was developed by Google in partnership with Asus, has very good reviews and is updated to the latest android version. There are Windows tablets cheaper than the HP ENVY 8 sold by Microsoft but there were a lack of reviews so a good tablet from a big manufacturer was picked.
 
-The Android and Windows tablets have very similar hardware specifications. So the tablet chosen was the Nexus 7 (2013) since the programmer had previously developed Android apps.
+The Android and Windows tablets have very similar hardware specifications. So the tablet chosen was the Nexus 7 (2013) since the programmer had experience developing Android apps.
 
 
 \begin{table}[]
@@ -66,7 +66,7 @@ The Android and Windows tablets have very similar hardware specifications. So th
 
 
 \subsection{HVAC control}
-In order for our \ac{BAS} solution to control an \ac{HVAC} system we would need to either communicate with a building central controlling unit or physically controlling the system like a thermostat does. Since many buildings don't have a central control point running some kind of server where you can control it using the internet, we went with the thermostat route.
+In order for our \ac{BAS} solution to control an \ac{HVAC} system we need to either communicate with a building central controlling unit or physically controlling the system like a thermostat does. Since many buildings don't have a central control point running some kind of server where you can control it using the internet, we went with the thermostat route.
 
 For our smart thermostat to work we require a device capable of sending electric impulses to the \ac{HVAC} wire. 
 
@@ -93,15 +93,15 @@ The Nest thermostat is the most popular option in the market integrated in many 
 
 
 \subsection{Lighting control}
-Besides controlling the room \ac{HVAC}, we require control over the lighting system. After some research we had three options: using wireless controllable light bulbs, using some kind of Arduino/relay solution like the thermostat or using a wireless controllable light switch.
+Besides controlling the room \ac{HVAC}, we require control over the lighting system. After some research we had three options: using wireless controllable light bulbs, using some kind of Arduino/relay solution (like the thermostat) or using a wireless controllable light switch.
 
 Table~\ref{lighting-choice} show some available options.
 
-Our lighting solution should be affordable, allow touch control and control using an API. The Philips Hue is costly and does not have lights supported by our office (fluorescent tube lamp) for these reasons it does not fit our requirements.
+Our lighting solution should be affordable, have a physical light switch and an API to control it. The Philips Hue is costly and does not have lights supported by our office (fluorescent tube lamp) for these reasons it does not fit our requirements.
 
 In order for our solution to be easily deplorable it requires the least amount of assembly and soldering components, an pre-built lighting product is preferable if the price range is close enough. Both the Arduino/relay and the DI-O/Arduino options have shortcomings, the first does not provide touch control and requires soldering and the latter also requires soldering in the Arduino interface side.
 
-The lighting option chosen was the Edup Smart Light Switch, it provides touch control of the lighting, supports any existing infrastructure in existing buildings and is not too expensive.
+The lighting option chosen was the Edup Smart Light Switch, it provides a physical light switch, supports the existing infrastructure in the buildings and is not too expensive.
 
 
 Originally in Section \ref{architecture3} of the architecture, the lighting system was going to be integrated with the Arduino/\ac{HVAC} using relay actuators. We decided go with the Edup light switch after more searching for lighting products we could control, it is a better solution because of the touch control and no need for assembly as described previously.
@@ -125,13 +125,13 @@ Wifi & yes & yes & yes & \begin{tabular}[c]{@{}l@{}}yes (needs arduino \\ to int
 
 \subsection{Bluetooth Beacon}
 
-We require a way to determine if a user is near a certain point in the building such as the office. In section XXX this will be approach in higher detail.
+We require a way to determine if a user is near a certain point in the building such as the office.
 
-From the alternatives seen in Section~\ref{ocupacy_detection}, we  determined that \ac{BLE} beacons an option to achieve room base location in a building.
+From the alternatives seen in Section~\ref{ocupacy_detection}, we  determined that \ac{BLE} beacons are an option to achieve room base location in a building.
 
 There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrolers and commercial beacon products.
 
-We decided to use a Estimote beacon, the reason it was chosen was because we had one extra around. Since it is portable we can position it anywhere in the room, enabling better coverage, as it does not need to be connected to a power socket.
+We decided to use a Estimote beacon, the reason it was chosen was because we had one extra around. Since it is portable we can position it anywhere in the room, enabling better coverage.
 
 
 
@@ -143,10 +143,7 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 \section{Software Architecture}
 
 
-The USER APP works side by side with the HUB to enable location tracking, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
-
-
-\subsection{User Detection}
+\subsection{User Detection}\label{user_detection_imp}
 
 One energy wasting problem is having lighting and \ac{HVAC} systems turned on when no one is present.
 
@@ -172,13 +169,19 @@ In order to implement the above solution we use an Android BroadcastReceiver to 
 \mbox{}\\
 \textbf{In the office}
 
-We use
+There is an Estimote beacon in the office broadcasting a \ac{BLE} signal. The USER APP is scanning for these signals and when one is found it checks if the namespace in the beacon package matches the known office namespace. After a correct match is found the USER APP informs the HUB the user is near the office.
+
+The \ac{BLE} signal scanning runs for 1 second and then waits 4 seconds before resuming the scan. This means the USER APP notifies the HUB at most every 5 seconds when it is in the proximity of the office.
+
+While Bluetooth LE is a lower-energy system than traditional Bluetooth, scanning is still a fairly power-intensive operation. If our app constantly scans for beacons, it drains the battery at a similar rate as the phone cellular radio. To limit the battery drain we only start scanning when the user is in the building and stop after he leaves.
 
 
+\subsection{Office security}
+(falar de como detectamos movimento e alertamos o utilizador (notifications e video))
 
 
 \subsection{Communication}
-(Retrofit, web server and FIrebase)
+(Retrofit, web server and Firebase)
 
 
 \subsection{HUB APP}
@@ -194,7 +197,7 @@ There were a couple of changes in regard to the starting software architecture, 
 
 \subsubsection{Event Manager}\mbox{}\\
 
-The Event Manager  operates in a publish/subscriber basis. Other managers register their interest in certain events and when whose events happen they are notified. The events can be published to the event manager by any other manager. For example the Sensor Manager can publish and motion detected event, that the video manager is interested.
+The Event Manager  operates in a publish/subscriber basis. Other managers register their interest in certain events and when whose events happen they are notified. The events can be published to the event manager by any other manager. For example the Sensor Manager can publish a motion detected event, that the video manager is interested.
 
 Currently there are eight different events available:
 
@@ -235,6 +238,8 @@ The actions available are:
 
 
 \subsubsection{Speech Recognition Manager}\mbox{}\\
+
+The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant Apple Siri (!!!!!!!!!!!!!!!!!!!! falar disto no related work). In order to increase the comfort of our users we implemented speech recognition directly into the HUB. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
 
 This manager uses the CMU Sphinx offline keyword speech recognizer, meaning it will detect one word in our case "my assistant". When it detects the keyword it shuts down and we launch google online speech recognition. We use this other speech recognition because it offer good results, the reason the manager uses two different speech recognizes is because using only google recognizer has higher bandwidth cost since we would be constantly sending audio.The other reason is privacy, we don't know if google is going to disclose our audio files to third parties.
 
@@ -323,7 +328,7 @@ To turn on/off the \ac{HVAC} we send send a POST request containing a \ac{JSON} 
 
 The User Manager keeps track of the user location (in building, in office) and is responsible for registering new users.
 
-The location system works in the following simplified manner, it receives two types of location messages in-building or in-office, there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 1 second, the timeouts are 120 seconds and 20 seconds respectively.
+The location system works in the following simplified manner, it receives two types of location messages in-building or in-office, there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 5 seconds, the timeouts are 120 seconds and 20 seconds respectively.
 
 Since the location is mainly done in the USER APP, it will be explained in detail later.
 

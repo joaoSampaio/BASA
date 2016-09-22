@@ -77,8 +77,8 @@ public class AppController extends Application {
 
             beaconManager = new BeaconManager(getApplicationContext());
 
-            beaconManager.setBackgroundScanPeriod(1000, 5000);
-            beaconManager.setForegroundScanPeriod(1000, 5000);
+            beaconManager.setBackgroundScanPeriod(1000, 4000);
+            beaconManager.setForegroundScanPeriod(1000, 4000);
 
             timeLastBeaconFound = System.currentTimeMillis();
             beaconManager.setEddystoneListener(new BeaconManager.EddystoneListener() {
