@@ -144,10 +144,8 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 
 
 
-overview do sistema
 
-
-Our solution is divided into two separate Android applications, the HUB and the USER apps. Both apps work side by side in order to achieve the following functions: location detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring & security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
+Our solution is divided into two separate Android applications, the HUB and the USER apps. Both apps work side by side in order to achieve the following functions: user detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring \& security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
 
 
 \subsection{User Detection}\label{user_detection_imp}
@@ -168,7 +166,7 @@ The building location detection consists in scanning the available \ac{WiFi} net
 Scanning for \ac{AP}s is battery draining and should be kept to a minimum. We could scan every minute all the time, but decided to start scanning only when a phone connectivity changed. For example when a user enters a building his phone connects to a known \ac{WiFi} network, we use this event to start scanning if the user is inside the target building.
 
 
-This solution ensures the scanning would start when the user is near a known \ac{WiFi} network. One problem with just this solution is the scanning would go on forever even if we left the office and went home. If after the first five scans (5 minutes), no \ac{MAC address} matches then the scanning is disabled until a new connectivity change happens. 
+This solution ensures the scanning would start when the user is near a known \ac{WiFi} network. One problem with just this solution is the scanning would go on forever even if we left the office and went home. If after the first five scans (5 minutes), no matching \ac{MAC address} is found the scanning is disabled until a new connectivity change happens. 
 
 
 In order to implement the above solution we use an Android BroadcastReceiver to be informed when the phone changes connectivity. Then we use an AlarmManager to trigger the scanning code every minute.
@@ -182,25 +180,185 @@ The \ac{BLE} signal scanning runs for 1 second and then waits 4 seconds before r
 
 While Bluetooth LE is a lower-energy system than traditional Bluetooth, scanning is still a fairly power-intensive operation. If our app constantly scans for beacons, it drains the battery at a similar rate as the phone cellular radio. To limit the battery drain we only start scanning when the user is in the building and stop after he leaves.
 
-\subsection{Lighting control}
+\subsection{Lighting control}\label{light_imp}
 
 
+The lights in the room are controlled by the Edup Light Switch, the switch must be connected to a WiFi network and automatically establishes a connection to Edup servers to enable remote control over the switch.
+
+To control the light switch we must send a byte array with the data shown in Figure~\ref{edup_imp}.
+The message starts and ends with specific hex strings, the middle part of the message seems to always start with "ZH03", followed by the light switch id then a 1 and finally the lights state we want to change. For example if the ending part of the middle message is "101" then the first and last lights are turned on, and the middle one turned off.
+
+Since there is a physical light switch interface we must update our application status if a button is pressed outside our app.
+The Edup Light Switch sends a \ac{UDP} multicast message when the lights are changed. We implemented \ac{UDP} server, when any message is received the content is verified in order to determine if it is a Edup Light switch message. The message must start with "7e7e000d0002" and end with "7f7f". The middle text is "1101", the first character is always the same and the three other represent the current status of the lights.
+
+There were some difficulties since there is no official API. In order to understand how the light switch worked, we used Wireshark to sniff the traffic connection and tried to replicate the messages.
+
+One other problem arises when we quickly turned on/off all the lights in quick succession. When we turn off the first light at the app the light switch sends the multicast message to notify the network, but if we have already turned off the second light then by the time the \ac{UDP} multicast message arrives the state is already different and some lights my turn on back again. To fix this problem when a light is pressed in the app we ignore any \ac{UDP} message for 3 seconds.
 
 
 \subsection{HVAC control}
 
+Our HVAC solution uses an Arduino with a webserver to control a relay in order to interface with the existing HVAC system.
+
+To get temperature readings from the Arduino \ac{HVAC} and we do a \ac{HTTP}  GET request to the Arduino device IP address at the "/data" endpoint. We receive a \ac{JSON} message containing the temperature and humidity. There is a discovery mechanism to setup the Arduino IP it will be mentioned in detail later.
+
+To turn on/off the \ac{HVAC} we send send a POST request containing a \ac{JSON} message containing the relay channels we want to turn on/off. In Figure~\ref{arduino_post_imp} the channel configuration is shown. If we want cold air   and slow speed we set the "ch1" to 1 and "ch3" to 1, the other channels must be set o zero ,the \ac{HVAC} starts sending cold air.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.3\textwidth]{Figures/temperature_post_imp}
+\caption{Arduino HVAC configuration.}
+\label{arduino_post_imp}
+\end{figure}
+
+
+
 
 \subsection{Automation}
-(falar do event manager aqui???)
 
-\subsection{Video monitoring and security}
-(falar de como detectamos movimento e alertamos o utilizador (notifications e video))
+One of the goals of this project is enabling the automation of lighting and \ac{HVAC}. A simple example of an automation task is turning off the lights when no occupant is inside the office.
+With our project we aimed to give the user high control and flexibility over the automation process. We allow the user to create chains of simple conditional statements, called "recipes", which are triggered based on events relative to the office.
 
+
+The recipes contain a list of triggers and actions. A recipe can have one or multiple triggers, when there are multiple triggers we use the logical AND operator, all the triggers must be true in order for the recipe to be triggered.
+
+There are six triggers available:
+
+\begin{itemize}
+  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
+  \item \textbf{Motion:} The motion sensor is triggered when something changes in the field of view of the assistant or no movement detected in X seconds.
+  \item \textbf{Speech:} Say the keyword "my assistant" and after the beep you say the phrase specified in the trigger.  
+  \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
+  \item \textbf{User location:} Allows the user to choose from a list of different scenarios ("User is inside office", "User is inside building", "User leaves office", "User leaves building", "User arrives at office", "No user inside building", "No user inside office" and "User arrives at building").
+  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
+  
+\end{itemize}
+
+The actions available are:
+
+\begin{itemize}
+  \item \textbf{Light:} Sets the state of the lights.
+  \item \textbf{Temperature:} Changes the target temperature and turns on the HVAC if needed.
+  \item \textbf{Speech:} This action uses the speakers to say the text specified (text to speech).
+\end{itemize}
+
+
+In order to show the flexibility of our solution we created the following example recipes:
+\begin{itemize}
+  \item If a user is in the office and the temperature is above 25ºC then we turn on the cooling.
+  \item If no user is inside the office then turn off all the lights and the HVAC.
+  \item If the user says "turn on lights" then turn on all the lights.
+  \item if the user location status is "user arrives at office", then say "Welcome back".
+ 
+\end{itemize}
 
 
 
 \subsection{Communication}
-(Retrofit, web server and Firebase)
+
+Our solutions has several devices that need to communicate with each other as well as external services.
+The HUB needs to communicate with the client, Arduino and light switch. 
+
+Our first approach was to implement both a \ac{REST} server and client in the HUB, the server allowed the USER APP to use an API to control the HUB. The \ac{REST} client allowed the HUB to communicate with external services such as getting weather forecast information or controlling the Arduino.
+Latter we decided to also include Google Firebase Database as a communication channel between the HUB and USER APP.
+
+
+\mbox{}\\
+\textbf{Rest server}
+
+We implemented the server using a java SPARK 1.1.2 running at port 5002. The server is launched using a background service running in separate thread.
+
+The server exposes the following Rest API: 
+
+\begin{itemize}
+  \item \textbf{GET /register:} Returns the HUB UUID, description and name.
+  \item \textbf{POST /register:} Receives the name, email and UUID of a new user. Returns a status true/false depending if the registration was successful.
+  \item \textbf{POST /location} Receives an UserLocation object, Figure~\ref{user_location_class}.
+  \item \textbf{POST /make-changes:} Receives the temperature value we want "targetTemperature", and receives an boolean array representing the lights we want to change "lightsState";
+   \item \textbf{GET /status:} Returns the current temperature and a boolean array representing the lights.
+   \item \textbf{GET /alive:} Returns a status "true" signifying the server is running.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/userlocation_class}
+\caption{UserLocation Class parameters.}
+\label{user_location_class}
+\end{figure}
+
+Current implementation of SPARK Framework uses JAVA 8, since Android is compatible with JAVA 7 and partially with JAVA 8 we had to use and older version of the SPARK server that runs JAVA 7.  
+
+\mbox{}\\
+\textbf{Rest client}
+
+The Rest client allows our apps to initiate communication with a server, it is used to by the USER APP to interact with the HUB server and used by the HUB to communicate with the Arduino and Weather forecast API.
+
+We decided to use the Retrofit Android library as our Rest client, this library is one of the most popular Rest client used by developers due to performance and extensibility.
+
+
+
+\mbox{}\\
+\textbf{Firebase}
+
+Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the HUB it did not receive any request, then we changed to a private wireless network it all worked normally.
+
+The solution we found was Google Firebase, it is a platform that offers multiple services. We use two services, the real-time database and the storage.
+We use their real-time database to synchronize application data across clients and store it on Firebase's cloud. Using an Android library developed by them we can store JAVA objects directly to the database. The storage service is used to upload the recorded videos and live preview images, captured by the Video Manager.
+
+Firebase solves us two problems, one is users can access our solution from home and access the live camera, it uses Firebase as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our HUB and notify of it's presence since they were in different networks, we use Firebase to add our location messages that are then received by the HUB and building user detection is achieved.
+
+We ended having two ways to communicate with the HUB APP, each has some strong and weak points. 
+
+The negative points with Firebase are it requires internet to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tear only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and HUB devices connect at each moment.
+
+One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
+
+
+
+\mbox{}\\
+\textbf{Edup Light Switch Communication}
+
+Communication with the Edup Light Switch required the use of TCP sockets to give commands and an UDP server to listen to changes. The communication with the light switch was previouly explained in section ~\ref{light_imp}.
+
+
+
+\subsection{Security - Motion detection, video recording, Live view}
+
+With our office being like an extension of our home we felt the need to have some sort of video surveillance system. We created a system capable of detecting if a object is moving inside the office, identify if a user is inside the office and if not then send a notification to the user and record a small video.
+
+
+\mbox{}\\
+\textbf{Motion detection}
+
+The motion detection works by comparing two camera frames. If a percentage of pixels are different we assume motion has happened. Both the percentage of different pixels and the detection period are configurable using the \ac{UI}.
+
+The camera frames are received using a camera callback or by accessing the bitmap of the TextureView where the camera picture is shown. We needed these two methods because when video is recording Android does not trigger the camera callback.
+
+In order for a camera frame pixel to be considered different the RGB value of the pixel must be more than 50.
+
+
+\mbox{}\\
+\textbf{Video recording}
+
+When motion is detected and no user is inside the office we record 30 seconds videos. These videos are uploaded and stored to Firebase servers, where the user can latter watch them using the USER APP.
+
+The videos don't have any audio because Android does not allow the audio to be shared between the speech recognizer and the video recorder at the same time.
+
+
+\mbox{}\\
+\textbf{Live Camera}
+
+We can watch in real time pictures from the office camera. When the user is using the USER APP live camera functionality, the HUB saves a camera frame every second to Firebase server. We have seen a minimum delay of 4 seconds between the  live pictures and the time they were taken.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -235,27 +393,7 @@ Currently there are eight different events available:
 \end{itemize}
 
 
-The Event Manager also receives a list a recipes created by the user. These recipes contain a list a trigger and actions. When a event is published all the recipes are examined to see if all triggers conditions are fulfilled. When this happens all the actions in that particular recipe are executed.
-
-There are six triggers available:
-
-\begin{itemize}
-  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
-  \item \textbf{Motion:} The motion sensor is triggered when something changes in the field of view of the assistant or no movement detected in X seconds.
-  \item \textbf{Speech:} Say the keyword "my assistant" and after the beep you say the phrase specified in the trigger.  
-  \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
-  \item \textbf{User location:} Allows the user to choose from a list of different scenarios ("User is inside office", "User is inside building", "User leaves office", "User leaves building", "User arrives at office", "No user inside building", "No user inside office" and "User arrives at building").
-  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
-  
-\end{itemize}
-
-The actions available are:
-
-\begin{itemize}
-  \item \textbf{Light:} Sets the state of the lights.
-  \item \textbf{Temperature:} Changes the target temperature and turns on the HVAC if needed.
-  \item \textbf{Speech:} This action uses the speakers to say the text specified (text to speech).
-\end{itemize}
+The Event Manager is also responsible for the automation. When a event is published all the recipes are examined to see if all triggers conditions are fulfilled. When this happens all the actions in that particular recipe are executed.
 
 
 \subsubsection{Speech Recognition Manager}\mbox{}\\
@@ -292,20 +430,8 @@ The video manager can be enabled and disabled in the HUB settings for privacy re
 
 \subsubsection{Lighting Manager}\mbox{}\\
 
-This manager is responsible for turning on/off the room lights and keeping their status updated when a user uses the manual switch.
+This manager is responsible for turning on/off the room lights and keeping their status updated when a user uses the manual switch. 
 
-
-The lights in the room are controlled by the Edup Light Switch, the switch must be connected to a WiFi network and automatically establishes a connection to Edup servers to enable remote control over the switch.
-
-In order for our app to control the light switch we must send a byte array with the data shown in Figure~\ref{edup_imp}.
-The message starts and ends with specific hex strings, the middle part of the message seems to always start with "ZH03", followed by the light switch id then a 1 and finally the lights sate we want to change. For example if the ending part of the middle message is "101" then the first and last lights will be turned on, and the middle one turned off.
-
-At this point we achieved control over the lights, but since there is a physical light switch interface we must update our application status if a button is pressed outside our app.
-The Edup Light Switch sends a \ac{UDP} multicast message when the lights are changed. A \ac{UDP} server was implemented, when any message was received its content is verified in order to determine if it is a Edup Light switch message. The message must start with "7e7e000d0002" and end with "7f7f". The middle text is "1101", the first character is always the same and the three other represent the current status of the lights.
-
-There were some difficulties since there is no official API. In order to understand how the light switch worked, we used Wireshark to sniff the connection and try to replicate the messages.
-
-One other problem arised when we quickly turned on/off all the lights in quick succession. When we turn off the first light at the app the light switch sends the multicast message to notify the network, but if we have already turned off the second light then by the time the \ac{UDP} multicast message arrives the state is already different and some lights my turn on back again. To fix this problem when a light is pressed in the app we ignore any \ac{UDP} message for 3 seconds.
 
 
 
@@ -329,19 +455,7 @@ The beacon sends a Eddystone telemetry packet containing the current temperature
 The Arduino option gives the temperature and humidity and allows us to control the \ac{HVAC} system.
 
 
-In order to obtain the beacon temperature, it must be configured to the Eddystone-UID primary packet type using the Estimote mobile app. Then the beacon id must be set in the HUB APP settings.
-
-To get temperature readings from the Arduino \ac{HVAC} and we do a \ac{HTTP}  GET request to the Arduino device IP address at the "/data" endpoint. We receive a \ac{JSON} message containing the temperature/humidity. There is a discovery mechanism to setup the Arduino location it will be mentioned in detail later.
-
-To turn on/off the \ac{HVAC} we send send a POST request containing a \ac{JSON} message containing the relay channels we want to turn on/off. In Figure~\ref{arduino_post_imp} the channel configuration is shown. If we want cold air we set the "ch1" to 1 and "ch3" to 1, the other channels must be set o zero ,the \ac{HVAC} starts sending cold air at slow speed.
-
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.3\textwidth]{Figures/temperature_post_imp}
-\caption{Arduino HVAC configuration.}
-\label{arduino_post_imp}
-\end{figure}
+In order to obtain the beacon temperature, it must be configured to the Eddystone-UID primary packet type using the Estimote mobile app. Then the beacon namespace must be set in the HUB APP settings.
 
 
 \subsubsection{User Manager}\mbox{}\\
