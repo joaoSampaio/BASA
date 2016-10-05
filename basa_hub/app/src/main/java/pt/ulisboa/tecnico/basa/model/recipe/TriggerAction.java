@@ -14,22 +14,25 @@ import pt.ulisboa.tecnico.basa.util.TriggerActionParameterSelected;
 
 public abstract class TriggerAction {
 
-    public final static int TRIGGER_TEMPERATURE = 0;
-    public final static int ACTION_LIGHT_ON = 1;
-    public final static int TRIGGER_SPEECH = 2;
-    public final static int EMAIL = 3;
+    public final static int TRIGGER_TEMPERATURE = 1;
+    public final static int TRIGGER_LIGHT_SENSOR = 2;
+    public final static int TRIGGER_MOTION_SENSOR = 3;
+    public final static int TRIGGER_SPEECH = 4;
+    public final static int TRIGGER_USER_LOCATION = 5;
+    public final static int TRIGGER_TIME = 6;
+    public final static int TRIGGER_LIGHT_STATE = 7;
 
-    public final static int CLAP = 100;
-    public final static int SWITCH = 102;
-    public final static int TRIGGER_USER_LOCATION = 106;
-    public final static int ACTION_TALK = 107;
-
-    public final static int TRIGGER_LIGHT_SENSOR = 108;
-    public final static int TRIGGER_MOTION_SENSOR = 109;
+    public final static int ACTION_LIGHT_ON = 101;
+    public final static int ACTION_TALK = 102;
+    public final static int ACTION_CHANGE_TEMPERATURE = 103;
 
 
-    public final static int ACTION_CHANGE_TEMPERATURE = 110;
-    public final static int TRIGGER_TIME = 111;
+
+
+
+
+
+
 
 
     public static final int TRIGGER = 0;
@@ -96,15 +99,6 @@ public abstract class TriggerAction {
             case TriggerAction.ACTION_TALK:
                 resId = R.drawable.ic_talk;
                 break;
-            case TriggerAction.EMAIL:
-                resId = R.drawable.ic_mail;
-                break;
-            case CLAP:
-                resId = R.drawable.ic_clap;
-                break;
-            case SWITCH:
-                resId = R.drawable.ic_switch_on;
-                break;
             case TRIGGER_USER_LOCATION:
                 resId = R.drawable.ic_user_location;
                 break;
@@ -122,6 +116,9 @@ public abstract class TriggerAction {
                 resId = R.drawable.ic_time_trigger;
                 break;
 
+            case TRIGGER_LIGHT_STATE:
+                resId = R.drawable.ic_light_on;
+                break;
 
         }
         return resId;
@@ -143,15 +140,8 @@ public abstract class TriggerAction {
             case TriggerAction.ACTION_TALK:
                 resId = R.drawable.ic_talk;
                 break;
-            case TriggerAction.EMAIL:
-                resId = R.drawable.ic_mail;
-                break;
-            case CLAP:
-                resId = R.drawable.ic_clap;
-                break;
-            case SWITCH:
-                resId = R.drawable.ic_switch_on;
-                break;
+
+
             case TRIGGER_USER_LOCATION:
                 resId = R.drawable.ic_user_location;
                 break;
@@ -166,6 +156,9 @@ public abstract class TriggerAction {
                 break;
             case TRIGGER_TIME:
                 resId = R.drawable.ic_time_trigger;
+                break;
+            case TRIGGER_LIGHT_STATE:
+                resId = R.drawable.ic_light_on;
                 break;
 
         }
@@ -187,12 +180,7 @@ public abstract class TriggerAction {
             case ACTION_TALK:
                 msg = "Say";
                 break;
-            case SWITCH:
-                msg = "Light ON";
-                break;
-            case EMAIL:
-                msg = "Email";
-                break;
+
             case TRIGGER_USER_LOCATION:
                 msg = "Location";
                 break;
@@ -208,7 +196,9 @@ public abstract class TriggerAction {
             case TRIGGER_TIME:
                 msg = "Date time";
                 break;
-
+            case TRIGGER_LIGHT_STATE:
+                msg = "Light state";
+                break;
 
         }
         return msg;

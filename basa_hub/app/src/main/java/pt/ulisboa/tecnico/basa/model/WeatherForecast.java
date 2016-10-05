@@ -47,7 +47,7 @@ public class WeatherForecast {
             Log.d("TemperatureManager", "lastOne getHour_padded:"+lastOne.getFCTTIME().getHour_padded());
             Log.d("TemperatureManager", "lastOne getMday_padded:"+lastOne.getFCTTIME().getMday_padded());
             Log.d("TemperatureManager", "lastOne getEpoch:"+lastOne.getFCTTIME().getEpoch());
-            Log.d("TemperatureManager", "currentTimeMil():"+System.currentTimeMillis());
+            Log.d("TemperatureManager", "currentTimeMil():"+System.currentTimeMillis()/1000);
             Log.d("TemperatureManager", "diff():"+(System.currentTimeMillis()/1000 - lastOne.getFCTTIME().getEpoch()));
             return (System.currentTimeMillis()/1000 - lastOne.getFCTTIME().getEpoch() < 60*60);
 

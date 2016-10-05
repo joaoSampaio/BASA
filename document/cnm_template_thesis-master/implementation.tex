@@ -74,7 +74,7 @@ Table~\ref{thermostat-choice} shows some commercial products and a Arduino solut
 
 We require a device that offers a  API in order to be controlled by our tablet, because the Sensi thermostat does not offer an official API it does not fit our requirements.
 
-The Nest thermostat is the most popular option in the market integrated in many home automation systems, but since one of our requirements is keeping the cost low it does not fit our requirements. The path chosen was developing an Arduino solution with built in \ac{WiFi}, a relay to control the electric wires and a temperature and humidity sensor.
+The Nest thermostat is the most popular option in the market integrated in many home automation systems, but since one of our requirements is keeping the cost low it does not fit our requirements. The path chosen was developing an Arduino solution, shown in Figure~\ref{arduino_imp}, with built in \ac{WiFi}, a relay to control the electric wires and a temperature and humidity sensor.
 
 
 
@@ -92,6 +92,15 @@ The Nest thermostat is the most popular option in the market integrated in many 
 \end{table}
 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/arduino_imp}
+\caption{Arduino HVAC circuit diagram}
+\label{arduino_imp}
+\end{figure}
+
+
+
 \subsection{Lighting control}
 Besides controlling the room \ac{HVAC}, we require control over the lighting system. After some research we had three options: using wireless controllable light bulbs, using some kind of Arduino/relay solution (like the thermostat) or using a wireless controllable light switch.
 
@@ -101,10 +110,10 @@ Our lighting solution should be affordable, have a physical light switch and an 
 
 In order for our solution to be easily deplorable it requires the least amount of assembly and soldering components, an pre-built lighting product is preferable if the price range is close enough. Both the Arduino/relay and the DI-O/Arduino options have shortcomings, the first does not provide touch control and requires soldering and the latter also requires soldering in the Arduino interface side.
 
-The lighting option chosen was the Edup Smart Light Switch, it provides a physical light switch, supports the existing infrastructure in the buildings and is not too expensive.
+The lighting option chosen was the Edup Smart Light Switch, shown in Figure~\ref{edup_light_imp},  it provides a physical light switch, supports the existing infrastructure in the buildings and is not too expensive.
 
 
-Originally in Section \ref{architecture3} of the architecture, the lighting system was going to be integrated with the Arduino/\ac{HVAC} using relay actuators. We decided go with the Edup light switch after more searching for lighting products we could control, it is a better solution because of the touch control and no need for assembly as described previously.
+Originally in Section \ref{architecture3} of the architecture, the lighting system was going to be integrated with the Arduino/\ac{HVAC} using relay actuators. We decided go with the Edup light switch after searching for lighting products we could control, it is a better solution because of the touch control and no need for assembly as described previously.
 
 \begin{table}[]
 \centering
@@ -121,6 +130,15 @@ Wifi & yes & yes & yes & \begin{tabular}[c]{@{}l@{}}yes (needs arduino \\ to int
 \caption{Lighting control options.}
 \label{lighting-choice}
 \end{table}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/edup_light}
+\caption{Edup Light Switch}
+\label{edup_light_imp}
+\end{figure}
+
 
 
 \subsection{Bluetooth Beacon}
@@ -143,6 +161,12 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 \section{Software Architecture}
 
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/software_dia}
+\caption{HUB software architecture.}
+\label{screen_lights}
+\end{figure}
 
 
 Our solution is divided into two separate Android applications, the HUB and the USER apps. Both apps work side by side in order to achieve the following functions: user detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring \& security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
@@ -194,6 +218,15 @@ The Edup Light Switch sends a \ac{UDP} multicast message when the lights are cha
 There were some difficulties since there is no official API. In order to understand how the light switch worked, we used Wireshark to sniff the traffic connection and tried to replicate the messages.
 
 One other problem arises when we quickly turned on/off all the lights in quick succession. When we turn off the first light at the app the light switch sends the multicast message to notify the network, but if we have already turned off the second light then by the time the \ac{UDP} multicast message arrives the state is already different and some lights my turn on back again. To fix this problem when a light is pressed in the app we ignore any \ac{UDP} message for 3 seconds.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/Edup_imp}
+\caption{Edup packet to set the light state.}
+\label{edup_imp}
+\end{figure}
+
 
 
 \subsection{HVAC control}
@@ -372,7 +405,9 @@ We can watch in real time pictures from the office camera. When the user is usin
 \label{software_imp}
 \end{figure}
 
-There were a couple of changes in regard to the starting software architecture, we will present the current implementation in the following sections.:
+
+The HUB app is the office controller that interacts with all other devices. The HUB offers a \ac{UI} to manual control the lighting and \ac{HVAC} systems, automation rules and settings. In terms of business logic we implemented a set of managers responsible for different operational requirements of the application.
+
 
 \subsubsection{Event Manager}\mbox{}\\
 
@@ -385,7 +420,7 @@ Currently there are eight different events available:
   \item \textbf{Motion:} This event contains a boolean to inform if movement is detected, and long value with the time since last movement was detected.
   \item \textbf{Speech:} The phrase of an successful speech recognition.  
   \item \textbf{Time:} If we need to check some task regularly this event is triggered every 2 seconds.  
-  \item \textbf{User location:} This event contains the user id, the location type (Office/Building), a boolean to specify if he is in the location or left and finnaly a boolean.
+  \item \textbf{User location:} This event contains the user id, the location type (Office/Building), a boolean to specify if he is in the location or left and finally a boolean.
   \item \textbf{Brightness:} The value in Lux of the light sensor.  
   \item \textbf{Light:} The light number and it's status. 
   \item \textbf{Change temperature:} The value of temperature we want the thermostat to be at. 
@@ -398,7 +433,7 @@ The Event Manager is also responsible for the automation. When a event is publis
 
 \subsubsection{Speech Recognition Manager}\mbox{}\\
 
-The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant Apple Siri (!!!!!!!!!!!!!!!!!!!! falar disto no related work). In order to increase the comfort of our users we implemented speech recognition directly into the HUB. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
+The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant Apple Siri. In order to increase the comfort of our users we implemented speech recognition directly into the HUB. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
 
 This manager uses the CMU Sphinx offline keyword speech recognizer, meaning it will detect one word in our case "my assistant". When it detects the keyword it shuts down and we launch google online speech recognition. We use this other speech recognition because it offer good results, the reason the manager uses two different speech recognizes is because using only google recognizer has higher bandwidth cost since we would be constantly sending audio.The other reason is privacy, we don't know if google is going to disclose our audio files to third parties.
 
@@ -435,12 +470,6 @@ This manager is responsible for turning on/off the room lights and keeping their
 
 
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{Figures/Edup_imp}
-\caption{Edup packet to set the light state.}
-\label{edup_imp}
-\end{figure}
 
 
 \subsubsection{Temperature Manager}\label{temperature_manager_imp}\mbox{}\\
@@ -463,56 +492,10 @@ In order to obtain the beacon temperature, it must be configured to the Eddyston
 
 The User Manager keeps track of the user location (in building, in office) and is responsible for registering new users.
 
-The location system works in the following simplified manner, it receives two types of location messages in-building or in-office, there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 5 seconds, the timeouts are 120 seconds and 20 seconds respectively.
-
-Since the location is mainly done in the USER APP, it will be explained in detail later.
+The location system works in the following simplified manner, it receives two types of location messages from the USER APP, in-building or in-office, there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 5 seconds, the timeouts are 120 seconds and 20 seconds respectively.
 
 
 There are two types of user that can register. Users with the mobile USER APP and users without it. If a user has the app, it just needs to open the app and there is an semi-automatic register process. If the user does not have the app he will receive an email with an QR-Code that will act as an identification card, when the user places the card in front of the HUB camera he is logged on for a certain amount of minutes specified by the user. Since we can't track the user whereabouts without the app, the user will have to manually turn the lights and \ac{HVAC} if he leaves while logged on.
-
-
-
-\subsubsection{Web Server and Google Firebase}\mbox{}\\
-
-These independent modules are responsible for communication with the USER APP.
-
-The HUB runs a JAVA Spark server at port 5002 and offer an \ac{JSON} API.
-
-\begin{itemize}
-  \item \textbf{GET /register:} Returns the HUB UUID, description and name.
-  \item \textbf{POST /register:} Receives the name, email and UUID of a new user. Returns a status true/false depending if the registration was successful.
-  \item \textbf{POST /location} Receives an UserLocation object, Figure~\ref{user_location_class}.
-  \item \textbf{POST /make-changes:} Receives the temperature value we want "targetTemperature", and receives an boolean array representing the lights we want to change "lightsState";
-   \item \textbf{GET /status:} Returns the current temperature and a boolean array representing the lights.
-   \item \textbf{GET /alive:} Returns a status "true" signifying the server is running.
-\end{itemize}
-
-
-
-
-
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.4\textwidth]{Figures/userlocation_class}
-\caption{UserLocation Class parameters.}
-\label{user_location_class}
-\end{figure}
-
-
-
-Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the HUB it did not receive any request, then we changed to a private wireless network it all worked normally.
-
-The solution we found was Google Firebase, it is a platform that offers multiple services. We use two services, the real-time database and the storage.
-The database allows us to store and sync data in a NoSQL cloud database. Using an Android library developed by them we can store JAVA objects directly to the database. The storage service is used to upload the recorded videos and live preview images, captured by the Video Manager.
-
-Firebase solves us two problems, one is users can access our solution from their home and access the live camera, it uses firebase as a middle man to communicate. The second problem it fixed was the user location tracking, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our HUB and notify of it's presence since they were in different networks, we use Firebase to add our location messages that are then received by the HUB and building location is achieved.
-
-We ended having two ways to communicate with the HUB APP, each has some strong and weak points. 
-
-The negative points with Firebase are it requires internet to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tear only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and HUB devices connect at each moment.
-
-One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
 
 
 
@@ -574,53 +557,60 @@ The \textbf{settings screen} allows the user to change:
   
 \end{itemize}
 
+%\centerline{
+% \includegraphics[width=90mm]{Figures/screen_lights}
+%}
+%
+%\centerline{
+% \includegraphics[width=90mm]{Figures/screen_temperature}
+%}
 
 
-
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/screen_lights}
+\includegraphics[width=0.6\textwidth]{Figures/screen_lights}
 \caption{Light screen.}
 \label{screen_lights}
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/screen_temperature}
+\includegraphics[width=0.6\textwidth]{Figures/screen_temperature}
 \caption{Temperature screen.}
 \label{screen_temperature}
 \end{figure}
 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/create_recipe}
+\includegraphics[width=0.6\textwidth]{Figures/create_recipe}
 \caption{Temperature screen.}
 \label{create_recipe}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/screen_trigger}
+\includegraphics[width=0.6\textwidth]{Figures/screen_trigger}
 \caption{Temperature screen.}
 \label{screen_triggers}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/screen_actions}
+\includegraphics[width=0.6\textwidth]{Figures/screen_actions}
 \caption{Temperature screen.}
 \label{screen_actions}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/screen_completed_recipe}
+\includegraphics[width=0.6\textwidth]{Figures/screen_completed_recipe}
 \caption{Temperature screen.}
 \label{screen_completed_recipe}
 \end{figure}
+
 
 
 %\begin{figure}[h]
@@ -634,16 +624,44 @@ The \textbf{settings screen} allows the user to change:
 \subsection{USER APP}
 
 
-The USER APP works side by side with the HUB to enable location tracking, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
+The USER APP allows user detection, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
+
+The goal of the applications is to add and control HUB devices. This means a user can add multiple HUBs to a USER APP and manage them. 
+
+To add a device the first to do is create a zone, a zone is a virtual representation of a building. For example we can create a zone and name it "Home", then add all our HUB tablets within the household. 
+
+After we have a zone created we can add a device. To add a device the user presses the "Add device" button, then a screen with a camera and instructions is shown. The goal is to register the user in the HUB, to to this the user must first open the registration screen in the HUB and then point the camera in the user's phone to the QR-code shown in the HUB registration screen. Afterwords all the user needs to do is press save and the HUB is added and can be controlled.
 
 
+When a HUB device is added three icons representing three services appear in the zone screen: control lighting, \ac{HVAC} and security systems.
+
+The lighting and \ac{HVAC} screens are straightforward, they allow the user to remotely control a HUB's lighting and \ac{HVAC} systems. The security screen enables live camera visualization of the HUB's camera and a list of recorded videos. When motion is detected by the HUB all registered users are notified via Android notification, the purpose of the live camera is to allow the user to check if someone is indeed inside the office. The recorded video history are small 30 second videos captured when movement was detected and no user was inside the room. They allow the user to check in the future if something happened.
 
 
+The application has two main screens the UserFragment and the HomeFragment. The UserFragment allows the user to manage the zones and change application settings. The HomeFragment shows the current selected zone and all its devices.
+
+In the settings screen available through the UserFragment, the user can change some parameters such as enable/disable Firebase and location tracking or scan for wireless APs. The screen to scan for wireless APs allows the application to scan and then share via email the list of \ac{MAC address} used for building location.
 
 
+\subsection{Arduino HVAC}
 
-if the user is inside the building (mobile app installed), it sends a message every 60 seconds. There is a timeout of 120 consecutive seconds, if no message is received in this time we assume the user has left the building.
 
+The Arduino we implemented to control the HVAC system was written using C++ programming language. It has four jobs: run a webserver to allow remote control, implement \ac{SSDP} to enable discovery, read temperature/humidity values from a DHT11 sensor and control a four relay module to control de HVAC system.
+
+After the device is first powered up it becomes an \ac{AP}. The user must connect to this new network and use the browser to choose the \ac{WiFi} network he want the Arduino to connect.
+
+
+The webserver has the following endpoints:
+
+
+\begin{itemize}
+  \item \textbf{GET /:} Shows xml description of the device, used after \ac{SSDP} was performed to list the devices.
+  \item \textbf{GET /reset:} Resets the Arduino device, needed if we want to change the WiFi network the Arduino is connected.
+  \item \textbf{POST /data} Receives a JSON message to control the HVAC system, for example the message \textit{\{"cha1": 1, "cha2": 0, "cha3": 1, "cha4": 0\}} sends cold air at low speed, more information can be found in Figure~\ref{arduino_post_imp}.
+  
+  \item \textbf{GET /data} Receives a JSON with the current temperature and humidity.
+ 
+\end{itemize}
 
 
 

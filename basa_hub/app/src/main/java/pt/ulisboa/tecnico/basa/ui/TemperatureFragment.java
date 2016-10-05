@@ -160,6 +160,7 @@ public class TemperatureFragment extends Fragment {
 
     private int getIcon(String iconString){
         int resId;
+        Log.d("icon temp", "icon:" + iconString);
         switch (iconString){
             case "chanceflurries":
                 resId = R.drawable.ic_weather_snow;

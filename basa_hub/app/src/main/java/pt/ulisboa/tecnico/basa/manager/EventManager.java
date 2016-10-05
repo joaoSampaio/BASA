@@ -13,7 +13,6 @@ import pt.ulisboa.tecnico.basa.model.User;
 import pt.ulisboa.tecnico.basa.model.event.Event;
 import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
 import pt.ulisboa.tecnico.basa.model.event.EventChangeTemperature;
-import pt.ulisboa.tecnico.basa.model.event.EventClap;
 import pt.ulisboa.tecnico.basa.model.event.EventCustomSwitchPressed;
 import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
 import pt.ulisboa.tecnico.basa.model.event.EventMotion;
@@ -26,8 +25,10 @@ import pt.ulisboa.tecnico.basa.model.recipe.Recipe;
 import pt.ulisboa.tecnico.basa.model.recipe.TriggerAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightStateTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.TemperatureTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.TimeTrigger;
 import pt.ulisboa.tecnico.basa.ui.secondary.EventHistoryFragment;
 
@@ -335,20 +336,20 @@ public class EventManager {
 
                         break;
 
-                    case TriggerAction.CLAP:
-                        registerInterestRecipe(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
-                            @Override
-                            public void onRegisteredEventTriggered(Event event) {
-                                if (event instanceof EventClap) {
-
-                                    if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
-                                        doAction(recipeFinal);
-
-
-                                }
-                            }
-                        }, 0));
-                        break;
+//                    case TriggerAction.CLAP:
+//                        registerInterestRecipe(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
+//                            @Override
+//                            public void onRegisteredEventTriggered(Event event) {
+//                                if (event instanceof EventClap) {
+//
+//                                    if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+//                                        doAction(recipeFinal);
+//
+//
+//                                }
+//                            }
+//                        }, 0));
+//                        break;
 
                     case TriggerAction.TRIGGER_SPEECH:
                         registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new EventManager.RegisterInterestEvent() {
@@ -391,6 +392,30 @@ public class EventManager {
 
                         break;
                     case TriggerAction.TRIGGER_TEMPERATURE:
+
+                        registerInterestRecipe(new InterestEventAssociation(Event.TEMPERATURE, new EventManager.RegisterInterestEvent() {
+                            @Override
+                            public void onRegisteredEventTriggered(Event event) {
+                                if (event instanceof EventTemperature) {
+                                    EventTemperature temperature = (EventTemperature)event;
+
+                                    if(TemperatureTrigger.TEMPERATURE_DROPS == trigger.getParametersInt(0)
+                                            && temperature.getTemperature() < trigger.getParametersInt(1)){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    }
+
+                                    if(TemperatureTrigger.TEMPERATURE_RISES == trigger.getParametersInt(0)
+                                            && temperature.getTemperature() > trigger.getParametersInt(1)){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+
+                                    }
+
+
+                                }
+                            }
+                        }, 0));
 
                         break;
 
@@ -444,6 +469,42 @@ public class EventManager {
                         }
 
                         break;
+
+                    case TriggerAction.TRIGGER_LIGHT_STATE:
+
+
+                        registerInterestRecipe(new InterestEventAssociation(Event.LIGHT, new EventManager.RegisterInterestEvent() {
+                            @Override
+                            public void onRegisteredEventTriggered(Event event) {
+                                if (event instanceof EventLightSwitch) {
+
+                                    LightStateTrigger lightStateTrigger = (LightStateTrigger)trigger;
+                                    List<Integer> lightsOff = lightStateTrigger.lightsOff();
+                                    List<Integer> lightsOn = lightStateTrigger.lightsOn();
+
+                                    boolean[] lights = getBasaManager().getLightingManager().getLights();
+                                    boolean allLightsCorrect = true;
+                                    for(int on : lightsOn)
+                                        if(!lights[on])
+                                            allLightsCorrect = false;
+
+                                    for(int off : lightsOff)
+                                        if(lights[off])
+                                            allLightsCorrect = false;
+
+                                    if(allLightsCorrect){
+                                        if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
+                                            doAction(recipeFinal);
+                                    }
+                                }
+                            }
+                        }, 0));
+
+
+
+
+                    break;
+
 
 //                case Trigger.TRIGGER_TEMPERATURE:
 //
@@ -512,9 +573,7 @@ public class EventManager {
 //                    },0));
 //
 //                    break;
-                    case TriggerAction.EMAIL:
 
-                        break;
 
                 }
             }
@@ -646,7 +705,7 @@ public class EventManager {
 
             case TriggerAction.TRIGGER_LIGHT_SENSOR:
 
-                int brightness = AppController.getInstance().getBasaManager().getBasaSensorManager().getCurrentLightLvl();
+                int brightness = getBasaManager().getBasaSensorManager().getCurrentLightLvl();
 
                 if (LightSensorTrigger.LIGHT_BELLOW == trigger.getParametersInt(0) &&
                         brightness < trigger.getParametersInt(1)) {
@@ -676,8 +735,36 @@ public class EventManager {
                 break;
 
 
-            case TriggerAction.TRIGGER_TEMPERATURE:
+            case TriggerAction.TRIGGER_LIGHT_STATE:
 
+
+                LightStateTrigger lightStateTrigger = (LightStateTrigger)trigger;
+                List<Integer> lightsOff = lightStateTrigger.lightsOff();
+                List<Integer> lightsOn = lightStateTrigger.lightsOn();
+
+                boolean[] lights = getBasaManager().getLightingManager().getLights();
+                for(int on : lightsOn)
+                    if(!lights[on])
+                        return false;
+
+                for(int off : lightsOff)
+                    if(lights[off])
+                        return false;
+
+                return true;
+
+
+            case TriggerAction.TRIGGER_TEMPERATURE:
+                if(TemperatureTrigger.TEMPERATURE_DROPS == trigger.getParametersInt(0)
+                        && getBasaManager().getTemperatureManager().getCurrentTemperature() < trigger.getParametersInt(1)){
+                    return true;
+                }
+
+                if(TemperatureTrigger.TEMPERATURE_RISES == trigger.getParametersInt(0)
+                        && getBasaManager().getTemperatureManager().getCurrentTemperature() > trigger.getParametersInt(1)){
+                    return true;
+
+                }
                 break;
         }
         return false;

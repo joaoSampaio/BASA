@@ -31,6 +31,7 @@ import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.TemperatureAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightStateTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
@@ -178,6 +179,9 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
                             break;
                         case TriggerAction.TRIGGER_TIME:
                             showTriggerDetails(new TimeTrigger(), TriggerAction.TRIGGER);
+                            break;
+                        case TriggerAction.TRIGGER_LIGHT_STATE:
+                            showTriggerDetails(new LightStateTrigger(), TriggerAction.TRIGGER);
                             break;
 
                     }
@@ -337,6 +341,8 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         data.add(new LightSensorTrigger());
         data.add(new MotionSensorTrigger());
         data.add(new TimeTrigger());
+        data.add(new LightStateTrigger());
+
 
     }
 

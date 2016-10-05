@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.basa.model.recipe.action.LightOnAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.SpeechAction;
 import pt.ulisboa.tecnico.basa.model.recipe.action.TemperatureAction;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightSensorTrigger;
+import pt.ulisboa.tecnico.basa.model.recipe.trigger.LightStateTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.LocationTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.MotionSensorTrigger;
 import pt.ulisboa.tecnico.basa.model.recipe.trigger.SpeechTrigger;
@@ -155,6 +156,7 @@ public class Recipe {
                 .registerSubtype(SpeechAction.class)
                 .registerSubtype(TimeTrigger.class)
                 .registerSubtype(TemperatureAction.class)
+                .registerSubtype(LightStateTrigger.class)
                 .registerSubtype(TemperatureTrigger.class);
 
         gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();

@@ -10,55 +10,32 @@ This section is divided in four subsections: \ref{architecture1} starts by defin
 %depth. Finally, section 3.3 and 3.4 present a brief overview of the hardware and software architectures
 
 
-
-\subsection{System Requirements}\label{architecture1} 
-
-In order to choose the appropriate architecture in terms of performance, functionality, extensibility and comfort, the system must satisfy the following set of requirements:
-
-\begin{itemize}
-  \item \textbf{Scalable:} The system must be scalable and offer rapid deployment of new nodes.
-  \item \textbf{Isolation:} The control and automation of the offices must be independent and work regardless the state of the rest of the system.
-  \item \textbf{Multiuser:} The system must be able to maintain multiple user preferences, in the eventuality of multiple users occupying the room at the same time the system must be capable of adjusting the ambient settings to minimize their discomfort. 
-  \item \textbf{Manual control:} People expect to be some form of manual control over the room such a light switch or thermostat, the system must provide a graphical interface embedded in the wall that allows manual control of some basic services such as HVAC and lighting.
-  
-  \item \textbf{Remote control:} It should provide a authenticated user status and remote control over the room's services, by the use of an Android app.
-  \item \textbf{Automate tasks:} The user should be able to configure tasks to be triggered by a scheduler or sensor value.
-  \item \textbf{Load-aware:} The system must be able to adjust services such as HVAC and lighting in a energy efficient way.
-  \item \textbf{Human aware:} It must be capable of detecting human presence inside the room with high certainty.
-  \item \textbf{User aware:} It must capable of detecting if the user is inside the building with a medium/low accuracy and the user presence in the room with high Accuracy
-  \item \textbf{Energy Efficient:} The system must be able to adjust it's own energy footprint during long periods when no occupant is within the room, such as nigh time.  
-  
-\end{itemize}
+\section{Architecture Overview}\label{architecture2} 
 
 
 
 
-\subsection{Architecture Overview}\label{architecture2} 
+The proposed system consists of four main components: the User App, the HUB, lighting control and \ac{HVAC} control systems. The User App allows remote control over the HUB services as well as enables user detection. The HUB is responsible for the room automation and security systems, collection of sensor data and manual control over the room services. To control the lighting and \ac{HVAC} systems two devices  
 
-
-
-
-The proposed system consists of three main components: the User App, the HUB and Zone Controller. The User App allows remote control over the HUB services as well as provides the HUB with user location data. The HUB is responsible for the room automation and security systems, collection of sensor data and manual control over the room services. The Zone Controller functions as a HUB but it can also communicate with the HUBs and be alerted to changes in the rooms (zones), because its at the top of the hierarchy it will perform tasks relevant to the entire building zone.
-
-As represented in Figure \ref{architecture_system}, every HUB is able to work without the presence of the Zone Controller or any User App. Several smart-phones with the User App are able to interact with the HUB. The same way, the Zone Controller can connect to one or more HUBs.
+As represented in Figure \ref{architecture_system}, every HUB is able to work without the presence any User App. Several smart-phones with the User App are able to interact with the HUB. The same way, the Zone Controller can connect to one or more HUBs.
 
 In the next sections we will detail the three main components of the system.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{Figures/architecture}
+\includegraphics[width=0.7\textwidth]{Figures/system_architecture}
 \caption{Architecture of the system}
 \label{architecture_system}
 \end{figure}
 
 
-\subsubsection{User App}\mbox{}\\
+\subsection{User App}\mbox{}\\
 
-The User App running in the users mobile devices offers remote control over the office services and security as well as provide the HUB with user recognition and location data. The User App will notify the HUB of the user presence inside the building and help to identify the user within the room itself.
+The User App runs in the users mobile devices offers remote control over the office services and security as well as provide the HUB with user recognition and location data. The User App notifies the HUB of the user presence inside the building and helps to identify the user within the room itself.
 
 
 
-\subsubsection{HUB}\mbox{}\\
+\subsection{HUB}\mbox{}\\
 
 The HUB, will be present in every office, it is the most important component of the system. It is responsible for controlling the HVAC and electrical devices of the office, enforcing energy saving policies, improve occupant comfort and provide security monitoring during the hours when the user is away from the office.
 It will feature an user interface for manual control over the services provided.
@@ -66,7 +43,7 @@ It will feature an user interface for manual control over the services provided.
 \textbf{HUB communication} with the Zone Controller or the User App will be done using Wi-Fi networks. When inside the building the pre-installed wireless network will be used to enable communication between all components, when outside the building a connection with internet access can be used to remote control the HUB. The HUB can also communicate with external devices using Bluetooth or Bluetooth Low Energy.
 
 
-\subsubsection{Zone Controller}\mbox{}\\
+\subsection{Zone Controller}\mbox{}\\
 
 The Zone Controller component has all the functionalities of the HUB. It can also communicate with several HUBs and gather on-demand data from them. This component will be responsible for services that are common to the whole building.
 
@@ -78,7 +55,7 @@ The system can be deployed in just a room, if cooperation is not required, in th
 
 
 
-\subsection{Hardware Architecture}\label{architecture3} 
+\section{Hardware Architecture}\label{architecture3} 
 
 The HUB has two main hardware components, one is the Android tablet that provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
 The other component is the microcontroller, it allows the digital world to interact with the real world through the use of actuators that convert electric signal into mechanical actions. The microcontroller is connected to the actuators (relay) and is able to switch on/off the lights as well as controlling the HVAC. This component is needed because typically lights and HVAC system don't have any type of connectivity other than the electric wires. 
@@ -92,7 +69,7 @@ Figure \ref{architecture_system}, represents a HUB, its components and the main 
 
  
 
-\subsubsection{Communication Protocols}\mbox{}\\
+\subsection{Communication Protocols}\mbox{}\\
 
 The system requires that all the three components: Zone Controller, HUB and User App, are able to communicate. The three components will use Wi-Fi to communicate data at high data rate, the HUB and the User App can also use Bluetooth Low Energy to determine if the two are close to each other. Likewise the HUB can use BLE to communicate with external sensors. The communication between the Android tablet and the microcontroller is done using a micro-B USB cable using serial communication. Finally the communication among the microcontroller and the actuators is done by using the General Purpose Input/Output (GPIO) pins.
 
@@ -107,7 +84,7 @@ The system requires that all the three components: Zone Controller, HUB and User
 \end{figure}
 
 
-\subsection{Software Architecture}\label{architecture4} 
+\section{Software Architecture}\label{architecture4} 
 
 
 There will two Android APPs in the system, one will be the HUB APP that runs in the tablets mounted in the rooms. The other is the User APP that the occupant of the room can install to remote control the HUB, allow user recognition and video monitoring of the room. 
@@ -132,7 +109,7 @@ Communication to external sensors will use BLE and follow the application progra
 
 
 In order to provide higher comfort and user detection, our system requires that both the user and the HUB have installed an app. Since the requirements for the User App and the HUB App are different in many aspects two architectures are proposed. These different functionality requirements are due to the nature that the HUB has to operate a automation and security system. Yet the user app only needs to send and receive data.
-\subsubsection{HUB App Architecture}\mbox{}\\
+\subsection{HUB App Architecture}\mbox{}\\
 
 The presented architecture is designed to run in the HUB, several managers are proposed. Figure \ref{software2}, represents the the architecture of the HUB App.
 
@@ -192,7 +169,7 @@ The Environment Interaction Manager will abstract every actuator connected to th
 
 
 
-\subsubsection{User App Architecture}\mbox{}\\
+\subsection{User App Architecture}\mbox{}\\
 The User App is simpler than the HUB App, several managers were suppressed. Figure \ref{software3}, represents the the architecture of the User App.
 
 \paragraph{Control Manager}\mbox{}\\

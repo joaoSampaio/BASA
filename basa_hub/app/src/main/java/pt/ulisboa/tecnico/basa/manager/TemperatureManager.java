@@ -91,24 +91,30 @@ public class TemperatureManager {
 
                 if(event instanceof EventTime){
                     EventTime time = (EventTime)event;
-                    if((time.getDate() - lastCheck) > 45*60*1000)
+
+                    if(forecast == null || !forecast.isUpToDate()){
+                        if(forecast != null)
+                            Log.d("TemperatureManager", "forecast.isUpToDate()222:" + forecast.isUpToDate());
+                        updateWeather();
+                        return;
+                    }
+
+                    if((time.getDate() - lastCheck) > 1*60*1000) {
                         lastCheck = time.getDate();
-                    if(getGlobalTemperatureForecast() != null) {
+                        Log.d("TemperatureManager", "getGlobalTemperatureForecast() != null:" + (getGlobalTemperatureForecast() != null));
+                        if(getGlobalTemperatureForecast() != null) {
 
-                        if(forecast == null || !forecast.isUpToDate()){
-                            if(forecast != null)
-                                Log.d("TemperatureManager", "forecast.isUpToDate()222:" + forecast.isUpToDate());
-                                updateWeather();
-                            return;
-                        }
+                            if(forecast != null && forecast.getCurrent() != null){
+                                Log.d("TemperatureManager", "forecast != null && forecast.getCurrent() != null:" + (forecast != null && forecast.getCurrent() != null));
 
-                        if(forecast != null && forecast.getCurrent() != null){
-                            HourlyForecast hourlyForecast = forecast.getCurrent();
-                            if(hourlyForecast != null){
+                                HourlyForecast hourlyForecast = forecast.getCurrent();
+                                Log.d("TemperatureManager", "onChangeForecast:" + hourlyForecast.getFCTTIME().getHour_padded());
                                 getGlobalTemperatureForecast().onChangeForecast(hourlyForecast.getTemp().getTemperature(), hourlyForecast.getIcon(), hourlyForecast.getCondition());
+
                             }
                         }
                     }
+
                 }
             }
         },0));

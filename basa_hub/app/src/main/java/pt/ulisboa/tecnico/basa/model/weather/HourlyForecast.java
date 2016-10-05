@@ -38,6 +38,8 @@ public class HourlyForecast {
 
     public String getIcon() {
 
+        if(FCTTIME.getHour() >= 20 || FCTTIME.getHour() <= 7)
+            return "nt_"+icon;
         return icon;
     }
 

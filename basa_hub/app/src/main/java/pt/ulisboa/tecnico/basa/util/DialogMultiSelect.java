@@ -4,10 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
-
-import java.util.List;
 
 /**
  * Created by joaosampaio on 28-03-2016.
@@ -19,6 +16,7 @@ public class DialogMultiSelect {
     boolean[] checkedValues;
     String title;
     DialogMultiSelectResponse listener;
+    private boolean allowEmpty = false;
 
     public DialogMultiSelect(){
 
@@ -91,7 +89,7 @@ public class DialogMultiSelect {
                         break;
                     }
                 }
-                if (isChecked) {
+                if (isChecked || allowEmpty) {
                     listener.onSucess(checkedValues);
                     dialog.dismiss();
                 }
@@ -101,6 +99,9 @@ public class DialogMultiSelect {
         });
     }
 
+    public void setAllowEmpty(boolean allowEmpty) {
+        this.allowEmpty = allowEmpty;
+    }
 
     public interface DialogMultiSelectResponse{
         void onSucess(boolean[] checkedValues);

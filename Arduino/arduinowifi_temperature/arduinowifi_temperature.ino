@@ -73,25 +73,13 @@ void setup(void)
    
   server.on("/", home);
   
-  server.on("/temp", [](){  // if you add this subdirectory to your webserver call, you get text below :)
-    gettemperature();       // read sensor
-    webString="Temperature: "+String((int)temp_f)+" F";   // Arduino has a hard time with float to string
-    server.send(200, "text/plain", webString);            // send to someones browser when asked
-  });
-
-  server.on("/description.xml", [](){  // if you add this subdirectory to your webserver call, you get text below :)
+  server.on("/description.xml", [](){ 
     SSDP.schema(server.client());
   });
 
-  server.on("/reset", [](){  // if you add this subdirectory to your webserver call, you get text below :)
+  server.on("/reset", [](){  
     wifiManager.resetSettings();
   });
-
-  server.on("/humidity", [](){  // if you add this subdirectory to your webserver call, you get text below :)
-      gettemperature();           // read sensor
-      webString="Humidity: "+String((int)humidity)+"%";
-      server.send(200, "text/plain", webString);               // send to someones browser when asked
-    });
 
   server.on("/data", action);
 
@@ -104,14 +92,14 @@ void setup(void)
   Serial.printf("Starting SSDP...\n");
   SSDP.setSchemaURL("data");
   SSDP.setHTTPPort(80);
-  SSDP.setName("Philips hue clone");
+  SSDP.setName("Arduino HVAC");
   SSDP.setSerialNumber("001788102201");
   SSDP.setURL("index.html");
-  SSDP.setModelName("Philips hue bridge 2012");
+  SSDP.setModelName("Arduino HVAC 2016");
   SSDP.setModelNumber("929000226503");
-  SSDP.setModelURL("http://www.meethue.com");
-  SSDP.setManufacturer("Royal Philips Electronics");
-  SSDP.setManufacturerURL("http://www.philips.com");
+  SSDP.setModelURL("https://github.com/joaoSampaio/BASA");
+  SSDP.setManufacturer("");
+  SSDP.setManufacturerURL(");
   SSDP.setUUID("11111111-fca6-4070-85f4-1fbfb9add62c");
   SSDP.setDeviceType("urn:schemas-basa-pt:service:climate:1");
   SSDP.begin();
@@ -153,10 +141,6 @@ void receiveUDPBroadcast(){
     String s = String(packetBuffer);
     retransmitUDPToServer(hexValue);
 
-    // send a reply, to the IP address and port that sent us the packet we received
-//    Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-//    Udp.write(ReplyBuffer);
-//    Udp.endPacket();
   }
 }
 
@@ -184,25 +168,9 @@ void retransmitUDPToServer(String message){
 
       }
     }
-    
-//    http.begin("http://192.168.137.180:5001/broadcast");
-//    http.addHeader("Content-Type", "text/html");
-//
-//    String payload = "teste1";
-//    int httpCode = http.POST(message);
-//    Serial.println(message);
-//    if (httpCode != 200) {
-//      Serial.println("not successful");
-//      } else {
-//      String returnvalue = http.getString();
-//      Serial.println("successful:" + returnvalue);   
-//      }
-//    http.end();
-
 }
 
   
- 
 void loop(void)
 {
   server.handleClient();
@@ -300,15 +268,6 @@ void setServerBASA(){
 
 void home(){
   SSDP.schema(server.client());
-}
-
-void updateLights(){
-
-//led is reversed
-  /*if(light1 == 1)
-    digitalWrite(BUILTIN_LED, LOW);
-  else
-    digitalWrite(BUILTIN_LED, HIGH);*/
 }
 
  
