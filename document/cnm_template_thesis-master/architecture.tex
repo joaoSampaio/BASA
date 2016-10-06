@@ -9,10 +9,10 @@ This section is divided in three subsections: Section~\ref{architecture2} starts
 \section{Architecture Overview}\label{architecture2} 
 
 
-The proposed system consists of two mobile APPs, one will be the HUB APP that runs in a tablet mounted in the room (could also run in a smartphone but tablets have bigger screens). The other is the User APP that the occupant of the room can install to remote control the HUB, allow user detection and video monitoring of the room. The HUB is responsible for the room automation and security systems, collection of sensor data and manual control over the room services.
+The proposed system consists of two mobile applications, one will be the Hub app that runs in a tablet mounted in the room (could also run in a smartphone but tablets have bigger screens). The other is the User app that the occupant of the room can install to remote control the Hub, allow user detection and video monitoring of the room. The Hub is responsible for the room automation and security systems, collection of sensor data and manual control over the room services.
 
 
-As represented in Figure \ref{architecture_system}, every HUB is able to work without the presence any User App. Several smart-phones with the User App are able to interact with the HUB.
+As represented in Figure \ref{architecture_system}, every Hub is able to work without the presence any User App. The User App is able to interact with several different Hubs.
 
 Figure~\ref{software1}, describes a top view of the system. In the next sections we will detail the two main components of the system.
 
@@ -33,24 +33,24 @@ Figure~\ref{software1}, describes a top view of the system. In the next sections
 
 \subsection{User App}
 
-The User App runs in the users mobile devices offers remote control over the office services and security as well as provide the HUB with user detection.
+The User app runs in the users mobile devices offers remote control over the office services and security as well as provide the Hub with user detection.
 
 
 
-\subsection{HUB App}
+\subsection{Hub App}
 
-The HUB app is responsible for controlling the HVAC and lighting systems in the office, enforcing energy saving policies, improve occupant comfort and provide security monitoring when the user is away from the office.
+The Hub app is responsible for controlling the HVAC and lighting systems in the office, enforcing energy saving policies, improve occupant comfort and provide security monitoring when the user is away from the office.
 It will feature an user interface for manual control over the services provided.
 
 
-\textbf{HUB communication} with the User App will be done using Wi-Fi networks. When inside the building the pre-installed wireless network will be used to enable communication between all components, when outside the building a connection with internet access can be used to remote control the HUB. The HUB can also communicate with external devices using \ac{BT} or \ac{BLE}.
+\textbf{Hub communication} with the User app uses Wi-Fi networks. When inside the building the pre-installed wireless network will be used to enable communication between all components, when outside the building a connection with internet access can be used to remote control the Hub. The Hub can also communicate with external devices using \ac{BT} or \ac{BLE}.
 
 
 \section{Hardware Architecture}\label{architecture3} 
 
 To achieve building automation our solutions requires a tablet to act as a central control unit, a beacon device used for user detection inside the room and two other devices capable of interacting with the lighting and \ac{HVAC} systems.
 
-The tablet is where the HUB app runs. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
+The tablet is where the Hub app runs. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
 
 The beacon is used for user detection, this will be explained latter in Section~\ref{architecture4}.
 
@@ -60,13 +60,13 @@ To control the lighting and \ac{HVAC} systems we require devices capable of inte
 If the room had installed wireless devices that communicate with technologies such as ZigBee or Z-Wave then the microcontroller could be connected to a radio module able to communicate with those wireless technologies such as a xbee module.
 
 
-Figure \ref{architecture_system}, represents a HUB, its components and the main communication protocols used.
+Figure \ref{architecture_system}, represents a Hub, its components and the main communication protocols used.
 
  
 
-\subsection{Communication Protocols}\mbox{}\\
+\subsection{Communication Protocols}
 
-The system requires that the HUB and User App, are able to communicate. They will use Wi-Fi to communicate data at high data rate. The HUB can also use \ac{BLE} to get additional sensor data from external sensors. Likewise the User App can use \ac{BLE} to determine if it is close to a beacon. The communication between the Android tablet and the microcontroller is done using an WiFi network. Finally the communication among the microcontroller and the actuators is done by using the General Purpose Input/Output (GPIO) pins.
+The system requires that the Hub and User App, are able to communicate. They will use Wi-Fi to communicate data at high data rate. The Hub can also use \ac{BLE} to get additional sensor data from external sensors. Likewise the User App can use \ac{BLE} to determine if it is close to a beacon. The communication between the Android tablet and the microcontroller is done using an WiFi network. Finally the communication among the microcontroller and the actuators is done by using the General Purpose Input/Output (GPIO) pins.
 
 
 
@@ -74,7 +74,7 @@ The system requires that the HUB and User App, are able to communicate. They wil
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{Figures/hardware}
-\caption{Hardware architecture of the HUB}
+\caption{Hardware architecture of the Hub}
 \label{architecture_system}
 \end{figure}
 
@@ -90,12 +90,12 @@ One of the goals of our solution is \textbf{user detection}, in order to accompl
 Regarding \textbf{office security} we propose using the tablet camera and analyze the consecutive frames for changes. When no user is present in the room and large enough pixels are different we assume movement was detected. We can then notify the user that someone is inside the room.
 
 
-\subsection{HUB App Architecture}
+\subsection{Hub App Architecture}
 
-The presented architecture is designed to run in the HUB, several managers are proposed. Figure \ref{software2}, represents the the architecture of the HUB App.
+The presented architecture is designed to run in the Hub, several managers are proposed. Figure \ref{software2}, represents the the architecture of the Hub App.
 
 \subsubsection{User Interface}
-This is the interface seen in the HUB screen, it will offer:
+This is the interface seen in the Hub screen, it will offer:
 
 \begin{itemize}
   \item Manual control of the lighting and HVAC systems.
@@ -141,20 +141,20 @@ The Temperature Manager periodically reads the room temperature and is able to c
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{Figures/software_hub}
-\caption{HUB APP architecture }
+\includegraphics[width=0.9\textwidth]{Figures/software_Hub}
+\caption{Hub APP architecture }
 \label{software2}
 \end{figure}
 
 
 
 \subsection{User App Architecture}
-The User App is simpler than the HUB App, the app is divided in the \ac{UI} screens. There are no managers like the Hub architecture, the business logic is handled by each screen separately. 
+The User App is simpler than the Hub App, the app is divided in \ac{UI} screens. There are no managers like the Hub architecture, the business logic is handled by each screen separately. 
 
 
 The main screens are the home, lighting, temperature, security and registration screens.
 
-Since the user app can control several Hub apps, we require a simple registration process to add the user to the Hub. We propose showing a QR-Code in the Hub registration screen, this code possesses the \ac{IP address} for the HUB and a temporary token used for registration. The user app can use the phone camera to scan the QR-Code and automatically register the user in the HUB and add a virtual representation of the Hub in the home screen.
+Since the user app can control several Hub apps, we require a simple registration process to add the user to the Hub. We propose showing a QR-Code in the Hub registration screen, this code possesses the \ac{IP address} for the Hub and a temporary token used for registration. The user app can use the phone camera to scan the QR-Code and automatically register the user in the Hub. Then a virtual representation of the Hub is shown in the home screen.
 
 For user detection to work when the app is not being used, we need some kind of background service to monitor the \ac{WiFi} and beacons nearby the phone. The interval between scans will be further studied in order to provide adequate time between scans and be conservative regarding the user's mobile device battery.
 

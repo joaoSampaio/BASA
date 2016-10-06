@@ -8,7 +8,7 @@ Nowadays, consumer smart home systems are becoming more popular, the ability to 
 
 \section{Background}
 \label{section:background}
-Nowadays, home and office building are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in the office building, where the occupant isn't usually the one paying (directly the bills, there is no incentive to reduce electricity consumption.
+Nowadays, home and office building are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in the office building, where the occupant isn't usually the one paying (directly) the bills, there is no incentive to reduce electricity consumption.
 
 
 Current solutions suffer from a set of problems:
@@ -17,7 +17,7 @@ Current solutions suffer from a set of problems:
 \item \textbf{Limited Flexibility} - Currently installed BAS are not open source and require specialized installation and configuration. Because of that, they are limited to pre-installed functions and have the risk of easily becoming outdated.
 \item \textbf{Limited Customization} - Current solutions do not take in consideration the individual needs of the rooms and occupants they manage. Different rooms can required different luminous and thermal requirements. 
 \item \textbf{Expensive installation} - One problem facing BAS is the cost of the devices and their installation. Some require rewiring  and dedicated conduits. Due to the large costs associated, the sensors and actuators are usually installed in building zones rather then offices.
-\item \textbf{Lack of security and access control} - When we think of a personal office we assume it is always safe, yet during the time we are away the office may be opened by the cleaning staff, lock-piked or access by someone that should not have access to it.  
+\item \textbf{Lack of security and access control} - When we think of a personal office we assume it is always safe, yet during the time we are away the office may be opened by someone that should not have access to it.  
 \end{itemize}
 
 
@@ -35,13 +35,11 @@ The proposed solution must satisfy the following set of requirements:
   
   \item \textbf{Isolation:} The control and automation of the offices must be independent and work regardless the state of the rest of the system.
   
-  \item \textbf{Multiuser:} The system must be able to maintain multiple user preferences, in the eventuality of multiple users occupying the room at the same time the system must be capable of adjusting the ambient settings to minimize their discomfort. 
-  
   \item \textbf{Manual control:} People expect to be some form of manual control over the room such a light switch or thermostat, the system must provide a graphical interface embedded in the wall that allows manual control of some basic services such as HVAC and lighting.
   
-  \item \textbf{Remote control:} It should provide a authenticated user status and remote control over the room's services, by the use of an Android app.
+  \item \textbf{Remote control:} It should provide a authenticated user status and remote control over the room's services, by the use of an user app.
   
-  \item \textbf{Automate tasks:} The user should be able to configure recipes where tasks are triggered by a single or multiple events (sensor reading, user location, time).
+  \item \textbf{Automation:} The user should be able to create personalized tasks (turn on lights, turn off the \ac{HVAC} system) that are triggered by a single or multiple events (sensor reading, user location, time).
   
   \item \textbf{Load-aware:} The system must be able to adjust services such as HVAC and lighting in a energy efficient way.
   
@@ -49,9 +47,9 @@ The proposed solution must satisfy the following set of requirements:
   
   \item \textbf{Motion aware:} It must capable of detecting if someone enters the line of sight. It must also provide the means to ignore part of the room where motion can be ignored because of false positives. For example a window with line of sight to the street by can be ignored.
   
-  \item \textbf{Energy Efficient:} The system must be able to adjust it's own energy footprint during long periods when no occupant is within the room, such as nigh time.  
+%  \item \textbf{Energy Efficient:} The system must be able to adjust it's own energy footprint during long periods when no occupant is within the room, such as nigh time.  
   
-  \item \textbf{Cost:} The hardware cost must be affordable for small/medium businesses in order for the monetary return time for the energy saving not be too long, thus be more attractive to office owners.
+  \item \textbf{Cost:} The hardware cost must be affordable for small/medium businesses for the monetary return time in the energy savings not be too long.
   
   \item \textbf{Usability:} There should be a visual appealing \ac{UI}, simple controls for lighting and heating functions.
     
@@ -65,11 +63,11 @@ The proposed solution must satisfy the following set of requirements:
 \section{Thesis Contribution}
 \label{section:contribution}
 
-The following list presents the expected contributions of this work:
+The following list presents the expected contributions of this thesis:
 
 \begin{itemize}
     \item Hardware Architecture - Design of the architecture with all the hardware components needed and the network interfaces for communication.
-    \item Software Architecture - Design of the applications to run on the target hardware, that offers manual and remote control of the HVAC and lighting systems. As well as intrusion detection and notification.
+    \item Software Architecture - Design of the applications to run on the target hardware, that offers manual and remote control of the \ac{HVAC} and lighting systems. As well as intrusion detection and notification.
     \item An Android based BAS, creating a proof of concept of integrating Android devices as part of an automation system.
     \item An Android based security system, capable of detecting intrusion detection and monitoring and notification capabilities.
     
@@ -81,8 +79,8 @@ This document describes the research and work developed and it is organized as f
 \begin{itemize}
 \item \textbf{Chapter \ref{chapter:introduction}} presents the motivation, background and proposed solution.
 \item \textbf{Chapter \ref{chapter:relatedwork}} describes the previous work in the field.
-\item \textbf{Chapter \ref{chapter:architecture}} describes the system requirements and the architecture of GBus.
-\item \textbf{Chapter \ref{chapter:implementation}} describes the implementation of GBus and the technologies chosen.
+\item \textbf{Chapter \ref{chapter:architecture}} describes the system requirements and the architecture of BASA.
+\item \textbf{Chapter \ref{chapter:implementation}} describes the implementation of BASA and the technologies chosen.
 \item \textbf{Chapter \ref{chapter:evaluation}} describes the evaluation tests performed and the corresponding results.
 \item \textbf{Chapter \ref{chapter:conclusion}} summarizes the work developed and future work.
 \end{itemize}

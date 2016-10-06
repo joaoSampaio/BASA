@@ -4,7 +4,7 @@
 This chapter addresses the main decisions taken in order to implement the hardware and software architectures presented in Chapter 3.
 
 
-\section{Hardware Architecture}
+\section{Hardware Architecture}\label{chapter:hardware_arch_imp}
 
 
 The next sections provide the implementation choices for the hardware architecture. As shown in Figure~\ref{architecture_system} we require tablet to run the HUB app, HVAC control, lighting control and a \ac{BLE} beacon for user location tracking.
@@ -256,7 +256,7 @@ With our project we aimed to give the user high control and flexibility over the
 
 The recipes contain a list of triggers and actions. A recipe can have one or multiple triggers, when there are multiple triggers we use the logical AND operator, all the triggers must be true in order for the recipe to be triggered.
 
-There are six triggers available:
+There are seven triggers available:
 
 \begin{itemize}
   \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
@@ -265,6 +265,7 @@ There are six triggers available:
   \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
   \item \textbf{User location:} Allows the user to choose from a list of different scenarios ("User is inside office", "User is inside building", "User leaves office", "User leaves building", "User arrives at office", "No user inside building", "No user inside office" and "User arrives at building").
   \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
+  \item \textbf{Light state:} This trigger allows the user to trigger an action when the lights are in specific state.
   
 \end{itemize}
 
@@ -586,28 +587,28 @@ The \textbf{settings screen} allows the user to change:
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/create_recipe}
-\caption{Temperature screen.}
+\caption{Create recipe screen.}
 \label{create_recipe}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_trigger}
-\caption{Temperature screen.}
+\caption{Add trigger screen.}
 \label{screen_triggers}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_actions}
-\caption{Temperature screen.}
+\caption{Select action screen.}
 \label{screen_actions}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_completed_recipe}
-\caption{Temperature screen.}
+\caption{Final recipe creation screen.}
 \label{screen_completed_recipe}
 \end{figure}
 

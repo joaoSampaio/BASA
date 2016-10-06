@@ -7,7 +7,6 @@ public class EventMotion extends Event {
     private boolean detected;
     private int secondsNoMovement;
 
-
     public EventMotion(boolean detected) {
         super(MOTION);
         this.detected = detected;

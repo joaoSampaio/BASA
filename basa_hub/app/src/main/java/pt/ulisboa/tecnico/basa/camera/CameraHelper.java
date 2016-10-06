@@ -413,7 +413,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 //            }
 
 
-            processCameraFrame(data);
+            //processCameraFrame(data);
 
         }
     };
@@ -422,13 +422,13 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private void processCameraFrame(byte[] data){
         if(timeOld == 0){
             timeOld = System.currentTimeMillis();
-            timeOldVideo = System.currentTimeMillis();
+//            timeOldVideo = System.currentTimeMillis();
         }
         timeCurrent = System.currentTimeMillis();
 
-        if((timeCurrent - timeOldVideo)/1000 >= 0.2){
-
-        }
+//        if((timeCurrent - timeOldVideo)/1000 >= 0.2){
+//
+//        }
         long elapsedTimeNs = timeCurrent - timeOld;
         if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
             timeOld = timeCurrent;

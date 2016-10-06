@@ -17,6 +17,9 @@ public class User {
     private boolean enableFirebase;
     private boolean enableTracking;
 
+    private boolean enableTestRoomLocation;
+    private boolean enableTestBuildingLocation;
+
     public String getUserName() {
         return userName;
     }
@@ -90,5 +93,19 @@ public class User {
         }
     }
 
+    public boolean isEnableTestRoomLocation() {
+        return enableTestRoomLocation;
+    }
 
+    public void setEnableTestRoomLocation(boolean enableTestRoomLocation) {
+        this.enableTestRoomLocation = enableTestRoomLocation;
+    }
+
+    public boolean isEnableTestBuildingLocation() {
+        return enableTestBuildingLocation;
+    }
+
+    public void setEnableTestBuildingLocation(boolean enableTestBuildingLocation) {
+        this.enableTestBuildingLocation = enableTestBuildingLocation;
+    }
 }

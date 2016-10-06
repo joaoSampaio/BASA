@@ -45,6 +45,18 @@
 
     </FrameLayout>
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Room status: Unoccupied"
+        android:layout_alignParentRight="true"
+        android:id="@+id/textViewOccupant"
+        android:textColor="#dd0000"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_above="@+id/camera_preview" />
+
     <View
         android:layout_width="20dp"
         android:layout_height="20dp"

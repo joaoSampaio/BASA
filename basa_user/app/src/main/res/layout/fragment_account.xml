@@ -7,147 +7,201 @@
 
     <include layout="@layout/layout_toolbar" android:id="@+id/toolbar_layout"></include>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_layout"
-        android:background="@color/material_grey_100"
-        android:divider="?android:attr/listDivider"
-        android:showDividers="middle|beginning|end">
+        android:layout_above="@+id/logout"
+        android:id="@+id/scrollView2" >
 
-
-        <RelativeLayout
-            style="@style/ListItemBASA"
-            android:layout_height="wrap_content"
-
-            >
-
-            <TextView
-                android:id="@+id/user_photo"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/circle"
-                android:text="JS"
-                android:textColor="@color/white"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_centerHorizontal="true" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            style="@style/ListItemBASA"
-            android:id="@+id/editUsername">
-
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Username"
-                android:id="@+id/textViewName"
-                android:layout_alignParentTop="false"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp" />
 
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="joao"
-                android:id="@+id/textViewEditName"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/primary_dark_material_light" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            style="@style/ListItemBASA"
-            android:id="@+id/editEmail">
-
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:id="@+id/textViewEmail"
-                android:layout_alignParentTop="false"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp" />
-
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:id="@+id/textViewEditEmail"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/primary_dark_material_light" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            style="@style/ListItemBASA"
-            android:id="@+id/enableFirebase">
-
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Firebase"
-                android:id="@+id/textFirebase"
-                android:layout_alignParentTop="false"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp" />
-
-            <CheckBox
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkboxFirebase"
-                android:clickable="false"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/primary_dark_material_light" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            style="@style/ListItemBASA"
-            android:id="@+id/enableTracking">
-
-            <TextView
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Track location"
-                android:id="@+id/textTracking"
-                android:layout_alignParentTop="false"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp" />
-
-            <CheckBox
-                style="@style/SettingsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:id="@+id/checkboxTracking"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/primary_dark_material_light" />
-        </RelativeLayout>
+                android:background="@color/material_grey_100"
+                android:divider="?android:attr/listDivider"
+                android:showDividers="middle|beginning|end">
 
 
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:layout_height="wrap_content"
+
+                    >
+
+                    <TextView
+                        android:id="@+id/user_photo"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/circle"
+                        android:text="JS"
+                        android:textColor="@color/white"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_centerHorizontal="true" />
+
+                </RelativeLayout>
 
 
-    </LinearLayout>
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/editUsername">
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Username"
+                        android:id="@+id/textViewName"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="joao"
+                        android:id="@+id/textViewEditName"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/primary_dark_material_light" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/editEmail">
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Scan WiFi"
+                        android:id="@+id/textViewEmail"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/enableFirebase">
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Firebase"
+                        android:id="@+id/textFirebase"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <CheckBox
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkboxFirebase"
+                        android:clickable="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/primary_dark_material_light" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/enableTracking">
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Track location"
+                        android:id="@+id/textTracking"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <CheckBox
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:id="@+id/checkboxTracking"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/primary_dark_material_light" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/enableTestLocationRoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test Office"
+                        android:id="@+id/textView20"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <CheckBox
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:id="@+id/checkBoxTestRoom"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/primary_dark_material_light" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    style="@style/ListItemBASA"
+                    android:id="@+id/enableTestLocationBuilding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test Office"
+                        android:id="@+id/textView23"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp" />
+
+                    <CheckBox
+                        style="@style/SettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:id="@+id/checkBoxTestBuilding"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/primary_dark_material_light" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -155,6 +209,7 @@
         android:divider="?android:attr/listDivider"
         android:showDividers="middle|beginning|end"
         android:layout_alignParentBottom="true"
+        android:id="@+id/logout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 

@@ -2,11 +2,59 @@
 \label{chapter:evaluation}
 
 \section{Tests Objectives}
-Nesta secção devem descrever os objectivos dos testes que realizaram, explicitando
-a razão pela qual os testes são relevantes face à validação das contribuições da
-tese.
+
+The test conducted were chosen because they have direct contribution with this thesis goals.
+
+Our system leverages user detection to improve occupant comfort and reduce wasted energy and because of that we require the user detection to have medium/low accuracy in building detection time and high accuracy in room detection.
+
+
+
+%In order to evaluate the developed system, several tests were performed. Section 5.1 starts by describing
+%the test scenario. Next, in Section 5.2 the detailed description of each test is presented. Finally,
+%Section 5.3 presents the results of the tests.
 
 \section{Tests Scenarios}
+
+
+
+All the tests were conducted in real scenarios inside a office of the IST - Taguspark campus. They
+were executed using the hardware described in Section~\ref{hardware_arch_imp} and one Moto G3 phone running the user app.
+
+
+\subsection{User detection - Room}
+
+
+
+In order to test the reaction time of user detection in the office, a series of measurements
+were performed. The test consists in observing the time the user app takes to detect the Estimote beacon present inside the office. The user will start walking from just outside the beacon range and walk normally to the office door.
+
+The measurements will be performed with the beacon device near the door in order to increase signal range outside the office. The device used will be a Moto G3 Android phone with BT support up to version 4.0 .
+For testing purposes the user app is set to vibrate when it near the beacon in order for us to know if it found the beacon, a chronometer will be used to determine the reaction time. The test will result in at least a set of 25 measurements in order to determine a meaningful average of the reaction time of the system.
+
+
+\subsection{User detection - Building}
+
+In order to test the reaction time of user detection in the building, a series of measurements
+were performed. The test consists in observing the time the user app takes to detect phone is inside the building. The user will start walking from the front door to the building and normally to the office door.
+
+The device used will be a Moto G3 Android phone with WiFi support.
+For testing purposes the user app is set to vibrate when it is inside the building, a chronometer will be used to determine the reaction time. The test will result in at least a set of 25 measurements in order to determine a meaningful average of the reaction time of the system.
+
+
+
+\subsection{Motion detection}
+
+To test the motion detection implementation a series of measurements were performed to test the algorithm. 
+
+
+\subsection{Temperature and Luminosity}
+
+\subsection{Hub server load}
+
+
+
+
+
 Nesta secção devem descrever o cenário de teste, incluindo, por exemplo, a
 definição da rede, o modelo de tráfego, as características de cada elemento....
 A descrição deve ser feita, de forma a que os testes possam ser reprodutíveis.

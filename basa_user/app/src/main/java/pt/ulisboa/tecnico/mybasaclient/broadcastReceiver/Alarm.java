@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -84,6 +85,13 @@ public class Alarm extends BroadcastReceiver
                         if(mac.toLowerCase().equals(result.BSSID.toLowerCase())){
                             Log.d(TAG, ": is in building sending msg...");
                             //enviar mensagem
+
+                            if(AppController.getInstance().getLoggedUser().isEnableTestBuildingLocation()){
+                                Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 500 milliseconds
+                                v.vibrate(2000);
+                            }
+
                             new UpdateLocationService(device, new UserLocation(true, UserLocation.TYPE_BUILDING), new CallbackFromService() {
                                 @Override
                                 public void success(Object response) {}

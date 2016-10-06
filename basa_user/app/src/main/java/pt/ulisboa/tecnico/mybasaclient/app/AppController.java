@@ -4,6 +4,7 @@ import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.estimote.sdk.BeaconManager;
@@ -101,6 +102,15 @@ public class AppController extends Application {
                                     if (beaconId.toLowerCase().equals(eddy.namespace.toLowerCase())) {
                                         //enviar mensagem
                                         Log.d(TAG, ": is near office sending msg...");
+
+                                        if(getLoggedUser().isEnableTestRoomLocation()){
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 500 milliseconds
+                                            v.vibrate(2000);
+                                        }
+
+
+
                                         new UpdateLocationService(device, new UserLocation(true, UserLocation.TYPE_OFFICE), new CallbackFromService() {
                                             @Override
                                             public void success(Object response) {}

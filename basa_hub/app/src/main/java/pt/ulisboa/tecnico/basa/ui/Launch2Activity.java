@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
@@ -48,6 +49,7 @@ import pt.ulisboa.tecnico.basa.camera.CameraBasa;
 import pt.ulisboa.tecnico.basa.camera.CameraHelper;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
+import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.ui.setup.MainSetupActivity;
 import pt.ulisboa.tecnico.basa.util.ClapListener;
@@ -85,7 +87,8 @@ public class Launch2Activity extends FragmentActivity implements
     private static final int RC_SIGN_IN = 9001;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseHelper helper = null;
-
+    private TextView textViewOccupant;
+    private InterestEventAssociation interestMotion;
     private Handler handler;
     private Runnable cameraRun = new Runnable() {
         @Override
@@ -183,6 +186,7 @@ public class Launch2Activity extends FragmentActivity implements
 
     private void initUI(){
         // Instantiate a ViewPager and a PagerAdapter.
+        textViewOccupant = (TextView)findViewById(R.id.textViewOccupant);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -353,6 +357,7 @@ public class Launch2Activity extends FragmentActivity implements
 
     }
 
+
     @Override
     public void onResume(){
         super.onResume();
@@ -377,15 +382,43 @@ public class Launch2Activity extends FragmentActivity implements
             AppController.getInstance().beaconStart();
             Intent intent = new Intent(this, ServerService.class);
             startService(intent);
+
+
+
+
+
+//            interestMotion = new InterestEventAssociation(Event.MOTION, new EventManager.RegisterInterestEvent() {
+//                @Override
+//                public void onRegisteredEventTriggered(Event event) {
+//                    if (event instanceof EventMotion) {
+//                        EventMotion motion = (EventMotion)event;
+//
+//                    }
+//                }
+//            }, 0);
+//            basaManager.getEventManager().registerInterest(interestMotion);
+
         }
     }
 
+
+    public void setDetectedTest(boolean detected){
+        Log.d("motion", "motion->" + detected);
+        if(textViewOccupant != null)
+            textViewOccupant.setText(detected? "Room status: Motion detected" : "Room status: Unoccupied");
+    }
 
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("app", "onPause activity");
+
+//        if(interestMotion != null){
+//            basaManager.getEventManager().removeInterest(interestMotion);
+//        }
+
+
         if(handler != null)
             handler.removeCallbacks(cameraRun);
 

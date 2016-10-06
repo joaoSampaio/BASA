@@ -33,9 +33,10 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
     View rootView;
     Toolbar toolbar;
     User user;
-    CheckBox checkboxFirebase, checkboxTracking;
+    CheckBox checkboxFirebase, checkboxTracking, checkBoxTestRoom, checkBoxTestBuilding;
 
-    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out, R.id.enableFirebase, R.id.enableTracking};
+    private final static int[] CLICK = {R.id.editUsername, R.id.editEmail , R.id.sign_out,
+            R.id.enableFirebase, R.id.enableTracking, R.id.enableTestLocationRoom, R.id.enableTestLocationBuilding};
 
     public AccountFragment() {
         // Required empty public constructor
@@ -87,6 +88,13 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
 
         checkboxTracking = (CheckBox) rootView.findViewById(R.id.checkboxTracking);
         checkboxTracking.setChecked(user.isEnableTracking());
+
+        checkBoxTestRoom = (CheckBox) rootView.findViewById(R.id.checkBoxTestRoom);
+        checkBoxTestBuilding = (CheckBox) rootView.findViewById(R.id.checkBoxTestBuilding);
+
+        checkBoxTestRoom.setChecked(user.isEnableTestRoomLocation());
+        checkBoxTestBuilding.setChecked(user.isEnableTestBuildingLocation());
+
 
         for(int id : CLICK)
             rootView.findViewById(id).setOnClickListener(this);
@@ -144,7 +152,6 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
                 break;
             case R.id.editEmail:
 
-
                 ((MainActivity)getActivity()).openPage(Global.DIALOG_DEVICE_SCAN_WIFI);
 
 
@@ -166,6 +173,20 @@ public class AccountFragment extends DialogFragment implements View.OnClickListe
                 checkboxFirebase.setChecked(user.isEnableFirebase());
                 Log.d("arc", "depois user.isEnableFirebase():"+user.isEnableFirebase());
                 break;
+
+            case R.id.enableTestLocationRoom:
+
+                AppController.getInstance().beaconStart();
+
+                user.setEnableTestRoomLocation(!user.isEnableTestRoomLocation());
+                checkBoxTestRoom.setChecked(user.isEnableTestRoomLocation());
+                break;
+
+            case R.id.enableTestLocationBuilding:
+                user.setEnableTestBuildingLocation(!user.isEnableTestBuildingLocation());
+                checkBoxTestBuilding.setChecked(user.isEnableTestBuildingLocation());
+                break;
+
         }
     }
 }
