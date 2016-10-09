@@ -23,10 +23,14 @@ were executed using the hardware described in Section~\ref{hardware_arch_imp} an
 
 \subsection{User detection - Room}
 
+3 tipos de teste:
+tempo que demora a detectar dentro do gabinete e se o tempo é aceitavel para ligar luzes ou ar condicionado;
+fazer mediçoes do range do beacon para saber se no gabinete ao lado ele acusa erradamente que estou no gabinete.
 
 
-In order to test the reaction time of user detection in the office, a series of measurements
-were performed. The test consists in observing the time the user app takes to detect the Estimote beacon present inside the office. The user will start walking from just outside the beacon range and walk normally to the office door.
+
+
+In order to test the reaction time of user detection in the office, a series of measurements were performed. The test consists in observing the time the user app takes to detect the Estimote beacon present inside the office. The user will start walking from just outside the beacon range and walk normally to the office door.
 
 The measurements will be performed with the beacon device near the door in order to increase signal range outside the office. The device used will be a Moto G3 Android phone with BT support up to version 4.0 .
 For testing purposes the user app is set to vibrate when it near the beacon in order for us to know if it found the beacon, a chronometer will be used to determine the reaction time. The test will result in at least a set of 25 measurements in order to determine a meaningful average of the reaction time of the system.
@@ -34,8 +38,11 @@ For testing purposes the user app is set to vibrate when it near the beacon in o
 
 \subsection{User detection - Building}
 
-In order to test the reaction time of user detection in the building, a series of measurements
-were performed. The test consists in observing the time the user app takes to detect phone is inside the building. The user will start walking from the front door to the building and normally to the office door.
+se houver tempo ter X pessoas com a app instalada para medir ao fim de 3 dias se os utilizadores estavam no edificio às horas registadas.
+Ou medir o tempo que demora ate detectar que que esta no edificio.
+
+
+In order to test the reaction time of user detection in the building, a series of measurements were performed. The test consists in observing the time the user app takes to detect phone is inside the building. The user will start walking from the front door to the building and normally to the office door.
 
 The device used will be a Moto G3 Android phone with WiFi support.
 For testing purposes the user app is set to vibrate when it is inside the building, a chronometer will be used to determine the reaction time. The test will result in at least a set of 25 measurements in order to determine a meaningful average of the reaction time of the system.
@@ -44,14 +51,31 @@ For testing purposes the user app is set to vibrate when it is inside the buildi
 
 \subsection{Motion detection}
 
-To test the motion detection implementation a series of measurements were performed to test the algorithm. 
+(testar com pessoas diferentes)
+
+(mostrar as imagens com as diferenças)
+
+To test the motion detection a series of measurements were performed to test the algorithm. The test consists in a person walking in front of the Hub camera at different speeds from the door to a desk. This test will show if our system is able to detect motion when people enter the office and if it can be tricked and produce wrong negatives.
+
+
 
 
 \subsection{Temperature and Luminosity}
 
+medir a luminosidade e ligar uma luz e mostrar o grafico da alteração.
+
+
 \subsection{Hub server load}
 
+(stress test)
 
+To test our system web-server a series of measures were performed. This test consists in making several concurrent \ac{HTTP} requests.
+
+ concurring requests to our \ac{API} 
+
+
+\subsection{Automation}
+testes com utilizadores a criar receitas
 
 
 
