@@ -10,6 +10,8 @@ Nowadays, consumer smart home systems are becoming more popular, the ability to 
 \label{section:background}
 Nowadays, home and office building are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in the office building, where the occupant isn't usually the one paying (directly) the bills, there is no incentive to reduce electricity consumption.
 
+More and more companies are investing in the smart home/building market. Big names like Phillips, Google, Apple and many other released products aimed at smart building market. These products do what they advertise but have high monetary cost. Each light bulb, sensor and display raise the overall cost of these solutions.
+
 
 Current solutions suffer from a set of problems:
 \begin{itemize}
@@ -27,17 +29,41 @@ Current solutions suffer from a set of problems:
 (falar de como a solução assenta em software usando dispositivos ja existentes, falar dos benificios da solução, falar da populariadade de sistemas semelhantes com empresas como a google a investirem na area.)
 
 
-The goal of this work is to implement a system capable of reducing an office power consumption, give its occupants higher levels of comfort and the ability to remotely access certain functionalities of the office.
+In this thesis, we preset a system which runs in existing Android devices to provide a \ac{BAS} capable of managing a room. 
 
+Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user with a \ac{IFTT} system (trigger actions based on events) including voice recognition, for a personalize smart office experience. Finally it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
 
-The proposed solution must satisfy the following set of requirements:
+The below listed examples represent some automation actions possible with our \ac{IFTT} system that contribute to decrease energy consumption and increase user comfort:
 
 \begin{itemize}
-  \item \textbf{Scalable:} The system must be horizontally scalable and offer rapid deployment of new nodes.
+\item If no user is present in the office then turn off the lights.
+\item If user arrives at building then set temperature to 24 ºC (pre-heating). 
+\item If user arrives at office then say "Welcome back, I'm always happy to see you again.".
+\item If lights are turned on and illuminance is above 120 lux then turn off the lights. (If there is  sunshine and the lights are on, we turn them off).
+\item If user says "turn on lights", then the lights turn on. (Example of voice recognition)
+\item If no user is present in office and motion is detected then say "Hi! You are being recorded, smile!".
+\end{itemize}
+
+The above example are not hard-coded into the system. They are created by the user, this offer great flexibility to our system to provide a personalized feel to the room.
+
+The system is composed of two mobile applications (Hub and User apps) and other auxiliary devices to interact with the existing lighting and \ac{HVAC} systems. The Hub app manages the office and the User app work provides user detection and allows the user to remotely control the office and security system. To control the lights we used a already built solution, a smart light switch (25 euros), to interact with the \ac{HVAC} system we had to use a Arduino with built-in \ac{WiFi} and relays.
+
+Great care was taken developing the user app to make sure the application did not drain to much of phone's battery. While other application that require user detection keep \ac{CPU} always running and background scan the environment, our approach is based in the phone's events. When the user connects to a \ac{WiFi} network we start our user detection algorithm, if the user is not in the building with the Hub we stop the scanning. 
+
+The system implementation is open-source and allows home and office owners to use existing Android phones or tablets to turn a regular room into a smart room. For a system capable of controlling just the lights our solution works out of the box as long as the smart light switch is installed. To control the \ac{HVAC} system the user can either assemble an Arduino controller like our solution, or in the future it is possible to code in other devices like thermostats with \ac{WiFi}. 
+
+Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTT} and security system, in the future other controllable devices, triggers and actions can be added to improve the system.
+
+
+
+We created our system with the following requirements in mind:
+
+\begin{itemize}
+  \item \textbf{Rapid deployment:} The system must offer rapid setup and deployment new Hub instances.
   
   \item \textbf{Isolation:} The control and automation of the offices must be independent and work regardless the state of the rest of the system.
   
-  \item \textbf{Manual control:} People expect to be some form of manual control over the room such a light switch or thermostat, the system must provide a graphical interface embedded in the wall that allows manual control of some basic services such as HVAC and lighting.
+  \item \textbf{Manual control:} People expect to be some form of manual control over the room such a light switch or thermostat, the system must provide a graphical interface embedded in the wall that allows manual control of some basic services such as \ac{HVAC} and lighting.
   
   \item \textbf{Remote control:} It should provide a authenticated user status and remote control over the room's services, by the use of an user app.
   
