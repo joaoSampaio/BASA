@@ -10,12 +10,12 @@ Subsection \ref{ssec:num2} follows with a description of some general purpose co
 
 
 
-\subsection{Building Automation Protocols} \label{ssec:num3}
+\section{Building Automation Protocols} \label{ssec:num3}
 
 Building automation systems is a distributed control systems capable of monitoring and controlling a multitude of individual systems in a building. Usually they are used to control a building's heating, ventilation and air conditioning (HVAC), lighting, security and access control system (SAC).
 The objectives of building automation are the reduction in energy consumption, operating cost, improvement of occupant comfort, and efficient operation of building systems.
 
-\subsubsection{Zigbee}\label{zigbee_sub} \mbox{}\\
+\subsection{Zigbee}\label{zigbee_sub} \mbox{}\\
 
 ZigBee \cite{livro_zigbee} is a short-range wireless communication protocol that uses a mesh-network in which the nodes are able to self organize, it  provides efficient ways to integrate a large number of wireless devices in an automation scenario. ZigBee is a wireless personal area network (WPAN) and the devices may operate in several frequency bands (868 MHz, 915 MHz and 2.4 GHz). ZigBee main target are battery powered devices where low data rate, low cost and long battery life are the main requirements.
 
@@ -79,7 +79,7 @@ In another project an Android phone communicated wirelessly with a computer (act
 Commercially, Gateways\footnote{http://www.telegesis.com/products/zigbee-gateway-consumer-access-device/}$^{,}$\footnote{XBEE ZIGBEE GATEWAY}$^{,}$\footnote{Rainforest EAGLE Ethernet ZigBee Gateway} are used to communicate with ZigBee devices from a non ZigBee device, for instance an Android mobile device could interact with a ZigBee device by communicating with a ZigBee Wifi Gateway, the gateway would then relay the Android device messages to the ZigBee device.
 
 
-\subsubsection{BACnet}\mbox{}\\
+\subsection{BACnet}\mbox{}\\
 
 
 BACnet (Building Automation and Control Network) \cite{livro_automation,bacnet:artigo1,bacnet:bib,livro_automation2} is a standardized data communication protocol, evolved from the need for a standardized data communication protocol that would enable the various automation and control components in a building to communicate with each other, ensuring interoperability and manufacturer independence.
@@ -121,7 +121,7 @@ BACnet defines 40 message types (services), that are divided into six categories
 
 
 
-\subsubsection{LonWorks}\mbox{}\\
+\subsection{LonWorks}\mbox{}\\
 
 LonWorks \cite{livro_automation2,livro_automation} is a networking solution for building automation and control networks. It is a proprietary solution developed by the American company Echelon. It can operate in both as a centralized building controller as well as in decentralized building control components.
 LonWorks uses the LonTalk protocol which is a layered, packet-based, peer-to-peer communications protocol. LonTalk was designed to support many communication media and wiring topologies. Transmition media include twisted-pair, coaxial, and fiber-optic cable as well as radio systems that allow scalable transmissions speeds of up to 1.25 Mbit/s.
@@ -171,7 +171,7 @@ sender is authorized to send that message. This is implemented by distributing 4
 %LonTalk \cite{livro_automation2}is a communication protocol developed by the company Echelon as part of the family of LonWorks protocols. LonTalj was designed to support many communication media and wiring topologies. Transmition media include twisted-pair, coaxial, and fiber-optic cable as well as radio systems that allow scalable transmissions speeds of up to 1.25 Mbit/s.
 
 
-\subsubsection{Z-Wave}\label{zwave_sub}\mbox{}\\
+\subsection{Z-Wave}\label{zwave_sub}\mbox{}\\
 
 
 Z-wave \cite{zwave}\cite{zigbeeAndZWave} is a proprietary wireless communication protocol, it allows interoperability between different manufacturers products. It is designed for control, monitoring and status reading application in residential and commercial environments.
@@ -183,7 +183,7 @@ The Z-wav mesh enables any node to talk to other adjacent nodes directly or indi
 
 Primarily focused on monitoring and control functions in the home and  commercial facilities. Some solutions include lighting control, security, climate control, smoke detectors, door locks, security sensors, appliances, and remote controls.
 
-\subsubsection{Summary}\mbox{}\\
+\subsection{Summary}\mbox{}\\
 
 The examined BAS were designed with low power consumption in mind. Most solutions are not interoperable between each other: BACnet can use the LonWorks protocol LonTalk to send it's messages but both solutions can't operate with each other's compatible devices. The exceptions are ZigBee and BACNet, as both companies have worked together to ensure products can be designed to benefit from ZigBee's low-power, mesh wireless networking technology as well as BACnet's BAS data model and communications protocol. 
 
@@ -192,18 +192,18 @@ Platforms such as BAcNet and LonWorks require specialized professionals as well 
 
 
 
-\subsection{Home Automation Systems} \label{ssec:num1}
+\section{Home Automation Systems} \label{ssec:num1}
 
 Home Automation is the Building Automation equivalent for the residential house.
 
 The popularity of home automation has been increasing in recent years due to higher affordability and simplicity. Home automation  may include centralized control of lighting, HVAC (heating, ventilation and air conditioning), appliances, security locks of gates and doors and other systems.
 Vendor solutions often rely in wireless technologies to connect the various devices, thus eliminating the need to rewire the house.
 
-\subsubsection{Commercial Home/Office Automation Products}
+\subsection{Commercial Home/Office Automation Products}
 
 
 
-\paragraph{Philips hue}\mbox{}\\
+\subsubsection{Philips hue}\mbox{}\\
 
 
 
@@ -219,12 +219,12 @@ Figure \ref{fig:zll} illustrates the Philips Hue system, there are three main co
 \label{fig:zll}
 \end{figure}
 
-\paragraph{WINK HUB}\mbox{}\\
+\subsubsection{WINK HUB}\mbox{}\\
 
 Wink Hub is a home automation product developed by Wink\footnote{www.wink.com/}, it provides a unified automation platform capable of working with several different communication protocols: Wi-Fi, Bluetooth, Z-Wave, ZigBee, Lutron ClearConnect, and Kidde's RF-equipped devices.
 As in other home automation solutions, the Wink Hub acts as a central controller being able to interact with the home devices, as well as users mobile apps.
 
-\paragraph{SmartThings}\mbox{}\\
+\subsubsection{SmartThings}\mbox{}\\
 
 Samsung offers a set of wireless SmartThings sensors and power outlet, they integrate with the SmartThings Hub to create a smart house.
 
@@ -239,7 +239,7 @@ Sensors such as the Multi sensor can monitor whether doors, windows, cabinets or
 
 
 
-\subsubsection{Academic Automation Systems}\mbox{}\\
+\subsection{Academic Automation Systems}\mbox{}\\
 
 Several academic home/office automation prototypes have been proposed over the years.
 
@@ -255,7 +255,7 @@ In the mobile app, besides manual buttons to turn on devices there is also voice
 %Small comfort is added by the system, the ability to remotely turning on the air conditioning unit and the knowledge that in case of intrusion or fire we will be notified.
 
 
-\subsubsection{Summary}\mbox{}\\
+\subsection{Summary}\mbox{}\\
 
 The above commercial solutions provide affordable but limited automation. Most home automation solution offer few supported standards. Most products specialize in lighting solutions but also add wireless video cameras, smoke detector and a few other devices. 
 
@@ -270,15 +270,15 @@ No energy savings are achieved and no real increases in occupant comfort are pre
 
 
 
-\subsection{General Purpose, Wireless Communication protocols} \label{ssec:num2}
+\section{General Purpose, Wireless Communication protocols} \label{ssec:num2}
 
 Wireless communication allows the transmission of information over a distance without help of wires, cables or any other forms of electrical conductors. This freedom to connect devices without any physical connection has sparked the interest of the BA industry and standards development organizations, due to its flexibility in adding devices to the network and reduced installation costs. 
 The technologies focused on below are the most used and available wireless technologies whose purpose is not just Building Automation, as seen in Z-Wave and ZigBee (\ref{zwave_sub} and \ref{zigbee_sub} respectively) both of which are wireless technologies. 
 
 
-\subsubsection{Wireless Communications}
+\subsection{Wireless Communications}
 
-\paragraph{Bluetooth (BT)}\mbox{}\\
+\subsubsection{Bluetooth (BT)}\mbox{}\\
 
 Bluetooth is a wireless communication technology standard, IEEE 802.15.1, \cite{std_802.15.1,comunication:bt,comunication:bt_specification}, designed to exchange data over short distances between fixed and mobile devices and build WPAN. Originally develop by Ericsson \footnote{http://www.ericsson.com/} in 1994, it was created as an open standard to allow connectivity and collaboration between disparate products and industries.
 
@@ -302,7 +302,7 @@ BLE devices have a maximum range of 50 meters, the range can be increased by mea
 \end{table}
 
 
-\paragraph{Wireless fidelity (Wi-Fi)}\mbox{}\\
+\subsubsection{Wireless fidelity (Wi-Fi)}\mbox{}\\
 
 Wi-Fi is a WLAN based on the Institute of Electrical and Electronics Engineers' (IEEE) 802.11 standards \cite{IEEE_wifi,std_802.11,report_802.11}. It operates in the 2.4 and 5 Ghz frequency bands and uses CSMA/CA to control the medium access, offering data rates of up to 1.3 Gbp/s with the new IEEE 802.11ac revision.
 To establish a network, one device called station (STA) connects to an other device called an Access Point (AP). An example for STA could be  a mobile device with Wi-Fi capability and the AP the router that usually delivers internet to the mobile device.
@@ -322,7 +322,7 @@ The problem with using HTTP is you can't perform all operation like login or pas
 
 
 
-\paragraph{IEEE 802.15.4}\mbox{}\\
+\subsubsection{IEEE 802.15.4}\mbox{}\\
 
 IEEE 802.15.4 standard\cite{livro_zigbee} specifies the physical layer and media access control for  low-cost and low-rate wireless personal area networks (LR-WPANs).
 There are three frequency bands in the latest version of IEEE 802.15.4: the 868 MHz band is used in Europe, the 915 MHz band is mainly in North America, whereas the 2.4 GHz band is used worldwide.
@@ -351,7 +351,7 @@ The beacon frame is used to synchronize the clock of all the devices within the 
 \end{figure}
 
 
-\subsubsection{Summary}\mbox{}\\
+\subsection{Summary}\mbox{}\\
 
 The examined wireless technologies offer alternatives to the ZigBee and Z-Wave presented previously, technologies like Bluetooth and especially Wi-Fi are used today for a variety of different ends, making both technologies accessible to most consumers.
 
@@ -362,7 +362,7 @@ IEEE 802.15.4 based protocols offer low power wireless communications very attra
 
 
 
-\subsection{Sensors and their application in Automation Systems} \label{ssec:num4}\mbox{}
+\section{Sensors and their application in Automation Systems} \label{ssec:num4}\mbox{}
 
 Sensors such as temperature or motion detection sensors provide information to Automation Systems, allowing them to respond to changes in the environment in which they are deployed. For instance a temperature sensor inside a room is able to relay the room temperature to the Automation System, which depending on the temperature values may turn on or off an air or heating unit to make the room more comfortable to the user.
 Other sensors such as an ambient light sensor, can be used to save energy, for instance in a very bright day if no one is present in the room the blinds can be closed to prevent extra light from heating the room, this keeps the room colder and when the occupant arrives the room would be more comfortable, perhaps there would be no need to use a cooling unit saving in power costs.
@@ -370,7 +370,7 @@ Other sensors such as an ambient light sensor, can be used to save energy, for i
 
 
 
-\subsubsection{Sensors available in Android tablet/phone devices}\mbox{}\\
+\subsection{Sensors available in Android tablet/phone devices}\mbox{}\\
 
 Sensor data is important for an Automation System as seen in the above examples. Regarding to this thesis main objective, the use of an Android device such as a tablet to act an a Building Automation Component, the following paragraphs provide a description of the sensors available in an Android mobile device \cite{android:sensors} and how we can leverage these sensors in order to build our automation system.
 
@@ -392,9 +392,9 @@ Furthermore an Android tablet/phone provides a camera, microphone and speakers. 
 
 
 
-\subsubsection{Sensor application in Automation Systems}\mbox{}\\
+\subsection{Sensor application in Automation Systems}\mbox{}\\
 
-\paragraph{Occupancy Detection}\label{ocupacy_detection}\mbox{}\\
+\subsubsection{Occupancy Detection}\label{ocupacy_detection}\mbox{}\\
 
 Human behavior influences the amount of energy a building requires. Depending on the occupant behavior, the building's energy cost can increase or decrease by one-third of its design performance \cite{ocupancy2}. 
 By knowing and tracking when a room is occupied, we can provide the system with relevant information that in turn my help in taking important actions such as switching off the lights if no one is present. 
@@ -409,13 +409,13 @@ Besides the Wi-Fi solution presented before one other alternative could be to us
 
 A camera and image analysis software are able to identify movement between video frames. Noise detection could also provide valuable input to determine occupation, yet it is less reliable as external sounds could induce false positive occupant detection.
 
-\paragraph{Auto Dimming light}\mbox{}\\
+\subsubsection{Auto Dimming light}\mbox{}\\
 
 Some of the light bulbs available in the market can have built-in or external dimming. These lights have the ability to lower their light intensity and save energy.
 By using an Light Sensor to measure the light level of a room and dimming lights it is possible to achieve saving in light energy, a study \cite{sensor_app_lights} showed saving of 10-20\% compared to full lighting by using dimming lights with a restriction that ensured the dimming could not go below 50\%. Saving could go up 16-32\% had the dimming to zero been allowed.
 
 
-\paragraph{Adaptive Heating/Cooling}\label{related:adaptive_heating}\mbox{}\\
+\subsubsection{Adaptive Heating/Cooling}\label{related:adaptive_heating}\mbox{}\\
 
 
 Several studies show room temperature could influence productivity, Olli Seppanen and his co-authors developed an initial quantitative relationship between work performance and temperatures within and above the comfort zone\cite{temperature_survey}. Data collected from nine previous studies show the range of temperature in which people are most productive is between 22\symbol{176}C and 25\symbol{176} C. For temperatures between 25\symbol{176} C and 33\symbol{176} C they developed a model to measure the relationship between decrement in productivity P in \% and
@@ -441,7 +441,7 @@ By using a temperature sensor within the room, the HVAC can be custom suited to 
 \end{figure}
 
 
-\paragraph{Monitoring/Security Systems}\mbox{}\\
+\subsubsection{Monitoring/Security Systems}\mbox{}\\
 
 The sense of security is important. By knowing our home or private work space is being monitored while we are not present we have one less stress factor to worry about.
 In office buildings there are systems with a camera always recording (CCTV)\cite{livro_automation2} and a human monitoring the video stream. There are also other solutions that integrate sensor as well as image processing algorithms\cite{video_survailance1} to detect motion in video frames and warn the owner without the need of human monitoring. 
@@ -449,7 +449,7 @@ In office buildings there are systems with a camera always recording (CCTV)\cite
 
 
 
-\subsubsection{Summary}\mbox{}\\
+\subsection{Summary}\mbox{}\\
 
 Sensors can have important contributes to Building Automation Systems. The above sensor applications can provide higher comfort to the occupants of the building as well as save on energy costs. Comfort can be improved by ubiquitously regulating the building temperature to maximize occupant productivity while at the same time only spending energy when required. Energy costs have a direct relation with occupant behavior: a neglectful occupant will leave the lights on for extensive periods of time even though he is not present. Occupant detection can help save energy costs by switching off lights and devices when they are not needed anymore and energy savings can also be archived by dimming the light intensity when possible. 
 

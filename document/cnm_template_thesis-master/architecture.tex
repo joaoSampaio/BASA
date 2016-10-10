@@ -9,7 +9,7 @@ This section is divided in three subsections: Section~\ref{architecture2} starts
 \section{Architecture Overview}\label{architecture2} 
 
 
-The proposed system consists of two mobile applications, one will be the Hub app that runs in a tablet mounted in the room (could also run in a smartphone but tablets have bigger screens). The other is the User app that the occupant of the room can install to remote control the Hub, allow user detection and video monitoring of the room. The Hub is responsible for the room automation and security systems, collection of sensor data and manual control over the room services.
+The proposed system consists of two mobile applications, one is the Hub app that runs in a tablet mounted in the room (could also run in a smartphone but tablets have bigger screens). The other is the User app that the occupant of the room can install to remote control the Hub, allow user detection and video monitoring of the room. The Hub is responsible for the room automation and security systems, collection of sensor data and manual control over the room services.
 
 
 As represented in Figure \ref{architecture_system}, every Hub is able to work without the presence any User App. The User App is able to interact with several different Hubs.
@@ -33,28 +33,26 @@ Figure~\ref{software1}, describes a top view of the system. In the next sections
 
 \subsection{User App}
 
-The User app runs in the users mobile devices offers remote control over the office services and security as well as provide the Hub with user detection.
+The User app runs in the user mobile device and offers remote control of the lighting, \ac{HVAC} and security systems provided by the Hub. Besides improving user comfort by allowing remote access to the Hub, the user app also helps the Hub with user detection, allowing the system to know when an authorized user is inside the building or room.
 
 
 
 \subsection{Hub App}
 
-The Hub app is responsible for controlling the HVAC and lighting systems in the office, enforcing energy saving policies, improve occupant comfort and provide security monitoring when the user is away from the office.
-It will feature an user interface for manual control over the services provided.
+The Hub app is responsible for controlling the \ac{HVAC} and lighting systems in the office, enforcing energy saving policies, improve occupant comfort and provide security monitoring when the user is away from the office.
 
-
-\textbf{Hub communication} with the User app uses Wi-Fi networks. When inside the building the pre-installed wireless network will be used to enable communication between all components, when outside the building a connection with internet access can be used to remote control the Hub. The Hub can also communicate with external devices using \ac{BT} or \ac{BLE}.
+The main visual features of the Hub application are: a simple \ac{UI} to control the lights and heating/cooling system, an \ac{IFTT} automation system that allows the user to create personalize trigger/action In the background it also provides motion detection and video recording for occasions when the user left the room but movement is detected.
 
 
 \section{Hardware Architecture}\label{architecture3} 
 
 To achieve building automation our solutions requires a tablet to act as a central control unit, a beacon device used for user detection inside the room and two other devices capable of interacting with the lighting and \ac{HVAC} systems.
 
-The tablet is where the Hub app runs. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
+The tablet is where the Hub app is executed. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
 
 The beacon is used for user detection, this will be explained latter in Section~\ref{architecture4}.
 
-To control the lighting and \ac{HVAC} systems we require devices capable of interacting with existing systems and offer a way to remotely control them. These devices can be microcontrollers. A microcontroller allows the digital world to interact with the real world through the use of actuators that convert electric signal into mechanical actions. The microcontroller is connected to the actuators (relay) and is able to switch on/off the lights as well as controlling the HVAC. This component is needed because typically lighting and HVAC systems do not have any type of connectivity other than the electric wires. 
+To control the lighting and \ac{HVAC} systems we require devices capable of interacting with existing systems and offer a way to remotely control them. These devices can be for example microcontrollers. A microcontroller allows the digital world to interact with the real world through the use of actuators that convert electric signal into mechanical actions. The microcontroller is connected to the actuators (relay) and is able to switch on/off the lights as well as controlling the HVAC. This component is needed because typically lighting and HVAC systems do not have any type of connectivity other than the electric wires. 
 
 
 If the room had installed wireless devices that communicate with technologies such as ZigBee or Z-Wave then the microcontroller could be connected to a radio module able to communicate with those wireless technologies such as a xbee module.
@@ -73,7 +71,7 @@ The system requires that the Hub and User App, are able to communicate. They wil
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{Figures/hardware}
+\includegraphics[width=0.9\textwidth]{Figures/arch_hardware}
 \caption{Hardware architecture of the Hub}
 \label{architecture_system}
 \end{figure}
@@ -112,7 +110,7 @@ This is the interface seen in the Hub screen, it will offer:
 
 The Hub app implements a web server offering an \ac{API} that the user app can use to interact. 
 
-The \ac{JSON} standard will be used as the message format. There are libraries capable of converting java object models into JSON, allowing for simple transfer of java models between different the apps. This also means that in the future our system could communicate and be controlled by other devices using the \ac{API}.
+The \ac{JSON} standard is used as the message format. This also means that in the future our system could communicate and be controlled by other devices using the \ac{API}.
 
 \subsubsection{Event Manager}
 The Event Manager offers publish/subscriber service. It allows other manager to register their interest in certain events and when those happen they are notified. There can exists several different types of events: current temperature, motion detected, user detection, etc.

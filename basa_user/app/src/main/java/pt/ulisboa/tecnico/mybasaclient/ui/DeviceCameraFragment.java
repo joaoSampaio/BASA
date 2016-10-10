@@ -339,7 +339,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
 
 
         rootView.findViewById(R.id.action_history).setOnClickListener(this);
-
+        showVideoLayout(false);
 
     }
 
@@ -374,7 +374,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
         if(videoLink != null) {
             contentUri = Uri.parse(videoLink.getUrl());
 
-
+            date.setVisibility(View.VISIBLE);
             date.setText(DateHelper.getDateAgo(videoLink.getCreatedAt()));
             time.setText(DateHelper.getTime(videoLink.getCreatedAt()));
 //        contentUri = Uri.parse("http://www.sample-videos.com/video/mp4/240/big_buck_bunny_240p_5mb.mp4");
@@ -480,6 +480,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
         root.setVisibility(show ? View.VISIBLE : View.GONE);
         imageCamera.setVisibility(!show ? View.VISIBLE : View.GONE);
         textViewLive.setVisibility(!show ? View.VISIBLE : View.GONE);
+        date.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void openHistory(){
@@ -697,7 +698,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         new FirebaseHelper().enableLiveStream(device.getId(), isChecked);
-        if(true){
+        if(isChecked){
 
             onHidden();
             showVideoLayout(false);

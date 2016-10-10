@@ -194,7 +194,7 @@ public class ScanQRCodeFragment extends DialogFragment {
     }
 
     private void onQrCodeDetected(String value){
-        Log.d("qrcode", "onQrCodeDetected:");
+        Log.d("qrcode", "onQrCodeDetected:" + value);
         showLayoutStart(false);
         previewView.enableQRCode(false);
 
@@ -249,6 +249,9 @@ public class ScanQRCodeFragment extends DialogFragment {
 
         }catch (Exception e){
             e.printStackTrace();
+            Toast.makeText(getActivity(), "Invalid QrCode", Toast.LENGTH_SHORT).show();
+            showLayoutStart(true);
+            rootView.findViewById(R.id.re_scan).setVisibility(View.VISIBLE);
         }
     }
 
