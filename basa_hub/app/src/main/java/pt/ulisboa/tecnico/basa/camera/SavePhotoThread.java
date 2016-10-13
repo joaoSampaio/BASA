@@ -55,12 +55,13 @@ public class SavePhotoThread extends Thread {
                 });
 
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                listener.onPhotoBeenSaved(Uri.fromFile(new File(path)));
-            }
-        });
+        if(listener != null)
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onPhotoBeenSaved(Uri.fromFile(new File(path)));
+                }
+            });
 
     }
 

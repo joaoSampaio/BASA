@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -404,6 +406,10 @@ public class Launch2Activity extends FragmentActivity implements
 
     public void setDetectedTest(boolean detected){
         Log.d("motion", "motion->" + detected);
+//        if(detected){
+//            ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+//            toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP,150);
+//        }
         if(textViewOccupant != null)
             textViewOccupant.setText(detected? "Room status: Motion detected" : "Room status: Unoccupied");
     }
