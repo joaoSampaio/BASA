@@ -78,7 +78,8 @@ public class AppController extends Application {
 
             beaconManager = new BeaconManager(getApplicationContext());
 
-            beaconManager.setBackgroundScanPeriod(1000, 4000);
+            beaconManager.setBackgroundScanPeriod(1000, 1000);
+//            beaconManager.setBackgroundScanPeriod(1000, 4000);
             beaconManager.setForegroundScanPeriod(1000, 4000);
 
             timeLastBeaconFound = System.currentTimeMillis();
@@ -106,7 +107,7 @@ public class AppController extends Application {
                                         if(getLoggedUser().isEnableTestRoomLocation()){
                                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                             // Vibrate for 500 milliseconds
-                                            v.vibrate(2000);
+                                            v.vibrate(500);
                                         }
 
 
