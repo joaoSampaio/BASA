@@ -93,23 +93,65 @@ Sempre que possível, ilustrem o cenário de testes com figuras e com tabelas, q
 descrevam sucintamente o modelo.
 
 \section{Test Results}
-Nesta secção devem apresentar os resultados dos testes, quer sobre a forma
-de tabelas, quer sobre a forma de gráficos. As tabelas e os gráficos devem ser
-apresentados e depois analisados, detalhadamente.
-\ldots
 
-Here is an example of a table~\ref{table:simple}.
 
-\begin{table}[!htb]
-  \begin{center}
-  \caption[Table caption shown in TOC]{Table caption}
-    \begin{tabular}{|c|c|}
-      \hline
-      item 1 & item 2 \\
-      \hline
-      item 3 & item 4 \\
-      \hline
-    \end{tabular}
-  \end{center}
-  \label{table:simple}
+\subsection{User detection - Room}
+
+A set of measurements were taken in order to determine the response time the application takes to identify the user's phone is inside the room. Two types of measurements were taken.
+
+In the first the user is inside the room with \ac{BT} turned off, then it was turned on and timer started, column 1 of Table~\ref{eval:room} shows the measurements obtained. 
+
+In the second set of measurements the user starts walking outside the office and opens a unlocked door to the room.
+
+
+\begin{table}[]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\begin{tabular}[c]{@{}l@{}}Time (seconds) to detect user \\ presence in room, when user \\ is already inside\end{tabular} &  \\ \hline
+2.13 &  \\ \hline
+2.23 &  \\ \hline
+2.02 &  \\ \hline
+23.55 &  \\ \hline
+6.65 &  \\ \hline
+11.5 &  \\ \hline
+7.16 &  \\ \hline
+2.36 &  \\ \hline
+2.18 &  \\ \hline
+2.48 &  \\ \hline
+12.4 &  \\ \hline
+2.15 &  \\ \hline
+6.73 &  \\ \hline
+2.18 &  \\ \hline
+11.93 &  \\ \hline
+2.22 &  \\ \hline
+2.12 &  \\ \hline
+16.62 &  \\ \hline
+2.08 &  \\ \hline
+2.23 &  \\ \hline
+\end{tabular}
+\caption{Room detection - evaluation}
+\label{eval:room}
 \end{table}
+
+\subsection{Motion detection}
+
+To test our motion detection algorithm and system, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
+
+Our system was able to correctly identify a person walking inside the room every time. Regarding false positives, they don't seem to be a problem since our system allow the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
+
+
+\begin{table}[]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+ & \begin{tabular}[c]{@{}l@{}}Person 1\\ detection\end{tabular} & \begin{tabular}[c]{@{}l@{}}Person 2\\ detection\end{tabular} & \begin{tabular}[c]{@{}l@{}}Person 3\\ detection\end{tabular} \\ \hline
+Slow walk & 20/20 & 20/20 & 20/20 \\ \hline
+Normal walk & 20/20 & 20/20 & 20/20 \\ \hline
+Run & 20/20 & 20/20 & 20/20 \\ \hline
+\end{tabular}
+\caption{Motion detection tests for three people with different heights, 20 measurements each.}
+\label{eval:motion}
+\end{table}
+
+
