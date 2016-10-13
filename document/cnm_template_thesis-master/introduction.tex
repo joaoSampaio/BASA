@@ -1,16 +1,16 @@
 \chapter{Introduction}
 \label{chapter:introduction}
-Buildings represent a large portion of the total energy consumed. According to the International Energy Agency building represents 32\% of total final energy consumption~\cite{iea}. One way to contribute to reducing the energy consumption is the use of \ac{BAS} to improve their efficiency. Unfortunately, not all buildings are equipped with such systems. Most times these systems offer limited functionality and can only be controlled by the building manager.
+Buildings represent a large portion of the total energy consumed. According to the International Energy Agency, buildings represent 32\% of total final energy consumption~\cite{iea}. One way to contribute to reducing the energy consumption is to use of \ac{BAS} to improve their efficiency. Unfortunately, not all buildings are equipped with such systems. Most times, these systems offer limited functionality and can only be controlled by the building manager.
 
-Human behavior influences the amount of energy a building requires. Depending on the occupant behavior, the building's energy cost can increase or decrease by one-third of its design performance ~\cite{ocupancy2}. Simple actions such as leaving the lighting system always on, even after the occupant has gone home, has an impact on the wasted energy used by the building. The lack of occupant detection systems in buildings prevents further energy savings, by knowing when a room is unoccupied it is possible to shutdown unnecessary electric systems.
+Human behavior influences the amount of energy a building requires. Depending on the occupant behavior, the building's energy cost can increase or decrease by one-third of its design performance ~\cite{ocupancy2}. Simple actions such as leaving the lighting system always on, even after the occupant has gone home, has an impact on the wasted energy used by the building. The lack of occupant detection systems in buildings prevents further energy savings, as by knowing when a room is unoccupied it is possible to shutdown unnecessary electric systems.
 
-Nowadays, consumer smart home systems are becoming more popular, the ability to remote control the house lighting and electric devices is very appealing to consumers. At the same time smart phones and tablets flood the market at very accessible price ranges. 
+Nowadays, consumer smart home systems are becoming more popular. The ability to remote control the house lighting and electric devices is very appealing to consumers. At the same time smart phones and tablets flood the market at very accessible price ranges. 
 
 \section{Background}
 \label{section:background}
-Nowadays, home and office building are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in the office building, where the occupant isn't usually the one paying (directly) the bills, there is no incentive to reduce electricity consumption.
+Nowadays, home and office buildings are responsible for a substantial amount of the electricity consumption. A significant part of that consumption can be controlled by the building occupants. In a household scenario, the occupant is most likely aware of the fact that he must switch off the electronics after they are no longer required as to save in the electric bill. Yet in an office building, where the occupant isn't usually the one paying (directly) the bills, there is less incentive to reduce electricity consumption.
 
-More and more companies are investing in the smart home/building market. Big names like Phillips, Google, Apple and many other released products aimed at smart building market. These products do what they advertise but have high monetary cost. Each light bulb, sensor and display raise the overall cost of these solutions.
+More and more companies are investing in the smart home/building market. Big names like Phillips, Google, Apple and many other released products aimed at the smart building market. These products do what they advertise but have high monetary cost. Each light bulb, sensor and display raise the overall cost of these solutions.
 
 
 Current solutions suffer from a set of problems:
@@ -19,7 +19,7 @@ Current solutions suffer from a set of problems:
 \item \textbf{Limited Flexibility} - Currently installed BAS are not open source and require specialized installation and configuration. Because of that, they are limited to pre-installed functions and have the risk of easily becoming outdated.
 \item \textbf{Limited Customization} - Current solutions do not take in consideration the individual needs of the rooms and occupants they manage. Different rooms can required different luminous and thermal requirements. 
 \item \textbf{Expensive installation} - One problem facing BAS is the cost of the devices and their installation. Some require rewiring  and dedicated conduits. Due to the large costs associated, the sensors and actuators are usually installed in building zones rather then offices.
-\item \textbf{Lack of security and access control} - When we think of a personal office we assume it is always safe, yet during the time we are away the office may be opened by someone that should not have access to it.  
+\item \textbf{Lack of security and access control} - When we think of a personal office we assume it is always safe, yet during the time we are away, the office may be entered by someone that should not have access to it.  
 \end{itemize}
 
 
@@ -30,7 +30,11 @@ Current solutions suffer from a set of problems:
 
 In this thesis, we preset a system which runs in existing Android devices to provide a \ac{BAS} capable of managing a room. 
 
-Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user with a \ac{IFTT} system (trigger actions based on events) including voice recognition, for a personalize smart office experience. Finally it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
+Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user a \ac{IFTT} system (trigger actions based on events) including voice recognition, for a personalized smart office experience. Finally, it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
+
+
+By using a tablet as a \ac{BAS} we are able to reduce the monetary cost of our system in comparison to traditional alternatives. The tablet offers several sensors, access to \ac{WiFi} and \ac{BT} networks, microphone, sound speaker and a touch screen. We are able to leverage the tablet sensors including illuminance, temperature and camera sensor for automation. If the tablet does not have a temperature sensor it is possible to interact with external sensors to overcome the lack of the sensor.
+
 
 The below listed examples represent some automation actions possible with our \ac{IFTT} system that contribute to decrease energy consumption and increase user comfort:
 
@@ -43,22 +47,22 @@ The below listed examples represent some automation actions possible with our \a
 \item If no user is present in office and motion is detected then say "Hi! You are being recorded, smile!".
 \end{itemize}
 
-The above example are not hard-coded into the system. They are created by the user, this offers great flexibility to our system to provide a personalized feel to the room.
+The above examples are not hard-coded into the system. They are created by the user. This ability offers great flexibility to our system to provide a personalized feel to the room.
 
-The system is composed of two mobile applications (Hub and User apps) and other auxiliary devices to interact with the existing lighting and \ac{HVAC} systems. The Hub app manages the office and the User app work provides user detection and allows the user to remotely control the office and security system. To control the lights we used a already built solution, a smart light switch (25 euros), to interact with the \ac{HVAC} system we had to use a Arduino with built-in \ac{WiFi} and relays.
+The system is composed of two mobile applications (Hub and User apps) and other auxiliary devices to interact with the existing lighting and \ac{HVAC} systems. The Hub app manages the office and the User app work provides user detection and allows the user to remotely control the office and security system. To control the lights we used a already built solution, a smart light switch (25 euros), to interact with the \ac{HVAC} system we used a Arduino with built-in \ac{WiFi} and relays.
 
-Great care was taken developing the user app to make sure the application did not drain to much of phone's battery. While other application that require user detection keep \ac{CPU} always running and background scan the environment, our approach is based in the phone's events. When the user connects to a \ac{WiFi} network we start our user detection algorithm, if the user is not in the building with the Hub we stop the scanning. 
+Great care was taken developing the user app to make sure the application did not drain to much of phone's battery. While other applications that require user detection keep \ac{CPU} always running and background scan the environment, our approach is based in the phone's events. When the user connects to a \ac{WiFi} network we start our user detection algorithm, if the user is not in the building with the Hub, we stop the scanning. 
 
-The system implementation is open-source and allows home and office owners to use existing Android phones or tablets to turn a regular room into a smart room. For a system capable of controlling just the lights our solution works out of the box as long as the smart light switch is installed. To control the \ac{HVAC} system the user can either assemble an Arduino controller like our solution, or in the future it is possible to code in other devices like thermostats with \ac{WiFi}. 
+The system implementation is open-source and allows home and office owners to use existing Android phones or tablets to turn a regular room into a smart room. For a system capable of controlling just the lights our solution works out of the box as long as the smart light switch is installed. To control the \ac{HVAC} system the user can either assemble an Arduino controller like our solution, or in the future it is possible to code in support for other devices like thermostats with \ac{WiFi}. 
 
-Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTT} and security system, in the future other controllable devices, triggers and actions can be added to improve the system.
+Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTT} and security system. In the future other controllable devices, triggers and actions can be added to improve the system.
 
 
 
 We created our system with the following requirements in mind:
 
 \begin{itemize}
-  \item \textbf{Rapid deployment:} The system must offer rapid setup and deployment new Hub instances.
+  \item \textbf{Rapid deployment:} The system must offer rapid setup and deployment of new Hub instances.
   
   \item \textbf{Isolation:} The control and automation of the offices must be independent and work regardless the state of the rest of the system.
   
@@ -70,13 +74,13 @@ We created our system with the following requirements in mind:
   
   \item \textbf{Load-aware:} The system must be able to adjust services such as HVAC and lighting in a energy efficient way.
   
-  \item \textbf{User aware:} It must capable of detecting if the user is inside the building with a medium/low accuracy and the user presence in the room with high Accuracy.
+  \item \textbf{User aware:} It must capable of detecting if the user is inside the building with a medium/low accuracy and the user presence in the room with high accuracy.
   
-  \item \textbf{Motion aware:} It must capable of detecting if someone enters the line of sight. It must also provide the means to ignore part of the room where motion can be ignored because of false positives. For example a window with line of sight to the street by can be ignored.
+  \item \textbf{Motion aware:} It must capable of detecting if someone enters the office. It must also provide the means to define part of the room where motion must be ignored because of false positives. For example a window with a view to the street by can be ignored.
   
 %  \item \textbf{Energy Efficient:} The system must be able to adjust it's own energy footprint during long periods when no occupant is within the room, such as nigh time.  
   
-  \item \textbf{Cost:} The hardware cost must be affordable for small/medium businesses for the monetary return time in the energy savings not be too long.
+  \item \textbf{Cost:} The hardware cost must be affordable for small/medium businesses for the \ac{ROI} savings not be too long.
   
   \item \textbf{Usability:} There should be a visual appealing \ac{UI}, simple controls for lighting and heating functions.
     
@@ -90,13 +94,20 @@ We created our system with the following requirements in mind:
 \section{Thesis Contribution}
 \label{section:contribution}
 
-The following list presents the expected contributions of this thesis:
+The following list presents the contributions of this thesis:
 
 \begin{itemize}
+	\item Functional prototype - An Android based \ac{BAS}, creating a 	proof of concept of integrating Android devices as part of an automation system.
+
+	\item Automation \ac{IFTT} system - Development of \ac{IFTT} system allowing the user to create personalize trigger/action rules to improve user comfort and reduce wasted energy.
+	
+	\item User detection - Development of a user detection system capable of determining if the user is inside a specific building and a specific room. 
+
     \item Hardware Architecture - Design of the architecture with all the hardware components needed and the network interfaces for communication.
+    
     \item Software Architecture - Design of the applications to run on the target hardware, that offers manual and remote control of the \ac{HVAC} and lighting systems. As well as intrusion detection and notification.
-    \item An Android based BAS, creating a proof of concept of integrating Android devices as part of an automation system.
-    \item An Android based security system, capable of detecting intrusion detection and monitoring and notification capabilities.
+%    
+%    \item An Android based security system, capable of detecting intrusion detection and monitoring and notification capabilities.
     
 \end{itemize}
 
@@ -104,7 +115,7 @@ The following list presents the expected contributions of this thesis:
 This document describes the research and work developed and it is organized as follows:
 
 \begin{itemize}
-\item \textbf{Chapter \ref{chapter:introduction}} presents the motivation, background and proposed solution.
+
 \item \textbf{Chapter \ref{chapter:relatedwork}} describes the previous work in the field.
 \item \textbf{Chapter \ref{chapter:architecture}} describes the system requirements and the architecture of BASA.
 \item \textbf{Chapter \ref{chapter:implementation}} describes the implementation of BASA and the technologies chosen.

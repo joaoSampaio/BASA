@@ -158,7 +158,7 @@ We decided to use a Estimote beacon, the reason it was chosen was because we had
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{Figures/software_dia}
-\caption{Solution software architecture.}
+\caption{Software architecture.}
 \label{screen_lights}
 \end{figure}
 
@@ -227,7 +227,7 @@ One other problem arises when we quickly turned on/off all the lights in quick s
 
 Our HVAC solution uses an Arduino with a webserver to control a relay in order to interface with the existing HVAC system.
 
-To get temperature readings from the Arduino \ac{HVAC} and we do a \ac{HTTP}  GET request to the Arduino device IP address at the "/data" endpoint. We receive a \ac{JSON} message containing the temperature and humidity. There is a discovery mechanism to setup the Arduino IP it will be mentioned in detail later.
+To get temperature readings from the Arduino \ac{HVAC} and we do a \ac{HTTP}  GET request to the Arduino device \ac{IP} address at the "/data" endpoint. We receive a \ac{JSON} message containing the temperature and humidity. There is a discovery mechanism to setup the Arduino IP it will be mentioned in detail later.
 
 To turn on/off the \ac{HVAC} we send a POST request containing a \ac{JSON} message containing the relay channels we want to turn on/off. In Figure~\ref{arduino_post_imp} the channel configuration is shown. If we want cold air   and slow speed we set the "ch1" to 1 and "ch3" to 1, the other channels must be set o zero ,the \ac{HVAC} starts sending cold air.
 
@@ -553,7 +553,7 @@ The \textbf{settings screen} allows the user to change:
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_lights}
-\caption{Light screen.}
+\caption{Light fragment.}
 \label{screen_lights}
 \end{figure}
 
@@ -561,7 +561,7 @@ The \textbf{settings screen} allows the user to change:
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_temperature}
-\caption{Temperature screen.}
+\caption{Temperature fragment.}
 \label{screen_temperature}
 \end{figure}
 
@@ -570,28 +570,28 @@ The \textbf{settings screen} allows the user to change:
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/create_recipe}
-\caption{Create recipe screen.}
+\caption{Create recipe fragment.}
 \label{create_recipe}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_trigger}
-\caption{Add trigger screen.}
+\caption{Add trigger fragment.}
 \label{screen_triggers}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_actions}
-\caption{Select action screen.}
+\caption{Select action fragment.}
 \label{screen_actions}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/screen_completed_recipe}
-\caption{Final recipe creation screen.}
+\caption{Final recipe creation fragment.}
 \label{screen_completed_recipe}
 \end{figure}
 
@@ -654,7 +654,7 @@ In the settings screen available through the UserFragment, the user can change s
 \includegraphics[width=0.35\textwidth]{Figures/imp_user_live}}
 \subfigure[Video history, videos when movement was detected]{
 \includegraphics[width=0.35\textwidth]{Figures/imp_user_live}}
-\caption{Adding a Hub device to the user app.}
+\caption{Security - live camera and video history}
 \label{imp_user_camera}
 \end{figure}
 
