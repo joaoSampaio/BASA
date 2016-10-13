@@ -124,14 +124,36 @@ public class PreferencesFragment extends PreferenceFragment implements
             Log.d("myapp", "cam_recording: " + record);
 
             AppController.getInstance().getDeviceConfig().setEnableRecording(record);
-
+            AppController.getInstance().getDeviceConfig().save();
         }else if(key.equals("cam_live")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean live =  preferences.getBoolean("cam_live", true);
             Log.d("myapp", "cam_live: " + live);
 
             AppController.getInstance().getDeviceConfig().setEnableLiveView(live);
+            AppController.getInstance().getDeviceConfig().save();
+        }else if(key.equals("username_peromas")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String username_peromas =  preferences.getString("username_peromas", "");
+            Log.d("myapp", "username_peromas: " + username_peromas);
 
+            AppController.getInstance().getDeviceConfig().setPeromasUser(username_peromas);
+            AppController.getInstance().getDeviceConfig().save();
+
+        }else if(key.equals("password_peromas")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String pass =  preferences.getString("password_peromas", "");
+            Log.d("myapp", "password_peromas: " + pass);
+
+            AppController.getInstance().getDeviceConfig().setPeromasPass(pass);
+            AppController.getInstance().getDeviceConfig().save();
+        }else if(key.equals("ip_peromas")){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String ip =  preferences.getString("ip_peromas", "");
+            Log.d("myapp", "ip_peromas: " + ip);
+
+            AppController.getInstance().getDeviceConfig().setPeromasIP(ip);
+            AppController.getInstance().getDeviceConfig().save();
         }else if(key.equals("enable_kiosk")){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean enableKiosk = preferences.getBoolean("enable_kiosk", false);

@@ -17,6 +17,7 @@ public class BasaDeviceConfig {
     public final static int TEMPERATURE_TYPE_NO_MONITOR_CONTROL = 0;
     public final static int TEMPERATURE_TYPE_MONITOR_BEACON = 1;
     public final static int TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO = 2;
+    public final static int TEMPERATURE_TYPE_MONITOR_CONTROL_PEROMAS = 3;
 
     private String uuid;
     private String name;
@@ -34,6 +35,9 @@ public class BasaDeviceConfig {
     private int temperatureChoice;
     private String beaconUuidTemperature;
     private String arduinoIP;
+    private String peromasUser;
+    private String peromasPass;
+    private String peromasIP;
 
     private String pinSha;
 
@@ -170,6 +174,30 @@ public class BasaDeviceConfig {
         this.enableRecording = enableRecording;
     }
 
+    public String getPeromasUser() {
+        return peromasUser;
+    }
+
+    public void setPeromasUser(String peromasUser) {
+        this.peromasUser = peromasUser;
+    }
+
+    public String getPeromasPass() {
+        return peromasPass;
+    }
+
+    public void setPeromasPass(String peromasPass) {
+        this.peromasPass = peromasPass;
+    }
+
+    public String getPeromasIP() {
+        return peromasIP;
+    }
+
+    public void setPeromasIP(String peromasIP) {
+        this.peromasIP = peromasIP;
+    }
+
     public static BasaDeviceConfig getConfig(){
         return new ModelCache<BasaDeviceConfig>()
                 .loadModel(new TypeToken<BasaDeviceConfig>(){}.getType(), Global.OFFLINE_DEVICE_CONFIG);
@@ -177,6 +205,10 @@ public class BasaDeviceConfig {
 
     public static void clear(){
         new ModelCache().saveModel(null, Global.OFFLINE_DEVICE_CONFIG);
+    }
+
+    public void save(){
+        new ModelCache<BasaDeviceConfig>().saveModel(this, Global.OFFLINE_DEVICE_CONFIG);
     }
 
 

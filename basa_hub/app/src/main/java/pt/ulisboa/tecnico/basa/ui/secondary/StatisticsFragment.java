@@ -77,6 +77,7 @@ public class StatisticsFragment extends DialogFragment  {
         spinnerArray.add("Occupancy Building");
         spinnerArray.add("Temperature");
         spinnerArray.add("Lights");
+        spinnerArray.add("Brightness");
         spinner.setVisibility(View.VISIBLE);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -96,8 +97,10 @@ public class StatisticsFragment extends DialogFragment  {
                     setDataBuildingOccupancy(AppController.getInstance().getStatisticalData().getOccupantsOffice(), "Office occupants");
                 } else if(position == 2){
                     setDataTemperature();
-                }else{
+                }else if(position == 3){
                     setDataLights();
+                } else{
+                    setDataBrightness();
                 }
                 mChart.notifyDataSetChanged();
                 mChart.invalidate();
@@ -212,6 +215,7 @@ public class StatisticsFragment extends DialogFragment  {
 
         long xValue, largestValue, shiftValue;
         if(!lightsData.isEmpty()) {
+            lightsData.add(new StatisticalEvent(System.currentTimeMillis(), lightsData.get(lightsData.size() - 1).getY()));
             largestValue = (lightsData.get(lightsData.size() - 1).getX() - lightsData.get(0).getX()) / 1000;
             mappingLargestValue = largestValue;
             for (StatisticalEvent stat : lightsData) {
@@ -269,6 +273,51 @@ public class StatisticsFragment extends DialogFragment  {
         }
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "Lights");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(Color.BLUE);
+        set1.setValueTextColor(Color.BLACK);
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(Color.BLUE);
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+        set1.setMode(LineDataSet.Mode.STEPPED);
+        LineData data = new LineData(set1);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(9f);
+        // set data
+        mChart.setData(data);
+    }
+
+
+    private void setDataBrightness() {
+        mChart.clear();
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        lightsData =  AppController.getInstance().getStatisticalData().getLightLvl();
+
+        Log.d("stats", " setDataBrightness:" + lightsData.size());
+        long xValue, largestValue, shiftValue;
+        if(!lightsData.isEmpty()) {
+
+            lightsData.add(new StatisticalEvent(System.currentTimeMillis(), lightsData.get(lightsData.size() - 1).getY()));
+
+
+            largestValue = (lightsData.get(lightsData.size() - 1).getX() - lightsData.get(0).getX()) / 1000;
+            mappingLargestValue = largestValue;
+            for (StatisticalEvent stat : lightsData) {
+                Log.d("stats", "original x:" + stat.getX() + " y:" + stat.getY());
+
+                xValue = (stat.getX() - lightsData.get(0).getX()) / 1000;
+                shiftValue = largestValue - xValue;
+                values.add(0, new Entry(shiftValue, stat.getY()));
+            }
+        }
+
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(values, "Brightness (Lux)");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setColor(Color.BLUE);
         set1.setValueTextColor(Color.BLACK);

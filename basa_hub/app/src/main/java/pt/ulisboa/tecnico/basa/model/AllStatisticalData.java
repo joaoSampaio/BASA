@@ -7,6 +7,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.manager.UserManager;
+import pt.ulisboa.tecnico.basa.model.event.EventBrightness;
 import pt.ulisboa.tecnico.basa.model.event.EventLightSwitch;
 import pt.ulisboa.tecnico.basa.model.event.EventTemperature;
 import pt.ulisboa.tecnico.basa.model.event.EventUserLocation;
@@ -18,6 +19,7 @@ import pt.ulisboa.tecnico.basa.util.ModelCache;
 public class AllStatisticalData {
 
     private List<StatisticalEvent> lights;
+    private List<StatisticalEvent> lightLvl;
     private List<StatisticalEvent> temperature;
     private List<StatisticalEvent> occupantsOffice;
     private List<StatisticalEvent> occupantsBuilding;
@@ -27,6 +29,7 @@ public class AllStatisticalData {
         temperature = new ArrayList<>();
         occupantsOffice = new ArrayList<>();
         occupantsBuilding = new ArrayList<>();
+        lightLvl = new ArrayList<>();
     }
 
     public List<StatisticalEvent> getLights() {
@@ -43,6 +46,10 @@ public class AllStatisticalData {
 
     public List<StatisticalEvent> getOccupantsBuilding() {
         return occupantsBuilding;
+    }
+
+    public List<StatisticalEvent> getLightLvl() {
+        return lightLvl;
     }
 
     public void addLightsEvent(EventLightSwitch event){
@@ -67,16 +74,41 @@ public class AllStatisticalData {
         save(this);
     }
 
+    public void addLightLvlEvent(EventBrightness event){
+
+        StatisticalEvent statisticalEvent = null;
+        if(!getLightLvl().isEmpty()){
+
+            if(event.getmBrightness() != getLightLvl().get(getLightLvl().size()-1).getY()){
+                statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getmBrightness());
+                getLightLvl().add(statisticalEvent);
+                save(this);
+
+            }
+        }else{
+            statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getmBrightness());
+            getLightLvl().add(statisticalEvent);
+            save(this);
+        }
+    }
+
     public void addTemperatureEvent(EventTemperature event){
 
         StatisticalEvent statisticalEvent = null;
         if(!getTemperature().isEmpty()){
-            long timeSinceLast = System.currentTimeMillis() - getTemperature().get(getTemperature().size()-1).getX();
-            if(timeSinceLast > 5000){
+
+            if(event.getTemperature() != getTemperature().get(getTemperature().size()-1).getY()){
                 statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getTemperature());
                 getTemperature().add(statisticalEvent);
                 save(this);
             }
+
+//            long timeSinceLast = System.currentTimeMillis() - getTemperature().get(getTemperature().size()-1).getX();
+//            if(timeSinceLast > 5000){
+//                statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getTemperature());
+//                getTemperature().add(statisticalEvent);
+//                save(this);
+//            }
         }else{
             statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getTemperature());
             getTemperature().add(statisticalEvent);
@@ -110,6 +142,7 @@ public class AllStatisticalData {
     public static void save(AllStatisticalData stats){
         new ModelCache<AllStatisticalData>().saveModel(stats, "stats_4");
     }
+
 
 
 }

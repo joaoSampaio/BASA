@@ -138,7 +138,7 @@ In the second set of measurements the user starts walking outside the office and
 
 To test our motion detection algorithm and system, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
 
-Our system was able to correctly identify a person walking inside the room every time. Regarding false positives, they don't seem to be a problem since our system allow the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
+Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a problem since our system allow the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
 
 
 \begin{table}[]
@@ -153,5 +153,13 @@ Run & 20/20 & 20/20 & 20/20 \\ \hline
 \caption{Motion detection tests for three people with different heights, 20 measurements each.}
 \label{eval:motion}
 \end{table}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/eval_motion}
+\caption{Motion detection - Frame before and after, motion detected }
+\label{eval:motion_fig}
+\end{figure}
 
 

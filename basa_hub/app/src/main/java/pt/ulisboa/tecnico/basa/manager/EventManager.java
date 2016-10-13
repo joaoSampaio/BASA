@@ -139,6 +139,10 @@ public class EventManager {
                 AppController.getInstance().getStatisticalData().addLightsEvent(((EventLightSwitch)event));
 
                 break;
+            case Event.BRIGHTNESS:
+                AppController.getInstance().getStatisticalData().addLightLvlEvent(((EventBrightness) event));
+
+                break;
             case Event.CHANGE_TEMPERATURE:
                 result = "Temperature set to " + ((EventChangeTemperature)event).getTargetTemperature() + " Cº" ;
                 break;

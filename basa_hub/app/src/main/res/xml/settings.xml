@@ -90,6 +90,34 @@
             android:summary="The estimote beacon namespace to retrieve the temperature."
             android:dialogTitle="Beacon namespace" />
 
+        <EditTextPreference
+            android:key="username_peromas"
+            android:title="Username"
+            android:summary="The username you registered in PerOMAS."
+            android:dialogTitle="Account username"
+            android:inputType="textNoSuggestions"
+            android:maxLength="36"
+            />
+
+        <EditTextPreference
+            android:key="password_peromas"
+            android:title="Password"
+            android:summary="The password you choose in PerOMAS."
+            android:dialogTitle="Account password"
+            android:inputType="textPassword"
+            android:maxLength="36"
+            />
+
+        <EditTextPreference
+            android:key="ip_peromas"
+            android:title="IP"
+            android:summary="IP address of the target PerOMAS assistent."
+            android:dialogTitle="IP address"
+            android:inputType="text"
+            android:maxLength="36"
+            android:hint="192.168.1.2"
+            />
+
 
     </PreferenceCategory>
 
