@@ -1,8 +1,16 @@
 package pt.ulisboa.tecnico.basa.rest.services;
 
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.HashMap;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ArduinoChangeTemperature;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
@@ -24,27 +32,124 @@ public class ChangeTemperatureService extends ServerCommunicationService {
     @Override
     public void execute() {
 
-        Call<Temperature> call = RestClient.getService().changeArduinoTemperature(url, changeTemperature);
-            call.enqueue(new retrofit2.Callback<Temperature>() {
 
+        int choice = AppController.getInstance().getDeviceConfig().getTemperatureChoice();
+        if(choice == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO){
+            if(url == null || url.isEmpty())
+                return;
+            changeArduinoTemperature();
 
-                @Override
-                public void onResponse(Call<Temperature> call, Response<Temperature> response) {
+            } else if(choice == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_PEROMAS){
+                changeTempPerOMAS();
+            }
 
-                    Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
-                    if (response.isSuccessful()) {
-                        callback.success(null);
-
-                    } else {
-                        callback.failed(null);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Temperature> call, Throwable t) {
-                    callback.failed("network problem");
-                }
-            });
         }
+
+
+    private void changeArduinoTemperature() {
+
+        Call<Temperature> call = RestClient.getService().changeArduinoTemperature(url, changeTemperature);
+        call.enqueue(new retrofit2.Callback<Temperature>() {
+
+
+            @Override
+            public void onResponse(Call<Temperature> call, Response<Temperature> response) {
+
+                Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
+                if (response.isSuccessful()) {
+                    callback.success(null);
+
+                } else {
+                    callback.failed(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Temperature> call, Throwable t) {
+                callback.failed("network problem");
+            }
+        });
+    }
+
+
+        public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
+        @NonNull
+        private RequestBody createPartFromString(String descriptionString) {
+            return RequestBody.create(
+                    MediaType.parse(MULTIPART_FORM_DATA), descriptionString);
+        }
+
+
+        private void changeTempPerOMAS(){
+            //login
+            String username = AppController.getInstance().getDeviceConfig().getPeromasUser();
+            String password = AppController.getInstance().getDeviceConfig().getPeromasPass();
+            String ip = AppController.getInstance().getDeviceConfig().getPeromasIP();
+
+
+
+
+
+            new LoginPerOMASService(username, password, ip, new CallbackMultiple() {
+                @Override
+                public void success(Object response) {
+                    //getTemperaturePerOMAS();
+
+
+
+                    RequestBody AC_OFF = createPartFromString("AC_OFF");
+                    RequestBody AC_3 = createPartFromString("AC_3");
+
+//                    HashMap<String, RequestBody> map = new HashMap<>();
+                    HashMap<String, String> map = new HashMap<>();
+
+                    if(changeTemperature.isOff()){
+//                        map.put("AC_OFF", AC_OFF);
+                        map.put("AC_OFF", "AC_OFF");
+                    }else{
+//                        map.put("AC_3", AC_3);
+                        map.put("AC_3", "AC_3");
+                    }
+
+
+                    url = AppController.getInstance().getDeviceConfig().getPeromasIP()+"/index";
+                    Call<ResponseBody> call = RestClient.getService().setTemperaturePerOMAS(url, map);
+                    call.enqueue(new retrofit2.Callback<ResponseBody>() {
+
+
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            Log.d("peromas", "response.isSuccessful() 222:"+ response.isSuccessful());
+                            if (response.isSuccessful()) {
+                                callback.success(null);
+
+                            } else {
+                                callback.failed(null);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            callback.failed("network problem");
+                        }
+                    });
+
+
+                }
+
+                @Override
+                public void failed(Object error) {
+
+                }
+            }).execute();
+
+
+
+
+        }
+
+
     }
 

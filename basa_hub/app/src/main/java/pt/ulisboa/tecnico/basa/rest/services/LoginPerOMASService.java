@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.basa.rest.services;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
@@ -38,15 +40,15 @@ public class LoginPerOMASService extends ServerCommunicationService {
                     if (response.isSuccessful()) {
 
 
-                        String[] lines = new String[0];
                         try {
-                            lines = response.body().string().split(System.getProperty("line.separator"));
+                            String body =  response.body().string();
+                            String[] lines = body.split("\\r\\n|\\n|\\r");
                             String line;
 
                             for(int i= 0; i< lines.length; i++){
                                 line = lines[i];
                                 if (line.contains("id=\"csrf_token\"")) {
-                                    Log.d("myapp", "encontrou csrf_token");
+                                    Log.d("peromas", "encontrou csrf_token");
                                     String[] values = line.split("value=\"");
                                     if (values.length > 0)
                                         csrf_token = values[1].split("\"")[0];
@@ -60,11 +62,20 @@ public class LoginPerOMASService extends ServerCommunicationService {
                         //loginWithToken(username, password, ip, csrf_token.trim());
 
                         //loginPost(username, password, "y", csrf_token, new Callback<Response>() {
+                        Log.d("peromas", "login data:" + username + " " + password+ " " + "y" + " " + csrf_token);
                         Call<ResponseBody> call2 = RestClient.getService().loginPerOMAS(ip+"/login", username, password, "y", csrf_token);
                         call2.enqueue(new retrofit2.Callback<ResponseBody>() {
                                           @Override
                                           public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                               if (response.isSuccessful()) {
+
+
+
+
+
+
+
+                                                  Log.d("peromas", "login sucess:" + new Gson().toJson(response.headers()));
                                                   callback.success(null);
                                               }else{
                                                   callback.failed("erro qq 2");

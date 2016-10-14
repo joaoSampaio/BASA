@@ -596,10 +596,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                     @Override
                     public void onPhotoBeenSaved(Uri file) {
                         getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-//
-//                        getActivity().sendBroadcast(new Intent(
-//                                Intent.ACTION_MEDIA_MOUNTED,
-//                                Uri.parse("file://" + Environment.getExternalStorageDirectory())));
 
                     }
                 }).start();

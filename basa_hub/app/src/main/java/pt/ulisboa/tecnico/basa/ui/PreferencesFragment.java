@@ -104,6 +104,12 @@ public class PreferencesFragment extends PreferenceFragment implements
             AppController.getInstance().getDeviceConfig().setBeaconUuidTemperature(preferences.getString("BEACON_UUID", ""));
             AppController.getInstance().saveDeviceConfig();
 
+        }else if(key.equals("temperature_type")) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            AppController.getInstance().getDeviceConfig()
+                    .setTemperatureChoice(Integer.parseInt(preferences.getString("temperature_type", "1")));
+            AppController.getInstance().saveDeviceConfig();
+
         }else if(key.equals("EDUP_ID")){
 
 

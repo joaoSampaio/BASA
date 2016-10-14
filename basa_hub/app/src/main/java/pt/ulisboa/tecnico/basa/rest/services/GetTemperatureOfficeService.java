@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.rest.RestClient;
@@ -25,32 +26,45 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
     @Override
     public void execute() {
 
-        if(url == null || url.isEmpty())
-            return;
-        Call<Temperature> call = RestClient.getService().requestTemperatureOffice(url);
-            call.enqueue(new retrofit2.Callback<Temperature>() {
 
 
-                @Override
-                public void onResponse(Call<Temperature> call, Response<Temperature> response) {
 
-                    Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
-                    if (response.isSuccessful()) {
-                        callback.success(response.body());
+        int choice = AppController.getInstance().getDeviceConfig().getTemperatureChoice();
+        if(choice == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO){
+            if(url == null || url.isEmpty())
+                return;
+            getTemperatureArduino();
 
-                    } else {
-                        callback.failed(null);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Temperature> call, Throwable t) {
-                    callback.failed("network problem");
-                }
-            });
+        } else if(choice == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_PEROMAS){
+            getTemperaturePerOMAS();
         }
 
+    }
 
+
+    private void getTemperatureArduino(){
+        Call<Temperature> call = RestClient.getService().requestTemperatureOffice(url);
+        call.enqueue(new retrofit2.Callback<Temperature>() {
+
+
+            @Override
+            public void onResponse(Call<Temperature> call, Response<Temperature> response) {
+
+                Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
+                if (response.isSuccessful()) {
+                    callback.success(response.body());
+
+                } else {
+                    callback.failed(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Temperature> call, Throwable t) {
+                callback.failed("network problem");
+            }
+        });
+    }
 
 
 
@@ -58,6 +72,8 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
 
 
             if (isWifiAvailable()) {
+                url = AppController.getInstance().getDeviceConfig().getPeromasIP()+"/index";
+
                 Call<ResponseBody> call =  RestClient.getService().getStatusPerOMAS(url);
                 call.enqueue(new retrofit2.Callback<ResponseBody>() {
 
@@ -65,27 +81,29 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        Log.d("web", "response.isSuccessful():"+ response.isSuccessful());
                         if (response.isSuccessful()) {
-                            callback.success(response.body());
 
 
-                            try {
-                                Log.d("web", "response.body().string():"+ response.body().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
 
                             boolean isLoggded = false;
                             try {
-                                String[] lines = response.body().string().split(System.getProperty("line.separator"));
+                                String body =  response.body().string();
+                                String[] lines = body.split("\\r\\n|\\n|\\r");
                                 String line;
                                     for(int i= 0; i< lines.length; i++){
                                         //sb.append(line);
                                         line = lines[i];
                                         //////////////////////////contains temperature
-                                        Log.d("myapp", "..." + line);
-                                        if (line.contains("name=\"Light_1\"")) {
+                                        if (line.contains("ºC")) {
+                                            Log.d("peromas", "found joao" + line);
+                                            String[] result = line.split("ºC");
+                                            if(result.length > 0){
+                                                result = result[0].split("<b>");
+                                                Log.d("peromas", "found joao tmp" + result[1].trim());
+                                                callback.success(new Temperature(Double.parseDouble(result[1].trim()), 50));
+                                                break;
+
+                                            }
                                             isLoggded = true;
                                             Log.d("myapp", "...contains");
                                         }
@@ -95,25 +113,7 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
                                 e.printStackTrace();
                             }
 
-                            //login
-                            if (!isLoggded) {
-                                String username = AppController.getInstance().getDeviceConfig().getPeromasUser();
-                                String password = AppController.getInstance().getDeviceConfig().getPeromasPass();
-                                String ip = AppController.getInstance().getDeviceConfig().getPeromasIP();
 
-
-                                new LoginPerOMASService(username, password, ip, new CallbackMultiple() {
-                                    @Override
-                                    public void success(Object response) {
-                                        getTemperaturePerOMAS();
-                                    }
-
-                                    @Override
-                                    public void failed(Object error) {
-
-                                    }
-                                }).execute();
-                            }
                         } else {
                             callback.failed(null);
                         }

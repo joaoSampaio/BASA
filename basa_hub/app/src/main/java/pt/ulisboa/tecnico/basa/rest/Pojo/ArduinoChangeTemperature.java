@@ -35,5 +35,9 @@ public class ArduinoChangeTemperature {
         this.ch4 = speed == SPEED3? 1 : 0 ;
     }
 
+    public boolean isOff(){
+        return ch1 == 0 && ch2 == 0 && ch3 == 0 && ch4 == 0;
+    }
+
 
 }

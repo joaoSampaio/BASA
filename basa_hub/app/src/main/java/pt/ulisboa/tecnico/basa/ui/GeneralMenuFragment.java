@@ -59,11 +59,11 @@ public class GeneralMenuFragment extends Fragment {
 
         List<GeneralMenuItem> data = new ArrayList<>();
         data.add(new GeneralMenuItem(GeneralMenuItem.IFTTT));
-        data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS_TEMP));
+//        data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS_TEMP));
         data.add(new GeneralMenuItem(GeneralMenuItem.HISTORY));
         data.add(new GeneralMenuItem(GeneralMenuItem.REGISTER));
         data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS));
-        data.add(new GeneralMenuItem(GeneralMenuItem.INTRUDER));
+//        data.add(new GeneralMenuItem(GeneralMenuItem.INTRUDER));
         data.add(new GeneralMenuItem(GeneralMenuItem.STATISTICS));
 
         mAdapter = new MenuAdapter(getActivity(), data, new ViewClicked() {

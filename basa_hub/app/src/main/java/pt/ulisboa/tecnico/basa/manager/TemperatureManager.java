@@ -186,7 +186,8 @@ public class TemperatureManager {
         handler.removeCallbacksAndMessages(null);
         BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
         if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO ||
-                conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON) {
+                conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON ||
+                conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_PEROMAS) {
             urlTemperature = AppController.getInstance().getDeviceConfig().getArduinoIP();
             handler.post(new Runnable() {
                 @Override
@@ -194,14 +195,17 @@ public class TemperatureManager {
 
 
                     BasaDeviceConfig conf = AppController.getInstance().getDeviceConfig();
-                    if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO) {
+                    if(conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_ARDUINO
+                            || conf.getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_CONTROL_PEROMAS) {
 
+                        Log.d("temperature", "call temperature");
                         new GetTemperatureOfficeService(urlTemperature, new CallbackMultiple<Temperature, String>() {
                             @Override
                             public void success(Temperature response) {
                                 if (response != null && getBasaManager() != null && response.isValid()) {
                                     setLatestTemperature((int)response.getTemperature());
                                     currentHumidity = (int)response.getHumidity();
+                                    Log.d("peromas", "clastes temp:" + getCurrentTemperature());
                                     getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, (int)response.getTemperature(), (int)response.getHumidity()));
                                     //latestTemperature = response;
                                 }

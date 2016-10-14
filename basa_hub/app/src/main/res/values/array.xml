@@ -42,4 +42,20 @@
         <item>#8c9f58</item>
     </string-array>
 
+
+
+    <string-array name="temp_type_string">
+        <item>No device</item>
+        <item>Estimote</item>
+        <item>Arduino</item>
+        <item>PerOMAS</item>
+    </string-array>
+    <string-array name="temp_type">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+
 </resources>

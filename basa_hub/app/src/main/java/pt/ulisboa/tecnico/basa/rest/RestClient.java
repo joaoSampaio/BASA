@@ -2,7 +2,11 @@ package pt.ulisboa.tecnico.basa.rest;
 
 import android.util.Log;
 
+
+
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +18,12 @@ import okhttp3.CookieJar;
 import okhttp3.Dispatcher;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pt.ulisboa.tecnico.basa.app.AppController;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -75,35 +81,41 @@ public class RestClient {
     public static final Api getService() {
         if (RestClient.getApi() == null) {
 
-            Interceptor COOKIES_REQUEST_INTERCEPTOR = new Interceptor() {
+//            Interceptor COOKIES_REQUEST_INTERCEPTOR = new Interceptor() {
+//
+//                @Override
+//                public Response intercept(Chain chain) throws IOException {
+////            Response response = chain.proceed(chain.request());
+//                    Request request = chain.request();
+//                    Request.Builder newRequest;
+//
+//                    newRequest = request.newBuilder()
+//                            .addHeader("Content-type", "application/json;charset=UTF-8")
+//                            .addHeader("Accept", "application/json");
+//                    return chain.proceed(newRequest.build());
+//                }
+//            };
 
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-//            Response response = chain.proceed(chain.request());
-                    Request request = chain.request();
-                    Request.Builder newRequest;
+//            CookieJar cookieJar =
+//                    new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(AppController.getAppContext()));
 
-                    newRequest = request.newBuilder()
-                            .addHeader("Content-type", "application/json;charset=UTF-8")
-                            .addHeader("Accept", "application/json");
-                    return chain.proceed(newRequest.build());
-                }
-            };
+//            CookieJar cookieJar = new CookieJar() {
+//                private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
+//
+//                @Override
+//                public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+//                    cookieStore.put(url.host(), cookies);
+//                }
+//
+//                @Override
+//                public List<Cookie> loadForRequest(HttpUrl url) {
+//                    List<Cookie> cookies = cookieStore.get(url.host());
+//                    return cookies != null ? cookies : new ArrayList<Cookie>();
+//                }
+//            };
 
-            CookieJar cookieJar = new CookieJar() {
-                private final HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
-
-                @Override
-                public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                    cookieStore.put(url.host(), cookies);
-                }
-
-                @Override
-                public List<Cookie> loadForRequest(HttpUrl url) {
-                    List<Cookie> cookies = cookieStore.get(url.host());
-                    return cookies != null ? cookies : new ArrayList<Cookie>();
-                }
-            };
+//            CookieManager cookieManager = new CookieManager();
+//            cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
 
             Dispatcher dispatcher=new Dispatcher();
             dispatcher.setMaxRequests(10);
@@ -111,11 +123,10 @@ public class RestClient {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient.Builder client = new OkHttpClient.Builder();
 
-            client.cookieJar(cookieJar);
+//            client.cookieJar(new JavaNetCookieJar(cookieManager));
             client.readTimeout(60, TimeUnit.SECONDS)
                     .writeTimeout(120, TimeUnit.SECONDS)
-                    .connectTimeout(60, TimeUnit.SECONDS)
-                    .interceptors().add(COOKIES_REQUEST_INTERCEPTOR);
+                    .connectTimeout(60, TimeUnit.SECONDS);
             client.interceptors().add(interceptor);
             client.dispatcher(dispatcher);
 

@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.basa.rest;
 
 import com.google.gson.JsonElement;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ArduinoChangeTemperature;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ServerLocation;
@@ -12,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Url;
 
 
@@ -47,5 +51,13 @@ public interface Api {
     @Multipart
     @POST
     Call<ResponseBody> loginPerOMAS(@Url String url, @Part("username") String username, @Part("password") String password, @Part("remember_me") String remember_me, @Part("csrf_token") String csrf_token);
+
+    @Multipart
+    @POST
+//    Call<ResponseBody> setTemperaturePerOMAS(@Url String url, @PartMap() Map<String, RequestBody> partMap);
+    Call<ResponseBody> setTemperaturePerOMAS(@Url String url, @PartMap() Map<String, String> partMap);
+
+
+
 
 }

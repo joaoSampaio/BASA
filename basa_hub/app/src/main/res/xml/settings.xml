@@ -80,6 +80,14 @@
     <PreferenceCategory
         android:title="Temperature and HVAC ">
 
+        <ListPreference
+            android:key="temperature_type"
+            android:title="The type of temperature device"
+            android:summary="Choose between Estimote/Arduino//PerOMAS device"
+            android:entries="@array/temp_type_string"
+            android:entryValues="@array/temp_type"/>
+
+
         <Preference android:title="Scan for HVAC"
             android:key="btn_scan_hvac"
             android:summary="Scan for compatible HVAC in local network"/>
