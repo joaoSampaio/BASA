@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.basa.camera;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -587,18 +586,18 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
                 }
 
-                final Bitmap motionPic = ImageProcessing.rgbToBitmap(img, width, height);
-
-                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-                final String latestFileNameF = System.currentTimeMillis() / 100 + "_img.jpeg";
-                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-                new SavePhotoThread(latestFilePathF, motionPic, new SavePhotoThread.PhotoSaved() {
-                    @Override
-                    public void onPhotoBeenSaved(Uri file) {
-                        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-
-                    }
-                }).start();
+//                final Bitmap motionPic = ImageProcessing.rgbToBitmap(img, width, height);
+//
+//                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
+//                final String latestFileNameF = System.currentTimeMillis() / 100 + "_img.jpeg";
+//                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
+//                new SavePhotoThread(latestFilePathF, motionPic, new SavePhotoThread.PhotoSaved() {
+//                    @Override
+//                    public void onPhotoBeenSaved(Uri file) {
+//                        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+//
+//                    }
+//                }).start();
 
 
                 if(!getBitmapMotionTransfer().isEmpty()) {

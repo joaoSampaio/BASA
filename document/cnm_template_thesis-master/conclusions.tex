@@ -3,20 +3,42 @@
 
 \section{Summary}
 \label{section:summary}
-Neste secção deve-se fazer o resumo do trabalho efectuado, retomando a ideia, as
-contribuições definidas e a forma como estas se materializaram
+
+%We set out to build a prototype of an \ac{BAS} which utilizes Android devices and their sensors, networking cAPABILITY, and visual interface. 
+
+In this document, we present a system that uses regular Android tablet devices running a Android application to create a \ac{BAS}. Our system aims to improving the comfort of office users, minimize wasted energy consumption of the building and provide office security monitoring. 
+
+To develop the solution for the problem, we started by analyzing Building Automation standards and smart home solutions available in the market. Then we explored the wireless communication protocols that we could use in our system to interact with the users and external devices. Finally we analyzed the use of some sensors to improve building automation and provide occupant detection. 
+
+We identified a set of problems in conventional \ac{BAS}, these included high hardware cost, expensive installation, limited flexibility and customization.
+Current smart home solutions also suffered from a few problems such as high cost, each additional light bulb, sensor and thermostat increased the overall cost over hundreds of euros.
+
+Our solution uses regular Android devices to achieve automation and security of an office room. The tablet (Hub) mounted in a wall in the office includes sensors, access to \ac{WiFi} and \ac{BT} networks and other useful components. We use the internal sensors,as well as, a external temperature sensor to allow the application running in the tablet to take informed actions based on the current conditions of the room. 
+We added an \ac{IFTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related with user neglect by detecting the user presence in the room or building. This allows the \ac{IFTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
 
 
-We set out to build a protopype of an \ac{BAS} whitch utilizes Android devices and their sensors, networking cAPABILITY, and visual interface. 
-
-
+Finally, the solution was tested in a real scenario  at IST - Taguspark.
 
 
 \section{Achievements}
 \label{section:achievements}
-The major achievements of the present work \ldots
-Nesta secção devem ser retiradas conclusões do trabalho realizado, em face dos
-resultados obtidos.
+
+The main achievement of BASA is using an Android device as a \ac{BAS} solution, while other system use proprietary hardware and software solutions to provide building automation our solution uses common affordable Android devices to control the lighting \& \ac{HVAC} systems in the room and provide a built-in security system. 
+
+Besides the wall mounted Android tablet in the room, we developed an User app that allows user to remotely interact and control the wall mounted Android device. We implemented a quick and semi automatic way for users to add new Hub devices (rooms), by using QR-Codes.
+
+%The system is able to interact with several different external devices. These devices include smart light switches, Arduino or PerOMAS device to control the \ac{HVAC} system.
+
+Another contribution of BASA is offering a \ac{IFTT} automation solution that allows users to create conditional event based rules. This solution offer high flexibility as it allows the user to create automation rules that fit the room and user requirements.
+
+A simple motion detection functionality was added to the system, this allows our system to record small videos when motion is detected and no user is present inside the room. The videos can be latter accessed using the User app.
+
+Finally our system is able to detect if the user is inside the room or in the building using different wireless technologies.
+
+
+We deployed the system in a office room to evaluate it's operation. 
+%We achieved the goals set in the begining expected 
+
 
 
 

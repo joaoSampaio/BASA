@@ -59,9 +59,9 @@ To test the temperature sensor the \ac{HVAC} system will be turned on, and the t
 
 (stress test)
 
-To test our system web-server a series of measures were performed. This test consists in making several concurrent \ac{HTTP} requests.
+To test our system web-server a series of measures were performed. This test consists in making several concurrent \ac{HTTP} requests to the server in the Hub app. To send these requests we used \ac{ab} benchmarking tool.
 
- concurring requests to our \ac{API} 
+The goal of this test is to determine if the server handles an small amount of concurrent users. The website is not expected to server hundreds of concurrent users, it will handle a few users sending occasional POST requests and some periodic GET requests to keep the user app updated when in use.
 
 
 \subsection{Automation}
@@ -240,8 +240,36 @@ Run & 20/20 & 20/20 & 20/20 \\ \hline
 
 
 
+\subsection{Hub server load}
+
+To test the web server we used \ac{ab} to send requests during 5 minutes with different concurrency levels. This simulates multiple users sending concurrent requests to our server.
+
+Two scenarios were tested:
+\begin{itemize}
+  \item Users sending GET request to /status endpoint to retrieve the current temperature and light state .
+  \item Users sending POST request to /make-changes endpoint to change the temperature and the lights.
+\end{itemize} 
+
+Both scenarios were repeated for different concurrency levels (1, 10, 50, 100, 150, 200), for each concurrency levels the test was repeated 5 times in order to obtain an average value. 
+
+The results of this test are shown in Figures~\ref{eval:server1} and \ref{eval:server2}. We determined our website is able to respond in 500 ms with 100 concurrent users and no errors. We believe this value is more than adequate to the nature of the expected load the server will handle for normal office rooms with few people. Even if this system is used in a large room with few dozens of people it would still perform it's job.
 
 
+The results obtained in this test used a specific Android tablet with 2GB of Ram and quad-core CPU. Different Android devices may present different results from the ones observed in the tests. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{Figures/bench_get}
+\caption{Get Request time per concurrent user.}
+\label{eval:server1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{Figures/bench_post}
+\caption{Post Request time per concurrent user.}
+\label{eval:server1}
+\end{figure}
 
 
 
