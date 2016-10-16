@@ -5,13 +5,10 @@
 
 The test conducted were chosen because they have direct contribution with this thesis goals.
 
-Our system leverages user detection to improve occupant comfort and reduce wasted energy and because of that we require the user detection to have medium/low accuracy in building detection time and high accuracy in room detection.
+Our system leverages user detection to improve occupant comfort and reduce wasted energy and because of that we require the user detection to be achieved in a reasonable time frame.
 
+The motion detection feature of our system is important to achieve room security and monitoring, for that reason we need to ensure the system has a good success rate. 
 
-
-%In order to evaluate the developed system, several tests were performed. Section 5.1 starts by describing
-%the test scenario. Next, in Section 5.2 the detailed description of each test is presented. Finally,
-%Section 5.3 presents the results of the tests.
 
 \section{Tests Scenarios}
 
@@ -57,7 +54,6 @@ To test the temperature sensor the \ac{HVAC} system will be turned on, and the t
 
 \subsection{Hub server load}
 
-(stress test)
 
 To test our system web-server a series of measures were performed. This test consists in making several concurrent \ac{HTTP} requests to the server in the Hub app. To send these requests we used \ac{ab} benchmarking tool.
 
@@ -268,7 +264,7 @@ The results obtained in this test used a specific Android tablet with 2GB of Ram
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/bench_post}
 \caption{Post Request time per concurrent user.}
-\label{eval:server1}
+\label{eval:server2}
 \end{figure}
 
 

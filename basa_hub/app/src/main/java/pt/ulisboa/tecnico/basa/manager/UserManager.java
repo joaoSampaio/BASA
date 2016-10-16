@@ -207,17 +207,18 @@ public class UserManager implements Manager {
         String uuidString = uuid.toString();
         List<User> users = User.getUsers();
 
-        if(User.userEmailExists(users, email) && !User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid)){
+        if(User.userEmailExists(users, email) && (optionalUuid != null && !User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid))){
             throw new UserRegistrationException("Email already active");
         }
-        uuidString = optionalUuid;
+        if(optionalUuid != null)
+            uuidString = optionalUuid;
 //        if(optionalUuid != null && !optionalUuid.isEmpty() && !User.userUuidExists(users, optionalUuid)){
 //            uuidString = optionalUuid;
 //        }
 
         //se utilizador com aquele mail e uuid ja existir nao vamos voltar a adiciona-lo
-        if(!(User.userEmailExists(users, email) &&
-                User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid))) {
+        if(!(User.userEmailExists(users, email) && (optionalUuid != null &&
+                User.getUserEmailFromList(users, email).getUuid().equals(optionalUuid)))) {
 
             users.add(new User(userName, email, uuidString));
             new ModelCache<>().saveModel(users, Global.OFFLINE_USERS);
@@ -235,8 +236,10 @@ public class UserManager implements Manager {
 
 
 
-    private void sendMailRegister(String uuid, String email) throws WriterException {
+    private void sendMailRegister(String email, String uuid ) throws WriterException {
 
+        Log.d("email", "uuid:"+uuid);
+        Log.d("email", "email:"+email);
         Bitmap image = QRCodeGenerator.encodeAsBitmap(uuid);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

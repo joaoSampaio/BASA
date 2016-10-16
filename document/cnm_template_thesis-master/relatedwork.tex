@@ -3,25 +3,25 @@
 
 
 
-In the following subsections we will detail the main related work used in this thesis. In Subsection \ref{ssec:num3} we explain the most used Automation Communication Protocols. Subsection \ref{ssec:num1} showcases both popular commercial home automation products, as well as academic automation solutions.
-Subsection \ref{ssec:num2} follows with a description of some general purpose communication technologies, these technologies are widely available in mobile devices and as such play a important role.
- Finally, subsection \ref{ssec:num4} presents commonly available sensors and how they can be applied to building automation and user comfort.
+The following sections detail the main related work researched in this thesis. In Section~\ref{ssec:num3} we explain the most used Automation Communication Protocols. Section \ref{ssec:num1} showcases both popular commercial home automation products, as well as academic automation solutions.
+Section \ref{ssec:num2} follows with a description of some general purpose communication technologies, these technologies are widely available in mobile devices and as such play a important role.
+ Finally, Section \ref{ssec:num4} presents commonly available sensors and how they can be applied to building automation and user comfort.
 %Finally subsection \ref{ssec:num5} describes ...
 
 
 
 \section{Building Automation Protocols} \label{ssec:num3}
 
-Building automation systems is a distributed control systems capable of monitoring and controlling a multitude of individual systems in a building. Usually they are used to control a building's heating, ventilation and air conditioning (HVAC), lighting, security and access control system (SAC).
+Building automation systems are distributed control systems capable of monitoring and controlling a multitude of individual systems in a building. Usually they are used to control a building's heating, ventilation and air conditioning (HVAC), lighting, security and access control system (SAC).
 The objectives of building automation are the reduction in energy consumption, operating cost, improvement of occupant comfort, and efficient operation of building systems.
 
 \subsection{Zigbee}\label{zigbee_sub} \mbox{}\\
 
-ZigBee \cite{livro_zigbee} is a short-range wireless communication protocol that uses a mesh-network in which the nodes are able to self organize, it  provides efficient ways to integrate a large number of wireless devices in an automation scenario. ZigBee is a wireless personal area network (WPAN) and the devices may operate in several frequency bands (868 MHz, 915 MHz and 2.4 GHz). ZigBee main target are battery powered devices where low data rate, low cost and long battery life are the main requirements.
+ZigBee \cite{livro_zigbee} is a short-range wireless communication protocol that uses a mesh-network in which the nodes are able to self organize. This provides an efficient way to integrate a large number of wireless devices in an automation scenario. ZigBee is a wireless personal area network (WPAN) and the devices may operate in several frequency bands (868 MHz, 915 MHz and 2.4 GHz). ZigBee main target is battery powered devices where low data rate, low cost and long battery life are the main requirements.
 
-The ZigBee standard is developed by the ZigBee Alliance, a group of companies that maintain and publish the ZigBee standard, from the semiconductor industry and software developers to original equipment manufacturers (OEMs) and installers. 
+The ZigBee standard is developed by the ZigBee Alliance, a group of companies that maintains and publishes the ZigBee standard. 
 
-The ZigBee standard has adopted IEEE 802.15.4 as its Physical Layer (PHY) and Medium Access Control (MAC) protocols. Therefore, a ZigBee-compliant device is compliant with the IEEE 802.15.4 standard as well. 
+The ZigBee standard has adopted IEEE 802.15.4 as its \ac{PHY} and \ac{MAC} protocols. Therefore, a ZigBee-compliant device is compliant with the IEEE 802.15.4 standard as well. 
 
 ZigBee defines three device roles: the coordinator, the router and the ZigBee end device. The router is a device capable of relaying messages. If a device is the principal controller of a personal area network (PAN), it is called the coordinator. Finally, a ZigBee end device is a device that is neither a coordinator nor a router, it is the most simple device and has the ability to sleep to conserve power.
 
@@ -185,9 +185,9 @@ Primarily focused on monitoring and control functions in the home and  commercia
 
 \subsection{Summary}\mbox{}\\
 
-The examined BAS were designed with low power consumption in mind. Most solutions are not interoperable between each other: BACnet can use the LonWorks protocol LonTalk to send it's messages but both solutions can't operate with each other's compatible devices. The exceptions are ZigBee and BACNet, as both companies have worked together to ensure products can be designed to benefit from ZigBee's low-power, mesh wireless networking technology as well as BACnet's BAS data model and communications protocol. 
+The examined BAS were designed with low power consumption in mind. 
 
-Platforms such as BAcNet and LonWorks require specialized professionals as well as personalized software and/or hardware to be configured. These solution present high installation costs. Newer solutions such as ZigBee and Z-Wave are present in many products and offer reduced installation and remodeling costs: various third-party vendors offer real time analysis and controls of these systems. One of the major problems with both ZigBee and Z-Wave is the lack of HVAC products compatible with both standards, even though other products such as lights, surveillance systems, smoke detectors and many other appliances support these wireless technologies.
+Platforms such as BAcNet and LonWorks require specialized professionals as well as personalized software and/or hardware to be configured. These solution present high installation costs. Newer solutions such as ZigBee and Z-Wave are present in many products and offer reduced installation and remodeling costs: various third-party vendors offer real time analysis and controls of these systems. One of the major problems with both ZigBee and Z-Wave is the lack of \ac{HVAC} products compatible with both standards, this means we probably won't use these standards to control an available \ac{HVAC} system.
 
 
 
@@ -234,7 +234,10 @@ The Hub allows the creation of IFTTT (If This Then That) recipes to make actions
 Sensors such as the Multi sensor can monitor whether doors, windows, cabinets or the garage door are open. Other devices like the Power Outlet can control lights, electronics and small appliances, they can even follow a schedule.
 
 
-%\paragraph{Insteon Hub}\mbox{}\\
+\subsubsection{Nest thermostat}\mbox{}\\
+
+
+The Nest Learning Thermostat\footnote{https://nest.com/} is an electronic, programmable, and self-learning Wi-Fi thermostat. It uses machine learning algorithm to optimize  heating and cooling of homes. For the first weeks users have to regulate the thermostat in order to provide the reference data set. Nest can then learn people's schedule, at which temperature they are used to and when. 
 
 
 

@@ -8,7 +8,7 @@
 
 In this document, we present a system that uses regular Android tablet devices running a Android application to create a \ac{BAS}. Our system aims to improving the comfort of office users, minimize wasted energy consumption of the building and provide office security monitoring. 
 
-To develop the solution for the problem, we started by analyzing Building Automation standards and smart home solutions available in the market. Then we explored the wireless communication protocols that we could use in our system to interact with the users and external devices. Finally we analyzed the use of some sensors to improve building automation and provide occupant detection. 
+To develop the solution for the problem, we started by analyzing Building Automation standards and smart home solutions available in the market. Then we explored the wireless communication protocols that we could use in our system to interact with the user's phone and external devices. Finally we analyzed the use of some sensors to improve building automation and provide occupant detection. 
 
 We identified a set of problems in conventional \ac{BAS}, these included high hardware cost, expensive installation, limited flexibility and customization.
 Current smart home solutions also suffered from a few problems such as high cost, each additional light bulb, sensor and thermostat increased the overall cost over hundreds of euros.
@@ -47,11 +47,18 @@ We deployed the system in a office room to evaluate it's operation.
 
 \section{Future Work}
 \label{section:future}
-Nesta secção devem identificar o trabalho futuro, sob duas perspectivas:
-\begin{itemize}
-\item o trabalho que resulta directamente dos problemas que a vossa proposta criou, ou não conseguiu resolver
-\item o trabalho que resulta da evolução do sistemas
-\end{itemize}
+
+The results presented in this thesis provide a strong foundation for future work in \ac{BAS} leveraging Android devices. 
+
+One possible improvement to our system, is the possibility of adding dynamic number of controllable devices and external sensors, currently the system is designed to control a set of lights and a thermostat, in the future the system could control smart power outlets, perhaps window blinds or other devices related to the room.
+
+One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort. For example if a section of the building has a boiler for heating but our system does not detect any users inside the rooms, then the boiler temperature could be turned down a few degrees to save energy. The same principle also applies to hallways, if no users are inside a section of the building and no motion is detected the lights can be turned off or the very lest lower their brightness to save energy.
+
+Another future improvement to the system is the ability for the tablet itself to act as a \ac{BLE} beacon. This means we can use the Android device running the Hub app to achieve room user detection and can skip the external beacon device.
+
+During the development of our prototype, we were unable to install the Edup light switch in the wall due to a missing neutral wire. A neutral wire will have to be wired to the to the wall in order to deploy the protopyte as originally intended. 
+
+
 
 
 \cleardoublepage
