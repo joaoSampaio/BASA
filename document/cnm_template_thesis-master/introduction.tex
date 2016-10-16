@@ -30,13 +30,13 @@ Current solutions suffer from a set of problems:
 
 In this thesis, we preset a system which runs in existing Android devices to provide a \ac{BAS} capable of managing a room. 
 
-Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user a \ac{IFTT} system (trigger actions based on events) including voice recognition, for a personalized smart office experience. Finally, it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
+Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user a \ac{IFTTT} system (trigger actions based on events) including voice recognition, for a personalized smart office experience. Finally, it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
 
 
 By using a tablet as a \ac{BAS} we are able to reduce the monetary cost of our system in comparison to traditional alternatives. The tablet offers several sensors, access to \ac{WiFi} and \ac{BT} networks, microphone, sound speaker and a touch screen. We are able to leverage the tablet sensors including illuminance, temperature and camera sensor for automation. If the tablet does not have a temperature sensor it is possible to interact with external sensors to overcome the lack of the sensor.
 
 
-The below listed examples represent some automation actions possible with our \ac{IFTT} system that contribute to decrease energy consumption and increase user comfort:
+The below listed examples represent some automation actions possible with our \ac{IFTTT} system that contribute to decrease energy consumption and increase user comfort:
 
 \begin{itemize}
 \item If no user is present in the office then turn off the lights.
@@ -55,7 +55,7 @@ Great care was taken developing the user app to make sure the application did no
 
 The system implementation is open-source and allows home and office owners to use existing Android phones or tablets to turn a regular room into a smart room. For a system capable of controlling just the lights our solution works out of the box as long as the smart light switch is installed. To control the \ac{HVAC} system the user can either assemble an Arduino controller like our solution, or in the future it is possible to code in support for other devices like thermostats with \ac{WiFi}. 
 
-Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTT} and security system. In the future other controllable devices, triggers and actions can be added to improve the system.
+Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTTT} and security system. In the future other controllable devices, triggers and actions can be added to improve the system.
 
 
 
@@ -99,7 +99,7 @@ The following list presents the contributions of this thesis:
 \begin{itemize}
 	\item Functional prototype - An Android based \ac{BAS}, creating a 	proof of concept of integrating Android devices as part of an automation system.
 
-	\item Automation \ac{IFTT} system - Development of \ac{IFTT} system allowing the user to create personalize trigger/action rules to improve user comfort and reduce wasted energy.
+	\item Automation \ac{IFTTT} system - Development of \ac{IFTTT} system allowing the user to create personalize trigger/action rules to improve user comfort and reduce wasted energy.
 	
 	\item User detection - Development of a user detection system capable of determining if the user is inside a specific building and a specific room. 
 

@@ -42,7 +42,7 @@ In terms of price, Apple tablets have the largest cost. Since there is such a bi
 The Android and Windows tablets have very similar hardware specifications. So the tablet chosen was the Nexus 7 (2013) since the programmer had experience developing Android apps.
 
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
@@ -74,9 +74,11 @@ We require a device that offers an  API in order to be controlled by our tablet,
 
 The Nest thermostat is the most popular option in the market, integrated in many home automation systems, but since one of our requirements is keeping the cost low it does not fit our requirements. The path chosen was developing an Arduino based solution, shown in Figure~\ref{arduino_imp}, with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor.
 
+Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constrains the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
 
 
-\begin{table}[h]
+
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|l|l|l|l|}
 \hline
@@ -90,7 +92,7 @@ The Nest thermostat is the most popular option in the market, integrated in many
 \end{table}
 
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{Figures/arduino_imp}
 \caption{Arduino HVAC circuit diagram}
@@ -113,7 +115,9 @@ The lighting option chosen was the Edup Smart Light Switch, shown in Figure~\ref
 
 Originally we proposed to have, the lighting system integrated with the Arduino/\ac{HVAC} using relay actuators. In the end we decided go with the Edup light switch after searching for lighting products we could control, it is a better solution because of the touch control, the ability to continue to use the lights in case of system failure (no Internet or control mobile application crash) and no need for assembly as described previously.
 
-\begin{table}[h]
+Unfortunately the wall socket where the light switch was going to be installed was missing the neutral wire and the wait time for electricians to wire the neutral wire to the wall socket would take too long. The alternative found was to use the light switch to control a lamp, as shown in Figure~\ref{imp_light_switch_light}.
+
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
@@ -130,11 +134,18 @@ Wifi & yes & yes & yes & \begin{tabular}[c]{@{}l@{}}yes (needs arduino \\ to int
 \end{table}
 
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.5\textwidth]{Figures/edup_light}
 \caption{Edup Light Switch}
 \label{edup_light_imp}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/imp_light_switch_light}
+\caption{Edup Light Switch connected to a lamp to simulate room lights}
+\label{imp_light_switch_light}
 \end{figure}
 
 
@@ -175,12 +186,12 @@ The location detection is handled solely by the USER APP. After it confirms the 
 \mbox{}\\
 \textbf{In the building}
 
-The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC address} of the \ac{AP} matches a list of pre-scanned \ac{AP}s. This list of pre-scanned \ac{AP}s is sent to the USER APP by the HUB.  
+The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC} address of the \ac{AP} matches a list of pre-scanned \ac{AP}s. This list of pre-scanned \ac{AP}s is sent to the USER APP by the HUB.  
 
 Scanning for \ac{AP}s is battery draining and should be kept to a minimum. We could scan every minute all the time, but decided to start scanning only when the phone connectivity changed. For example when a user enters a building his phone connects to a known \ac{WiFi} network. We use this event to start scanning if the user is inside the target building.
 
 
-This solution ensures the scanning would start when the user is near a known \ac{WiFi} network. One problem with just this solution is the scanning would go on forever even if we left the office and went home. If after the first five scans (5 minutes) no matching \ac{MAC address} is found, the scanning is disabled until a new connectivity change happens. 
+This solution ensures the scanning would start when the user is near a known \ac{WiFi} network. One problem with just this solution is the scanning would go on forever even if we left the office and went home. If after the first five scans (5 minutes) no matching \ac{MAC} address is found, the scanning is disabled until a new connectivity change happens. 
 
 
 In order to implement the above solution we use an Android BroadcastReceiver to be informed when the phone changes connectivity. Then we use an AlarmManager to trigger the scanning code every minute.
@@ -313,7 +324,7 @@ Latter we decided to also include Google Firebase Database as a communication ch
 
 
 \mbox{}\\
-\textbf{Rest server}
+\textbf{Rest server - Hub app}
 
 We implemented the server using java and the SPARK 1.1.2 framework \footnote{http://sparkjava.com/} running at port 5002. The server is launched using a background service running in a separate thread.
 
@@ -338,7 +349,7 @@ The server exposes the following Rest API:
 The current implementation of SPARK Framework uses JAVA 8, since Android is compatible with JAVA 7 and partially with JAVA 8 we had to use and older version of the SPARK server that runs JAVA 7.  
 
 \mbox{}\\
-\textbf{Rest client}
+\textbf{Rest client - Hub and User app }
 
 The Rest client allows our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the HUB to communicate with the Arduino and Weather forecast API.
 
@@ -347,7 +358,7 @@ We decided to use the Retrofit Android\footnote{https://square.github.io/retrofi
 
 
 \mbox{}\\
-\textbf{Firebase}
+\textbf{Firebase - Hub and User app}
 
 Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the HUB it did not receive any request. Then we changed to a private wireless network it all worked normally.
 
@@ -365,10 +376,9 @@ One weak point of the web server is it's response time varies a lot, some times 
 
 
 \mbox{}\\
-\textbf{Edup Light Switch Communication}
+\textbf{Edup Light Switch Communication - Hub app}
 
 Communication with the Edup Light Switch required the use of TCP sockets to give commands and an UDP server to listen to changes. The communication with the light switch was previously explained in section ~\ref{light_imp}.
-
 
 
 \subsection{Security - Motion detection, video recording, Live view}\label{imp:security_motion}
@@ -554,7 +564,7 @@ The \textbf{settings screen} allows the user to change:
   
   \item Estimote beacon namespace, the id of the estimote beacon we want to get the temperature reading from.
   
-  \item Building location, the list of \ac{MAC address} separated by comma of the building. Used by the User app to determine if they are in the correct building.
+  \item Building location, the list of \ac{MAC} address separated by comma of the building. Used by the User app to determine if they are in the correct building.
   
   \item Room location, the list of Estimote beacon namespace associated to the office.
   
@@ -686,7 +696,7 @@ The lighting and \ac{HVAC} screens are straightforward, they allow the user to r
 
 The application has two main screens: the UserFragment and the HomeFragment. The UserFragment, shown in Figure~\ref{imp_user_app} allows the user to manage the zones and change application settings. The HomeFragment shows the current selected zone and all its devices.
 
-In the settings screen available through the UserFragment, shown in Figure~\ref{user_settings} the user can change some parameters such as enable/disable Firebase and location tracking or scan for wireless APs. The screen to scan for wireless APs allows the application to scan and then share via email the list of \ac{MAC address} used for building location.
+In the settings screen available through the UserFragment, shown in Figure~\ref{user_settings} the user can change some parameters such as enable/disable Firebase and location tracking or scan for wireless APs. The screen to scan for wireless APs allows the application to scan and then share via email the list of \ac{MAC} address used for building location.
 
 
 

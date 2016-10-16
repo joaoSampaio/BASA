@@ -41,7 +41,7 @@ The User app runs in the user's mobile device and offers remote control of the l
 
 The Hub app is responsible for controlling the \ac{HVAC} and lighting systems in the office, enforcing energy saving policies, improving occupant comfort and providing security monitoring when the user is away from the office.
 
-The main visual features of the Hub application are: a simple \ac{UI} to control the lights and heating/cooling system, an \ac{IFTT} automation system that allows the user to create personalize trigger/actions rules. In the background it also provides motion detection and video recording for occasions when the user left the room but movement is detected.
+The main visual features of the Hub application are: a simple \ac{UI} to control the lights and heating/cooling system, an \ac{IFTTT} automation system that allows the user to create personalize trigger/actions rules. In the background it also provides motion detection and video recording for occasions when the user left the room but movement is detected.
 
 
 \section{Hardware Architecture}\label{architecture3} 
@@ -64,7 +64,7 @@ Figure \ref{hard_architecture_system}, represents a Hub, its components and the 
 
 \subsection{Communication Protocols}
 
-The system requires that the Hub and User App, are able to communicate with each other. They will use Wi-Fi to communicate data at high data rate. The Hub can also use \ac{BLE} to get additional sensor data from external sensors. Likewise the User App can use \ac{BLE} to determine if it is close to a beacon. The communication between the Android tablet and the microcontroller is done using an WiFi network. Finally the communication among the microcontroller and the actuators is done by using the General Purpose Input/Output (GPIO) pins.
+The system requires that the Hub and User App, are able to communicate with each other. They will use \ac{WiFi} to communicate data at high data rate. The Hub can also use \ac{BLE} to get additional sensor data from external sensors. Likewise the User App can use \ac{BLE} to determine if it is close to a beacon. The communication between the Android tablet and the microcontroller is done using an WiFi network. Finally the communication among the microcontroller and the actuators is done by using the General Purpose Input/Output (GPIO) pins.
 
 
 
@@ -81,9 +81,9 @@ The system requires that the Hub and User App, are able to communicate with each
 
 In this section we present the software architecture for the mobile apps and explain some of the core functionalities of our solution.
 
-To achieve \textbf{building automation} we propose a \ac{IFTT} system. The user is able to create personalized chains of conditional statements, called "recipes", they are triggered based on events relevant to the office. With this system we could turn on the lights automatically when the user enters the room or shut them down when he leaves.
+To achieve \textbf{building automation} we propose a \ac{IFTTT} system. The user is able to create personalized chains of conditional statements, called "recipes", they are triggered based on events relevant to the office. With this system we could turn on the lights automatically when the user enters the room or shut them down when he leaves.
 
-One of the goals of our solution is \textbf{user detection}, in order to accomplish this, we can leverage two different types of location systems: \ac{WiFi} and \ac{BLE} beacon location. The location detection is handled by the user app. We use the building's \ac{WiFi} network to determine if the user is inside the building by comparing the \ac{MAC address} of available \ac{AP}s to a set of known addresses. The other location system we can use is beacon location. There can be a beacon emitting \ac{BLE} signals and when this signal is detected, we know the user is near the beacon source (the office).
+One of the goals of our solution is \textbf{user detection}, in order to accomplish this, we can leverage two different types of location systems: \ac{WiFi} and \ac{BLE} beacon location. The location detection is handled by the user app. We use the building's \ac{WiFi} network to determine if the user is inside the building by comparing the \ac{MAC} address of available \ac{AP}s to a set of known addresses. The other location system we can use is beacon location. There can be a beacon emitting \ac{BLE} signals and when this signal is detected, we know the user is near the beacon source (the office).
 
 Regarding \textbf{office security}, we propose using the tablet's camera and analyzing the consecutive frames for changes. When no user is present in the room and a large enough number of pixels are different, we assume movement has occurred. We can then notify the user that someone is inside the room.
 
@@ -114,7 +114,7 @@ The \ac{JSON} standard is used as the message format. This also means that in th
 \subsubsection{Event Manager}
 The Event Manager offers publish/subscribe service. It allows other managers to register their interest in certain events and when those happen they are notified. There can exists several different types of events: temperature reading, motion detected, user detection, etc.
 
-The Event Manager is also responsible for the automation logic by enforcing the \ac{IFTT} rules. The Automation Manager will check if the condition for the rule has been satisfied and trigger the action. 
+The Event Manager is also responsible for the automation logic by enforcing the \ac{IFTTT} rules. The Automation Manager will check if the condition for the rule has been satisfied and trigger the action. 
 
 Finally it also has a scheduler responsible for executing repetitive tasks at regular time intervals or at fixed moments.
 
