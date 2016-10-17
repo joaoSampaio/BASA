@@ -112,7 +112,7 @@ The Hub app implements a web server offering an \ac{REST} \ac{API} that the user
 The \ac{JSON} standard is used as the message format. This also means that in the future our system could communicate and be controlled by other devices using the \ac{API}.
 
 \subsubsection{Event Manager}
-The Event Manager offers publish/subscribe service. It allows other managers to register their interest in certain events and when those happen they are notified. There can exists several different types of events: temperature reading, motion detected, user detection, etc.
+The Event Manager offers publish/subscribe service. It allows other managers to register their interest in certain events and when those happen they are notified. There can exist several different types of events: temperature reading, motion detected, user detection, etc.
 
 The Event Manager is also responsible for the automation logic by enforcing the \ac{IFTTT} rules. The Automation Manager will check if the condition for the rule has been satisfied and trigger the action. 
 

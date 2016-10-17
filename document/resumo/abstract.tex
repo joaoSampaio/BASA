@@ -61,8 +61,6 @@ The below listed examples represent some automation actions possible with our \a
 
 The above examples are not hard-coded into the system. They are created by the user. This ability offers great flexibility to our system to provide a personalized feel to the room.
 
-Our system can be seen as a framework that provides a modern \ac{UI}, a \ac{IFTTT} and security system. In the future other controllable devices, triggers and actions can be added to improve the system.
-
 
 
 
@@ -78,7 +76,7 @@ Until recently, there was no standard industry network protocol for building aut
 They were designed for specialized tasks, which limits the possibilities and capabilities of every node. The automation control is usually performed on a
 centralized server, commonly specified to as the Gateway. Installation may be a very complex task, requiring personalized hardware and/or software to be configured.
 
-More recently other standards for building automation were created: ZigBee \cite{livro_zigbee} and Z-wave \cite{zwave}\cite{zigbeeAndZWave}. The new protocols vary from the previous ones by being designed to use wireless communication networks with mesh networks and allowing different manufacturers to produce products designed to to operate with these protocols. Nowadays many home automation products use ZigBee or Z-wave as their wireless communication standard allowing interoperability between products from different manufacturers.
+More recently other standards for building automation were created: ZigBee \cite{livro_zigbee} and Z-wave \cite{zwave}\cite{zigbeeAndZWave}. These new protocols vary from the previous ones by being designed to use wireless mesh communication networks and allowing different manufacturers to produce products designed to to operate with these protocols. Nowadays many home automation products use ZigBee or Z-wave as their wireless communication standard allowing interoperability between products from different manufacturers.
 
 
 
@@ -87,16 +85,16 @@ More recently other standards for building automation were created: ZigBee \cite
 The popularity of home automation has been increasing in recent years due to higher affordability and simplicity. Home automation may include centralized control of lighting, \ac{HVAC}, appliances, security locks of gates and doors and other systems.
 Vendor solutions often rely in wireless technologies to connect the various devices, thus eliminating the need to rewire the house.
 
-Some companies like Philips have developed smart lighting products that allow remote control over the lighting system without the use of conventional light switches. The Philips hue\footnote{www2.meethue.com, last accessed on January 6$^{th}$, 2016} is a wireless lighting system. This system is quite simple, you replace existing lights with Hue light bulbs and use a device called Hue bridge to communicate with the lights using a mobile application. Both Philips hue and similar smart lights for a problem: the user cannot use a regular light switch to switch them off. By doing that the lights become disabled, the user won't be able to use the mobile application to turned them back on, requiring the user to flip the light switch back up.
+Some companies like Philips have developed smart lighting products that allow remote control over the lighting system without the use of conventional light switches. The Philips hue\footnote{www2.meethue.com, last accessed on January 6$^{th}$, 2016} is a wireless lighting system. This system is quite simple, you replace existing lights with Hue light bulbs and use a device called Hue bridge to communicate with the lights using a mobile application. Both Philips hue and similar smart lights suffer from a problem: the user cannot use a regular light switch to switch them off. By doing that the lights become disabled, the user won't be able to use the mobile application to turned them back on, requiring the user to flip the light switch back up.
 
 One other popular product is the Nest\footnote{https://nest.com/} Learning Thermostat. It is an electronic, programmable, and self-learning \ac{WiFi} thermostat. It uses machine learning algorithm to optimize  heating and cooling of homes. Studies\cite{related:nest} show this thermostat is capable providing savings equal to about 10\%-12\% of heating usage and electric savings equal to about 15\% of cooling usage in homes with central air conditioning.
 
 Amazon Echo\footnote{https://www.amazon.com/Amazon-Echo-Bluetooth-Speaker-with-WiFi-Alexa/dp/B00X4WHP5E, accessed 10/10/2016} is a smart speaker developed by Amazon\footnote{https://www.amazon.com/}. The device is capable of voice interaction, music playback, making to-do lists and other useful features. It can also control several smart devices using itself as a home automation hub. The main characteristic of Echo is it's voice interaction capability, any automation system would benefit by having such functionality.
 
-Finally there are companies that provide web-based services that allows users to create simple conditional statements, which are triggered based on changes to other web. One such company is IFTTT, it allows user to trigger actions based on services such as Weather channel, Facebook, Gmail, Amazon Echo and Nest thermostat. This service allows user for example to automate their Philips Hue lights, Nest thermostat and many other services. 
+Finally there are companies that provide web-based services that allows users to create simple conditional statements, which are triggered based on changes to other web. One such company is IFTTT, it allows the user to trigger actions based on services such as Weather channel, Facebook, Gmail, Amazon Echo and Nest thermostat. This service allows the user for example to automate their Philips Hue lights, Nest thermostat and many other services. 
 
 
-There are many products for home automation in the market, in this paper we merely discussed some that contribute to our final solution. We learned smart lights have some setbacks. The Nest thermostat offers a good solution to control a \ac{HVAC} system. The only problem is it has a high monetary cost so it won't be used in our solution. Echo increases user comfort by allowing it to serve as an automation hub and allow voice interaction.We choose to implement a simple voice interaction in our final solution, as it offer many advantages. Finally we decided to implement a similar feature to the service provided by IFTTT. We allow the user to create conditional statements that trigger actions based on events in the office.
+There are many products for home automation in the market, in this paper we merely discussed some that contribute to our final solution. We learned smart lights have some setbacks. The Nest thermostat offers a good solution to control a \ac{HVAC} system. The only problem is it has a high monetary cost so it won't be used in our solution. Echo increases user comfort by allowing it to serve as an automation hub and allow voice interaction. We chose to implement a simple voice interaction in our final solution, as it offer many advantages. Finally we decided to implement a similar feature to the service provided by the company IFTTT. We allow the user to create conditional statements that trigger actions based on events in the office.
 
 
 \textbf{Occupancy detection}
@@ -147,7 +145,7 @@ The main visual features of the Hub application are: a simple \ac{GUI} to contro
 
 \subsection{Hardware Architecture}
 
-To achieve building automation, our solution requires a tablet to act as a central control unit, a beacon device used for user detection inside the room and two other devices capable of interacting with the lighting and \ac{HVAC} systems. In Figure~\ref{hard_architecture_system} we describe the man hardware components of our system and the communication protocols used.
+To achieve building automation, our solution requires a tablet to act as a central control unit, a beacon device used for user detection inside the room and two other devices capable of interacting with the lighting and \ac{HVAC} systems. In Figure~\ref{hard_architecture_system} we describe the main hardware components of our system and the communication protocols used.
 
 The tablet is where the Hub app is executed. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
 
@@ -192,7 +190,7 @@ We divided the Hub app into several managers, each responsible for several task.
 
 \textbf{Communication Layer}: The Hub app implements a web server offering an \ac{REST} \ac{API} that the user app can use to interact with. 
 
-\textbf{The Event Manager} offers publish/subscribe service. It allows other managers to register their interest in certain events and when those happen they are notified. There can exists several different types of events: temperature reading, motion detected, user detection, etc.
+\textbf{The Event Manager} offers publish/subscribe service. It allows other managers to register their interest in certain events and when those happen they are notified. There can exist several different types of events: temperature reading, motion detected, user detection, etc.
 
 The Event Manager is also responsible for the automation logic by enforcing the \ac{IFTTT} rules. The Automation Manager will check if the condition for the rule has been satisfied and trigger the action. Finally it also has a scheduler responsible for executing repetitive tasks at regular time intervals or at fixed moments.
 
@@ -224,7 +222,7 @@ The main screens are the home, lighting, temperature, security and registration 
 
 Since the user app can control several Hub apps, we require a simple registration process to add the user to the Hub. We propose showing a QR-Code in the Hub registration screen, this code possesses the \ac{IP} address for the Hub and a temporary token used for registration. The user app can use the phone camera to scan the QR-Code and automatically register the user in the Hub. Then a virtual representation of the Hub is shown in the home screen.
 
-For user detection to work when the app is not being used, we use a background service to monitor the \ac{WiFi} and beacons nearby the phone. The interval between scans are one every five seconds for \ac{BLE} scans and one minute for WiFi, these values are adequate times between scans to conservative regarding the user's mobile device battery.
+For user detection to work when the app is not being used, we use a background service to monitor the \ac{WiFi} and beacons nearby the phone. The interval between scans are one every five seconds for \ac{BLE} scans and one minute for WiFi, these values are adequate times between scans to be conservative regarding the user's mobile device battery.
 
 
 
@@ -235,7 +233,7 @@ Thus, the following sections cover the hardware and software choices made in the
 
 \subsection{Hardware Architecture}\label{hardware_arch_imp}
 
-In Figure~\ref{imp:architecture_system} is shown the required hardware components of our system. We require tablet to run the HUB app, an optional user phone with a User app installed, a device to control the HVAC system (two supported Arduino HVAC or PerOMAS) , a Edup smart light switch to control the lights. We also need a \ac{BLE} beacon for user detection inside a room and require the building's \ac{WiFi} network for user detection inside the building.
+In Figure~\ref{imp:architecture_system} is shown the required hardware components of our system. We require tablet to run the HUB app, an optional user phone with a User app installed, a device to control the HVAC system (two supported Arduino HVAC or PerOMAS\cite{peromas}), a Edup smart light switch to control the lights. We also need a \ac{BLE} beacon for user detection inside a room and require the building's \ac{WiFi} network for user detection inside the building.
 To allow communication between different components in the system we use the building's \ac{WiFi} network for local communication and use Firebase servers to allow external access from outside the building's network.
 
 
@@ -273,7 +271,7 @@ Unfortunately the wall socket where the light switch was going to be installed w
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.4\textwidth]{Figures/imp_light_switch_light}
+\includegraphics[width=0.25\textwidth]{Figures/imp_light_switch_light}
 \caption{Edup Light Switch connected to a lamp to simulate room lights}
 \label{imp_light_switch_light}
 \end{figure}
@@ -560,6 +558,8 @@ Building user detection does not need very quick response time unlike room detec
 
 Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a big problem since our system allows the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
 
+The motion test was performed during day hours, in these conditions the camera is able to capture good frames. We did not perform test during the night time  but likely our system will have problems detecting movement in completely dark rooms. To fix this problem we can install sensors to detect if the office door is open. If the door is opened and there is not enough light our system could turn on the lights momentarily to enable motion detection.
+
 
 \begin{table}[h]
 \centering
@@ -590,14 +590,14 @@ To test the external temperature sensor the HVAC system was turned on and the te
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.4\textwidth]{Figures/eval_lights}
+\includegraphics[width=0.3\textwidth]{Figures/eval_lights}
 \caption{Luminosity Readings}
 \label{eval:lights}
 \end{figure}
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.4\textwidth]{Figures/eval_temp}
+\includegraphics[width=0.3\textwidth]{Figures/eval_temp}
 \caption{Temperature Readings}
 \label{eval:temp}
 \end{figure}
@@ -611,7 +611,7 @@ The users were asked to create two distinct recipes:
   \item If the temperature is above 25 ºC, then set temperature to below 20 ºC. 
 \end{itemize} 
 
-The test results were then compared to an expert user to determine the usability of the system. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe that an inexperienced user took on average more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are to be expected, first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
+The test results were then compared to an expert user to determine the usability of the system. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe that an inexperienced user took on average 19 seconds more to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are to be expected, as first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
 
 \begin{table}[h]
 \centering
@@ -642,9 +642,9 @@ The test results were then compared to an expert user to determine the usability
 
 \section*{Conclusion}
 
-In this document, we present BASA a system that uses regular Android tablet devices running a Android application to create a \ac{BAS}. Our system aims to improve the comfort of office users, minimize wasted energy consumption of the building and provide office security monitoring. 
+In this document, we present BASA a system that uses regular Android tablet devices running an Android application to create a \ac{BAS}. Our system aims to improve the comfort of office users, minimize wasted energy consumption of the building and provide office security monitoring. 
 This is achieved by using a tablet (Hub) mounted in a wall in the office acting as a \ac{BAS}, as well as, other devices to control the lights and \ac{HVAC} system. 
-We added an \ac{IFTTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related with user neglect by detecting the user presence in the room or building. This allows the \ac{IFTTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
+We added an \ac{IFTTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related to user neglect by detecting the user presence in the room or building. This allows the \ac{IFTTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
 
 The results presented in this thesis provide a strong foundation for future work in \ac{BAS} leveraging Android devices. 
 One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort across entire sections of a building. 

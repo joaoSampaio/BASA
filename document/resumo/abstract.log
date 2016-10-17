@@ -1,12 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.9.20)  17 OCT 2016 18:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.9.8)  17 OCT 2016 22:39
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**abstract.tex
-(./abstract.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
-(/usr/share/texlive/texmf-dist/tex/latex/IEEEtran/IEEEtran.cls
+**./abstract.tex
+(abstract.tex
+LaTeX2e <2016/03/31> patch level 3
+Babel <3.9r> and hyphenation patterns for 75 language(s) loaded.
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\latex\ieeetran\IEEEtran.cls
 Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 -- See the "IEEEtran_HOWTO" manual for usage information.
 -- http://www.michaelshell.org/tex/ieeetran/
@@ -19,7 +17,7 @@ Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 \@IEEEtrantmptoksA=\toks14
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 503.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+(D:\ProgramasInstalados\latex\tex\latex\psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 -- Using 8.5in x 11in (letter) paper.
@@ -113,7 +111,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \IEEEPARstartletwidth=\dimen125
 \c@IEEEbiography=\count93
 \@IEEEtranrubishbin=\box27
-) (/usr/share/texlive/texmf-dist/tex/generic/epsf/epsf.tex
+) (C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\generic\epsf\epsf.tex
 This is `epsf.tex' v2.7.4 <14 February 2011>
 \epsffilein=\read1
 \epsfframemargin=\dimen126
@@ -124,52 +122,52 @@ This is `epsf.tex' v2.7.4 <14 February 2011>
 \epsfxsize=\dimen131
 \epsfysize=\dimen132
 \pspoints=\dimen133
-) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+) (D:\ProgramasInstalados\latex\tex\latex\graphics\graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+(D:\ProgramasInstalados\latex\tex\latex\graphics\keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks15
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+(D:\ProgramasInstalados\latex\tex\latex\graphics\graphics.sty
+Package: graphics 2016/07/10 v1.0t Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+(D:\ProgramasInstalados\latex\tex\latex\graphics\trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+(D:\ProgramasInstalados\latex\tex\latex\00miktex\graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 99.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+(D:\ProgramasInstalados\latex\tex\latex\graphics-def\pdftex.def
+File: pdftex.def 2016/07/10 v0.06j Graphics/color for pdfTeX
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count94
 ))
 \Gin@req@height=\dimen134
 \Gin@req@width=\dimen135
 )
-(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+(D:\ProgramasInstalados\latex\tex\latex\base\inputenc.sty
 Package: inputenc 2015/03/17 v1.2c Input encoding file
 \inpenc@prehook=\toks16
 \inpenc@posthook=\toks17
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
-File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
+(D:\ProgramasInstalados\latex\tex\latex\base\utf8.def
+File: utf8.def 2016/02/28 v1.1s UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
-File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+(D:\ProgramasInstalados\latex\tex\latex\base\t1enc.dfu
+File: t1enc.dfu 2016/02/28 v1.1s UTF-8 support for inputenc
    defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -381,11 +379,15 @@ File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+0219 (decimal 537)
    defining Unicode char U+021A (decimal 538)
    defining Unicode char U+021B (decimal 539)
-   defining Unicode char U+01E02 (decimal 7682)
-   defining Unicode char U+01E03 (decimal 7683)
+   defining Unicode char U+1E02 (decimal 7682)
+   defining Unicode char U+1E03 (decimal 7683)
    defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2010 (decimal 8208)
+   defining Unicode char U+2011 (decimal 8209)
+   defining Unicode char U+2012 (decimal 8210)
    defining Unicode char U+2013 (decimal 8211)
    defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2015 (decimal 8213)
    defining Unicode char U+2018 (decimal 8216)
    defining Unicode char U+2019 (decimal 8217)
    defining Unicode char U+201A (decimal 8218)
@@ -401,8 +403,8 @@ File: t1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
 Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
-File: ot1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+(D:\ProgramasInstalados\latex\tex\latex\base\ot1enc.dfu
+File: ot1enc.dfu 2016/02/28 v1.1s UTF-8 support for inputenc
    defining Unicode char U+00A0 (decimal 160)
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
@@ -442,8 +444,8 @@ File: ot1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
 Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
-File: omsenc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
+(D:\ProgramasInstalados\latex\tex\latex\base\omsenc.dfu
+File: omsenc.dfu 2016/02/28 v1.1s UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
    defining Unicode char U+00B7 (decimal 183)
@@ -466,18 +468,18 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\latex\url\url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/acronym/acronym.sty
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\latex\acronym\acronym.sty
 Package: acronym 2015/03/21 v1.41 Support for acronyms (Tobias Oetiker)
 
-(/usr/share/texlive/texmf-dist/tex/latex/bigfoot/suffix.sty
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\latex\bigfoot\suffix.sty
 Package: suffix 2006/07/15 1.5a Variant command support
 )
-(/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.sty
-(/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.tex
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\latex\xstring\xstring.sty
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\generic\xstring\xstring.tex
 \@xs@message=\write3
 \integerpart=\count95
 \decimalpart=\count96
@@ -485,8 +487,7 @@ Package: suffix 2006/07/15 1.5a Variant command support
 Package: xstring 2013/10/13  v1.7c  String manipulations (C Tellechea)
 )
 \AC@clearlist=\toks18
-)
-(./abstract.aux)
+) (abstract.aux)
 \openout1 = `abstract.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
@@ -503,7 +504,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 
 -- Lines per column: 56 (exact).
-(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+(C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count97
 \scratchdimen=\dimen136
@@ -516,59 +517,63 @@ LaTeX Font Info:    ... okay on input line 9.
 \MPnumerator=\count101
 \makeMPintoPDFobject=\count102
 \everyMPtoPDFconversion=\toks20
-) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+) (D:\ProgramasInstalados\latex\tex\generic\oberdiek\pdftexcmds.sty
+Package: pdftexcmds 2016/05/21 v0.22 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\ifpdf.sty
+Package: ifpdf 2016/05/14 v3.1 Provides the ifpdf switch
 )
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+(D:\ProgramasInstalados\latex\tex\latex\oberdiek\epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+(D:\ProgramasInstalados\latex\tex\latex\oberdiek\grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+(D:\ProgramasInstalados\latex\tex\latex\oberdiek\kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+(D:\ProgramasInstalados\latex\tex\generic\oberdiek\etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
 )))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
 Package acronym Info: Label `acro:HVAC' newly defined as it shall be overridden
 
 although it is yet undefined on input line 22.
 Package acronym Info: Label `acro:BAS' newly defined as it shall be overridden
 although it is yet undefined on input line 24.
+
+
+LaTeX Warning: Citation `iea' on page 1 undefined on input line 39.
+
+
+LaTeX Warning: Citation `ocupancy2' on page 1 undefined on input line 41.
+
 Package acronym Info: Label `acro:IFTTT' newly defined as it shall be overridde
 n
 although it is yet undefined on input line 49.
@@ -581,166 +586,219 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 56.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 56.
-Package acronym Info: Label `acro:UI' newly defined as it shall be overridden
-although it is yet undefined on input line 64.
 Package acronym Info: Label `acro:SAC' newly defined as it shall be overridden
-although it is yet undefined on input line 72.
-
-Underfull \vbox (badness 5726) has occurred while \output is active []
-
- [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+although it is yet undefined on input line 70.
+[1{C:/Users/Sampaio/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 90.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 90.
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--94
+LaTeX Warning: Citation `livro_automation' on page 2 undefined on input line 75
+.
+
+
+LaTeX Warning: Citation `bacnet:artigo1' on page 2 undefined on input line 75.
+
+
+LaTeX Warning: Citation `bacnet:bib' on page 2 undefined on input line 75.
+
+
+LaTeX Warning: Citation `livro_automation2' on page 2 undefined on input line 7
+5.
+
+
+LaTeX Warning: Citation `livro_automation2' on page 2 undefined on input line 7
+5.
+
+
+LaTeX Warning: Citation `livro_automation' on page 2 undefined on input line 75
+.
+
+
+LaTeX Warning: Citation `livro_zigbee' on page 2 undefined on input line 79.
+
+
+LaTeX Warning: Citation `zwave' on page 2 undefined on input line 79.
+
+
+LaTeX Warning: Citation `zigbeeAndZWave' on page 2 undefined on input line 79.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 88.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 88.
+
+LaTeX Warning: Citation `related:nest' on page 2 undefined on input line 90.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--92
 [][][]\OT1/ptm/m/n/8 https://www.amazon.com/Amazon-Echo-Bluetooth-Speaker-with-
 WiFi-
  []
 
+
+LaTeX Warning: Citation `ocupancy2' on page 2 undefined on input line 103.
+
+
+LaTeX Warning: Citation `ocupancy3' on page 2 undefined on input line 106.
+
+
+LaTeX Warning: Citation `ocupancy1' on page 2 undefined on input line 108.
+
 Package acronym Info: Label `acro:BLE' newly defined as it shall be overridden
-although it is yet undefined on input line 113.
-[2] <Figures/harware_arch.pdf, id=14, 482.80376pt x 341.275pt>
+although it is yet undefined on input line 111.
+[2] <Figures/harware_arch.pdf, id=13, 482.80376pt x 341.275pt>
 File: Figures/harware_arch.pdf Graphic file (type pdf)
 
 <use Figures/harware_arch.pdf>
-Package pdftex.def Info: Figures/harware_arch.pdf used on input line 137.
+Package pdftex.def Info: Figures/harware_arch.pdf used on input line 135.
 (pdftex.def)             Requested size: 206.39685pt x 145.89136pt.
 Package acronym Info: Label `acro:GUI' newly defined as it shall be overridden
-although it is yet undefined on input line 144.
+although it is yet undefined on input line 142.
 
-<Figures/arch_hardware.pdf, id=15, 876.27374pt x 397.485pt>
+<Figures/arch_hardware.pdf, id=14, 876.27374pt x 397.485pt>
 File: Figures/arch_hardware.pdf Graphic file (type pdf)
 
 <use Figures/arch_hardware.pdf>
-Package pdftex.def Info: Figures/arch_hardware.pdf used on input line 160.
+Package pdftex.def Info: Figures/arch_hardware.pdf used on input line 158.
 (pdftex.def)             Requested size: 258.0pt x 117.03264pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 160--161
+Overfull \hbox (6.0pt too wide) in paragraph at lines 158--159
  [][] 
  []
 
 Package acronym Info: Label `acro:MAC' newly defined as it shall be overridden
-although it is yet undefined on input line 172.
+although it is yet undefined on input line 170.
 Package acronym Info: Label `acro:AP' newly defined as it shall be overridden
-although it is yet undefined on input line 172.
+although it is yet undefined on input line 170.
 [3 <./Figures/harware_arch.pdf> <./Figures/arch_hardware.pdf
 
 pdfTeX warning: pdflatex (file ./Figures/arch_hardware.pdf): PDF inclusion: mul
 tiple pdfs with page group included in a single page
 >]
+Package acronym Info: Label `acro:UI' newly defined as it shall be overridden
+although it is yet undefined on input line 179.
 Package acronym Info: Label `acro:REST' newly defined as it shall be overridden
 
-although it is yet undefined on input line 193.
+although it is yet undefined on input line 191.
 Package acronym Info: Label `acro:API' newly defined as it shall be overridden
-although it is yet undefined on input line 193.
- <Figures/software_hub.pdf, id=67, 557.08125pt x 220.825pt>
+although it is yet undefined on input line 191.
+ <Figures/software_hub.pdf, id=66, 557.08125pt x 220.825pt>
 File: Figures/software_hub.pdf Graphic file (type pdf)
 
 <use Figures/software_hub.pdf>
-Package pdftex.def Info: Figures/software_hub.pdf used on input line 213.
+Package pdftex.def Info: Figures/software_hub.pdf used on input line 211.
 (pdftex.def)             Requested size: 206.39685pt x 81.81516pt.
-Package acronym Info: Label `acro:IP' newly defined as it shall be overridden
-although it is yet undefined on input line 225.
 
-<Figures/harware_arch_imp.pdf, id=68, 485.815pt x 386.44376pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+Package acronym Info: Label `acro:IP' newly defined as it shall be overridden
+although it is yet undefined on input line 223.
+
+LaTeX Warning: Citation `peromas' on page 4 undefined on input line 236.
+
+<Figures/harware_arch_imp.pdf, id=67, 485.815pt x 386.44376pt>
 File: Figures/harware_arch_imp.pdf Graphic file (type pdf)
 
 <use Figures/harware_arch_imp.pdf>
-Package pdftex.def Info: Figures/harware_arch_imp.pdf used on input line 244.
+Package pdftex.def Info: Figures/harware_arch_imp.pdf used on input line 242.
 (pdftex.def)             Requested size: 206.39685pt x 164.1745pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [4 <./Figures/software_hub.pdf>]
-<Figures/imp_light_switch_light.jpg, id=83, 4175.6pt x 2348.775pt>
+<Figures/imp_light_switch_light.jpg, id=82, 4175.6pt x 2348.775pt>
 File: Figures/imp_light_switch_light.jpg Graphic file (type jpg)
 
 <use Figures/imp_light_switch_light.jpg>
 Package pdftex.def Info: Figures/imp_light_switch_light.jpg used on input line 
-276.
-(pdftex.def)             Requested size: 206.39685pt x 116.08372pt.
+274.
+(pdftex.def)             Requested size: 129.0pt x 72.5389pt.
  [5 <./Figures/harware_arch_imp.pdf> <./Figures/imp_light_switch_light.jpg>]
 Package acronym Info: Label `acro:TCP' newly defined as it shall be overridden
-although it is yet undefined on input line 322.
+although it is yet undefined on input line 320.
 Package acronym Info: Label `acro:UDP' newly defined as it shall be overridden
-although it is yet undefined on input line 325.
+although it is yet undefined on input line 323.
 
-<Figures/Edup_imp.png, id=108, 579.16376pt x 99.37125pt>
+<Figures/Edup_imp.png, id=107, 579.16376pt x 99.37125pt>
 File: Figures/Edup_imp.png Graphic file (type png)
 
 <use Figures/Edup_imp.png>
-Package pdftex.def Info: Figures/Edup_imp.png used on input line 331.
+Package pdftex.def Info: Figures/Edup_imp.png used on input line 329.
 (pdftex.def)             Requested size: 206.39685pt x 35.41273pt.
 Package acronym Info: Label `acro:SSDP' newly defined as it shall be overridden
 
-although it is yet undefined on input line 343.
+although it is yet undefined on input line 341.
  [6 <./Figures/Edup_imp.png>]
 Package acronym Info: Label `acro:WLAN' newly defined as it shall be overridden
 
-although it is yet undefined on input line 411.
+although it is yet undefined on input line 409.
 
-<Figures/screen_temperature.png, id=114, 1927.2pt x 1204.5pt>
+<Figures/screen_temperature.png, id=113, 1927.2pt x 1204.5pt>
 File: Figures/screen_temperature.png Graphic file (type png)
 
 <use Figures/screen_temperature.png>
-Package pdftex.def Info: Figures/screen_temperature.png used on input line 455.
+Package pdftex.def Info: Figures/screen_temperature.png used on input line 453.
 
 (pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
  [7 <./Figures/screen_temperature.png>]
-<Figures/screen_completed_recipe.png, id=119, 1927.2pt x 1204.5pt>
+<Figures/screen_completed_recipe.png, id=118, 1927.2pt x 1204.5pt>
 File: Figures/screen_completed_recipe.png Graphic file (type png)
 
 <use Figures/screen_completed_recipe.png>
 Package pdftex.def Info: Figures/screen_completed_recipe.png used on input line
- 482.
+ 480.
 (pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
 
-<Figures/imp_home_user_app.png, id=120, 722.7pt x 1284.8pt>
+<Figures/imp_home_user_app.png, id=119, 722.7pt x 1284.8pt>
 File: Figures/imp_home_user_app.png Graphic file (type png)
 
 <use Figures/imp_home_user_app.png>
-Package pdftex.def Info: Figures/imp_home_user_app.png used on input line 518.
+Package pdftex.def Info: Figures/imp_home_user_app.png used on input line 516.
 (pdftex.def)             Requested size: 77.39685pt x 137.58398pt.
- [8 <./Figures/screen_completed_recipe.png> <./Figures/imp_home_user_app.png>]
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 537.
+               Default added (so using `tbp') on input line 535.
 
-<Figures/room_detection_cumulative2.png, id=124, 602.25pt x 372.39125pt>
+<Figures/room_detection_cumulative2.png, id=120, 602.25pt x 372.39125pt>
 File: Figures/room_detection_cumulative2.png Graphic file (type png)
 
 <use Figures/room_detection_cumulative2.png>
 Package pdftex.def Info: Figures/room_detection_cumulative2.png used on input l
-ine 539.
+ine 537.
 (pdftex.def)             Requested size: 258.0pt x 159.53416pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 539--540
+Overfull \hbox (6.0pt too wide) in paragraph at lines 537--538
  [][] 
  []
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 550.
+               Default added (so using `tbp') on input line 548.
 
-<Figures/building_detection_cumulative.png, id=125, 602.25pt x 372.39125pt>
+<Figures/building_detection_cumulative.png, id=121, 602.25pt x 372.39125pt>
 File: Figures/building_detection_cumulative.png Graphic file (type png)
 
 <use Figures/building_detection_cumulative.png>
 Package pdftex.def Info: Figures/building_detection_cumulative.png used on inpu
-t line 552.
+t line 550.
 (pdftex.def)             Requested size: 258.0pt x 159.53416pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 552--553
+Overfull \hbox (6.0pt too wide) in paragraph at lines 550--551
  [][] 
  []
 
-<Figures/eval_motion.pdf, id=126, 275.0275pt x 109.40875pt>
+[8 <./Figures/screen_completed_recipe.png> <./Figures/imp_home_user_app.png>]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<Figures/eval_motion.pdf, id=125, 275.0275pt x 109.40875pt>
 File: Figures/eval_motion.pdf Graphic file (type pdf)
 
 <use Figures/eval_motion.pdf>
@@ -748,32 +806,48 @@ Package pdftex.def Info: Figures/eval_motion.pdf used on input line 580.
 (pdftex.def)             Requested size: 206.39685pt x 82.10976pt.
 
 
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 591.
 
-<Figures/eval_lights.pdf, id=127, 728.7225pt x 453.695pt>
+<Figures/eval_lights.pdf, id=126, 728.7225pt x 453.695pt>
 File: Figures/eval_lights.pdf Graphic file (type pdf)
 
 <use Figures/eval_lights.pdf>
 Package pdftex.def Info: Figures/eval_lights.pdf used on input line 593.
-(pdftex.def)             Requested size: 206.39685pt x 128.49445pt.
+(pdftex.def)             Requested size: 154.80157pt x 96.37256pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 598.
 
-<Figures/eval_temp.png, id=128, 1927.2pt x 1204.5pt>
+<Figures/eval_temp.png, id=127, 1927.2pt x 1204.5pt>
 File: Figures/eval_temp.png Graphic file (type png)
 
 <use Figures/eval_temp.png>
 Package pdftex.def Info: Figures/eval_temp.png used on input line 600.
-(pdftex.def)             Requested size: 206.39685pt x 128.98499pt.
+(pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
  [9 <./Figures/room_detection_cumulative2.png> <./Figures/building_detection_cu
 mulative.png> <./Figures/eval_motion.pdf> <./Figures/eval_lights.pdf
 
 pdfTeX warning: pdflatex (file ./Figures/eval_lights.pdf): PDF inclusion: multi
 ple pdfs with page group included in a single page
->] (./abstract.bbl)
+>] (abstract.bbl
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 \end{thebibliography}
+                          
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -785,26 +859,31 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[10 <./Figures/eval_temp.png>] (./abstract.aux) ) 
+[10 <./Figures/eval_temp.png>] (abstract.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3467 strings out of 493029
- 52790 string characters out of 6136234
- 126639 words of memory out of 5000000
- 6941 multiletter control sequences out of 15000+600000
- 41460 words of font info for 75 fonts, out of 8000000 for 9000
+ 3459 strings out of 493334
+ 52802 string characters out of 3138841
+ 124428 words of memory out of 3000000
+ 6929 multiletter control sequences out of 15000+200000
+ 40324 words of font info for 74 fonts, out of 3000000 for 9000
  1145 hyphenation exceptions out of 8191
- 38i,13n,23p,777b,306s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist
-/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/urw/times/utmri8a.pfb>
-Output written on abstract.pdf (10 pages, 3141722 bytes).
+ 40i,13n,25p,791b,239s stack positions out of 5000i,500n,10000p,200000b,50000s
+{D:/ProgramasInstalados/latex/fonts/enc/dvips/fontname/8r.enc}<D:/ProgramasIn
+stalados/latex/fonts/type1/public/amsfonts/cm/cmmi6.pfb><D:/ProgramasInstalados
+/latex/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/ProgramasInstalados/latex/f
+onts/type1/urw/times/utmb8a.pfb><D:/ProgramasInstalados/latex/fonts/type1/urw/t
+imes/utmbi8a.pfb><D:/ProgramasInstalados/latex/fonts/type1/urw/times/utmr8a.pfb
+><D:/ProgramasInstalados/latex/fonts/type1/urw/times/utmri8a.pfb>
+Output written on abstract.pdf (10 pages, 3152154 bytes).
 PDF statistics:
- 175 PDF objects out of 1000 (max. 8388607)
- 106 compressed objects within 2 object streams
+ 172 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  71 words of extra memory for PDF output out of 10000 (max. 10000000)
 
