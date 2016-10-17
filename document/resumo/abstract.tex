@@ -134,7 +134,7 @@ We designed a system, named BASA, capable of controlling the lighting/\ac{HVAC} 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{Figures/harware_arch}
+\includegraphics[width=0.4\textwidth]{Figures/harware_arch}
 \caption{Overview architecture of the system}
 \label{software1}
 \end{figure}
@@ -210,7 +210,7 @@ The Event Manager is also responsible for the automation logic by enforcing the 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{Figures/software_hub}
+\includegraphics[width=0.4\textwidth]{Figures/software_hub}
 \caption{Hub APP architecture }
 \label{software2}
 \end{figure}
@@ -241,7 +241,7 @@ To allow communication between different components in the system we use the bui
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{Figures/harware_arch_imp}
+\includegraphics[width=0.4\textwidth]{Figures/harware_arch_imp}
 \caption{Hardware implementation architecture}
 \label{imp:architecture_system}
 \end{figure}
@@ -263,19 +263,13 @@ Besides controlling the room \ac{HVAC}, we require control over the lighting sys
 
 Our lighting solution should be affordable, have a physical light switch and an API to control it. The smart lights were not supported by our office (fluorescent tube lamp) for these reasons we excluded them, also the Arduino based solution implied assembling the components and that should be kept to a minimum to make BAS more easily deployable.
 
-The lighting option chosen was the Edup Smart Light Switch, shown in Figure~\ref{edup_light_imp}.  It provides a physical light switch, supports the existing infrastructure in the buildings (as long as there is a phase and neutral wire in the wall socket) and is not too expensive.
+The lighting option chosen was the Edup Smart Light Switch. It provides a physical light switch, supports the existing infrastructure in the buildings (as long as there is a phase and neutral wire in the wall socket) and is not too expensive.
 
 
 Originally we proposed to have, the lighting system integrated with the Arduino/\ac{HVAC} using relay actuators. In the end we decided go with the Edup light switch after searching for lighting products we could control, it is a better solution because of the touch control, the ability to continue to use the lights in case of system failure (no Internet or control mobile application crash) and no need for assembly as described previously.
 
 Unfortunately the wall socket where the light switch was going to be installed was missing the neutral wire and the wait time for electricians to wire the neutral wire to the wall socket would take too long. The alternative found was to use the light switch to control a lamp, as shown in Figure~\ref{imp_light_switch_light}.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.2\textwidth]{Figures/edup_light}
-\caption{Edup Light Switch}
-\label{edup_light_imp}
-\end{figure}
 
 \begin{figure}[htbp]
 \centering
@@ -458,7 +452,7 @@ The \textbf{temperature screen}, shown in Figure~\ref{screen_temperature} gives 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.4\textwidth]{Figures/screen_temperature}
+\includegraphics[width=0.3\textwidth]{Figures/screen_temperature}
 \caption{Temperature fragment.}
 \label{screen_temperature}
 \end{figure}
@@ -485,7 +479,7 @@ In the \textbf{recipe screen}, the user can create new recipes, first the trigge
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.4\textwidth]{Figures/screen_completed_recipe}
+\includegraphics[width=0.3\textwidth]{Figures/screen_completed_recipe}
 \caption{Final recipe creation fragment.}
 \label{screen_completed_recipe}
 \end{figure}
@@ -521,7 +515,7 @@ The lighting and \ac{HVAC} screens are straightforward, they allow the user to r
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.2\textwidth]{Figures/imp_home_user_app}
+\includegraphics[width=0.15\textwidth]{Figures/imp_home_user_app}
 \caption{HomeFragment screen with the added Hub.}
 \label{imp_user_app}
 \end{figure}
@@ -533,9 +527,7 @@ In order to evaluate the developed solution, we deployed the BASA system in one 
 
 All the tests were made using an Android nexus 7 2013 tablet, a motorola moto G3 Android phone, the Arduino based HVAC DHT11 temperature sensor and a Estimote BLE beacon.
 
-\textbf{User detection - Room}
-
-We measured the time it took the User app to detect the BLE beacon inside the office, the user was initially outside the office entered the room. The cumulative distribution function for the test is shown in Figure~\ref{eval:room2}.
+\textbf{User detection - Room}: We measured the time it took the User app to detect the BLE beacon inside the office, the user was initially outside the office entered the room. The cumulative distribution function for the test is shown in Figure~\ref{eval:room2}.
 
 We observed that in most cases our system detected the user presence very quickly within few seconds but in other occasions it seemed to take up to 30 seconds. To We noticed once it detected the Estimote beacon it found it correctly the consecutive times but seems to take some time for the initial discovery. We consider the time to detect the user presence is adequate for turning on the \ac{HVAC} system in the user presence but not perfect for turning on the lights when the user enters the room.
 
@@ -550,9 +542,7 @@ For cases when the user wants the lights to be on when he enters the room and if
 \end{figure}
 
 
-\textbf{User detection - Building}
-
-Several measurements were taken to determine the response time the application takes to identify the user is inside the building. The cumulative distribution function from the measurements is shown in Figure~\ref{eval:building1}.
+\textbf{User detection - Building}: Several measurements were taken to determine the response time the application takes to identify the user is inside the building. The cumulative distribution function from the measurements is shown in Figure~\ref{eval:building1}.
 
 Building user detection does not need very quick response time unlike room detection, building location will be mostly used to preheat the room before the user arrives. The response time observed shows an acceptable response time.
 
@@ -564,52 +554,90 @@ Building user detection does not need very quick response time unlike room detec
 \label{eval:building1}
 \end{figure}
 
-%In order to evaluate the developed solution, we performed several tests to measure the performance and scalability of the Domain Registry.
-%Due to public cloud \ac{IaaS} costs, we did the evaluation on IST's network infrastructure using several Virtual Machines provided by DSI (\textit{Direção de Serviços de Informática}).
-%Our evaluation intended to demonstrate that the Domain Registry is performant and scales horizontally while adding more nodes. Furthermore, we aim to show the responsiveness of the failover processes that were configured on the load balancers. For the first part of our tests, the following metrics were chosen to determine the suitability of the implementation:
-%
-%\begin{itemize}
-%\item \textit{Response time for read}: As the Domain Registry is a critical component in the call establishment process, the time it takes to perform a read should be small, in the order of the tens of ms. We will test the evolution of this metric as the load on the server increases.
-%\item \textit{Number of concurrent requests}: A large Service Provider is expected to have a large number of users, which will result in a high number of requests to the Domain Registry. Thus the Domain Registry should be able to scale to accommodate a large number of requests/s while providing a reasonable response time.
-%\item \textit{Error rate}: Measured in number of the requests that fail to be successfully replied to within the timeout period (defined as 5s). This value should be zero.
-%\end{itemize}
-%
-%The second part of our evaluation aimed at testing the failover processes of the Haproxy load balancers.
-%For that reason, we tested the two following scenarios:
-%
-%\begin{itemize}
-%\item \textit{Haproxy process fails}: In this scenario we purposely stop the Haproxy process to see that in fact the backup load balancer assumed the role of master load balancer;
-%\item \textit{Primary load balancer fails}: Here, again on purpose, we suddenly stopped \textit{keepalived}'s process to make sure that the backup load balancer claimed the shared IP address.
-%\end{itemize}
-%
-%The succeeding line graphs depict the first three scenarios that were evaluated.
-%Each point on the graphs represents an individual test type which is the average off such test type repetitions.
-%For instance, in graph from Figure \ref{fig:solicited_req_rate} the point (200,200) illustrates the first test's result in which was issued 200 requests/second and the server indeed sustained the 200 requests/second.
-%The graph from Figure \ref{fig:solicited_req_rate} represents the relation between the solicited request rate and the effective request rate, with the Domain Registry infrastructure varying from one to three application servers.
-%We can see that with three application servers (purple line), the Domain Registry becomes saturated at around 1750 request/second.
-%After that it stabilizes on that value.
-%With two application servers deployed (blue line), our prototype becomes saturated at 1200 request/seconds, and with one application server (yellow line) it saturates at around 700 requests/seconds.
-%We can see that, in fact, the Domain Registry scales horizontally whenever more nodes are added.
-%From Figure \ref{fig:solicited_req_rate} we observe an increase in capacity of approximately 600 requests/second when a new server is added.
-%The line x=y represents the ideal scenario where the system respond successfully to all requests.
-%In the following graphs we will use the effective request rate instead of the solicited request rate.
-%Figure \ref{fig:average_resp_rate} presents the average response rate for an increasing request rate.
-%Considering that the client and server are in the same network, a value of $\approx$ 15 ms is considered acceptable since it will not delay the reThink framework.
-%In earlier tests, not represented here, with the client separated from the server, we got values below 50 ms, which is also acceptable since the two were separated by the Internet.
-%As excepted, when the request rate increases past the server capacity, the server becomes saturated and the average response time increases.
-%Again, each point represents the average of a single load test type.
-%As an example, when we tried to perform 2000 requests/second with only one application server (blue line's last point), and as expected from the last graph, it saturated at $\approx$ 700 requests/s with an average response response delay of $\approx$ 600 ms.
-%Finally, from Figure \ref{fig:errors_rate} we conclude that, although we should have no errors, when the web servers become saturated some requests are not fulfilled in less than 5 seconds.
-%This value (5 seconds) was defined by us as the time we think anyone is willing to wait for a response.
-%The errors we see in Figure \ref{fig:errors_rate} were not server or client errors.
-%Those requests would probably be successfully if we did not set a timeout value.
-%However, we can see that, until the servers become saturated there were no errors.
-%
-%\begin{figure}[htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{demanded_request_rate}
-%\caption{Demanded request rate.}
-%\label{fig:solicited_req_rate}
+
+
+\textbf{Motion detection}: To test motion detection, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
+
+Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a big problem since our system allows the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+ & \begin{tabular}[c]{@{}l@{}}Person 1\\ detection\end{tabular} & \begin{tabular}[c]{@{}l@{}}Person 2\\ detection\end{tabular} & \begin{tabular}[c]{@{}l@{}}Person 3\\ detection\end{tabular} \\ \hline
+Slow walk & 20/20 & 20/20 & 20/20 \\ \hline
+Normal walk & 20/20 & 20/20 & 20/20 \\ \hline
+Run & 20/20 & 20/20 & 20/20 \\ \hline
+\end{tabular}
+\caption{Motion detection tests for three people with different heights, 20 measurements each.}
+\label{eval:motion}
+\end{table}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/eval_motion}
+\caption{Motion detection - Frame before and after, motion detected }
+\label{eval:motion_fig}
+\end{figure}
+
+\textbf{Temperature and Luminosity}: In order to test the functionality of the luminosity and temperature sensors in the system, these were used to collect ambient data.
+
+To test the luminosity sensor behavior we turned on the lights in the room and allowed the Hub to record the values for a while, then we turned off the lights and waited for a few minutes then repeated the same steps one more time. In Figure~\ref{eval:lights} we can observe two different gaps where the lights were off. As expected the Android luminosity sensor operates as intended and provides the system with correct data. 
+
+To test the external temperature sensor the HVAC system was turned on and the temperature was recorded. In Figure~\ref{eval:temp} we can observe a small decline in the temperature after the HVAC system was turned on. The temperature was lowered by 2ºC and then went back to the 24 ºC after the HVAC system was turned off.
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/eval_lights}
+\caption{Luminosity Readings}
+\label{eval:lights}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/eval_temp}
+\caption{Temperature Readings}
+\label{eval:temp}
+\end{figure}
+
+\textbf{Automation}: To evaluate the usability of the \ac{IFTTT} interface (automation recipes), user usability tests were performed with a total of 20 users. The users who performed the tests were not familiar with our system and had no previous experience with similar \ac{IFTTT} solutions.
+
+The users were asked to create two distinct recipes:
+
+\begin{itemize}
+  \item If the user left the office, then tun off all the lights.
+  \item If the temperature is above 25 ºC, then set temperature to below 20 ºC. 
+\end{itemize} 
+
+The test results were then compared to an expert user to determine the usability of the system. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe that an inexperienced user took on average more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are to be expected, first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|r|r|}
+\cline{2-3}
+ & \multicolumn{1}{l|}{Task 1} & \multicolumn{1}{l|}{Task 2} \\ \hline
+\multicolumn{1}{|l|}{Mean} & 36 & 27.8 \\ \hline
+\multicolumn{1}{|l|}{Standard deviation} & 9.31 & 5.96 \\ \hline
+\end{tabular}
+\caption{User usability tests, mean and standard deviation}
+\label{eval:automation2}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|r|r|}
+\cline{2-3}
+ & \multicolumn{1}{l|}{Task 1} & \multicolumn{1}{l|}{Task 2} \\ \hline
+\multicolumn{1}{|l|}{Mean} & 17 & 18.4 \\ \hline
+\multicolumn{1}{|l|}{Standard deviation} & 0.89 & 1.49 \\ \hline
+\end{tabular}
+\caption{Expert user usability tests, mean and standard deviation}
+\label{eval:automation3}
+\end{table}
+
 
 
 \section*{Conclusion}
@@ -627,37 +655,6 @@ During the development of our prototype, we were unable to install the Edup ligh
 
 One aspect of our system we were not completely happy with was the user detection time in a room. The detection time should have been much lower, further research and testing must be done to determine if it is the Android system who is not receiving the BLE signals due to energy saving policies or if it is the library by Estimote that we used and is not operating as it should.
 
-
-%Our approach to develop a highly available and scalable distributed system began with an evaluation of \ac{P2P} systems and architectures.
-%The idea behind a \ac{P2P} Domain Registry was each \ac{CSP} contribute to a \ac{DHT} by providing one or more nodes.
-%Although being an ideal design by their scalability and fault tolerance properties, we soon understood that the major disadvantage of these kind of systems - the loss of control over where data is stored - would not work in reThink because \acp{CSP} want to control where their data is stored.
-%Moreover, the existence of and the lack of full proof solutions to some security attacks, such as the Sybil \cite{douceur2002sybil} and Eclipse \cite{singh2006eclipse}, also discouraged the use of a \ac{P2P} Domain Registry.
-%We then proceed to evaluate client-server systems and decided to implement the Domain Registry core architecture as a \ac{REST} \ac{API} server that would allow the creation, change and deletion of user's Hyperties.
-%In order to achieve the performance requirements, we allow the Domain Registry \ac{REST} server to be replicated across several machines that will serve content in a round robin fashion, mechanism that will be performed by two load balancers in a failover state.
-%Furthermore, load balancers are responsible for actively monitoring the state of each of the servers and stop sending requests to the failed ones.
-%We decided to implement layer 7 load balancers which will allow us to interpret the requests in the load balancer.
-%Although we are not currently using all the advantages of a layer 7 load balancer, we leave the architecture prepared for future layer 7 capabilities improvements.
-%Regarding persistent data store we discussed and analysed several scalable database proposals and end up using a Cassandra database cluster that can be scaled to several nodes.
-%Since we have chosen a distributed database, we matched the Domain Registry requirements with the \ac{CAP} theorem and conclude that the Domain Registry would be an AP system, that is, a high available and network partition tolerant distributed system.
-%
-%In order to support monitoring and centralized log management, we configured, programmed and deployed a second architecture that will interact with the first one and generate graphs and near real time information about the first architecture behaviour.
-%We began to study pushing and pulling architectures, and for scalability reasons, we end up using for both logs and monitoring push-based systems in which the monitored components periodically sends events and logs for the analysis systems.
-%
-%We performed our evaluation on DSI's virtual machines and conclude that the Domain Registry scales horizontally when more nodes are added and that it favours response times of 15ms while serving user requests.
-%In worst case scenario, that is, when a load balancer fails, we shown that the recovery process is quick, preventing the clients form using the service only a couple of seconds.
-%
-%Thus, we achieved the main goal that we set out at the begging of this dissertation: develop a highly available and scalable service for Hyperty reachability information with fast response times.
-%
-%\section{Future work}
-%While we have achieved our set of goals, this work may still be improved. As the Domain Registry and its client, the Registry connector are two architectures deployed internally within a \ac{CSP}, the data generated by the Domain Registry could be serialized in another format than JSON without affecting the other reThink's components.
-%JSON data favours a human readable/editable format that can be parsed without knowing any schema in advance.
-%However, since the Domain Registry is not intended to be used by the rethink's end users, we propose an evaluation of the utilization of another formats, such as, Google's Protocol Buffers.
-%They provide a very dense output, and thus, a very fast processing.
-%However, data is internally ambiguous, and thus, requires a knowing schema to perform data decoding.
-%
-%Currently the Domain Registry is deployed within DSI's virtual machines.
-%However, we would like to deploy the whole architecture in a \ac{IaaS} environment, such as Amazon's AWS or Google's Computer Engine, and perform a comparison analysis of the performance of both deployments.
-%Moreover, related to that deployment we would like to perform a Domain Registry deployment cost analysis in such \ac{IaaS} environment.
 
 \bibliographystyle{IEEEtran}
 

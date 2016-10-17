@@ -212,23 +212,11 @@ Our building \ac{WiFi} range extends a few meters beyond the front door so in so
 %\label{eval:building1}
 %\end{table}
 
-\begin{table}[]
-\centering
-\begin{tabular}{l|r|}
-\cline{2-2}
- & \multicolumn{1}{l|}{Test 1} \\ \hline
-\multicolumn{1}{|l|}{Mean} & 21.62 \\ \hline
-\multicolumn{1}{|l|}{Median deviation} & 15.83 \\ \hline
-\end{tabular}
-\caption{Building detection  - Mean and Standard deviation for user detection time}
-\label{eval:building2}
-\end{table}
-
 
 
 \subsection{Motion detection}
 
-To test our motion detection algorithm and system, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
+To test motion detection, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
 
 Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a big problem since our system allows the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
 
@@ -316,11 +304,11 @@ The results obtained in this test used a specific Android tablet with 2GB of Ram
 
 \subsection{Automation}
 
-The results obtain from the usability test allow us to determine if further changes are need to improve our \ac{IFTTT} interface. The test results are shown in  Table~\ref{eval:automation1}. We observed the users took more time completing the first task due to inexperience with the system, then they performed much better on the second task. 
+The results obtained from the usability test allowed us to determine if further changes are need to improve our \ac{IFTTT} interface. The test results are shown in  Table~\ref{eval:automation1}. We observed the users took more time completing the first task due to inexperience with the system, then they performed much better on the second task. 
 
 One of the reasons user took more time in the first task was because after they correctly selected the trigger, they had to select an option inside the trigger, some options are not visible in the screen and the user needed to swipe vertically to show the remaining options.
 
-Tests with an expert user were performed in order to compare the times of experienced and inexperience users when handling the interface. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe the an inexperienced user on average took more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are expected first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
+Tests with an expert user were performed in order to compare the times of experienced and inexperience users when handling the interface. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe that an inexperienced user on average took more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are to be expected, first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
 
  
 
