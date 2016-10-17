@@ -9,13 +9,19 @@ Our system leverages user detection to improve occupant comfort and reduce waste
 
 The motion detection feature of our system is important to achieve room security and monitoring, for that reason we need to ensure the system has a good success rate. 
 
+The temperature and luminosity sensors have a important role in ensuring our system has the correct information to perform building automation and increase user comfort, by adjusting the temperature and lights. 
+
+Another objective is test the Hub web-server ability to respond to a few concurrent users. Since the server is intended to serve a single office room we don't expect dozens of concurrent user.
+
+Finally we need to determine if users fell comfortable using our system, if they have any problems with the \ac{UI} those problems need to be corrected.
+
 
 \section{Tests Scenarios}
 
 
 
 All the tests were conducted in real scenarios inside a office of the \ac{IST} - Taguspark campus. They
-were executed using the hardware described in Section~\ref{hardware_arch_imp} and one Moto G3 phone running the user app.
+were executed using the hardware described in Section~\ref{hardware_arch_imp}, and one Moto G3 phone running the user app.
 
 
 \subsection{User detection - Room}
@@ -29,7 +35,7 @@ For testing purposes the user app is set to vibrate when it near the beacon in o
 
 \subsection{User detection - Building}
 
-In order to test the reaction time of user detection in the building, a series of measurements were performed. The test consists in observing the time the user app takes to detect phone is inside the building. The user will start walking from the front door of the building to the office door.
+In order to test the reaction time of user detection in the building, a series of measurements were performed. The test consists in observing the time the user app takes to detect the phone is inside the building. The user will start walking from the front door of the building to the office door.
 
 The device used will be a Moto G3 Android phone with WiFi support.
 For testing purposes the user app is set to vibrate when it is inside the building, a chronometer will be used to determine the reaction time. The test will result in at least a set of 20 measurements in order to determine a meaningful average of the reaction time of the system.
@@ -38,14 +44,14 @@ For testing purposes the user app is set to vibrate when it is inside the buildi
 
 \subsection{Motion detection}
 
-To test the motion detection a series of measurements were performed to test the algorithm. The test consists in a person walking in front of the Hub camera at different speeds from the door to a desk. This test will show if our system is able to detect motion when people enter the office and if it can be tricked and produce wrong negatives.
+To test the motion detection a series of measurements were performed to test the algorithm. The test consists in a person walking in front of the Hub camera at different speeds from the door to a desk. This test will show if our system is able to detect motion when people enter the office and if it can be tricked and produce wrong negatives results.
 
 
 
 
 \subsection{Temperature and Luminosity}
 
-This test measures the correct behavior of the built-in luminosity sensor and the external temperature sensor. 
+This test measures the correct behavior of the built-in luminosity sensor and the external temperature sensor (Arduino based). 
 
 The luminosity test consists in reading the sensor data in a room with no lights on, and then turn on the lights to determine if a change in the sensor was observed.
 
@@ -62,7 +68,7 @@ The goal of this test is to determine if the server handles an small amount of c
 
 \subsection{Automation}
 
-To evaluate the usability of the \ac{IFTTT} interface (automation recipes), user usability tests were performed. The users who performed the tests were not familiar with our system and had no previous experience with similar \ac{IFTTT} solutions.
+To evaluate the usability of the \ac{IFTTT} interface (automation recipes), user usability tests were performed with a total of 20 users. The users who performed the tests were not familiar with our system and had no previous experience with similar \ac{IFTTT} solutions.
 
 The users were asked to create two distinct recipes:
 
@@ -84,7 +90,7 @@ A set of measurements were taken in order to determine the response time the app
 
 In the first test the user is inside the room with \ac{BT} turned off, then it was turned on and timer started, Figure~\ref{eval:room} shows cumulative distribution function obtained from the measurements. 
 
-In the second set of measurements the user starts walking outside the office and opens a unlocked door to the room. The cumulative distribution function for the second test is shown in Figure~\ref{eval:room2}.
+In the second set of measurements the user starts walking outside the office and opens the unlocked door to the room. The cumulative distribution function for the second test is shown in Figure~\ref{eval:room2}.
 
 The mean median deviation for both tests are shown in Figure~\ref{eval:room2}. We observed that in most cases our system detected the user presence very quickly within few seconds but in other occasions it seemed to take up to 30 seconds. We noticed once it detected the Estimote beacon it found it correctly the consecutive times but seems to take some time for the initial discovery. Looking at the second test, where the user enters the room, we see an average value 6 seconds and a standard deviation of 9 seconds. We consider the time to detect the user presence is adequate for turning on the \ac{HVAC} system in the user presence but not perfect for turning on the lights when the user enters the room.
 
@@ -93,14 +99,14 @@ For cases when the user wants the lights to be on when he enters the room and if
 The office where the tests were conducted is roughly 3 by 10 meters wide. The Estimote beacon range was set to approximately 3.5 meters range. Regarding false positives the beacon signal can be observed in the adjacent office when next to the wall between the rooms. This means our system can incorrectly identifies the user presence when inside an adjacent office next to the wall. A possible solution to this problem is to use more than one beacon with range of 1.5 meters and spread them in the room. Since the range is shorter the signal won't be so easily detected in adjacent rooms but still offers coverage in the target room.
 
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.9\textwidth]{Figures/room_detection_cumulative}
 \caption{Cumulative distribution function of the time it takes to detect a user inside a room}
 \label{eval:room}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.9\textwidth]{Figures/room_detection_cumulative2}
 \caption{Cumulative distribution function of the time it takes to detect a user when user enters room}
@@ -159,13 +165,13 @@ The office where the tests were conducted is roughly 3 by 10 meters wide. The Es
 
 Several measurements were taken to determine the response time the application takes to identify the user is inside the building. The cumulative distribution function from the measurements is shown in Figure~\ref{eval:building1}.
 
-Building user detection does not need very quick response time unlike room detection, building location will be mostly used to preheat the room before the user arrives. The response time observed shows a acceptable response time with mean and standard deviation shown in Table~\ref{eval:building2}.
+Building user detection does not need very quick response time unlike room detection, building location will be mostly used to preheat the room before the user arrives. The response time observed shows an acceptable response time with mean and standard deviation shown in Table~\ref{eval:building2}.
 
 
 
 Our building \ac{WiFi} range extends a few meters beyond the front door so in some measurements our system detected the user before he walked to the front door of the building.
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.9\textwidth]{Figures/building_detection_cumulative}
 \caption{Cumulative distribution function of the time it takes to detect a user  after he enters the building}
@@ -224,7 +230,7 @@ Our building \ac{WiFi} range extends a few meters beyond the front door so in so
 
 To test our motion detection algorithm and system, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
 
-Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a problem since our system allow the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
+Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a big problem since our system allows the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
 
 
 \begin{table}[]
@@ -241,7 +247,7 @@ Run & 20/20 & 20/20 & 20/20 \\ \hline
 \end{table}
 
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.4\textwidth]{Figures/eval_motion}
 \caption{Motion detection - Frame before and after, motion detected }
@@ -256,16 +262,16 @@ In order to test the functionality of the luminosity and temperature sensors in 
 
 To test the luminosity sensor behavior we turned on the lights in the room and allowed the Hub to record the values for a while, then we turned off the lights and waited for a few minutes then repeated the same steps one more time. In Figure~\ref{eval:lights} we can observe two different gaps where the lights were off. As expected the Android luminosity sensor operates as intended and provides the system with correct data. 
 
-To test the external temperature sensor the HVAC system was turned on and the temperature was recorded. So what in can see in Figure~\ref{eval:temp} is a small decline in the temperature after the HVAC system was turned on. The temperature was lowered by 2ºC and then went back to the 24 ºC after the HVAC system was turned off.
+To test the external temperature sensor the HVAC system was turned on and the temperature was recorded. In Figure~\ref{eval:temp} we can observe a small decline in the temperature after the HVAC system was turned on. The temperature was lowered by 2ºC and then went back to the 24 ºC after the HVAC system was turned off.
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/eval_lights}
 \caption{Luminosity Readings}
 \label{eval:lights}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/eval_temp}
 \caption{Temperature Readings}
@@ -312,9 +318,11 @@ The results obtained in this test used a specific Android tablet with 2GB of Ram
 
 The results obtain from the usability test allow us to determine if further changes are need to improve our \ac{IFTTT} interface. The test results are shown in  Table~\ref{eval:automation1}. We observed the users took more time completing the first task due to inexperience with the system, then they performed much better on the second task. 
 
-One of the reasons user took more time in the first task was because after they correctly selected the trigger, they had to select an option inside the trigger, some options are not visible in the screen and the user needs to swipe vertically to show the remaining options.
+One of the reasons user took more time in the first task was because after they correctly selected the trigger, they had to select an option inside the trigger, some options are not visible in the screen and the user needed to swipe vertically to show the remaining options.
 
-Tests with an expert user were performed in order to compare the times of experienced and inexperience users when handling the interface. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe the an inexperienced user on average took more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task.
+Tests with an expert user were performed in order to compare the times of experienced and inexperience users when handling the interface. Comparing the results presented in Table~\ref{eval:automation2} and Table~\ref{eval:automation3} we observe the an inexperienced user on average took more 19 seconds to complete the first task in comparison with the experienced user. On average the inexperienced user took more 9 seconds to complete the second task. These values are expected first time users always under perform expert users. The extra time the first time users took is reasonable. We conclude there were no major problems in the \ac{UI} used to complete the tasks.
+
+ 
 
 
 \begin{table}[]

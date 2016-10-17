@@ -11,13 +11,13 @@ In this document, we present a system that uses regular Android tablet devices r
 To develop the solution for the problem, we started by analyzing Building Automation standards and smart home solutions available in the market. Then we explored the wireless communication protocols that we could use in our system to interact with the user's phone and external devices. Finally we analyzed the use of some sensors to improve building automation and provide occupant detection. 
 
 We identified a set of problems in conventional \ac{BAS}, these included high hardware cost, expensive installation, limited flexibility and customization.
-Current smart home solutions also suffered from a few problems such as high cost, each additional light bulb, sensor and thermostat increased the overall cost over hundreds of euros.
+Current smart home solutions also suffered from a few problems, the main problem is high overall cost. Each additional light bulb, sensor and thermostat increased the overall cost over hundreds of euros.
 
 Our solution uses regular Android devices to achieve automation and security of an office room. The tablet (Hub) mounted in a wall in the office includes sensors, access to \ac{WiFi} and \ac{BT} networks and other useful components. We use the internal sensors,as well as, a external temperature sensor to allow the application running in the tablet to take informed actions based on the current conditions of the room. 
-We added an \ac{IFTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related with user neglect by detecting the user presence in the room or building. This allows the \ac{IFTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
+We added an \ac{IFTTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related with user neglect by detecting the user presence in the room or building. This allows the \ac{IFTTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
 
 
-Finally, the solution was tested in a real scenario  at IST - Taguspark.
+Finally, the solution was tested in a real scenario  at \ac{IST} - Taguspark.
 
 
 \section{Achievements}
@@ -29,7 +29,7 @@ Besides the wall mounted Android tablet in the room, we developed an User app th
 
 %The system is able to interact with several different external devices. These devices include smart light switches, Arduino or PerOMAS device to control the \ac{HVAC} system.
 
-Another contribution of BASA is offering a \ac{IFTT} automation solution that allows users to create conditional event based rules. This solution offer high flexibility as it allows the user to create automation rules that fit the room and user requirements.
+Another contribution of BASA is offering a \ac{IFTTT} automation solution that allows users to create conditional event based rules. This solution offer high flexibility as it allows the user to create automation rules that fit the room and user requirements.
 
 A simple motion detection functionality was added to the system, this allows our system to record small videos when motion is detected and no user is present inside the room. The videos can be latter accessed using the User app.
 
@@ -50,13 +50,13 @@ We deployed the system in a office room to evaluate it's operation.
 
 The results presented in this thesis provide a strong foundation for future work in \ac{BAS} leveraging Android devices. 
 
-One possible improvement to our system, is the possibility of adding dynamic number of controllable devices and external sensors, currently the system is designed to control a set of lights and a thermostat, in the future the system could control smart power outlets, perhaps window blinds or other devices related to the room.
+One possible improvement to our system, is the possibility of adding a dynamic number of controllable devices and external sensors. Currently the system is designed to control a set of lights and a thermostat, in the future the system could control smart power outlets, perhaps window blinds or other devices related to the room.
 
-One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort. For example if a section of the building has a boiler for heating but our system does not detect any users inside the rooms, then the boiler temperature could be turned down a few degrees to save energy. The same principle also applies to hallways, if no users are inside a section of the building and no motion is detected the lights can be turned off or the very lest lower their brightness to save energy.
+One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort. For example if a section of the building has a boiler for heating but our system does not detect any users inside the rooms, then the boiler temperature could be turned down a few degrees to save energy. The same principle also applies to hallways, if no users are inside a section of the building and no motion is detected the lights can be turned off or the very least lower their brightness to save energy.
 
 Another future improvement to the system is the ability for the tablet itself to act as a \ac{BLE} beacon. This means we can use the Android device running the Hub app to achieve room user detection and can skip the external beacon device.
 
-Our system has voice recognition functionality, this feature can be used to create a personal assistant. The user could ask questions to the Hub and receive answers. It could also provide voice alerts to Google calendar events and much more. One possible route could be to use Amazon Alexa\footnote{https://developer.amazon.com/alexa} voice service. This service already offers answers to verbal questions and can be integrated in our system.
+Our system has voice recognition functionality, this feature can be used to create a personal assistant. The user could ask questions to the Hub and receive answers. It could also provide voice alerts to Google calendar events and much more. One possible route we could tale is to use Amazon Alexa\footnote{https://developer.amazon.com/alexa} voice service. This service already offers answers to verbal questions and can be integrated in our system.
 
 During the development of our prototype, we were unable to install the Edup light switch in the wall due to a missing neutral wire. A neutral wire will have to be wired to the to the wall in order to deploy the prototype as originally intended. 
 
