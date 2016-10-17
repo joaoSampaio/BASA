@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.9.20)  17 OCT 2016 15:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.9.20)  17 OCT 2016 18:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -617,10 +617,6 @@ Overfull \hbox (6.0pt too wide) in paragraph at lines 137--138
 
 Package acronym Info: Label `acro:GUI' newly defined as it shall be overridden
 although it is yet undefined on input line 144.
-
-LaTeX Warning: Reference `architecture4' on page 3 undefined on input line 154.
-
-
 <Figures/arch_hardware.pdf, id=15, 876.27374pt x 397.485pt>
 File: Figures/arch_hardware.pdf Graphic file (type pdf)
 
@@ -632,11 +628,148 @@ Overfull \hbox (6.0pt too wide) in paragraph at lines 160--161
  [][] 
  []
 
-(./abstract.bbl [3 <./Figures/harware_arch.pdf> <./Figures/arch_hardware.pdf
+[3 <./Figures/harware_arch.pdf> <./Figures/arch_hardware.pdf
 
 pdfTeX warning: pdflatex (file ./Figures/arch_hardware.pdf): PDF inclusion: mul
 tiple pdfs with page group included in a single page
->])
+>]
+Package acronym Info: Label `acro:MAC' newly defined as it shall be overridden
+although it is yet undefined on input line 172.
+Package acronym Info: Label `acro:AP' newly defined as it shall be overridden
+although it is yet undefined on input line 172.
+Package acronym Info: Label `acro:REST' newly defined as it shall be overridden
+
+although it is yet undefined on input line 193.
+Package acronym Info: Label `acro:API' newly defined as it shall be overridden
+although it is yet undefined on input line 193.
+ <Figures/software_hub.pdf, id=67, 557.08125pt x 220.825pt>
+File: Figures/software_hub.pdf Graphic file (type pdf)
+
+<use Figures/software_hub.pdf>
+Package pdftex.def Info: Figures/software_hub.pdf used on input line 213.
+(pdftex.def)             Requested size: 258.0pt x 102.27147pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 213--214
+ [][] 
+ []
+
+Package acronym Info: Label `acro:IP' newly defined as it shall be overridden
+although it is yet undefined on input line 225.
+[4 <./Figures/software_hub.pdf>]
+<Figures/harware_arch_imp.pdf, id=82, 485.815pt x 386.44376pt>
+File: Figures/harware_arch_imp.pdf Graphic file (type pdf)
+
+<use Figures/harware_arch_imp.pdf>
+Package pdftex.def Info: Figures/harware_arch_imp.pdf used on input line 244.
+(pdftex.def)             Requested size: 258.0pt x 205.22697pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 244--245
+ [][] 
+ []
+
+<Figures/edup_light.jpg, id=83, 702.625pt x 702.625pt>
+File: Figures/edup_light.jpg Graphic file (type jpg)
+
+<use Figures/edup_light.jpg>
+Package pdftex.def Info: Figures/edup_light.jpg used on input line 275.
+(pdftex.def)             Requested size: 103.19843pt x 103.19136pt.
+
+<Figures/imp_light_switch_light.jpg, id=84, 4175.6pt x 2348.775pt>
+File: Figures/imp_light_switch_light.jpg Graphic file (type jpg)
+
+<use Figures/imp_light_switch_light.jpg>
+Package pdftex.def Info: Figures/imp_light_switch_light.jpg used on input line 
+282.
+(pdftex.def)             Requested size: 206.39685pt x 116.08372pt.
+ [5 <./Figures/harware_arch_imp.pdf> <./Figures/edup_light.jpg> <./Figures/imp_
+light_switch_light.jpg>]
+Package acronym Info: Label `acro:TCP' newly defined as it shall be overridden
+although it is yet undefined on input line 328.
+Package acronym Info: Label `acro:UDP' newly defined as it shall be overridden
+although it is yet undefined on input line 331.
+
+<Figures/Edup_imp.png, id=109, 579.16376pt x 99.37125pt>
+File: Figures/Edup_imp.png Graphic file (type png)
+
+<use Figures/Edup_imp.png>
+Package pdftex.def Info: Figures/Edup_imp.png used on input line 337.
+(pdftex.def)             Requested size: 206.39685pt x 35.41273pt.
+Package acronym Info: Label `acro:SSDP' newly defined as it shall be overridden
+
+although it is yet undefined on input line 349.
+ [6 <./Figures/Edup_imp.png>]
+Package acronym Info: Label `acro:WLAN' newly defined as it shall be overridden
+
+although it is yet undefined on input line 417.
+ [7]
+<Figures/screen_temperature.png, id=119, 1927.2pt x 1204.5pt>
+File: Figures/screen_temperature.png Graphic file (type png)
+
+<use Figures/screen_temperature.png>
+Package pdftex.def Info: Figures/screen_temperature.png used on input line 461.
+
+(pdftex.def)             Requested size: 206.39685pt x 128.98499pt.
+
+<Figures/screen_completed_recipe.png, id=120, 1927.2pt x 1204.5pt>
+File: Figures/screen_completed_recipe.png Graphic file (type png)
+
+<use Figures/screen_completed_recipe.png>
+Package pdftex.def Info: Figures/screen_completed_recipe.png used on input line
+ 488.
+(pdftex.def)             Requested size: 206.39685pt x 128.98499pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<Figures/imp_home_user_app.png, id=121, 722.7pt x 1284.8pt>
+File: Figures/imp_home_user_app.png Graphic file (type png)
+
+<use Figures/imp_home_user_app.png>
+Package pdftex.def Info: Figures/imp_home_user_app.png used on input line 524.
+(pdftex.def)             Requested size: 103.19843pt x 183.45839pt.
+
+Underfull \vbox (badness 3199) has occurred while \output is active []
+
+ [8 <./Figures/screen_temperature.png> <./Figures/screen_completed_recipe.png> 
+<./Figures/imp_home_user_app.png>]
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 545.
+
+<Figures/room_detection_cumulative2.png, id=125, 602.25pt x 372.39125pt>
+File: Figures/room_detection_cumulative2.png Graphic file (type png)
+
+<use Figures/room_detection_cumulative2.png>
+Package pdftex.def Info: Figures/room_detection_cumulative2.png used on input l
+ine 547.
+(pdftex.def)             Requested size: 258.0pt x 159.53416pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 547--548
+ [][] 
+ []
+
+
+LaTeX Warning: Reference `eval:building2' on page 9 undefined on input line 557
+.
+
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 560.
+
+<Figures/building_detection_cumulative.png, id=126, 602.25pt x 372.39125pt>
+File: Figures/building_detection_cumulative.png Graphic file (type png)
+
+<use Figures/building_detection_cumulative.png>
+Package pdftex.def Info: Figures/building_detection_cumulative.png used on inpu
+t line 562.
+(pdftex.def)             Requested size: 258.0pt x 159.53416pt.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 562--563
+ [][] 
+ []
+
+[9 <./Figures/room_detection_cumulative2.png> <./Figures/building_detection_cum
+ulative.png>] (./abstract.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -648,7 +781,7 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4
+[10
 
 ] (./abstract.aux)
 
@@ -656,10 +789,10 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3328 strings out of 493029
- 49919 string characters out of 6136234
- 124268 words of memory out of 5000000
- 6816 multiletter control sequences out of 15000+600000
+ 3445 strings out of 493029
+ 52385 string characters out of 6136234
+ 124591 words of memory out of 5000000
+ 6922 multiletter control sequences out of 15000+600000
  39736 words of font info for 73 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
  38i,8n,23p,777b,306s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -669,10 +802,10 @@ e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf
 onts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
 times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on abstract.pdf (4 pages, 195414 bytes).
+Output written on abstract.pdf (10 pages, 3003317 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 157 PDF objects out of 1000 (max. 8388607)
+ 95 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

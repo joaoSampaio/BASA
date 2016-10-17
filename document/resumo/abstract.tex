@@ -210,7 +210,7 @@ The Event Manager is also responsible for the automation logic by enforcing the 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{Figures/software_hub}
+\includegraphics[width=0.5\textwidth]{Figures/software_hub}
 \caption{Hub APP architecture }
 \label{software2}
 \end{figure}
@@ -220,299 +220,349 @@ The Event Manager is also responsible for the automation logic by enforcing the 
 \subsubsection{App Architecture}
 The User App is simpler than the Hub App, the app is divided in \ac{UI} screens. There are no managers like the Hub architecture, the business logic is handled by each screen separately. 
 
-
 The main screens are the home, lighting, temperature, security and registration screens.
 
 Since the user app can control several Hub apps, we require a simple registration process to add the user to the Hub. We propose showing a QR-Code in the Hub registration screen, this code possesses the \ac{IP} address for the Hub and a temporary token used for registration. The user app can use the phone camera to scan the QR-Code and automatically register the user in the Hub. Then a virtual representation of the Hub is shown in the home screen.
 
-For user detection to work when the app is not being used, we need some kind of background service to monitor the \ac{WiFi} and beacons nearby the phone. The interval between scans will be further studied in order to provide adequate time between scans and be conservative regarding the user's mobile device battery.
+For user detection to work when the app is not being used, we use a background service to monitor the \ac{WiFi} and beacons nearby the phone. The interval between scans are one every five seconds for \ac{BLE} scans and one minute for WiFi, these values are adequate times between scans to conservative regarding the user's mobile device battery.
 
 
-
-
-
-
-
-
-
-
-
-%
-%Our main design goal is to provide reThink with a highly available architecture for one of its most important and critical components, the Domain Registry.
-%We identify two actors: the \ac{CSP}, which provides and deploys the system, and the Registry Connector, a microservice also deployed by a \ac{CSP} (and part of reThink), which interacts with the Domain Registry.
-%This service stores, for each Hyperty instance, the data that enables other applications to contact it.
-%It provides the mapping between the identifier for each Hyperty instance (a Hyperty is used by a user in one or more devices) and the data that characterizes it.
-%Therefore, the Domain Registry should provide the following functional requisites:
-%
-%\begin{itemize}
-%\item Map identities to the Hyperty instances they are using;
-%\item Provide information about a given Hyperty instance;
-%\item Provide an interface for the other reThink services to harvest data.
-%\end{itemize}
-%
-%Moreover, our system must fulfill the following non-functional requirements:
-%
-%\begin{itemize}
-%\item \textit{Fast query response time}: Since users connect with each other through the framework reThink will provide, our service must provide low latency and a consistent performance.
-%Otherwise, it could have an influence on the performance of the reThink platform;
-%\item \textit{Scalability}: This service must provide a service for a large number of service providers.
-%It should easily scale as needed;
-%\item \textit{High availability}: Without this service, there is no way to establish a call or communication.
-%Thus, our systems needs to be continuously operational.
-%\item \textit{No single points of failure}: A certain amount of resilience must be provided, so that the failure of one node does not bring the others down.
-%It means that at any time, any given node can be shut down or disconnected from the network while the system continues operational.
-%% and the rest of the cluster will continue to operate as long as at least one of the nodes remains.
-%\item \textit{Security}: Since we do not know the environment in which CSPs will deploy both the Domain Registry and the Registry Connector, will we have to ensure that the communication between these two systems can be configured in a secure manner.
-%\item \textit{Developers usability}: Ensuring that every developer's computer is configured properly will delay the development process and introduce complications with software versions incompatibilities.
-%Thus, from the standpoint of reThink's deployment team, the Domain Registry needs to be easily deployable will all its dependencies.
-%\end{itemize}
-%
-%From the point of view of the \ac{CSP} that deploys the service, our design must also include a second architecture (directly linked to the first one), that enables system administration mechanisms to constantly monitor the behaviour of the deployment system, including all the interactions of its internal components.
-%For that reason, the upcoming, maintainability also non-functional requirements, shall be present in our global architecture.
-%
-%\begin{itemize}
-%\item \textit{Support for component monitoring}: Monitoring is an important part of cluster management and should be provided.
-%As a result, we should be able to detect, before they lead to service outage, network component problems, as well as analyzing long-term trends (e.g. database or user base growth);
-%\item \textit{Support for centralized log management}: All logs must be searchable in a single place.
-%That way, we can correlate logs from different applications, which can be useful to identify user actions and applications problems.
-%\end{itemize}
-%
-%\subsection{Core architecture}
-%
-%In order to comply with the functional requirements, we introduce a client-server \ac{REST} \ac{API} that exposes, and allow other systems to harvest, the services offered by the Domain Registry.
-%The \ac{API} will run on application servers that will reside in the middle tier of our deployment architecture, and will return, in all cases, JSON documents containing the responses.
-%This \ac{REST} service will allow the Registry Connector to register, delete and perform different types of searches on Hyperties.
-%Thus, the Registry Connector will issue \ac{HTTP} requests to the Domain Registry, which, in turn, will deal with the requests and save (or retrieve) them from a persistent or in-memory database.
-%Despite the knowledge that \ac{P2P} systems have an ideal system design when considering high availability and failure resilience, given the reThink project constraints for the Domain Registry, we introduce it as a client-server system, with high availability being achieved using server replication and load balancing techniques.
-%Thus, as can be seen from Figure \ref{fig:first_arch}, the Registry Connector will issue \ac{HTTP} requests to the Domain Registry, which, in turn, will deal with the requests and save (or retrieve) them from a persistent or in-memory database.
-%
-%\begin{figure}[htb!]
-%\centering
-%\includegraphics[width=0.25\textwidth]{functional_requirements}
-%\caption{Domain Registry architecture}
-%\label{fig:first_arch}
-%\end{figure}
-%
-%Therefore, the \ac{HTTP}-based RESTful \ac{API} is defined with the following aspects: base URL, such as \url{http://api.domain.registry.com/hyperties}, standard \ac{HTTP} methods (e.g. GET, PUT, and DELETE), and a description of the state transition of the data elements.
-%The \ac{API} endpoints that were defined are presented in the Table \ref{table:os}.
-%The first endpoint is the most important one since it let us create, return and delete an individual Hyperty for a specific user.
-%The second is used to return all the Hyperties associated to a user, and the rest of the endpoints are utilized to perform advanced searches based on Hyperties characteristics, i.e. DataSchemes and Resources.
-%
-%\begin{table}
-%\includegraphics[width=1\linewidth]{api_table}
-%\caption{Domain Registry API specification}
-%\label{table:os}
-%\end{table}
-%
-%\subsection{Deployment architecture}
-%
-%In the previous section we established the core architecture of the Domain Registry.
-%It will be a REST API running on application servers that will allow reThink components to manage Hyperties.
-%However, no non-functional requirements were addressed.
-%These requirements (introduced in Section \ref{act}) are hugely important because if the Domain Registry is not reliable (for instance, while under load, or when failures happen), then it is not going to serve the client's needs. For that reason, the following topics will introduce an architecture that was designed to meet such requirements.
-%
-%Figure \ref{fig:app_servers_model} depicts the overall deployment architecture of the Domain Registry.
-%It comprises two load balancers in failover mode, and at least, three application servers and four database nodes.
-%All database nodes work in a P2P model and thus any application server can query any database server, and get the expected results.
-%All application servers will run the REST \ac{API} discussed in the previous section.
-%Moreover, besides this production ready architecture, and for the purposing of testing, are also available two other deployment alternatives: the first with requests being saved on memory and the second with requests being saved in a single database node.
-%These two alternatives allow developers to rapidly test the \ac{API} with the purpose of getting to know, and experiment, the available endpoints.
-%
-%\begin{figure}[htb!]
-%\centering
-%\includegraphics[width=0.49\textwidth]{arch2}
-%\caption{Domain Registry main architecture}
-%\label{fig:app_servers_model}
-%\end{figure}
-%
-%Over the next sections, will be provided, individually, an explanation of each component that comprises our deployment architecture design.
-%First, it is described the load balancers and floating IP mechanisms, then the database design and lastly, the security concerns that will allow a \ac{CSP} to deploy, if needed, the Domain Registry using \ac{SSL} connections.
-%
-%\subsection{Load balancing}
-%Load balancers are added to a client server environment to improve performance and reliability by distributing client workload across multiple server machines.
-%Between Layer 7 and layer 4 load balancers, we end up configuring a layer 7 load balancer because, although currently all the application servers serve the same content, as the system will grow, it may be useful to reassess the load balancing technique, and maybe employ a request awareness traffic distribution and choose different servers to deal with different requests.
-%Moreover, in terms of traffic encryption, layer 4 load balancers treat connections as just a stream of information, rather than using its functions to evaluate and interpret the \ac{HTTP} requests.
-%This would mean that we would be forced to configure traffic encryption on the application servers.
-%Nevertheless, an architecture with a single load balancer can easily become unavailable if that load balancer fails.
-%Since we needed to take into account high availability and scalability we decided to use a \ac{HA} pair of load balancers with a failover mechanism in an active/passive configuration.
-%This configuration is achieved by having a floating (or virtual) IP address which can be instantly moved from one server to another in the same datacenter.
-%Our infrastructure must be capable of immediately assigning this floating IP to a operational server.
-%
-%To achieve this goal, we used the \ac{VRRP} \cite{vrrp}, which is responsible for providing automatic assignment of an available floating IP address to participating hosts while, at the same time, ensuring that one of them is the active node (master node).
-%
-%While using \ac{VRRP}, failover should occur when either of the following conditions occur:
-%
-%\begin{itemize}
-%\item \textit{When the load balancer health check on the primary server indicates that the load balancer is no longer running}: In this model, the master node constantly monitors the load balancer process, and when this process goes down, it sends a message to the slave node, which takes over almost seamlessly and instantly, allowing the service to resume.
-%\item \textit{When the secondary server loses its \ac{VRRP} connection to the primary server}: If the secondary server can not reach the primary server for any reason, it will change its state to `master` and will attempt to claim the shared IP address.
-%\end{itemize}
-%
-%In the case where there are more than one backup load balancers with the same priority values, the one with the highest IP address wins and becomes the master.
-%If the primary server later recovers, it will change back to being the master node and will reclaim the shared IP address, because it will have the higher priority number in its configuration.
-%
-%\subsection{Database}
-
-%Based on our requirements presented in Section \ref{act}, our infrastructure must provide high availability with no single point of failure, and every component should be easily scaled.
-%Thus, our main concern while choosing a database system, is to preserve availability during network partitions and failures nodes.
-%Easily scaled architectures are almost often analogous with horizontal scalability, which is the process of adding, incrementally, hardware as needed.
-%Also, a database that follows this design must allow a seamless addition of new nodes with no downtimes.
-%This level of scalability flexibility easily grants a very efficient deployment on either hardware components or in cloud based \ac{IaaS}.
-%Our goal here, is the ability for the \ac{CSP} to scale our already developed and configured cluster as needed, and even do it on the fly (if \ac{IaaS} is used).
-%Therefore, and by taking into account the above requirements, we chose to use a NoSQL database cluster with a P2P architecture, comprised of four nodes and a replication factor of three, allowing us to survive the loss of two nodes.
-%As studied in Section \ref{rel}, the decentralization nature of \ac{P2P} architectures grants us the robustness needed because it removes the single point of failure from the database design.
-%Moreover, with this database architecture we achieve horizontal scalability by adding more nodes as system's capacity increases.
-%The overall Domain Registry capacity also increases, while the likelihood of a system failure decreases.
-%
-%\subsection{Security Concerns}
-%Network security consists of the practices used by an organization to prevent unauthorized access or modification of networked resources.
-%In our infrastructure, even though all components are to be run inside the same organization, we decided to implement a secure connection with HTTPS between the Registry Connector and the Domain Registry.
-%Despite the fact that the Domain Registry interface is not available from the outside, if the \ac{CSP} decides that the connection between those two components should be secure, HTTPS can be enabled and HTTP disabled.
-%This way, we give the possibility for the \acp{CSP} to choose what is the best mode to deploy the communication between such components given their infrastructure, requirements and objectives.
-%However, making this connection secure introduces a significantly level of trust since, by the usage of encrypted traffic between those two components, malicious employees can not see or modify what they were not authorized to.
-%
-%In order to achieve this requirement, we were faced with various alternatives on how to implement \ac{TLS}/\ac{SSL} security between the client, the load balancer and the \ac{REST} application servers.
-%The first scenario we studied works by having the load balancer decipher the traffic on the client side and cypher it on the server side.
-%It can access the content of the request and make decisions based on that.
-%Here, we have the concern off having both the load balancer and the application servers dealing with high CPU loads.
-%It would probably be necessary to vertically scale these two components in order to achieve good performance levels.
-%Secondly, scenario know as \ac{SSL}/\ac{TLS} offloading works by having the load balancer deciphers the traffic on the client side and sends it in clear to the backend servers.
-%The application servers do not handle encrypted \ac{SSL} traffic.
-%However, as in the first two scenarios, the load balancer need to be properly scaled to meet the overhead introduced by the \ac{SSL} handshakes \cite{rfc5246}.
-%We end up choosing the last scenario because it is way more feasible to scale-up only one component, which in this case will be the load balancer, than to scale-up multiple backend servers.
-%Also, by offloading an heavy task from the application servers, we let the servers to focus on the application itself, while at the same time we save hardware resources that can be used by the load balancers.
-%Although we are focusing on application servers performance, we also know that the load balancer can itself become saturated, while dealing with \ac{SSL} connections under heavy loads of traffic.
-%It is a trade-off that has to be carefully re-evaluated as the system will grew.
-%
-%\subsection{Operation Support Systems}
-%Last but not least, we present an architecture aimed at resolving the maintainability non-functional requirement present in Section \ref{act}.
-%It is system directly connected to the deployment architecture which aims at providing network management tools, i.e. monitoring and centralized logging.
-%
-%In Figure \ref{fig:mon_logg} is represented the overall monitoring and centralized logging architecture of our infrastructure.
-%It incorporates fives servers being three of them responsible for dealing with application logs and two of them with monitoring events.
-%As depicted, all three components from the deployment architecture (database servers, load balancers and application servers) generate logs and events that are then sent to other servers responsible for interpreting, parsing and displaying the results to the administrators.
-%
-%\begin{figure}[htb!]
-%\centering
-%\includegraphics[width=0.51\textwidth]{L2}
-%\caption{Monitoring and centralized logging.}
-%\label{fig:mon_logg}
-%\end{figure}
-%
-%\subsection{Monitoring}
-%Monitoring is the process of collecting, processing, aggregating and displaying quantitative real-time events to the users.
-%As we are dealing with a lot of servers, each of which with different exposed metrics and resource usage, monitoring is a crucial component of our infrastructure.
-%It will help us to tell us when something is broken, or perhaps what is about to break.
-%For that reason, we implemented a model where all of the servers generate and send monitoring events to another server responsible for parsing and saving them.
-%We opted for a push model in which the servers responsible for dealing with the monitoring events do not do active monitoring.
-%They just wait for the events to reach them, and then when they do, the servers start to perform the tasks they were assign to do.
-%It is a data driven model.
-%Once the deployment architecture servers realize that they have some content to be published, they will sent it without any request from the receiving end.
-%This model has a big advantage over the pull based systems: the monitored nodes do not need to be constantly interrupted with demands for data that they probably do not have yet.
-%Moreover, a pull based system, would mean that, as our deployment architecture grew, it would also grow the number of servers that the system would need to query.
-%Therefore, a push based system was design that collect the following (most important) metrics: resource level events, requests per seconds, response codes, writes and reads and average response times.
-%
-%\subsection{Centralized Log Management}
-%
-%Gathering and parsing logs from multiple sources have several problems since most of the sources generate logs in different formats.
-%Therefore, we needed a central component, which would be responsible for parsing and storing logs for future use (e.g. dashboards).
-%Bearing this in mind, we deployed a system where all those logs are first received by a server responsible for normalize varying schemas and data formats.
-%This normalization aims at defining a common logging format before inserting it into an analytics datastore.
-%Storing is the second stage of this system.
-%For displaying near real-time data to the developers, fast searches and powerful analytics capabilities were needed.
-%Consequently, all of our logs are sent from the parsing server to a second one that does exactly that.
-%It is vital that the chosen tool to carry out this task can be able to scale horizontally as fast as our dataset grows.
 
 \section{Implementation}
 
-%This section addresses the main decisions adopted regarding the implementation and configuration of the Domain Registry's internal components.
-%Thus, the following sections cover the technologies that were used in the development process of those components, as well as, other modules that, although not represented in Chapter \ref{act} images, were important to perform some internal actions.
-%The Domain Registry's core architecture, that is, the \ac{REST} application servers, was developed with a micro framework for creating Web applications with Java called Spark\footnote{http://sparkjava.com/}.
-%Not to be confused with Apache Spark, Spark Framework, inspired by Ruby's Sinatra\footnote{www.sinatrarb.com}, is a lightweight Web framework built around Java version 8 lambda functions, which makes Spark a lot less verbose than the typically Java Web frameworks.
-%This possibility started with the choice of Java as the primary programming language to develop the Domain Registry, since it was a programming language that was already being used in many reThink services.
-%For code maintainability reasons it was the best choice which will allow, if needed, other developers to maintain and enhance the Domain Registry features in short periods of time.
-%Regarding the executing of the Domain Registry it has two storage models: in-memory database and a persistent database.
-%The persistent database is a production ready model, while the in-memory database is used for its deployment simplicity when running tests and integrations with the others components.
-%The storage type is chosen \textit{a priori} with a configuration parameter.
-%
-%\subsection{Deployment architecture}
-%For the Deployment Architecture we used several tools that will be explained throughout the next sections.
-%However, and since it served as the basis of our deployment, we will introduce Docker \cite{Merkel:2014:DLL:2600239.2600241} here.
-%Docker, sometimes described as lightweight Virtual Machines, is a new container technology, that eases the process of packaging and shipping distributed applications, whether on personal computers, VMs, or the cloud.
-%It allows applications to be isolated within containers with instructions for what they will need to be ported from machine to machine.
-%VMs allow exactly the same thing and with configuration management tools, such as Puppet, Chef or event Vagrant, the process of configuring portable and reproducible applications becomes less complicated.
-%However, where Docker stands out is on resource efficiency.
-%If we have fifteen Docker containers we can run all fifteen with a single command on a single VM.
-%By contrast, if we have fifteen VMs, we need to boot fifteen operative systems instances with a minimum of resources from the base \ac{OS}.
-%
-%\subsubsection{Load balancing}
-%The load balancer mechanisms implementation was split in two phases: first, its foremost role, that is, the distribution of traffic across a set of servers, and then, the failover strategy using the \ac{VRRP} protocol.
-%Accordingly, the procedures introduced in this section will follow the same order.
-%The most important Haproxy configuration sections are the \textit{frontend} and the \textit{backend} of the load balancer.
-%The \textit{frontend} defines how requests should be forwarded to the backend servers, while in the \textit{backend} it is specified what load balance algorithm to use and which servers are available to  receive requests.
-%On the \textit{frontend} we listen for incoming connections on the load balancer public IP address, add the HTTP header X-Forwarded-Proto to the end of the HTTP request, and redirect incoming traffic to the backend section.
-%The X-Forwarded-Proto header defines the originating protocol of a HTTP request.
-%
-%On the backend of the load balancer with decided to use the \textit{roundrobin} algorithm to serve requests to the Domain Servers.
-%With \textit{roundrobin}, each server is used in turn, or if some servers are more hardware powerful than the others we can assign weights to each one.
-%In our setup, and since our servers are equal hardware wise, we assigned the same weight to all servers.
-%
-%In order for overcome a possible load balancer failure, floating IP addresses were used.
-%To achieve this goal, we used a tool called \textit{keepliaved} \cite{hollenback2008improving} that implements the \ac{VRRP} protocol, allowing us to setup Haproxy nodes in a master/slave configuration.
-%If the master goes down (hardware or software failure), the slave will be elected as master and will start accepting requests.
-%We started its configuration by opening a \textit{vrrp\_script} on both load balancers.
-%This will allow \textit{keepliaved} to monitor the Haproxy process and start recover measures when its process stops claiming a pid.
-%Besides Haproxy monitoring failover, if the backup load balancer ever stops receiving \ac{VRRP} advertisements from the master, it assumes the master role and assigns the floating IP to itself.
-%The only differences between the master and the slave configurations is the priority setting.
-%The master server must have a high priority value than the slave.
-%Otherwise, when the master node comes back up, it can not assume its role because it would have a lower priority value.
-%Thus, in our configuration, the master and the slave have priority values of 101 and 100 respectively.
-%\subsubsection{Database}
-%We chose a NoSQL database to persistently store the data about each Hyperty instance.
-%As the \ac{CAP} theorem states, it is impossible for any networked shared-data system have more than two of the three desirable properties: consistency, availability and network partition tolerance \cite{browne2009brewer}.
-%Taking this into account, and since we were trying to achieve high availability with no single failures, we started the process of choosing the ideal NoSQL database.
-%The ideal system would be one that was designed to be AP (from \ac{CAP} theorem), while at the same time, could provide some sort of configuration flexibility around consistency.
-%We end up using Cassandra database for two reasons: it supports a multi-datacenter aware topology that can be very useful as reThink grows and second, because Cassandra's design focused on handling large write volumes.
-%Regarding consistency, whenever the Registry Connector makes a read operation, it should read the last updated value.
-%However, for providing strong consistency, we need to give up on availability during a network partition.
-%This happens because we can not prevent disparity between two replicas that can not communicate with each other while accepting write requests on both sides of the partition.
-%Consequently, we might get old data from some nodes and new data from others until it has been replicated across all devices (eventual consistency).
-%However, for what we are trying to accomplish with the Domain Registry, it is preferable to have weak consistency than not having availability, since in the latter scenario communication between two reThink users will not be possible.
-%Moreover, lack of availability will affect, by far, many more users than eventual consistency will.
-%In essence, we designed and configured the Domain Registry Cassandra cluster to be an AP system.
-%\subsubsection{Monitoring}
-%The main reasons why we chose a push-based model are related to scalability as the number of machines that generate events grows.
-%Riemann was designed as a distributed system monitoring tool.
-%It aggregates events from network hosts and feeds them into a stream processing language so they can be manipulated and aggregated.
-%We used Riemann to monitor the Domain Registry architecture because, besides it featuring a push-based model, it benefits from a stateless architecture that makes it easy to partition and distribute the load across multiple Riemann servers.
-%Once again, as we are expecting the Domain Registry architecture to grow in number of servers, we are ensuring that our actual Riemann architecture can be scaled with small effort.
-%
-%Many quantitative data about our architecture was monitored.
-%However, the only data that is processed using code written by us before being sent directly to the dashboard are event aggregator sums that represent two things: the total number of HTTP requests made to our API and the number of servers (i.e. application and database servers) that were working at a given time.
-%Starting by the Haproxy load balancers, we develop a program that first, scrapped its statistics web page to a \ac{CSV} document and second, that sent the values parsed from the \ac{CSV} to our Riemann server.
-%To monitor the Docker containers state, we run the \textit{docker inspect} command periodically, extract its result and sent it to Riemann for further processing.
-%The API related metrics were sent to Riemann directly from the Domain Registry core architecture.
-%Finally, to detect the resource level state of each machine (e.g. CPU and RAM) we used a Ruby gem called usagewatch\footnote{https://github.com/nethacker/usagewatch}, wrapped it into a script and again sent its observed values to the Riemann server.
-%\subsubsection{Centralized logging}
-%In order to achieve near real-time log analysis we needed text to be indexed on some sort of database.
-%Text indexing refers to the technique of scanning full text documents and building a list of search terms (usually called index) \cite{salton1988term}.
-%Consequently, whenever a search occurs, only the index is queried, rather than the original documents.
-%For that purpose we used Elasticsearch (along with Logstash), which is a full text highly available search engine based on Apache Lucene \cite{jakarta2004apache}.
-%Elasticsearch fulfills our needs by letting us perform fast searches over logs, and also by allowing horizontally scalability which is achieved by partitioning the data into smaller chunks that can be stored in several Elasticsearch  cluster nodes.
-%As a means of shipping logs to Logstash, we installed in each of our servers another ELK stack underlying product called Beats\footnote{https://www.elastic.co/products/beats}.
-%Beats are lightweight processes written in Golang that capture and send all sort of logs, directly or through Logstash, to Elasticsearch.
-%Basically, what we did was configure each of our applications (i.e. Load balancer, REST server and database servers) to produce its logs to a predefined file which was then read by Beats and sent back to Logstash for further processing.
-%Lastly, we configured Kibana.
-%Kibana reads from Elasticsearch and displays its results in dashboards that can be consulted by developers.
-%The overall idea of our centralized logging implementation is depicted in Figure \ref{fig:log_s}.
-%
-%\begin{figure}[htb!]
-%\centering
-%\includegraphics[width=0.5\textwidth]{loooooooooog}
-%\caption{Centralized logging architecture.}
-%\label{fig:log_s}
-%\end{figure}
+This section addresses the main decisions adopted regarding the implementation of BASA.
+Thus, the following sections cover the hardware and software choices made in the development process of BASA.
+
+\subsection{Hardware Architecture}\label{hardware_arch_imp}
+
+In Figure~\ref{imp:architecture_system} is shown the required hardware components of our system. We require tablet to run the HUB app, an optional user phone with a User app installed, a device to control the HVAC system (two supported Arduino HVAC or PerOMAS) , a Edup smart light switch to control the lights. We also need a \ac{BLE} beacon for user detection inside a room and require the building's \ac{WiFi} network for user detection inside the building.
+To allow communication between different components in the system we use the building's \ac{WiFi} network for local communication and use Firebase servers to allow external access from outside the building's network.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/harware_arch_imp}
+\caption{Hardware implementation architecture}
+\label{imp:architecture_system}
+\end{figure}
+
+\textbf{Tablet}: We decided to use the Nexus 7 (2013) Android tablet as the base of our solution. We compared IOS, Android and Windows devices and concluded that an Android tablet fitted our needs.
+
+\textbf{HVAC control}: In order for our \ac{BAS} solution to control an \ac{HVAC} system, we need to either communicate with a building central controlling unit or physically control the system like a thermostat does. Since most buildings don't have a central control point running some kind of server where you can control it using the Internet, we went with the thermostat route.
+
+We compared several thermostat alternatives with WiFi capabilities and concluded there was non that fitted the requirements of low cost. We decided to make a Arduino based device with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor. 
+
+Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constrains the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
+
+
+
+
+
+\textbf{Lighting control}:
+Besides controlling the room \ac{HVAC}, we require control over the lighting system. After some research we had three options: using wireless controllable light bulbs, using some kind of Arduino/relay solution (like the thermostat) or using a wireless controllable light switch.
+
+Our lighting solution should be affordable, have a physical light switch and an API to control it. The smart lights were not supported by our office (fluorescent tube lamp) for these reasons we excluded them, also the Arduino based solution implied assembling the components and that should be kept to a minimum to make BAS more easily deployable.
+
+The lighting option chosen was the Edup Smart Light Switch, shown in Figure~\ref{edup_light_imp}.  It provides a physical light switch, supports the existing infrastructure in the buildings (as long as there is a phase and neutral wire in the wall socket) and is not too expensive.
+
+
+Originally we proposed to have, the lighting system integrated with the Arduino/\ac{HVAC} using relay actuators. In the end we decided go with the Edup light switch after searching for lighting products we could control, it is a better solution because of the touch control, the ability to continue to use the lights in case of system failure (no Internet or control mobile application crash) and no need for assembly as described previously.
+
+Unfortunately the wall socket where the light switch was going to be installed was missing the neutral wire and the wait time for electricians to wire the neutral wire to the wall socket would take too long. The alternative found was to use the light switch to control a lamp, as shown in Figure~\ref{imp_light_switch_light}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.2\textwidth]{Figures/edup_light}
+\caption{Edup Light Switch}
+\label{edup_light_imp}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/imp_light_switch_light}
+\caption{Edup Light Switch connected to a lamp to simulate room lights}
+\label{imp_light_switch_light}
+\end{figure}
+
+
+\textbf{Bluetooth Beacon}: We require a way to determine if a user is near a certain point in the building such as the office.
+
+From the alternatives seen in Section~\ref{rel}, we  determined that \ac{BLE} beacons are an option to achieve room level location in a building.
+
+There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrolers and commercial beacon products.
+
+We decided to use an Estimote beacon. One reason it was chosen was because we had access to one and did not need to buy it. This beacon also has the advantage of providing temperature readings if needed. Since it is portable we can position it anywhere in the room, enabling better coverage.
+
+
+\subsection{Software Architecture}
+
+Our solution is divided into two separate Android applications, the Hub and the User apps. Both apps work side by side in order to achieve the following functions: user detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring \& security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
+
+
+\subsubsection{User Detection}\label{user_detection_imp}
+
+One energy wasting problem is having lighting and \ac{HVAC} systems turned on when no one is present.
+
+In order for our system to take informed actions to cut wasted energy consumption, we need to know the location of users inside the building.
+
+
+The location detection is handled solely by the User app. After it confirms the user is inside the building or office it communicates with the Hub. The Hub on the other hand has a timeout system. When a user fails to communicate for a certain amount of time, we presumed he is outside the office or building.
+
+\mbox{}\\
+\textbf{In the building}
+
+The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC} address of the \ac{AP} matches a list of pre-scanned \ac{AP}s. Scanning for \ac{AP}s is battery draining and should be kept to a minimum. We decided to start scanning only when the phone connectivity changed. For example when a user enters a building his phone connects to a known \ac{WiFi} network. We use this event to start scanning if the user is inside the target building. If after the first five scans (5 minutes) no matching \ac{MAC} address is found, the scanning is disabled until a new connectivity change happens. 
+
+\mbox{}\\
+\textbf{In the office}
+
+There is an Estimote beacon in the office broadcasting a \ac{BLE} signal. The User app is scanning for these signals and when one is found, it checks if the namespace in the beacon package matches the known office namespace. After a correct match is found the User app informs the Hub the user is near the office.
+
+While \ac{BLE} is a lower-energy system than traditional \ac{BT}, scanning is still a fairly power-intensive operation. To limit the battery drain, we only start scanning when the user is in the building and stop after he leaves.
+
+\subsubsection{Lighting control}\label{light_imp}
+
+
+The lights in the room are controlled by the Edup Light Switch. The switch must be connected to a WiFi network and automatically establishes a connection to Edup server to enable remote control over the switch. There is no official \ac{API} available to control the switches. In order to understand how the light switch worked, we used Wireshark to sniff the traffic created by the Edup app and tried to replicate the messages.
+
+To control the light switch we must open a \ac{TCP} socket send a packet with the data shown in Figure~\ref{edup_imp} to Edup server.
+
+Since there is a physical light switch interface we must update our application status if a button is pressed outside our app.
+The Edup Light Switch sends a \ac{UDP} multicast message when the lights are changed. We implemented an \ac{UDP} server to listen for those messages. 
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/Edup_imp}
+\caption{Edup packet to set the light state.}
+\label{edup_imp}
+\end{figure}
+
+
+
+
+\subsubsection{HVAC control}
+
+Our HVAC solution uses an Arduino with a webserver to control a relay in order to interface with the existing HVAC system.
+
+The Arduino we implemented to control the HVAC system was written using C++ programming language. It has four jobs: run a webserver to allow remote control, implement \ac{SSDP} to enable discovery, read temperature/humidity values from a DHT11 sensor and control a four relay module to control the HVAC system.
+
+After the device is first powered up it becomes an \ac{AP}. The user must connect to this new network and use the browser to choose the \ac{WiFi} network he want the Arduino to connect.
+
+There is a discovery mechanism to add the Arduino IP address automatically to the Hub app. Our Arduino based HVAC they is programmed to be discoverable using the \ac{SSDP} protocol using a search target equal to "schemas-basa-pt:service:climate:1".
+
+BASA can also control the PerOMAS system installed in some offices in our campus, we use the provided web-server to interact with the system.
+
+\subsubsection{Automation}
+
+One of the goals of BASA is enabling the automation of lighting and \ac{HVAC} systems. A simple example of an automation task is turning off the lights when no occupant is inside the office.
+With our system we aimed to give the user high control and flexibility over the automation process. We allow the user to create chains of simple conditional statements, called "recipes", which are triggered based on events relative to the office.
+
+The recipes contain a list of triggers and actions. A recipe can have one or multiple triggers, when there are multiple triggers we use the logical AND operator, all the triggers must be true in order for the recipe to be triggered.
+
+There are seven triggers available:
+
+\begin{itemize}
+  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
+  \item \textbf{Motion:} The motion sensor is triggered when something changes in the field of view of the Hub or no movement detected in X seconds.
+  \item \textbf{Speech:} Say the keyword "my assistant" and after the beep you say the phrase specified in the trigger.  
+  \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
+  \item \textbf{User location:} Allows actions to be triggered based on the user location
+  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
+  \item \textbf{Light state:} This trigger allows the user to trigger an action when the lights are in a specific state.
+  
+\end{itemize}
+
+The actions available are:
+
+\begin{itemize}
+  \item \textbf{Light:} Sets the state of the lights.
+  \item \textbf{Temperature:} Changes the target temperature and turns on the HVAC if needed.
+  \item \textbf{Speech:} This action uses the speakers to say the text specified (text to speech).
+\end{itemize}
+
+In order to show the flexibility of our solution we created the following example recipes:
+\begin{itemize}
+  \item If a user is in the office and the temperature is above 25ºC then we turn on the cooling.
+  \item If no user is inside the office then turn off all the lights and the HVAC.
+  \item If the user says "turn on lights" then turn on all the lights.
+  \item if the user location status is "user arrives at office", then say "Welcome back".
+ 
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsubsection{Communication}
+
+BASA has several devices that need to communicate with each other as well as external services. To allow communication we implemented the following services:
+
+
+\textbf{Rest server - Hub app}: We implemented the server using java and the SPARK 1.1.2 framework \footnote{http://sparkjava.com/} running at port 5002.
+
+The server exposes a Rest API that allows the User app to communicate with the Hub.
+
+\textbf{Rest client - Hub and User app }: The Rest client  uses the Retrofit Android\footnote{https://square.github.io/retrofit/}  library to allow our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the Hub to communicate with the Arduino, PerOMAS and Weather forecast API.
+
+
+\textbf{Firebase - Hub and User app}
+
+Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the Hub it did not receive any request. Then we changed to a private wireless network it all worked normally.
+
+The solution we found for connecting  to the Hub when the User app is outside the \ac{WLAN} was Google Firebase. It is a platform that offers multiple services. We use two services, the real-time database and the storage.
+We use their real-time database to synchronize application data across clients and store it on Firebase's cloud. The application data we store are the temperature, the temperature the thermostat is set to, the light state, the beacon namespaces and MAC addresses for user location and finally data related with live camera view of the office and recorded videos storage location URLs. The storage service is used to upload the recorded videos and live preview images, captured by the security system.
+
+Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of it's presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
+
+\subsubsection{Security - Motion detection, video recording, Live view}\label{imp:security_motion}
+
+With our office being like an extension of our home, we felt the need to have some sort of video surveillance system. We created a system capable of detecting if a object is moving inside the office, identify if a user is inside the office and if not, send a notification to the user and record a small video.
+
+\textbf{Motion detection}: The motion detection works by comparing two camera frames. If a percentage of pixels are different we assume motion has happened. Both the percentage of different pixels and the detection period are configurable using the \ac{UI}.
+
+In order for a camera frame pixel to be considered different the RGB value of the pixel must vary more than 50 in a scale between 0 and 255. The percentage of different pixels for a positive detection is user defined, the default is 0.5\%.
+
+
+\textbf{Video recording}: When motion is detected and no user is inside the office we record 30 seconds videos. We do not record constantly, just after motion is detected. These videos are uploaded and stored to Firebase servers, where the user can latter watch them using the user app.
+
+\textbf{Live Camera}
+
+We can watch in real time pictures from the office camera. When the user is using the User app live camera functionality, the Hub saves a camera frame every second to the Firebase server. We have seen a minimum delay of 4 seconds between the live pictures and the time they were taken.
+
+
+
+\subsubsection{Hub app}
+
+The Hub app suffered a few changes from the initial architecture with the addition of more functionalities.
+
+We added two more managers to the Hub app: 
+\textbf{The Speech Recognition Manager} was inspired by Amazon Echo product and offers our user voice recognition. This new feature is currently used with our automation solution to allow the user to trigger recipes using voice commands. 
+
+This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer. When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offer better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. 
+
+\textbf{The Video Manager} does two jobs, it records 30 seconds videos when no user is present in the office and motion is detected. The other job is offering a live preview of the office, an user can use the user app to watch in real time the office.
+
+
+
+\textbf{User interface}: The final \ac{UI} of the Hub app is composed of three main screens: a lighting screen, a temperature screen and general menu that contains several advanced features.
+
+The \textbf{lighting screen}, allows the user to control the lighting environment in the room.
+
+The \textbf{temperature screen}, shown in Figure~\ref{screen_temperature} gives visual information about the current weather outside. There is also a virtual thermostat where the user can select the temperature he desires. 
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/screen_temperature}
+\caption{Temperature fragment.}
+\label{screen_temperature}
+\end{figure}
+
+
+There is a \textbf{general menu} that contains the other screens that enable additional features. This menu contains:
+\begin{itemize}
+  \item \textbf{User registration:} Allows a person to setup an account in Hub.
+  \item \textbf{Recipe management:} Contains a list of the current recipes in the Hub and allows the user to create, edit, disable/enable and delete them.
+  
+  \item \textbf{Event history} Shows a list events ordered chronologically.
+  
+  \item \textbf{Statistics screen} Shows temperature, lighting status, luminosity and occupation graphics.   
+  
+  \item \textbf{Settings screen} Allows the user to configure the Hub app.
+\end{itemize}
+
+
+
+The \textbf{user registration screen} allows the user to register using the user app or an email address.
+If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is latter needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login.
+
+In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. Figure \ref{screen_completed_recipe} shows one of the screens to create a recipe. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/screen_completed_recipe}
+\caption{Final recipe creation fragment.}
+\label{screen_completed_recipe}
+\end{figure}
+
+The \textbf{settings screen} allows the user to configure many different parameters in the app, this screen also allows the user to:
+\begin{itemize}
+ 
+  \item Specify an area in the camera frame where motion is ignored.
+  
+  \item Scan for Arduino/HVAC, shows the list of available Arduino based HVAC in the network.
+  
+  \item Enable Kiosk mode, this mode disables the home and power button of the Android device. It prevents a user from closing the app. 
+    
+  
+\end{itemize}
+
+
+
+
+
+
+
+\subsubsection{User app}
+
+
+The User app allows user detection, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
+
+The User app allows the user to create zones, in a zone the user can add and control Hub devices. To add a device the user uses a screen with a camera and scans the Hub app Qr-Code available in the Hub's registration screen.
+After the Hub device is added three icons representing three services appear in the zone screen: control lighting, \ac{HVAC} and security systems. This is shown in Figure~\ref{imp_user_app}.
+
+The lighting and \ac{HVAC} screens are straightforward, they allow the user to remotely control a Hub's lighting and \ac{HVAC} systems. The security screen enables live camera visualization of the Hub's camera and access to a list of recorded videos. When motion is detected by the Hub all registered users are notified via Android notification. 
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.2\textwidth]{Figures/imp_home_user_app}
+\caption{HomeFragment screen with the added Hub.}
+\label{imp_user_app}
+\end{figure}
+
 
 \section{Evaluation}
+
+In order to evaluate the developed solution, we deployed the BASA system in one office. Our goal was to validate the basic operation  of the system and it's ability to provide energy savings through user detection and automation. Provide it's users with their desired temperature settings. Test the motion detection system developed. Finally evaluate the \ac{UI} of the automation solution developed.
+
+All the tests were made using an Android nexus 7 2013 tablet, a motorola moto G3 Android phone, the Arduino based HVAC DHT11 temperature sensor and a Estimote BLE beacon.
+
+\textbf{User detection - Room}
+
+We measured the time it took the User app to detect the BLE beacon inside the office, the user was initially outside the office entered the room. The cumulative distribution function for the test is shown in Figure~\ref{eval:room2}.
+
+We observed that in most cases our system detected the user presence very quickly within few seconds but in other occasions it seemed to take up to 30 seconds. To We noticed once it detected the Estimote beacon it found it correctly the consecutive times but seems to take some time for the initial discovery. We consider the time to detect the user presence is adequate for turning on the \ac{HVAC} system in the user presence but not perfect for turning on the lights when the user enters the room.
+
+For cases when the user wants the lights to be on when he enters the room and if the detection time is considered insufficient, a automation recipe can be created for turning on the light when movement is detected and the user is inside the building. Nevertheless we consider the room detection time adequate for rooms with ambient light from a window but not for dark rooms.
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/room_detection_cumulative2}
+\caption{Cumulative distribution function of the time it takes to detect a user when user enters room}
+\label{eval:room2}
+\end{figure}
+
+
+\textbf{User detection - Building}
+
+Several measurements were taken to determine the response time the application takes to identify the user is inside the building. The cumulative distribution function from the measurements is shown in Figure~\ref{eval:building1}.
+
+Building user detection does not need very quick response time unlike room detection, building location will be mostly used to preheat the room before the user arrives. The response time observed shows an acceptable response time.
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/building_detection_cumulative}
+\caption{Cumulative distribution function of the time it takes to detect a user  after he enters the building}
+\label{eval:building1}
+\end{figure}
 
 %In order to evaluate the developed solution, we performed several tests to measure the performance and scalability of the Domain Registry.
 %Due to public cloud \ac{IaaS} costs, we did the evaluation on IST's network infrastructure using several Virtual Machines provided by DSI (\textit{Direção de Serviços de Informática}).
@@ -560,95 +610,24 @@ For user detection to work when the app is not being used, we need some kind of 
 %\includegraphics[width=0.35\textwidth]{demanded_request_rate}
 %\caption{Demanded request rate.}
 %\label{fig:solicited_req_rate}
-%\end{figure}
-%
-%\begin{figure}[htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{avg_resp_rate}
-%\caption{Average response rate.}
-%\label{fig:average_resp_rate}
-%\end{figure}
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{errors}
-%\caption{number of errors.}
-%\label{fig:errors_rate}
-%\end{figure}
-%
-%The next step was to evaluate how the Domain Registry would perform with only one database node.
-%This significant drop of the cluster's size was tested because, first we get to know how the database cluster scaled, and secondly because in our deployment proposal for the reThink project partners, we presented a simple deployment with only one database node and a more complex one with four nodes.
-%From both Figures \ref{fig:1_node_avg_rate} and \ref{fig:1_node_req_rate} we can see that with only one database node, the database is obviously the bottleneck of our infrastructure.
-%In spite of that, the Domain Registry was able to sustain up to 1000 requests/second with average response times similar to the ones presented in Figure \ref{fig:average_resp_rate}.
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{1_node_avg_resp_rate}
-%\caption{Average response rate with only one database node.}
-%\label{fig:1_node_avg_rate}
-%\end{figure}
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{1_node_demanded_request_rate}
-%\caption{Solicited request rate with only one database node.}
-%\label{fig:1_node_req_rate}
-%\end{figure}
-%
-%Testing the failover mechanism of Haproxy was done using the \textit{curl} script mentioned above.
-%We run the script during 60s and at $\approx$ 20 and 40 seconds we stopped first the Haproxy (Figure \ref{fig:failover_1}) and then the keepalived process (Figure \ref{fig:failover_2}) on master node.
-%Regarding the load balancer fail, we set \textit{keepalived} to monitor Haproxy every 5 seconds.
-%That is why there is a 5 second gap in the first graph in Figure \ref{fig:failover_1}.
-%However, this value was used just for testing to actually see the transition.
-%In production this value will be decreased to 2 seconds.
-%That was the only value that was manually set by us.
-%The other three transitions that we see on both Figure \ref{fig:failover_1} and \ref{fig:failover_2} are related to \ac{VRRP} advertisements.
-%When the backup node stops receiving this advertisements it claims the shared IP address and becomes the master node (Figure \ref{fig:failover_2}).
-%While assuming the master node role, if the backup node ever starts receiving \ac{VRRP} advertisements again, it elects the first node as master (because the master was set up with a higher priority level) and transits back to being the backup node, in a always listening, passive configuration (second transition of both Figure \ref{fig:failover_2} and \ref{fig:failover_1}).
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{keepalived_ha}
-%\caption{Haproxy software failover.}
-%\label{fig:failover_1}
-%\end{figure}
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.35\textwidth]{keepalived_keep}
-%\caption{Master node failover}
-%\label{fig:failover_2}
-%\end{figure}
 
-%\subsubsection{Riemann monitoring testing}
-%In order to perform the Riemann monitoring system evaluation, we used the testing tool above mentioned called Httperf solely for the purpose of visualizing changes on the dashboard and confirming that the Riemann server was receiving events.
-%Figure \ref{fig:steady} shows the Riemann dashboard right after being deploying. 
-%It comprises three dashboards splits, each of which comprising the resource level state of each Domain Registry server.
-%At that moment it has not received any load yet.
-%It shows the levels of CPU utilization, RAM and disk usage, and CPU load average for each of the servers.
-%After a while we issued to load tests separated by a couple minutes.
-%The first test was issued with 1000 requests/seconds and the second with 500 requests/second.
-%Figure \ref{fig:riemann_load} shows the same dashboard page while the three Domain Servers were under load.
-%We can see in each of the three splits that each Domain Registry server is receiving requests by analyzing the CPU usage line on the three graphs.
-%Moreover, when both of the tests end, the CPU usage lines decrease to the normal state while not serving requests.
-%The other lines present in the pictures did not change because those resource properties were not affected by the load tests.
-%
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.5\textwidth]{resource_steady.png}
-%\caption{Resource levels stable}
-%\label{fig:steady}
-%\end{figure}
-%
-%\begin{figure}[!htb]
-%\centering
-%\includegraphics[width=0.5\textwidth]{resouce_under_load.png}
-%\caption{Resource levels under load}
-%\label{fig:riemann_load}
-%\end{figure}
 
 \section*{Conclusion}
+
+In this document, we present BASA a system that uses regular Android tablet devices running a Android application to create a \ac{BAS}. Our system aims to improve the comfort of office users, minimize wasted energy consumption of the building and provide office security monitoring. 
+This is achieved by using a tablet (Hub) mounted in a wall in the office acting as a \ac{BAS}, as well as, other devices to control the lights and \ac{HVAC} system. 
+We added an \ac{IFTTT} functionality that allows regular users to personalize their office automation to improve comfort and reduce wasted energy. We mitigate some problems related with user neglect by detecting the user presence in the room or building. This allows the \ac{IFTTT} automation component of our system to take certain actions based on the room and building occupancy, for example turning off the lights when no user is present inside the room.
+
+The results presented in this thesis provide a strong foundation for future work in \ac{BAS} leveraging Android devices. 
+One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort across entire sections of a building. 
+
+Another future improvement to the system is the ability for the tablet itself to act as a \ac{BLE} beacon. This means we can use the Android device running the Hub app to achieve room user detection and can skip the external beacon device.
+
+During the development of our prototype, we were unable to install the Edup light switch in the wall due to a missing neutral wire. A neutral wire will have to be wired to the to the wall in order to deploy the prototype as originally intended. 
+
+One aspect of our system we were not completely happy with was the user detection time in a room. The detection time should have been much lower, further research and testing must be done to determine if it is the Android system who is not receiving the BLE signals due to energy saving policies or if it is the library by Estimote that we used and is not operating as it should.
+
+
 %Our approach to develop a highly available and scalable distributed system began with an evaluation of \ac{P2P} systems and architectures.
 %The idea behind a \ac{P2P} Domain Registry was each \ac{CSP} contribute to a \ac{DHT} by providing one or more nodes.
 %Although being an ideal design by their scalability and fault tolerance properties, we soon understood that the major disadvantage of these kind of systems - the loss of control over where data is stored - would not work in reThink because \acp{CSP} want to control where their data is stored.

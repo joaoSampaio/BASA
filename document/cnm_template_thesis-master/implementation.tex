@@ -6,8 +6,7 @@ This chapter addresses the main decisions taken in order to implement the hardwa
 
 \section{Hardware Architecture}\label{hardware_arch_imp}
 
-
-The next sections provide the implementation choices for the hardware architecture. As shown in Figure~\ref{imp:architecture_system} we require tablet to run the HUB app, an optional user phone with a User app installed, a device to control the HVAC system (two supported Arduino HVAC or PerOMAS) , a Edup smart light switch to control the lights. We also need a \ac{BLE} beacon for user detection inside a room and require the building's \ac{WiFi} network for user detection inside the building.
+The next sections provide the implementation choices for the hardware architecture. As shown in Figure~\ref{imp:architecture_system} we require tablet to run the Hub app, an optional user phone with a User app installed, a device to control the HVAC system (two supported Arduino HVAC or PerOMAS) , a Edup smart light switch to control the lights. We also need a \ac{BLE} beacon for user detection inside a room and require the building's \ac{WiFi} network for user detection inside the building.
 To allow communication between different components in the system we use the building's \ac{WiFi} network for local communication and use Firebase servers to allow external access from outside the building's network.
 
 
@@ -164,7 +163,7 @@ We decided to use an Estimote beacon. One reason it was chosen was because we ha
 \section{Software Architecture}
 
 
-Our solution is divided into two separate Android applications, the HUB and the USER apps, shown in Figure~\ref{imp:software}. Both apps work side by side in order to achieve the following functions: user detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring \& security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
+Our solution is divided into two separate Android applications, the Hub and the User apps, shown in Figure~\ref{imp:software}. Both apps work side by side in order to achieve the following functions: user detection, control over \ac{HVAC} and lighting systems, task automation and finally video monitoring \& security. These functions are the building blocks which enables our solutions to achieve building automation, increase user comfort and security monitoring.
 
 \begin{figure}[H]
 \centering
@@ -181,12 +180,12 @@ One energy wasting problem is having lighting and \ac{HVAC} systems turned on wh
 In order for our system to take informed actions to cut wasted energy consumption, we need to know the location of users inside the building.
 
 
-The location detection is handled solely by the USER APP. After it confirms the user is inside the building or office it communicates with the HUB. The HUB on the other hand has a timeout system. When a user fails to communicate for a certain amount of time, we presumed he is outside the office or building.
+The location detection is handled solely by the User app. After it confirms the user is inside the building or office it communicates with the Hub. The Hub on the other hand has a timeout system. When a user fails to communicate for a certain amount of time, we presumed he is outside the office or building.
 
 \mbox{}\\
 \textbf{In the building}
 
-The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC} address of the \ac{AP} matches a list of pre-scanned \ac{AP}s. This list of pre-scanned \ac{AP}s is sent to the USER APP by the HUB.  
+The building location detection consists in scanning the available \ac{WiFi} networks and checking if the \ac{MAC} address of the \ac{AP} matches a list of pre-scanned \ac{AP}s. This list of pre-scanned \ac{AP}s is sent to the User app by the Hub.  
 
 Scanning for \ac{AP}s is battery draining and should be kept to a minimum. We could scan every minute all the time, but decided to start scanning only when the phone connectivity changed. For example when a user enters a building his phone connects to a known \ac{WiFi} network. We use this event to start scanning if the user is inside the target building.
 
@@ -199,16 +198,16 @@ In order to implement the above solution we use an Android BroadcastReceiver to 
 \mbox{}\\
 \textbf{In the office}
 
-There is an Estimote beacon in the office broadcasting a \ac{BLE} signal. The USER APP is scanning for these signals and when one is found, it checks if the namespace in the beacon package matches the known office namespace. After a correct match is found the USER APP informs the HUB the user is near the office.
+There is an Estimote beacon in the office broadcasting a \ac{BLE} signal. The User app is scanning for these signals and when one is found, it checks if the namespace in the beacon package matches the known office namespace. After a correct match is found the User app informs the Hub the user is near the office.
 
-The \ac{BLE} signal scanning runs for 1 second and then waits 4 seconds before resuming the scan. This means the USER APP notifies the HUB at most every 5 seconds when it is in the proximity of the office.
+The \ac{BLE} signal scanning runs for 1 second and then waits 4 seconds before resuming the scan. This means the User app notifies the Hub at most every 5 seconds when it is in the proximity of the office.
 
-While Bluetooth LE is a lower-energy system than traditional Bluetooth, scanning is still a fairly power-intensive operation. If our app constantly scans for beacons, it drains the battery at a similar rate as the phone cellular radio. To limit the battery drain, we only start scanning when the user is in the building and stop after he leaves.
+While \ac{BLE} is a lower-energy system than traditional \ac{BT}, scanning is still a fairly power-intensive operation. If our app constantly scans for beacons, it drains the battery at a similar rate as the phone cellular radio. To limit the battery drain, we only start scanning when the user is in the building and stop after he leaves.
 
 \subsection{Lighting control}\label{light_imp}
 
 
-The lights in the room are controlled by the Edup Light Switch The switch must be connected to a WiFi network and automatically establishes a connection to Edup servers to enable remote control over the switch.
+The lights in the room are controlled by the Edup Light Switch. The switch must be connected to a WiFi network and automatically establishes a connection to Edup servers to enable remote control over the switch.
 
 To control the light switch we must open a \ac{TCP} socket send a packet with the data shown in Figure~\ref{edup_imp} to Edup server at "http://servers.chitco.com.cn:8081".
 The message starts and ends with specific hex strings, the middle part of the message seems to always start with "ZH03", followed by the light switch id then a 1 and finally the lights state we want to change. For example if the ending part of the middle message is "101" then the first and last lights are turned on, and the middle one turned off.
@@ -235,7 +234,7 @@ One other problem arises when we quickly turned on/off all the lights in quick s
 
 Our HVAC solution uses an Arduino with a webserver to control a relay in order to interface with the existing HVAC system.
 
-The Arduino we implemented to control the HVAC system was written using C++ programming language. It has four jobs: run a webserver to allow remote control, implement \ac{SSDP} to enable discovery, read temperature/humidity values from a DHT11 sensor and control a four relay module to control de HVAC system.
+The Arduino we implemented to control the HVAC system was written using C++ programming language. It has four jobs: run a webserver to allow remote control, implement \ac{SSDP} to enable discovery, read temperature/humidity values from a DHT11 sensor and control a four relay module to control the HVAC system.
 
 After the device is first powered up it becomes an \ac{AP}. The user must connect to this new network and use the browser to choose the \ac{WiFi} network he want the Arduino to connect.
 
@@ -316,11 +315,11 @@ In order to show the flexibility of our solution we created the following exampl
 
 \subsection{Communication}
 
-Our solutions has several devices that need to communicate with each other as well as external services.
-The HUB needs to communicate with the user app, Arduino, light switch and \ac{BLE} beacon. 
+BASA has several devices that need to communicate with each other as well as external services.
+The Hub needs to communicate with the user app, Arduino, light switch and \ac{BLE} beacon. 
 
-Our first approach was to implement both a \ac{REST} server and client in the HUB. This server allowed the User app to use an \ac{API} to control the HUB. The \ac{REST} client allowed the HUB to communicate with external services such as getting weather forecast information or controlling the Arduino.
-Latter we decided to also include Google Firebase Database as a communication channel between the HUB and USER APP.
+Our first approach was to implement both a \ac{REST} server and client in the Hub. This server allowed the User app to use an \ac{API} to control the Hub. The \ac{REST} client allowed the Hub to communicate with external services such as getting weather forecast information or controlling the Arduino.
+Latter we decided to also include Google Firebase Database as a communication channel between the Hub and User app.
 
 
 \mbox{}\\
@@ -331,7 +330,7 @@ We implemented the server using java and the SPARK 1.1.2 framework \footnote{htt
 The server exposes the following Rest API: 
 
 \begin{itemize}
-  \item \textbf{GET /register:} Returns the HUB UUID, description and name.
+  \item \textbf{GET /register:} Returns the Hub UUID, description and name.
   \item \textbf{POST /register:} Receives the name, email and UUID of a new user. Returns a status true/false depending if the registration was successful.
   \item \textbf{POST /location} Receives an UserLocation object, Figure~\ref{user_location_class}, a session-id is sent in the request header to identify the user. This session id is unique for each user and was exchanged when the user registered in at the Hub app.
   \item \textbf{POST /make-changes:} Receives the temperature value we want "targetTemperature", and receives a boolean array representing the lights we want to change "lightsState";
@@ -351,7 +350,7 @@ The current implementation of SPARK Framework uses JAVA 8, since Android is comp
 \mbox{}\\
 \textbf{Rest client - Hub and User app }
 
-The Rest client allows our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the HUB to communicate with the Arduino and Weather forecast API.
+The Rest client allows our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the Hub to communicate with the Arduino, PerOMAS and Weather forecast API.
 
 We decided to use the Retrofit Android\footnote{https://square.github.io/retrofit/}  library as our \ac{REST} client, this library is one of the most popular client libraries used by developers due to performance and extensibility.
 
@@ -360,16 +359,16 @@ We decided to use the Retrofit Android\footnote{https://square.github.io/retrofi
 \mbox{}\\
 \textbf{Firebase - Hub and User app}
 
-Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the HUB it did not receive any request. Then we changed to a private wireless network it all worked normally.
+Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the Hub it did not receive any request. Then we changed to a private wireless network it all worked normally.
 
 The solution we found for connecting  to the Hub when the User app is outside the \ac{WLAN} was Google Firebase. It is a platform that offers multiple services. We use two services, the real-time database and the storage.
 We use their real-time database to synchronize application data across clients and store it on Firebase's cloud. The application data we store are the temperature, the temperature the thermostat is set to, the light state, the beacon namespaces and MAC addresses for user location and finally data related with live camera view of the office and recorded videos storage location URLs. Using the provided Android library we can store JAVA objects directly in the database. The storage service is used to upload the recorded videos and live preview images, captured by the security system.
 
-Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our HUB and notify of it's presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
+Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of it's presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
 
 We ended having two ways to communicate with the Hub app. Each has some strong and weak points. 
 
-The negative points with Firebase are that it requires Internet access to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tier only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and HUB devices connect at each moment.
+The negative points with Firebase are that it requires Internet access to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tier only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and Hub devices connect at each moment.
 
 One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
 
@@ -410,17 +409,17 @@ The videos don't have any audio because Android does not allow the audio to be s
 We can watch in real time pictures from the office camera. When the user is using the User app live camera functionality, the Hub saves a camera frame every second to the Firebase server. We have seen a minimum delay of 4 seconds between the live pictures and the time they were taken.
 
 
-\subsection{HUB APP}
+\subsection{Hub app}
 
 %\begin{figure}[h]
 %\centering
 %\includegraphics[width=0.7\textwidth]{Figures/software_implementation}
-%\caption{Software architecture of HUB APP}
+%\caption{Software architecture of Hub app}
 %\label{software_imp}
 %\end{figure}
 
 
-The HUB app is the office controller that interacts with all other devices. The HUB offers a \ac{UI} to manual control the lighting and \ac{HVAC} systems, automation rules and settings. In terms of business logic we implemented a set of managers responsible for different operational requirements of the application.
+The Hub app is the office controller that interacts with all other devices. The Hub offers a \ac{UI} to manual control the lighting and \ac{HVAC} systems, automation rules and settings. In terms of business logic we implemented a set of managers responsible for different operational requirements of the application.
 
 
 \subsubsection{Event Manager}
@@ -447,7 +446,7 @@ The Event Manager is also responsible for the automation. When a event is publis
 
 \subsubsection{Speech Recognition Manager}
 
-The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant and Apple Siri. In order to increase the comfort of our users we added speech recognition into the HUB. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
+The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant and Apple Siri. In order to increase the comfort of our users we added speech recognition into the Hub. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
 
 This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer, meaning it will detect one sentance in our case "my assistant". When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offer better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. The other reason is privacy, we don't know if Google is going to disclose our audio files to third parties.
 
@@ -475,7 +474,7 @@ The Video manager does two jobs, it records 30 seconds videos when no user is pr
 
 The recorded videos don't have any audio because Android does not allow the audio to be shared between the speech recognizer and the video recorder at the same time.
 
-The video manager can be enabled and disabled in the HUB settings for privacy reasons.
+The video manager can be enabled and disabled in the Hub settings for privacy reasons.
 
 
 
@@ -508,10 +507,10 @@ In order to obtain the beacon temperature, the Eddystone-UID primary packet type
 
 The User Manager keeps track of the user location (in building, in office) and is responsible for registering new users.
 
-The location system works in the following simplified manner: it receives two types of location messages from the USER APP, in-building or in-office; there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 5 seconds, the timeouts are 120 seconds and 20 seconds respectively.
+The location system works in the following simplified manner: it receives two types of location messages from the User app, in-building or in-office; there are timeouts in place so in the eventuality that no message is received for a certain amount of time we assume the user has left the office or building. The in-building messages arrive every 60 seconds and in-office every 5 seconds, the timeouts are 120 seconds and 20 seconds respectively.
 
 
-There are two types of user that can register. Users with the mobile USER APP and users without it. If a user has the app, it just needs to open the app and there is an semi-automatic register process. If the user does not have the app he will receive an email with an QR-Code that will act as an identification card. When the user places the card in front of the HUB camera he is logged on for a certain amount of minutes specified by the user. Since we can't track the user whereabouts without the app, the user will have to manually turn the lights and \ac{HVAC} if he leaves while logged on.
+There are two types of user that can register. Users with the mobile User app and users without it. If a user has the app, it just needs to open the app and there is an semi-automatic register process. If the user does not have the app he will receive an email with an QR-Code that will act as an identification card. When the user places the card in front of the Hub camera he is logged on for a certain amount of minutes specified by the user. Since we can't track the user whereabouts without the app, the user will have to manually turn the lights and \ac{HVAC} if he leaves while logged on.
 To read the QR-code we use ZBar\footnote{http://zbar.sourceforge.net/} library to convert the camera frame into a readable string containing the user id.
 
 
@@ -519,7 +518,7 @@ To read the QR-code we use ZBar\footnote{http://zbar.sourceforge.net/} library t
 \subsubsection{User interface}
 
 
-The \ac{UI} of the HUB APP is composed of three main screens: a lighting screen, a temperature screen and general menu that contains several advanced features.
+The \ac{UI} of the Hub app is composed of three main screens: a lighting screen, a temperature screen and general menu that contains several advanced features.
 
 The \textbf{lighting screen}, shown in Figure~\ref{screen_lights} allows the user to control the lighting environment in the room.
 
@@ -540,7 +539,7 @@ There is a \textbf{general menu} that contains the other screens that enable add
 
 
 The \textbf{user registration screen} allows the user to register using the user app or an email address.
-If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the HUB server. This temporary id is latter needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login, shown in Figure~\ref{email_screenshot}.
+If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is latter needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login, shown in Figure~\ref{email_screenshot}.
 
 In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. In Figures \ref{create_recipe}, \ref{screen_triggers}, \ref{screen_actions} and \ref{screen_completed_recipe} the steps needed to create a recipe are shown, the resulting recipe turns on all the room lights if a user is inside the office and the light level is low. 
 
@@ -557,7 +556,7 @@ The \textbf{settings screen} allows the user to change:
   
   \item Video recording, enable/disable recording when no user is present and movement is detected.
   
-  \item Live preview, allow users to watch the office in real time, using the USER APP.
+  \item Live preview, allow users to watch the office in real time, using the User app.
   
   \item Scan for Arduino/HVAC, as mentioned in Section~\ref{temperature_manager_imp} there is a discovery mechanism to add the Arduino and control it. We use \ac{SSDP} to discover supported Arduino devices and list the discovered device/s. The user then selects the device specific to his office.
   For an Arduino device to be shown, they have to been programmed to be discoverable using the protocol and have the search target equal to "schemas-basa-pt:service:climate:1".
@@ -672,7 +671,7 @@ The \textbf{settings screen} allows the user to change:
 %\begin{figure}[h]
 %\centering
 %\includegraphics[width=0.7\textwidth]{Figures/screen_qr_code}
-%\caption{Registration screen when using USER APP.}
+%\caption{Registration screen when using User app.}
 %\label{screen_qr_code}
 %\end{figure}
 
@@ -682,7 +681,7 @@ The \textbf{settings screen} allows the user to change:
 
 The User app allows user detection, remote control over the office, access to live image preview of the office, notifications when movement is detected, and video history of recorded videos.
 
-The goal of the applications is to add and control Hub devices. This means a user can add multiple Hubs to a user app and manage them. 
+The goal of the application is to add and control Hub devices. This means a user can add multiple Hubs to a user app and manage them. 
 
 To add a device the first thing to do is create a zone, as shown in Figure~\ref{imp_user_app}. A zone is a virtual representation of a building. For example we can create a zone and name it "Home", then add all our Hub tablets within the household. 
 
@@ -691,7 +690,7 @@ After we created a zone, we can add a device. To add a device the user presses t
 
 When a Hub device is added three icons representing three services appear in the zone screen: control lighting, \ac{HVAC} and security systems. This is shown in Figure~\ref{imp_user_app}.
 
-The lighting and \ac{HVAC} screens are straightforward, they allow the user to remotely control a HUB's lighting and \ac{HVAC} systems. The security screen, shown in Figure~\ref{imp_user_camera} enables live camera visualization of the HUB's camera and access to a list of recorded videos. When motion is detected by the Hub all registered users are notified via Android notification. The purpose of the live camera is to allow the user to check if someone is indeed inside the office. The recorded video history are small 30 second videos captured when movement was detected and no user was inside the room. They allow the user to check in the future if something happened.
+The lighting and \ac{HVAC} screens are straightforward, they allow the user to remotely control a Hub's lighting and \ac{HVAC} systems. The security screen, shown in Figure~\ref{imp_user_camera} enables live camera visualization of the Hub's camera and access to a list of recorded videos. When motion is detected by the Hub all registered users are notified via Android notification. The purpose of the live camera is to allow the user to check if someone is indeed inside the office. The recorded video history are small 30 second videos captured when movement was detected and no user was inside the room. They allow the user to check in the future if something happened.
 
 
 The application has two main screens: the UserFragment and the HomeFragment. The UserFragment, shown in Figure~\ref{imp_user_app} allows the user to manage the zones and change application settings. The HomeFragment shows the current selected zone and all its devices.
