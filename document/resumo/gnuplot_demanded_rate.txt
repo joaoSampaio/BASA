@@ -1,0 +1,14 @@
+set terminal pdf
+set output "demanded_request_rate.pdf"
+set size 1,1
+set key left
+set xlabel "Demanded request rate (req/s)"
+set ylabel "Request rate (req/s)"
+set xrange [0:2000]
+set yrange [0:2000]
+set xtics (0,200,400,600,800,1000,1200,1400,1600,1800,2000)
+set ytics (0,200,400,600,800,1000,1200,1400,1600,1800,2000)
+set datafile separator ","
+plot "FINAL.csv" using 37:13 with linespoints title "3 application servers", "center.csv" using 1:2 with line lt rgb "gray" title "ideal result","2_FINAL.csv" using 37:13 with linespoints title "2 application servers", "1_final.csv" using 37:13 with linespoints title "1 application servers"
+exit
+

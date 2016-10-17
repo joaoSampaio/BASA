@@ -240,7 +240,7 @@ Sensors such as the Multi sensor can monitor whether doors, windows, cabinets or
 
 \subsubsection{Nest thermostat}
 
-The Nest\footnote{https://nest.com/} Learning Thermostat, shown in Figure~\ref{fig:nest} is an electronic, programmable, and self-learning \ac{WiFi} thermostat. It uses machine learning algorithm to optimize  heating and cooling of homes. For the first weeks users have to regulate the thermostat in order to provide the reference data set. Nest can then learn people's schedule, at which temperature they are used to and when. 
+The Nest\footnote{https://nest.com/} Learning Thermostat, shown in Figure~\ref{fig:nest}, is an electronic, programmable, and self-learning \ac{WiFi} thermostat. It uses machine learning algorithm to optimize  heating and cooling of homes. For the first weeks users have to regulate the thermostat in order to provide the reference data set. Nest can then learn people's schedule, at which temperature they are used to and when. 
 
 The Nest Thermostat can be remotely control using a developer \ac{API}, this means we can use this thermostat to control a room \ac{HVAC} system. The negative point to use Nest is the high cost of around 250 euros making it unsuitable for our system since low cost is a requirement. 
 
@@ -287,7 +287,7 @@ In the mobile app, besides manual buttons to turn on devices there is also voice
 
 The above commercial solutions provide high automation with high cost. Most home automation solution offer few supported standards. Most products specialize in lighting solutions but also add wireless video cameras, smoke detector and a few other devices. 
 
-Some products are compatible with the IFTTT web-service, that allows devices to act on received messages from services such as gmail, twitter, weather and a few other. This functionality offers limited actions because most times the relevant triggers to an action are in the room (natural brightness, occupancy) and not in the cloud. For instance if there is sufficient natural sun light in a room the lights could be dimmed down or even turned off; If no one is using the room and certain appliances are turned on they should be turned off. 
+%Some products are compatible with the IFTTT web-service, that allows devices to act on received messages from services such as gmail, twitter, weather and a few other. This functionality offers limited actions because most times the relevant triggers to an action are in the room (natural brightness, occupancy) and not in the cloud. For instance if there is sufficient natural sun light in a room the lights could be dimmed down or even turned off; If no one is using the room and certain appliances are turned on they should be turned off. 
 
 In regards to the academic automation systems they focus more in energy saving  solutions, Kim Baraka and his co-authors\cite{academic:arduino1} focused in a proposed task scheduling algorithm that only provides monetary savings in the presence of different day night power cost tariffs. It did provide one energy saving proposal: turning lights off when luminosity exceeds a threshold.
 
@@ -442,7 +442,7 @@ By using an Light Sensor to measure the light level of a room and dimming lights
 \subsubsection{Adaptive Heating/Cooling}\label{related:adaptive_heating}
 
 
-Several studies show room temperature could influence productivity, Olli Seppanen and his co-authors developed an initial quantitative relationship between work performance and temperatures within and above the comfort zone\cite{temperature_survey}. Data collected from nine previous studies show the range of temperature in which people are most productive is between 22\symbol{176}C and 25\symbol{176} C. For temperatures between 25\symbol{176} C and 33\symbol{176} C they developed a model to measure the relationship between decrement in productivity P in \% and
+Several studies show room temperature could influence productivity, Olli Seppanen and his co-authors\cite{temperature_survey} developed an initial quantitative relationship between work performance and temperatures within and above the comfort zone. Data collected from nine previous studies show the range of temperature in which people are most productive is between 22\symbol{176}C and 25\symbol{176} C. For temperatures between 25\symbol{176} C and 33\symbol{176} C they developed a model to measure the relationship between decrement in productivity P in \% and
 temperature T in \symbol{176} C: 
 
 P (\%) = [2 x (T,\symbol{176} C)] - 50 
@@ -475,7 +475,7 @@ In office buildings there are systems with a camera always recording (CCTV)\cite
 
 \subsection{Summary}
 
-Sensors can have important contributes to \ac{BAS}. The above sensor applications can provide higher comfort to the occupants of the building as well as save on energy costs. Comfort can be improved by ubiquitously regulating the building temperature to maximize occupant productivity while at the same time only spending energy when required. Energy costs have a direct relation with occupant behavior: a neglectful occupant will leave the lights on for extensive periods of time even though he is not present. Occupant detection can help save energy costs by switching off lights and devices when they are not needed anymore and energy savings can also be archived by dimming the light intensity when possible. 
+Sensors can have important contributes to \ac{BAS}. The above sensor applications can provide higher comfort to the occupants of the building as well as save on energy costs. Comfort can be improved by regulating the building temperature to maximize occupant productivity while at the same time only spending energy when required. Energy costs have a direct relation with occupant behavior: a neglectful occupant will leave the lights on for extensive periods of time even though he is not present. Occupant detection can help save energy costs by switching off lights and devices when they are not needed anymore and energy savings can also be archived by dimming the light intensity when possible. 
 
 An Android tablet/phone provides a good hardware device for use in building automation. It already has several embedded sensors  and thanks to it's supported Wireless communication protocols (\ac{WiFi}, \ac{BT}), it can connect to other devices with sensors without the need to attach wires to add more sensors. 
 

@@ -1,0 +1,12 @@
+set terminal pdf
+set output "connection_time.pdf"
+set size 1,1
+set key right
+set datafile separator ","
+set ylabel "Request rate (req/s)"
+set xlabel "Connection time (ms)"
+set xrange [0:4600]
+set yrange [0:2000]
+set ytics 200
+plot "FINAL.csv" using 7:13 with linespoints title "Avg connection time 1 server", "2_FINAL.csv" using 7:13 with linespoints title "Avg connection time 2 servers", "1_final.csv" using 7:13 with linespoints title "Avg connection time 3 servers"
+exit

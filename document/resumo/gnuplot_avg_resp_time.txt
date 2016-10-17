@@ -1,0 +1,13 @@
+set terminal pdf
+set output "avg_resp_rate.pdf"
+set size 1,1
+set key right
+set datafile separator ","
+set ylabel "Request rate (req/s)"
+set xlabel "Average response rate (ms)"
+set xrange [0:*]
+set ytics 200
+set xtics 50
+set yrange [0:*]
+plot "FINAL.csv" using 18:13 with linespoints title "3 application servers", "2_FINAL.csv" using 18:13 with linespoints title "2 application servers","1_final.csv" using 18:13 with linespoints title "1 application servers"
+exit

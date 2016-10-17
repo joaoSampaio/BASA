@@ -1,0 +1,12 @@
+set terminal pdf
+set output "errors.pdf"
+set size 1,1
+set key left
+set datafile separator ","
+set xlabel "Request rate (req/s)"
+set ylabel "Number of errors"
+set yrange [0:16]
+set xrange [0:2000]
+set xtics (0,200,400,600,800,1000,1200,1400,1600,1800,2000)
+plot "FINAL.csv" using 13:24 with linespoints title "Client timeout errors", "FINAL.csv" using 13:23 with linespoints title "Resource not found errors","2_FINAL.csv" using 13:24 with linespoints title "Client timeout errors", "FINAL.csv" using 13:23 with linespoints title "Resource not found errors", "1_final.csv" using 13:24 with linespoints title "Client timeout errors", "1_final.csv" using 13:23 with linespoints title "Resource not found errors"
+exit
