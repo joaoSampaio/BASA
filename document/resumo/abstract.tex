@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{url}
 \usepackage[nolist]{acronym}
+%\usepackage{biblatex}
 
 \hyphenation{op-tical net-works semi-conduc-tor IEEEtran}
 \begin{document}
@@ -91,7 +92,7 @@ One other popular product is the Nest\footnote{https://nest.com/} Learning Therm
 
 Amazon Echo\footnote{https://www.amazon.com/Amazon-Echo-Bluetooth-Speaker-with-WiFi-Alexa/dp/B00X4WHP5E, accessed 10/10/2016} is a smart speaker developed by Amazon\footnote{https://www.amazon.com/}. The device is capable of voice interaction, music playback, making to-do lists and other useful features. It can also control several smart devices using itself as a home automation hub. The main characteristic of Echo is it's voice interaction capability, any automation system would benefit by having such functionality.
 
-Finally there are companies that provide web-based services that allows users to create simple conditional statements, which are triggered based on changes to other web. One such company is IFTTT, it allows the user to trigger actions based on services such as Weather channel, Facebook, Gmail, Amazon Echo and Nest thermostat. This service allows the user for example to automate their Philips Hue lights, Nest thermostat and many other services. 
+Finally there are companies that provide web-based services that allows users to create simple conditional statements, which are triggered based on changes to other web. One such company is IFTTT\footnote{https://ifttt.com/}, it allows the user to trigger actions based on services such as Weather channel, Facebook, Gmail, Amazon Echo and Nest thermostat. This service allows the user for example to automate their Philips Hue lights, Nest thermostat and many other services. 
 
 
 There are many products for home automation in the market, in this paper we merely discussed some that contribute to our final solution. We learned smart lights have some setbacks. The Nest thermostat offers a good solution to control a \ac{HVAC} system. The only problem is it has a high monetary cost so it won't be used in our solution. Echo increases user comfort by allowing it to serve as an automation hub and allow voice interaction. We chose to implement a simple voice interaction in our final solution, as it offer many advantages. Finally we decided to implement a similar feature to the service provided by the company IFTTT. We allow the user to create conditional statements that trigger actions based on events in the office.
@@ -248,7 +249,7 @@ To allow communication between different components in the system we use the bui
 
 \textbf{HVAC control}: In order for our \ac{BAS} solution to control an \ac{HVAC} system, we need to either communicate with a building central controlling unit or physically control the system like a thermostat does. Since most buildings don't have a central control point running some kind of server where you can control it using the Internet, we went with the thermostat route.
 
-We compared several thermostat alternatives with WiFi capabilities and concluded there was non that fitted the requirements of low cost. We decided to make a Arduino based device with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor. 
+We compared several thermostat alternatives with WiFi capabilities and concluded there was non that fitted the requirement of low cost. We decided to make a Arduino based device with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor. 
 
 Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constrains the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
 
@@ -342,9 +343,9 @@ The Arduino we implemented to control the HVAC system was written using C++ prog
 
 After the device is first powered up it becomes an \ac{AP}. The user must connect to this new network and use the browser to choose the \ac{WiFi} network he want the Arduino to connect.
 
-There is a discovery mechanism to add the Arduino IP address automatically to the Hub app. Our Arduino based HVAC they is programmed to be discoverable using the \ac{SSDP} protocol using a search target equal to "schemas-basa-pt:service:climate:1".
+There is a discovery mechanism to add the Arduino IP address automatically to the Hub app. Our Arduino based HVAC is programmed to be discoverable using the \ac{SSDP} protocol using a search target equal to "schemas-basa-pt:service:climate:1".
 
-BASA can also control the PerOMAS system installed in some offices in our campus, we use the provided web-server to interact with the system.
+BASA can also control the PerOMAS system installed in some offices in our campus, we communicate with PerOMAS using it's web-server.
 
 \subsubsection{Automation}
 
@@ -395,14 +396,14 @@ In order to show the flexibility of our solution we created the following exampl
 BASA has several devices that need to communicate with each other as well as external services. To allow communication we implemented the following services:
 
 
-\textbf{Rest server - Hub app}: We implemented the server using java and the SPARK 1.1.2 framework \footnote{http://sparkjava.com/} running at port 5002.
+\textbf{Rest server (Hub app)}: We implemented the server using java and the SPARK 1.1.2 framework \footnote{http://sparkjava.com/} running at port 5002.
 
 The server exposes a Rest API that allows the User app to communicate with the Hub.
 
-\textbf{Rest client - Hub and User app }: The Rest client  uses the Retrofit Android\footnote{https://square.github.io/retrofit/}  library to allow our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the Hub to communicate with the Arduino, PerOMAS and Weather forecast API.
+\textbf{Rest client (Hub and User app) }: The Rest client  uses the Retrofit Android\footnote{https://square.github.io/retrofit/}  library to allow our apps to initiate communication with a server. It is used by the User app to interact with the Hub app server and used by the Hub to communicate with the Arduino, PerOMAS and Weather forecast API.
 
 
-\textbf{Firebase - Hub and User app}
+\textbf{Firebase (Hub and User app)}
 
 Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the Hub it did not receive any request. Then we changed to a private wireless network it all worked normally.
 
@@ -433,9 +434,9 @@ We can watch in real time pictures from the office camera. When the user is usin
 The Hub app suffered a few changes from the initial architecture with the addition of more functionalities.
 
 We added two more managers to the Hub app: 
-\textbf{The Speech Recognition Manager} was inspired by Amazon Echo product and offers our user voice recognition. This new feature is currently used with our automation solution to allow the user to trigger recipes using voice commands. 
+\textbf{The Speech Recognition Manager} was inspired by Amazon Echo product and offers our users voice recognition. This new feature is currently used with our automation solution to allow the user to trigger recipes using voice commands. 
 
-This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer. When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offer better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. 
+This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer. When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offers better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. 
 
 \textbf{The Video Manager} does two jobs, it records 30 seconds videos when no user is present in the office and motion is detected. The other job is offering a live preview of the office, an user can use the user app to watch in real time the office.
 
@@ -523,13 +524,13 @@ The lighting and \ac{HVAC} screens are straightforward, they allow the user to r
 
 In order to evaluate the developed solution, we deployed the BASA system in one office. Our goal was to validate the basic operation  of the system and it's ability to provide energy savings through user detection and automation. Provide it's users with their desired temperature settings. Test the motion detection system developed. Finally evaluate the \ac{UI} of the automation solution developed.
 
-All the tests were made using an Android nexus 7 2013 tablet, a motorola moto G3 Android phone, the Arduino based HVAC DHT11 temperature sensor and a Estimote BLE beacon.
+All the tests were made using an Android Nexus 7 2013 tablet, a motorola Moto G3 Android phone, the Arduino based HVAC with a DHT11 temperature sensor and a Estimote BLE beacon.
 
-\textbf{User detection - Room}: We measured the time it took the User app to detect the BLE beacon inside the office, the user was initially outside the office entered the room. The cumulative distribution function for the test is shown in Figure~\ref{eval:room2}.
+\textbf{User detection - Room}: We measured the time it took the User app to detect the BLE beacon inside the office, the user was initially outside the office and entered the room starting the timer. The cumulative distribution function for the test is shown in Figure~\ref{eval:room2}.
 
-We observed that in most cases our system detected the user presence very quickly within few seconds but in other occasions it seemed to take up to 30 seconds. To We noticed once it detected the Estimote beacon it found it correctly the consecutive times but seems to take some time for the initial discovery. We consider the time to detect the user presence is adequate for turning on the \ac{HVAC} system in the user presence but not perfect for turning on the lights when the user enters the room.
+We observed that in most cases our system detected the user presence very quickly within few seconds but in other occasions it seemed to take up to 30 seconds. We noticed once it detected the Estimote beacon the first time it found it correctly the following times but, seems to take some time for the initial discovery. We consider that the time to detect the user presence is adequate for turning on the \ac{HVAC} system in the user presence but not perfect for turning on the lights when the user enters the room.
 
-For cases when the user wants the lights to be on when he enters the room and if the detection time is considered insufficient, a automation recipe can be created for turning on the light when movement is detected and the user is inside the building. Nevertheless we consider the room detection time adequate for rooms with ambient light from a window but not for dark rooms.
+For cases when the user wants the lights to be on when he enters the room and if the detection time is considered insufficient, a automation recipe can be created for turning on the light when movement is detected and the user is inside the building. Nevertheless, we consider the room detection time adequate for rooms with ambient light from a window but not for dark rooms.
 
 
 \begin{figure}[]
@@ -542,7 +543,7 @@ For cases when the user wants the lights to be on when he enters the room and if
 
 \textbf{User detection - Building}: Several measurements were taken to determine the response time the application takes to identify the user is inside the building. The cumulative distribution function from the measurements is shown in Figure~\ref{eval:building1}.
 
-Building user detection does not need very quick response time unlike room detection, building location will be mostly used to preheat the room before the user arrives. The response time observed shows an acceptable response time.
+Building level user detection does not need very quick response times, unlike room detection, as building location will be mostly used to preheat the room before the user arrives. The response time observed shows an acceptable response time.
 
 
 \begin{figure}[]
@@ -556,9 +557,9 @@ Building user detection does not need very quick response time unlike room detec
 
 \textbf{Motion detection}: To test motion detection, we conducted tests with three different people with different heights. Each person entered the room at different speeds, the obtained results are shown in Table~\ref{eval:motion}.
 
-Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows the different pixels in the camera frames identified by our algorithm. Regarding false positives, they don't seem to be a big problem since our system allows the creation of a no monitoring area in the camera frame to use in cases of rooms with window view.
+Our system was able to correctly identify a person walking inside the room every time, Figure~\ref{eval:motion_fig} shows an example of the different pixels in the camera frames identified by our algorithm. Regarding false positives, from object motion they don't seem to be a big problem since our system allows the creation of a no-monitoring-area in the camera frame to use in cases of rooms with window view.
 
-The motion test was performed during day hours, in these conditions the camera is able to capture good frames. We did not perform test during the night time  but likely our system will have problems detecting movement in completely dark rooms. To fix this problem we can install sensors to detect if the office door is open. If the door is opened and there is not enough light our system could turn on the lights momentarily to enable motion detection.
+The motion test was performed during day hours, in these conditions the camera is able to capture good frames. We did not perform test during the night time  but it's likely our system will have problems detecting movement in completely dark rooms. To fix this problem we can install sensors to detect if the office door is open. If the door is opened and there is not enough light our system could turn on the lights momentarily to enable motion detection.
 
 
 \begin{table}[h]
@@ -584,20 +585,20 @@ Run & 20/20 & 20/20 & 20/20 \\ \hline
 
 \textbf{Temperature and Luminosity}: In order to test the functionality of the luminosity and temperature sensors in the system, these were used to collect ambient data.
 
-To test the luminosity sensor behavior we turned on the lights in the room and allowed the Hub to record the values for a while, then we turned off the lights and waited for a few minutes then repeated the same steps one more time. In Figure~\ref{eval:lights} we can observe two different gaps where the lights were off. As expected the Android luminosity sensor operates as intended and provides the system with correct data. 
+To test the luminosity sensor behavior, we turned on the lights in the room and allowed the Hub to record the values for a while, then we turned off the lights and waited for a few minutes then repeated the same steps one more time. In Figure~\ref{eval:lights} we can observe two different gaps where the lights were off. As expected the Android luminosity sensor operates as intended and provides the system with correct data. 
 
-To test the external temperature sensor the HVAC system was turned on and the temperature was recorded. In Figure~\ref{eval:temp} we can observe a small decline in the temperature after the HVAC system was turned on. The temperature was lowered by 2ºC and then went back to the 24 ºC after the HVAC system was turned off.
+To test the external temperature sensor, the HVAC system was turned on and the temperature was recorded. In Figure~\ref{eval:temp} we can observe a small decline in the temperature after the HVAC system was turned on. The temperature was lowered by 2ºC and then went back to the 24 ºC after the HVAC system was turned off.
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.3\textwidth]{Figures/eval_lights}
+\includegraphics[width=0.45\textwidth]{Figures/eval_lights}
 \caption{Luminosity Readings}
 \label{eval:lights}
 \end{figure}
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.3\textwidth]{Figures/eval_temp}
+\includegraphics[width=0.45\textwidth]{Figures/eval_temp}
 \caption{Temperature Readings}
 \label{eval:temp}
 \end{figure}
@@ -649,17 +650,17 @@ We added an \ac{IFTTT} functionality that allows regular users to personalize th
 The results presented in this thesis provide a strong foundation for future work in \ac{BAS} leveraging Android devices. 
 One aspect this thesis did not focus and is pertinent to its future is the ability to connect multiple Hub instances (rooms) and take coordinated actions to improve energy efficiency and user comfort across entire sections of a building. 
 
-Another future improvement to the system is the ability for the tablet itself to act as a \ac{BLE} beacon. This means we can use the Android device running the Hub app to achieve room user detection and can skip the external beacon device.
+Another future improvement to the system is the ability for the tablet itself to act as a \ac{BLE} beacon. This means we can use the Android device running the Hub app to achieve room level user detection and can skip the external beacon device.
 
-During the development of our prototype, we were unable to install the Edup light switch in the wall due to a missing neutral wire. A neutral wire will have to be wired to the to the wall in order to deploy the prototype as originally intended. 
+During the development of our prototype, we were unable to install the Edup light switch in the wall due to a missing neutral wire. A neutral wire will have to be wired into the wall in order to deploy the prototype as originally intended. 
 
-One aspect of our system we were not completely happy with was the user detection time in a room. The detection time should have been much lower, further research and testing must be done to determine if it is the Android system who is not receiving the BLE signals due to energy saving policies or if it is the library by Estimote that we used and is not operating as it should.
+One aspect of our system we were not completely happy with was the user detection time in a room. The detection time should have been much lower. Further research and testing must be done to determine if it is the Android system who is not receiving the BLE signals due to energy saving policies or if it is the library by Estimote that we used that is not operating as it should.
 
 
 \bibliographystyle{IEEEtran}
 
 \addcontentsline{toc}{section}{References}
-\bibliography{references.bib}
+\bibliography{ref2}
 
 % \begin{thebibliography}{1}
 %

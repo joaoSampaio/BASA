@@ -1,27 +1,8 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: abstract.aux
 The style file: IEEEtran.bst
-I couldn't open database file references.bib.bib
----line 203 of file abstract.aux
- : \bibdata{references.bib
- :                        }
-I'm skipping whatever remains of this command
-I found no database files---while reading file abstract.aux
-Warning--I didn't find a database entry for "iea"
-Warning--I didn't find a database entry for "ocupancy2"
-Warning--I didn't find a database entry for "livro_automation"
-Warning--I didn't find a database entry for "bacnet:artigo1"
-Warning--I didn't find a database entry for "bacnet:bib"
-Warning--I didn't find a database entry for "livro_automation2"
-Warning--I didn't find a database entry for "livro_zigbee"
-Warning--I didn't find a database entry for "zwave"
-Warning--I didn't find a database entry for "zigbeeAndZWave"
-Warning--I didn't find a database entry for "related:nest"
-Warning--I didn't find a database entry for "ocupancy3"
-Warning--I didn't find a database entry for "ocupancy1"
-Warning--I didn't find a database entry for "peromas"
+Database file #1: ref2.bib
 -- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
 
 Done.
-(There were 2 error messages)

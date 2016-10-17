@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.9.8)  17 OCT 2016 22:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.9.8)  17 OCT 2016 23:50
 entering extended mode
 **./abstract.tex
 (abstract.tex
@@ -490,18 +490,18 @@ Package: xstring 2013/10/13  v1.7c  String manipulations (C Tellechea)
 ) (abstract.aux)
 \openout1 = `abstract.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
 
 -- Lines per column: 56 (exact).
 (C:\Users\Sampaio\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
@@ -564,145 +564,92 @@ G,.JBIG2,.JB2,.eps]
 )
 Package acronym Info: Label `acro:HVAC' newly defined as it shall be overridden
 
-although it is yet undefined on input line 22.
+although it is yet undefined on input line 23.
 Package acronym Info: Label `acro:BAS' newly defined as it shall be overridden
-although it is yet undefined on input line 24.
-
-
-LaTeX Warning: Citation `iea' on page 1 undefined on input line 39.
-
-
-LaTeX Warning: Citation `ocupancy2' on page 1 undefined on input line 41.
-
+although it is yet undefined on input line 25.
 Package acronym Info: Label `acro:IFTTT' newly defined as it shall be overridde
 n
-although it is yet undefined on input line 49.
+although it is yet undefined on input line 50.
 Package acronym Info: Label `acro:WiFi' newly defined as it shall be overridden
 
-although it is yet undefined on input line 51.
+although it is yet undefined on input line 52.
 Package acronym Info: Label `acro:BT' newly defined as it shall be overridden
-although it is yet undefined on input line 51.
+although it is yet undefined on input line 52.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 56.
+(Font)              <7> on input line 57.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 56.
+(Font)              <5> on input line 57.
 Package acronym Info: Label `acro:SAC' newly defined as it shall be overridden
-although it is yet undefined on input line 70.
-[1{C:/Users/Sampaio/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
+although it is yet undefined on input line 71.
+ [1{C:/Users/Sampaio/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
-
-LaTeX Warning: Citation `livro_automation' on page 2 undefined on input line 75
-.
-
-
-LaTeX Warning: Citation `bacnet:artigo1' on page 2 undefined on input line 75.
-
-
-LaTeX Warning: Citation `bacnet:bib' on page 2 undefined on input line 75.
-
-
-LaTeX Warning: Citation `livro_automation2' on page 2 undefined on input line 7
-5.
-
-
-LaTeX Warning: Citation `livro_automation2' on page 2 undefined on input line 7
-5.
-
-
-LaTeX Warning: Citation `livro_automation' on page 2 undefined on input line 75
-.
-
-
-LaTeX Warning: Citation `livro_zigbee' on page 2 undefined on input line 79.
-
-
-LaTeX Warning: Citation `zwave' on page 2 undefined on input line 79.
-
-
-LaTeX Warning: Citation `zigbeeAndZWave' on page 2 undefined on input line 79.
-
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 88.
+(Font)              <8> on input line 89.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 88.
+(Font)              <6> on input line 89.
 
-LaTeX Warning: Citation `related:nest' on page 2 undefined on input line 90.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 92--92
+Underfull \hbox (badness 10000) in paragraph at lines 93--93
 [][][]\OT1/ptm/m/n/8 https://www.amazon.com/Amazon-Echo-Bluetooth-Speaker-with-
 WiFi-
  []
 
-
-LaTeX Warning: Citation `ocupancy2' on page 2 undefined on input line 103.
-
-
-LaTeX Warning: Citation `ocupancy3' on page 2 undefined on input line 106.
-
-
-LaTeX Warning: Citation `ocupancy1' on page 2 undefined on input line 108.
-
 Package acronym Info: Label `acro:BLE' newly defined as it shall be overridden
-although it is yet undefined on input line 111.
+although it is yet undefined on input line 112.
 [2] <Figures/harware_arch.pdf, id=13, 482.80376pt x 341.275pt>
 File: Figures/harware_arch.pdf Graphic file (type pdf)
 
 <use Figures/harware_arch.pdf>
-Package pdftex.def Info: Figures/harware_arch.pdf used on input line 135.
+Package pdftex.def Info: Figures/harware_arch.pdf used on input line 136.
 (pdftex.def)             Requested size: 206.39685pt x 145.89136pt.
 Package acronym Info: Label `acro:GUI' newly defined as it shall be overridden
-although it is yet undefined on input line 142.
+although it is yet undefined on input line 143.
 
 <Figures/arch_hardware.pdf, id=14, 876.27374pt x 397.485pt>
 File: Figures/arch_hardware.pdf Graphic file (type pdf)
 
 <use Figures/arch_hardware.pdf>
-Package pdftex.def Info: Figures/arch_hardware.pdf used on input line 158.
+Package pdftex.def Info: Figures/arch_hardware.pdf used on input line 159.
 (pdftex.def)             Requested size: 258.0pt x 117.03264pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 158--159
+Overfull \hbox (6.0pt too wide) in paragraph at lines 159--160
  [][] 
  []
 
 Package acronym Info: Label `acro:MAC' newly defined as it shall be overridden
-although it is yet undefined on input line 170.
+although it is yet undefined on input line 171.
 Package acronym Info: Label `acro:AP' newly defined as it shall be overridden
-although it is yet undefined on input line 170.
+although it is yet undefined on input line 171.
 [3 <./Figures/harware_arch.pdf> <./Figures/arch_hardware.pdf
 
 pdfTeX warning: pdflatex (file ./Figures/arch_hardware.pdf): PDF inclusion: mul
 tiple pdfs with page group included in a single page
 >]
 Package acronym Info: Label `acro:UI' newly defined as it shall be overridden
-although it is yet undefined on input line 179.
+although it is yet undefined on input line 180.
 Package acronym Info: Label `acro:REST' newly defined as it shall be overridden
 
-although it is yet undefined on input line 191.
+although it is yet undefined on input line 192.
 Package acronym Info: Label `acro:API' newly defined as it shall be overridden
-although it is yet undefined on input line 191.
+although it is yet undefined on input line 192.
  <Figures/software_hub.pdf, id=66, 557.08125pt x 220.825pt>
 File: Figures/software_hub.pdf Graphic file (type pdf)
 
 <use Figures/software_hub.pdf>
-Package pdftex.def Info: Figures/software_hub.pdf used on input line 211.
+Package pdftex.def Info: Figures/software_hub.pdf used on input line 212.
 (pdftex.def)             Requested size: 206.39685pt x 81.81516pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 Package acronym Info: Label `acro:IP' newly defined as it shall be overridden
-although it is yet undefined on input line 223.
-
-LaTeX Warning: Citation `peromas' on page 4 undefined on input line 236.
-
+although it is yet undefined on input line 224.
 <Figures/harware_arch_imp.pdf, id=67, 485.815pt x 386.44376pt>
 File: Figures/harware_arch_imp.pdf Graphic file (type pdf)
 
 <use Figures/harware_arch_imp.pdf>
-Package pdftex.def Info: Figures/harware_arch_imp.pdf used on input line 242.
+Package pdftex.def Info: Figures/harware_arch_imp.pdf used on input line 243.
 (pdftex.def)             Requested size: 206.39685pt x 164.1745pt.
 
 
@@ -714,33 +661,33 @@ File: Figures/imp_light_switch_light.jpg Graphic file (type jpg)
 
 <use Figures/imp_light_switch_light.jpg>
 Package pdftex.def Info: Figures/imp_light_switch_light.jpg used on input line 
-274.
+275.
 (pdftex.def)             Requested size: 129.0pt x 72.5389pt.
  [5 <./Figures/harware_arch_imp.pdf> <./Figures/imp_light_switch_light.jpg>]
 Package acronym Info: Label `acro:TCP' newly defined as it shall be overridden
-although it is yet undefined on input line 320.
+although it is yet undefined on input line 321.
 Package acronym Info: Label `acro:UDP' newly defined as it shall be overridden
-although it is yet undefined on input line 323.
+although it is yet undefined on input line 324.
 
 <Figures/Edup_imp.png, id=107, 579.16376pt x 99.37125pt>
 File: Figures/Edup_imp.png Graphic file (type png)
 
 <use Figures/Edup_imp.png>
-Package pdftex.def Info: Figures/Edup_imp.png used on input line 329.
+Package pdftex.def Info: Figures/Edup_imp.png used on input line 330.
 (pdftex.def)             Requested size: 206.39685pt x 35.41273pt.
 Package acronym Info: Label `acro:SSDP' newly defined as it shall be overridden
 
-although it is yet undefined on input line 341.
+although it is yet undefined on input line 342.
  [6 <./Figures/Edup_imp.png>]
 Package acronym Info: Label `acro:WLAN' newly defined as it shall be overridden
 
-although it is yet undefined on input line 409.
+although it is yet undefined on input line 410.
 
 <Figures/screen_temperature.png, id=113, 1927.2pt x 1204.5pt>
 File: Figures/screen_temperature.png Graphic file (type png)
 
 <use Figures/screen_temperature.png>
-Package pdftex.def Info: Figures/screen_temperature.png used on input line 453.
+Package pdftex.def Info: Figures/screen_temperature.png used on input line 454.
 
 (pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
  [7 <./Figures/screen_temperature.png>]
@@ -749,14 +696,14 @@ File: Figures/screen_completed_recipe.png Graphic file (type png)
 
 <use Figures/screen_completed_recipe.png>
 Package pdftex.def Info: Figures/screen_completed_recipe.png used on input line
- 480.
+ 481.
 (pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
 
 <Figures/imp_home_user_app.png, id=119, 722.7pt x 1284.8pt>
 File: Figures/imp_home_user_app.png Graphic file (type png)
 
 <use Figures/imp_home_user_app.png>
-Package pdftex.def Info: Figures/imp_home_user_app.png used on input line 516.
+Package pdftex.def Info: Figures/imp_home_user_app.png used on input line 517.
 (pdftex.def)             Requested size: 77.39685pt x 137.58398pt.
 
 
@@ -764,33 +711,33 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 535.
+               Default added (so using `tbp') on input line 536.
 
 <Figures/room_detection_cumulative2.png, id=120, 602.25pt x 372.39125pt>
 File: Figures/room_detection_cumulative2.png Graphic file (type png)
 
 <use Figures/room_detection_cumulative2.png>
 Package pdftex.def Info: Figures/room_detection_cumulative2.png used on input l
-ine 537.
+ine 538.
 (pdftex.def)             Requested size: 258.0pt x 159.53416pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 537--538
+Overfull \hbox (6.0pt too wide) in paragraph at lines 538--539
  [][] 
  []
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 548.
+               Default added (so using `tbp') on input line 549.
 
 <Figures/building_detection_cumulative.png, id=121, 602.25pt x 372.39125pt>
 File: Figures/building_detection_cumulative.png Graphic file (type png)
 
 <use Figures/building_detection_cumulative.png>
 Package pdftex.def Info: Figures/building_detection_cumulative.png used on inpu
-t line 550.
+t line 551.
 (pdftex.def)             Requested size: 258.0pt x 159.53416pt.
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 550--551
+Overfull \hbox (6.0pt too wide) in paragraph at lines 551--552
  [][] 
  []
 
@@ -802,7 +749,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 File: Figures/eval_motion.pdf Graphic file (type pdf)
 
 <use Figures/eval_motion.pdf>
-Package pdftex.def Info: Figures/eval_motion.pdf used on input line 580.
+Package pdftex.def Info: Figures/eval_motion.pdf used on input line 581.
 (pdftex.def)             Requested size: 206.39685pt x 82.10976pt.
 
 
@@ -810,44 +757,31 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 591.
+               Default added (so using `tbp') on input line 592.
 
 <Figures/eval_lights.pdf, id=126, 728.7225pt x 453.695pt>
 File: Figures/eval_lights.pdf Graphic file (type pdf)
 
 <use Figures/eval_lights.pdf>
-Package pdftex.def Info: Figures/eval_lights.pdf used on input line 593.
-(pdftex.def)             Requested size: 154.80157pt x 96.37256pt.
+Package pdftex.def Info: Figures/eval_lights.pdf used on input line 594.
+(pdftex.def)             Requested size: 232.19843pt x 144.5623pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 598.
+               Default added (so using `tbp') on input line 599.
 
-<Figures/eval_temp.png, id=127, 1927.2pt x 1204.5pt>
-File: Figures/eval_temp.png Graphic file (type png)
+<Figures/eval_temp.pdf, id=127, 724.7075pt x 454.69875pt>
+File: Figures/eval_temp.pdf Graphic file (type pdf)
 
-<use Figures/eval_temp.png>
-Package pdftex.def Info: Figures/eval_temp.png used on input line 600.
-(pdftex.def)             Requested size: 154.80157pt x 96.74792pt.
+<use Figures/eval_temp.pdf>
+Package pdftex.def Info: Figures/eval_temp.pdf used on input line 601.
+(pdftex.def)             Requested size: 232.19843pt x 145.68695pt.
  [9 <./Figures/room_detection_cumulative2.png> <./Figures/building_detection_cu
 mulative.png> <./Figures/eval_motion.pdf> <./Figures/eval_lights.pdf
 
 pdfTeX warning: pdflatex (file ./Figures/eval_lights.pdf): PDF inclusion: multi
 ple pdfs with page group included in a single page
->] (abstract.bbl
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.24 \end{thebibliography}
-                          
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-)
+>] (abstract.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -859,28 +793,25 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[10 <./Figures/eval_temp.png>] (abstract.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+[10 <./Figures/eval_temp.pdf>] (abstract.aux) ) 
 Here is how much of TeX's memory you used:
- 3459 strings out of 493334
- 52802 string characters out of 3138841
- 124429 words of memory out of 3000000
- 6929 multiletter control sequences out of 15000+200000
- 40324 words of font info for 74 fonts, out of 3000000 for 9000
+ 3474 strings out of 493334
+ 52990 string characters out of 3138841
+ 126472 words of memory out of 3000000
+ 6943 multiletter control sequences out of 15000+200000
+ 41460 words of font info for 75 fonts, out of 3000000 for 9000
  1145 hyphenation exceptions out of 8191
- 40i,13n,25p,791b,239s stack positions out of 5000i,500n,10000p,200000b,50000s
-{D:/ProgramasInstalados/latex/fonts/enc/dvips/fontname/8r.enc}<D:/ProgramasIn
-stalados/latex/fonts/type1/public/amsfonts/cm/cmmi6.pfb><D:/ProgramasInstalados
-/latex/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/ProgramasInstalados/latex/f
-onts/type1/urw/times/utmb8a.pfb><D:/ProgramasInstalados/latex/fonts/type1/urw/t
-imes/utmbi8a.pfb><D:/ProgramasInstalados/latex/fonts/type1/urw/times/utmr8a.pfb
-><D:/ProgramasInstalados/latex/fonts/type1/urw/times/utmri8a.pfb>
-Output written on abstract.pdf (10 pages, 3152154 bytes).
+ 40i,13n,25p,791b,306s stack positions out of 5000i,500n,10000p,200000b,50000s
+{D:/ProgramasInstalados/latex/fo
+nts/enc/dvips/fontname/8r.enc}<D:/ProgramasInstalados/latex/fonts/type1/public/
+amsfonts/cm/cmmi6.pfb><D:/ProgramasInstalados/latex/fonts/type1/public/amsfonts
+/cm/cmsy7.pfb><D:/ProgramasInstalados/latex/fonts/type1/urw/times/utmb8a.pfb><D
+:/ProgramasInstalados/latex/fonts/type1/urw/times/utmbi8a.pfb><D:/ProgramasInst
+alados/latex/fonts/type1/urw/times/utmr8a.pfb><D:/ProgramasInstalados/latex/fon
+ts/type1/urw/times/utmri8a.pfb>
+Output written on abstract.pdf (10 pages, 3228557 bytes).
 PDF statistics:
- 172 PDF objects out of 1000 (max. 8388607)
+ 184 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  71 words of extra memory for PDF output out of 10000 (max. 10000000)
 
