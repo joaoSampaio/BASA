@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.basa.camera;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -9,7 +11,6 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,6 +22,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import net.sourceforge.zbar.Config;
+import net.sourceforge.zbar.Image;
+import net.sourceforge.zbar.ImageScanner;
+import net.sourceforge.zbar.Symbol;
+import net.sourceforge.zbar.SymbolSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,10 +69,16 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private String latestFileName = "";
     private Camera.Size sizePreview;
     private boolean recording = false;
+    private ImageScanner scanner;
+    private boolean barcodeScanned = false;
 
     private boolean startRecording = false;
     private boolean callPreview = true;
     private Handler handler;
+
+    static {
+        System.loadLibrary("iconv");
+    }
 
     public CameraHelper(Launch2Activity act) {
         this.activity = act;
@@ -148,11 +161,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-            //nao funciona
             List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
             Camera.Size sizeScreen = sizes.get(0);
             for (int i = 0; i < sizes.size(); i++) {
-//                Log.d("myapp", "size.width: " + sizes.get(i).width + " size.height: " + +sizes.get(i).height);
                 if (sizes.get(i).width > sizeScreen.width)
                     sizeScreen = sizes.get(i);
                 if(sizes.get(i).height == maxHeight) {
@@ -160,11 +171,15 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                    // break;
                 }
             }
-            sizeScreen = sizes.get(sizes.size()-1);
 
-//            Log.d("MyCameraApp", "sizeScreen size.width: " + sizeScreen.width + " size.height: " + sizeScreen.height);
+
+            for (Camera.Size s: sizes) {
+                Log.d("camera", "preview w:"+s.width + " h:" + s.height);
+            }
+
+            sizeScreen = sizes.get(sizes.size()-2);
+            Log.d("camera", "sizeScreen w:"+sizeScreen.width + " h:" + sizeScreen.height);
             parameters.setPreviewSize(sizeScreen.width, sizeScreen.height);
-            Log.d("camera", "setPreviewSize sizeScreen.width:" + sizeScreen.width + " sizeScreen.height:"+sizeScreen.height);
             sizes = parameters.getSupportedPictureSizes();
             Camera.Size sizeCamera = sizes.get(0);
             for (int i = 0; i < sizes.size(); i++) {
@@ -176,7 +191,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                     break;
                 }
             }
-            Log.d("camera", "setPictureSize sizeScreen.width:" + sizeScreen.width + " sizeScreen.height:"+sizeScreen.height);
             parameters.setPictureSize(sizeCamera.width, sizeCamera.height);
         }
 
@@ -184,11 +198,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         parameters.set("jpeg-quality", 90);
 
         parameters.set("orientation", "landscape");
-        degrees = 0;
         degrees = 90;
         if(cameraId == Camera.CameraInfo.CAMERA_FACING_FRONT)
             degrees = 270;
-        //parameters.set("rotation", degrees);
         parameters.setRotation(degrees);
         camera.setParameters(parameters);
     }
@@ -334,11 +346,17 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             mTextureView.requestLayout();
             mCamera.setPreviewTexture(getSurface());
             mCamera.startPreview();
-//            mCamera.setPreviewCallback(getPreviewCallback());
+            mCamera.setPreviewCallback(getPreviewCallback());
             AppController.getInstance().mCameraReady = true;
 
 
             handler.postDelayed(timerVideoFrame, 100);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    enableQRCode();
+                }
+            }, 600);
 
         } catch (IOException ioe) {
             Log.d("cam", "ioe" + ioe.getMessage());
@@ -374,24 +392,24 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private Runnable timerVideoFrame = new Runnable() {
         @Override
         public void run() {
-            long t1 = System.currentTimeMillis();
-            Bitmap pic = mTextureView.getBitmap();
-
-            if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
-                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-                final String latestFileNameF = System.currentTimeMillis() / 100 + ".jpeg";
-                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-                new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
-                    @Override
-                    public void onPhotoBeenSaved(Uri file) {
-                        if (AppController.getInstance().getBasaManager().getVideoManager() != null) {
-                            AppController.getInstance().getBasaManager().getVideoManager().addNewLivePhoto(latestFilePathF, latestFileNameF.replace(".jpeg", ""), latestFileNameF);
-                        }
-                    }
-                }).start();
-            }
-            processCameraFrame(pic);
-            handler.postDelayed(this, 1000);
+//            long t1 = System.currentTimeMillis();
+//            Bitmap pic = mTextureView.getBitmap();
+//
+//            if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
+//                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
+//                final String latestFileNameF = System.currentTimeMillis() / 100 + ".jpeg";
+//                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
+//                new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
+//                    @Override
+//                    public void onPhotoBeenSaved(Uri file) {
+//                        if (AppController.getInstance().getBasaManager().getVideoManager() != null) {
+//                            AppController.getInstance().getBasaManager().getVideoManager().addNewLivePhoto(latestFilePathF, latestFileNameF.replace(".jpeg", ""), latestFileNameF);
+//                        }
+//                    }
+//                }).start();
+//            }
+//            processCameraFrame(pic);
+//            handler.postDelayed(this, 1000);
         }
 
     };
@@ -413,10 +431,29 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 //            }
 
 
-            //processCameraFrame(data);
+            processCameraFrame(data);
 
         }
     };
+
+
+    public void enableQRCode() {
+
+        try {
+
+                scanner = new ImageScanner();
+                scanner.setConfig(0, Config.X_DENSITY, 3);
+                scanner.setConfig(0, Config.Y_DENSITY, 3);
+
+                scanner.setConfig(Symbol.NONE, Config.ENABLE, 0);
+                scanner.setConfig(Symbol.QRCODE, Config.ENABLE, 1);
+
+                barcodeScanned = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     private void processCameraFrame(byte[] data){
@@ -531,6 +568,32 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 //        this.bitmapMotionTransfer = bitmapMotionTransfer;
 //    }
 
+
+    public void showSimpleDialog(String data) {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(false);
+        builder.setTitle("Qr-Code");
+        builder.setMessage("Card: " + data );
+        builder.setPositiveButton("OK!!!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                barcodeScanned = false;
+            }
+        })
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        // Create the AlertDialog object and return it
+        builder.create().show();
+    }
+
+
+
     public final class DetectionThread extends Thread {
 
         private byte[] data;
@@ -558,13 +621,84 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
             if (!processing.compareAndSet(false, true)) return;
             try {
-
+                Log.d("camera", " scanner != null)");
                 int[] img = null;
-                if(data != null)
+                if(data != null && scanner != null) {
+
+
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    Camera.Size size = parameters.getPreviewSize();
+
+                    Image barcode = new Image(size.width, size.height, "Y800");
+                    barcode.setData(data);
+
+                    int result = scanner.scanImage(barcode);
+                    Log.d("camera", " result:" + result);
+                    Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
+                    if (result != 0 && !barcodeScanned)
+                    {
+                        barcodeScanned = true;
+                        SymbolSet syms = scanner.getResults();
+                        for (Symbol sym : syms)
+                        {
+                            Log.d("camera", " getData)" + sym.getData());
+                            final String qrCodeString = sym.getData();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showSimpleDialog(qrCodeString);
+                                }
+                            });
+                            break;
+                        }
+                    }
+
+
+
+
+
                     img = ImageProcessing.decodeYUV420SPtoRGB(data, width, height);
-                else
+                }else {
                     img = ImageProcessing.bitmapToRGB(pic);
 
+
+                    if(scanner != null) {
+
+                        Bitmap barcodeBmp = pic;
+                        int width = barcodeBmp.getWidth();
+                        int height = barcodeBmp.getHeight();
+                        int[] pixels = new int[width * height];
+                        barcodeBmp.getPixels(pixels, 0, width, 0, 0, width, height);
+                        Image barcode = new Image(width, height, "RGB4");
+                        barcode.setData(pixels);
+                        int result = scanner.scanImage(barcode.convert("Y800"));
+                        Log.d("camera", " result:" + result);
+                        Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
+                        if (result != 0 && !barcodeScanned)
+                        {
+                            barcodeScanned = true;
+                            SymbolSet syms = scanner.getResults();
+                            for (Symbol sym : syms)
+                            {
+                                Log.d("camera", " getData)" + sym.getData());
+                                final String qrCodeString = sym.getData();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showSimpleDialog(qrCodeString);
+                                    }
+                                });
+
+
+
+                                break;
+                            }
+                        }
+
+                    }
+
+
+                }
 //                Log.d("teste", "width->" + width + " height->" + height);
 //                Log.i(TAG, "img != null ->" + (img != null));
 //                Log.i(TAG, "detector.detect(img, width, height)->" + (detector.detect(img, width, height)) );
