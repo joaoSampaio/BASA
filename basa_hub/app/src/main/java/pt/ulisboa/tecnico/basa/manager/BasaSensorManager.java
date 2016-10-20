@@ -65,7 +65,8 @@ public class BasaSensorManager implements SensorEventListener {
             String topic = AppController.getInstance().getDeviceConfig().getUuid();
             String senderID = topic;
             int code = FcmNotificationData.MOVEMENT_DETECTED;
-            if(AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0
+            if(AppController.getInstance().getBasaManager().getUserManager() != null &&
+                    AppController.getInstance().getBasaManager().getUserManager().numActiveUsersOffice() == 0
                     && (current - timeLastNotification) > 60000 ) {
                 timeLastNotification = System.currentTimeMillis();
                 new SendNotificationService(topic, "Movement has been detected2", senderID, code, new CallbackMultiple() {

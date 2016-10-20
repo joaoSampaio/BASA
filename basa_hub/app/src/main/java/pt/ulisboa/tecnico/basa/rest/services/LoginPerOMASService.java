@@ -10,6 +10,8 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.RestClient;
+import pt.ulisboa.tecnico.basa.rest.RestClientPerOMAS;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -31,7 +33,7 @@ public class LoginPerOMASService extends ServerCommunicationService {
     @Override
     public void execute() {
 
-            Call<ResponseBody> call = RestClient.getService().loginPerOMASGetToken(ip+"/login");
+            Call<ResponseBody> call = RestClientPerOMAS.getService(ip).loginPerOMASGetToken();
             call.enqueue(new retrofit2.Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -63,16 +65,17 @@ public class LoginPerOMASService extends ServerCommunicationService {
 
                         //loginPost(username, password, "y", csrf_token, new Callback<Response>() {
                         Log.d("peromas", "login data:" + username + " " + password+ " " + "y" + " " + csrf_token);
-                        Call<ResponseBody> call2 = RestClient.getService().loginPerOMAS(ip+"/login", username, password, "y", csrf_token);
+                        Call<ResponseBody> call2 = RestClientPerOMAS.getService(ip).loginPerOMAS( username, password, "y", csrf_token);
                         call2.enqueue(new retrofit2.Callback<ResponseBody>() {
                                           @Override
                                           public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                               if (response.isSuccessful()) {
 
 
-
-
-
+                                                  //Set-Cookie
+                                                  String cookie = response.headers().get("Set-Cookie");
+                                                  Log.d("peromas", "cookie found:"+cookie);
+                                                  new ModelCache<String>().saveModel(cookie, "Set-Cookie");
 
 
                                                   Log.d("peromas", "login sucess:" + new Gson().toJson(response.headers()));

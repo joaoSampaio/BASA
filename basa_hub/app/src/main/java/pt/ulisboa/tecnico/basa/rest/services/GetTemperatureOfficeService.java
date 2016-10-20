@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.rest.RestClient;
+import pt.ulisboa.tecnico.basa.rest.RestClientPerOMAS;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -72,9 +73,9 @@ public class GetTemperatureOfficeService extends ServerCommunicationService {
 
 
             if (isWifiAvailable()) {
-                url = AppController.getInstance().getDeviceConfig().getPeromasIP()+"/index";
+                url = AppController.getInstance().getDeviceConfig().getPeromasIP();
 
-                Call<ResponseBody> call =  RestClient.getService().getStatusPerOMAS(url);
+                Call<ResponseBody> call =  RestClientPerOMAS.getService(url).getStatusPerOMAS();
                 call.enqueue(new retrofit2.Callback<ResponseBody>() {
 
 

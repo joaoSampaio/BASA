@@ -15,6 +15,8 @@ import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.rest.Pojo.ArduinoChangeTemperature;
 import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import pt.ulisboa.tecnico.basa.rest.RestClient;
+import pt.ulisboa.tecnico.basa.rest.RestClientPerOMAS;
+import pt.ulisboa.tecnico.basa.util.ModelCache;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -85,7 +87,7 @@ public class ChangeTemperatureService extends ServerCommunicationService {
             //login
             String username = AppController.getInstance().getDeviceConfig().getPeromasUser();
             String password = AppController.getInstance().getDeviceConfig().getPeromasPass();
-            String ip = AppController.getInstance().getDeviceConfig().getPeromasIP();
+            final String ip = AppController.getInstance().getDeviceConfig().getPeromasIP();
 
 
 
@@ -112,9 +114,9 @@ public class ChangeTemperatureService extends ServerCommunicationService {
                         map.put("AC_3", "AC_3");
                     }
 
-
-                    url = AppController.getInstance().getDeviceConfig().getPeromasIP()+"/index";
-                    Call<ResponseBody> call = RestClient.getService().setTemperaturePerOMAS(url, map);
+//                    String cookie = new ModelCache<String>().loadModel(String.class, "Set-Cookie", "");
+//                    url = AppController.getInstance().getDeviceConfig().getPeromasIP()+"/index";
+                    Call<ResponseBody> call = RestClientPerOMAS.getService(ip).setTemperaturePerOMAS(map);
                     call.enqueue(new retrofit2.Callback<ResponseBody>() {
 
 

@@ -621,7 +621,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
             if (!processing.compareAndSet(false, true)) return;
             try {
-                Log.d("camera", " scanner != null)");
+//                Log.d("camera", " scanner != null)");
                 int[] img = null;
                 if(data != null && scanner != null) {
 
@@ -633,8 +633,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                     barcode.setData(data);
 
                     int result = scanner.scanImage(barcode);
-                    Log.d("camera", " result:" + result);
-                    Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
+//                    Log.d("camera", " result:" + result);
+//                    Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
                     if (result != 0 && !barcodeScanned)
                     {
                         barcodeScanned = true;
@@ -672,8 +672,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                         Image barcode = new Image(width, height, "RGB4");
                         barcode.setData(pixels);
                         int result = scanner.scanImage(barcode.convert("Y800"));
-                        Log.d("camera", " result:" + result);
-                        Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
+//                        Log.d("camera", " result:" + result);
+//                        Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
                         if (result != 0 && !barcodeScanned)
                         {
                             barcodeScanned = true;

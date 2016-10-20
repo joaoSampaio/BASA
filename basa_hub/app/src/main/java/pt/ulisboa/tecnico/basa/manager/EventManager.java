@@ -65,7 +65,7 @@ public class EventManager {
     }
 
     public void addEvent(Event event){
-        Log.d("EVENT", "****" + eventToString(event) + "****: ");
+        //Log.d("EVENT", "****" + eventToString(event) + "****: ");
 
         try {
             for (InterestEventAssociation interest: interests){
