@@ -13,4 +13,7 @@ It posesses some features such as:
 * Live camera view of the room, using the User app.
 * Screen with statistics showing light level, temperature, ocupation, etc
 
+<div align="center">
+  <img height="400px" src="raw/BgRq4W.gif"/>
+</div>
 
