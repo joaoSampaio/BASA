@@ -252,7 +252,7 @@ public class SpeechRecognizerManager {
             isPockerSphinxRunning = true;
             if (hypothesis == null)
             {
-                Log.d(TAG, "hypothesis == null:");
+                //Log.d(TAG, "hypothesis == null:");
                 return;
             }
 

@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.basa.rest.Pojo.Temperature;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -42,20 +43,20 @@ public interface Api {
     @GET
     Call<JsonElement> getConfig(@Url String url);
 
-    @GET
-    Call<ResponseBody> getStatusPerOMAS(@Url String url);
+    @GET("/index")
+    Call<ResponseBody> getStatusPerOMAS();
 
-    @GET
-    Call<ResponseBody> loginPerOMASGetToken(@Url String url);
-
-    @Multipart
-    @POST
-    Call<ResponseBody> loginPerOMAS(@Url String url, @Part("username") String username, @Part("password") String password, @Part("remember_me") String remember_me, @Part("csrf_token") String csrf_token);
+    @GET("login")
+    Call<ResponseBody> loginPerOMASGetToken();
 
     @Multipart
-    @POST
+    @POST("login")
+    Call<ResponseBody> loginPerOMAS(@Part("username") String username, @Part("password") String password, @Part("remember_me") String remember_me, @Part("csrf_token") String csrf_token);
+
+    @Multipart
+    @POST("index")
 //    Call<ResponseBody> setTemperaturePerOMAS(@Url String url, @PartMap() Map<String, RequestBody> partMap);
-    Call<ResponseBody> setTemperaturePerOMAS(@Url String url, @PartMap() Map<String, String> partMap);
+    Call<ResponseBody> setTemperaturePerOMAS(@PartMap() Map<String, String> partMap);
 
 
 

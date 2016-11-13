@@ -35,7 +35,7 @@ public class ModelCache<T> {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(TAG, json);
         editor.commit();
-        Log.d("myapp", "json:" +json);
+//        Log.d("myapp", "json:" +json);
     }
 
     public T loadModel(Type type, String TAG){
@@ -54,7 +54,7 @@ public class ModelCache<T> {
         if (contacts.equals("")) {
             return null;
         } else {
-            Log.d("loadModel", "loadModel->" + contacts);
+//            Log.d("loadModel", "loadModel->" + contacts);
             T contactsList = new Gson().fromJson(contacts, type);
             return contactsList;
         }
