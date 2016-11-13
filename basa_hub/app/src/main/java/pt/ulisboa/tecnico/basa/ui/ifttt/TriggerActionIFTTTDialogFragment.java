@@ -2,16 +2,13 @@ package pt.ulisboa.tecnico.basa.ui.ifttt;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,9 +150,6 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(6, 20, true));
-        Log.d("log", "--**--data trigger:" + data.size());
         mAdapter = new TriggerAdapter(getActivity(), data, new ViewClicked() {
             @Override
             public void onClick(final int triggerOrActionId) {
@@ -351,10 +345,6 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         data.add(new LightOnAction(TriggerAction.ACTION_LIGHT_ON));
         data.add(new SpeechAction(TriggerAction.ACTION_TALK));
         data.add(new TemperatureAction(TriggerAction.ACTION_CHANGE_TEMPERATURE));
-//        data.add(new TriggerAction(TriggerAction.LIGHT_OFF, "Light OFF", R.drawable.ic_light));
-//        data.add(new TriggerAction(TriggerAction.TRIGGER_TEMPERATURE, "Change temperature", R.drawable.ic_temperature_trigger));
-//        data.add(new TriggerAction(TriggerAction.EMAIL, "Send Email", R.drawable.ic_mail));
-//        data.add(new TriggerAction(TriggerAction.TRIGGER_SPEECH, "Say", R.drawable.ic_talk));
     }
 
 
@@ -372,15 +362,6 @@ public class TriggerActionIFTTTDialogFragment extends DialogFragment {
         this.triggersActions = new ArrayList<>(triggersActions);
     }
 
-    public List<String> getCustomSwitches(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int numCustomSwitches = Integer.parseInt(preferences.getString("custom_button_number", "0"));
-        List<String> customSwitches = new ArrayList<>();
-        for(int i = 1; i <= numCustomSwitches; i++){
-            customSwitches.add("Switch "+i);
-        }
-        return customSwitches;
-    }
 
 
 }

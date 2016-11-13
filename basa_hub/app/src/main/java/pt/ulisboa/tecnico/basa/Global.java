@@ -7,13 +7,9 @@ import android.graphics.Color;
  */
 public class Global {
     public static final String SSID = "Connectify-me";
-    public static final String FIREBASE_URL = "https://basa-2a0c9.firebaseio.com";
-    public static final String FIREBASE_EMAIL = "FIREBASE_EMAIL";
-    public static final String FIREBASE_PASS = "FIREBASE_PASS";
     public static final int PORT = 5002;
 
 
-    public final static int TAG_TEMPERATURE_FRAGMENT = 0;
 
 
 
@@ -56,7 +52,6 @@ public class Global {
     public final static int VIDEO_HISTORY= 1;
 
 
-    public final static int DIALOG_PICK_TIME = 0;
 
 
 

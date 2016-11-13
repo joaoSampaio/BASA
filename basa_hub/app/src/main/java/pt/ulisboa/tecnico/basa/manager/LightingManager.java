@@ -79,28 +79,41 @@ public class LightingManager implements
         return false;
     }
 
-    public void setLightState(boolean[] values, boolean sendServer, boolean sendFireDB){
-        Log.d("webserver", "setLightState");
-        Log.d("light", "setLightState:"+values.toString());
+    public void setLightState(boolean[] values, boolean sendServer, boolean sendFireDB, boolean fromRecipe){
+
 
 
         timeCurrent = System.currentTimeMillis();
         long elapsedTimeNs = timeCurrent - timeOld;
-        if (elapsedTimeNs >= 4) {
-            //timeOld = timeCurrent;
+        if (elapsedTimeNs >= 4000 || fromRecipe) {
+            timeOld = System.currentTimeMillis();
+            //already on
+
+
+            for(int i=0; i< values.length; i++){
+                this.lights.set(i, values[i]);
+            }
+
 
             for (int i = 0; i < this.lights.size(); i++) {
 
-                if(values != null && values.length > i) {
+                if(values != null && values.length > i && this.getLightChangedListener() != null) {
                     if (values[i]) {
-                        turnONLight(i, sendServer, sendFireDB);
+                        this.getLightChangedListener().onLightON(i);
                     } else {
-                        turnOFFLight(i, sendServer, sendFireDB);
+                        this.getLightChangedListener().onLightOFF(i);
                     }
                 }
             }
-        }else {
-            Log.d("webserver", "setlight too close in time");
+
+            if(sendFireDB && AppController.getInstance().getDeviceConfig().isFirebaseEnabled()) {
+                FirebaseHelper mHelperFire = new FirebaseHelper();
+                mHelperFire.changeLights(lights);
+            }
+            if(sendServer) {
+                //timeOld = 0;
+                lightingControl.sendLightCommand(convert(lights));
+            }
         }
     }
 

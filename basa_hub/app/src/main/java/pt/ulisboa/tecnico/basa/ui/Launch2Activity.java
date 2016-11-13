@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,7 +17,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,18 +51,13 @@ import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.event.InterestEventAssociation;
 import pt.ulisboa.tecnico.basa.rest.CallbackMultiple;
 import pt.ulisboa.tecnico.basa.ui.setup.MainSetupActivity;
-import pt.ulisboa.tecnico.basa.util.ClapListener;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 import pt.ulisboa.tecnico.basa.util.ModelCache;
 
 public class Launch2Activity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
-
-
     private CameraBasa mHelper;
-
-    private ClapListener clapListener;
     private BasaManager basaManager;
 
 
@@ -213,10 +205,6 @@ public class Launch2Activity extends FragmentActivity implements
 
         });
 
-
-
-
-
         final String[] colors = getResources().getStringArray(R.array.vertical_ntb);
 
         final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_vertical);
@@ -243,18 +231,10 @@ public class Launch2Activity extends FragmentActivity implements
                         .build()
         );
 
-
         navigationTabBar.setModels(models);
         navigationTabBar.setViewPager(mPager, 0);
 
-
-
-
-
     }
-
-
-
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -281,8 +261,6 @@ public class Launch2Activity extends FragmentActivity implements
             }
         }
     }
-
-
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
@@ -363,7 +341,6 @@ public class Launch2Activity extends FragmentActivity implements
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("myapp_new", "****onResume onResume onResume: ");
         this.handler = new Handler();
         findViewById(R.id.viewRecording).setVisibility(View.GONE);
         BasaDeviceConfig config = AppController.getInstance().getDeviceConfig();
@@ -377,28 +354,11 @@ public class Launch2Activity extends FragmentActivity implements
 
             initSavedValues();
 
-            //clapListener = new ClapListener(this);
-
             SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
             AppController.getInstance().beaconStart();
             Intent intent = new Intent(this, ServerService.class);
             startService(intent);
-
-
-
-
-
-//            interestMotion = new InterestEventAssociation(Event.MOTION, new EventManager.RegisterInterestEvent() {
-//                @Override
-//                public void onRegisteredEventTriggered(Event event) {
-//                    if (event instanceof EventMotion) {
-//                        EventMotion motion = (EventMotion)event;
-//
-//                    }
-//                }
-//            }, 0);
-//            basaManager.getEventManager().registerInterest(interestMotion);
 
         }
     }
@@ -420,11 +380,6 @@ public class Launch2Activity extends FragmentActivity implements
         super.onPause();
         Log.d("app", "onPause activity");
 
-//        if(interestMotion != null){
-//            basaManager.getEventManager().removeInterest(interestMotion);
-//        }
-
-
         if(handler != null)
             handler.removeCallbacks(cameraRun);
 
@@ -438,6 +393,9 @@ public class Launch2Activity extends FragmentActivity implements
             this.basaManager.stop();
             this.basaManager.setActivity(null);
         }
+
+        AppController.getInstance().getStatisticalData().onPause();
+
     }
 
     public void restoreApp() {
@@ -497,7 +455,6 @@ public class Launch2Activity extends FragmentActivity implements
         AppController.getInstance().mThreshold = AppController.getInstance().mThreshold /100;
 
         AppController.getInstance().timeScanPeriod = Integer.parseInt(preferences.getString("cam_time", "2"));
-//        new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
 
         if(getBasaManager().getEventManager() != null)
             getBasaManager().getEventManager().reloadSavedRecipes();
@@ -568,17 +525,6 @@ public class Launch2Activity extends FragmentActivity implements
             this.getWindow().setAttributes(params);
             //enableDisableViewGroup((ViewGroup)findViewById(R.id.main_container).getParent(),true);
             Log.e("onSensorChanged","FAR");
-        }
-    }
-
-    public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
-        int childCount = viewGroup.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View view = viewGroup.getChildAt(i);
-            view.setEnabled(enabled);
-            if (view instanceof ViewGroup) {
-                enableDisableViewGroup((ViewGroup) view, enabled);
-            }
         }
     }
 }

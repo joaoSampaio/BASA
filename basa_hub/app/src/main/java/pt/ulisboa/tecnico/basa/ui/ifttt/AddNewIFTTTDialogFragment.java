@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,11 +89,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
             }
         });
 
-//        condition_spinner = (Spinner) rootView.findViewById(R.id.condition_spinner);
-//        String[] items = new String[]{"≥", "≤"};
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, items);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        condition_spinner.setAdapter(adapter);
         action_event = (ImageView)rootView.findViewById(R.id.action_event);
         action_trigger = (ImageView)rootView.findViewById(R.id.action_trigger);
 
@@ -135,13 +128,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                applyToolTipPosition(action_trigger, textViewTriggerDescription);
-//            }
-//        },1000);
     }
 
 
@@ -156,7 +142,6 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
     }
 
     private void setTrigger(int triggerId){
-        Log.d("log", "setTrigger:"+triggerId);
         int resId = TriggerAction.getInvertedResId(triggerId);
 
         if(resId != -1) {
@@ -187,24 +172,14 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
                 break;
 
             case R.id.action_save_recipe:
-                Log.d("json", "action_save_recipe:");
-
 
                 if(recipe.getActions().isEmpty() || recipe.getTriggers().isEmpty()){
                     Toast.makeText(AppController.getAppContext(), "Trigger or action missing!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-
-
                 recipe.setActive(true);
-                Log.d("json", "recipe.setActive(true);:");
-                Log.d("json", "json:"+new Gson().toJson(recipe));
-                Log.d("json", "json:"+new Gson().toJson(recipe.getTriggers()));
 
-//                    recipe.setDescription(editTextDescription.getText().toString());
-//                    recipe.setShortName(editTextShort.getText().toString());
-//
                 List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
                 if(recipes == null)
                     recipes = new ArrayList<>();
@@ -222,13 +197,10 @@ public class AddNewIFTTTDialogFragment extends DialogFragment implements View.On
 
 
                 }
-                Log.d("json", "recipes.add(recipe);:");
                 AppController.getInstance().saveCustomRecipes(recipes);
                 if(listener != null)
                     listener.onNewRecipe();
-                Log.d("json", "listener.onNewRecipe():");
                 AppController.getInstance().getBasaManager().getEventManager().reloadSavedRecipes();
-                Log.d("json", "reloadSavedRecipes:");
                 getDialog().dismiss();
 
 

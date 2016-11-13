@@ -137,7 +137,7 @@ public class FirebaseHelper {
 
                     boolean[] tmp = new boolean[lights.size()];
                     for(int i = 0; i < lights.size(); i++) tmp[i] = lights.get(i);
-                        manager.getLightingManager().setLightState(tmp, true, false);
+                        manager.getLightingManager().setLightState(tmp, true, false, false);
                 }
             }
 
@@ -298,15 +298,20 @@ public class FirebaseHelper {
             StorageReference storageRef = storage.getReferenceFromUrl("gs://basa-2a0c9.appspot.com");
             Uri file = Uri.fromFile(new File(path));
             StorageReference riversRef = storageRef.child(fileType + file.getLastPathSegment());
-            UploadTask uploadTask = riversRef.putFile(file);
+            try{
+                UploadTask uploadTask = riversRef.putFile(file);
+                // Register observers to listen for when the download is done or if it fails
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                    }
+                }).addOnSuccessListener(listener);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
-// Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(listener);
+
         }
     }
 

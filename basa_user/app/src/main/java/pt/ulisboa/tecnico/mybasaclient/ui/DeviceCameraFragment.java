@@ -102,6 +102,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
     private Uri contentUri;
     private View mediaLayout;
     private SeekBar mSeekBar;
+    private boolean ready = false;
     private Handler mHandler = new Handler();
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private Runnable videoTime = new Runnable() {
@@ -132,11 +133,13 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
 
+            Log.d("ddd", "liveVideoListener:onDataChange");
             GenericTypeIndicator<HashMap<String, FirebaseFileLink>> t = new GenericTypeIndicator<HashMap<String, FirebaseFileLink>>() {
             };
-
+            ready = false;
             HashMap<String, FirebaseFileLink> videos = dataSnapshot.getValue(t);
-            if (videos != null && getActivity() != null) {
+            if (!ready && videos != null && getActivity() != null) {
+                Log.d("ddd", "liveVideoListener:onDataChange1");
                 firebaseLive.clear();
                 firebaseLive.putAll(videos);
                 String nextVideoKey = getRecentVideoKey();
@@ -144,11 +147,14 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
 //            final long photoTime = Long.parseLong(firebaseLive.lastEntry().getKey())/10 ;
                 final long photoTime = videos.get(nextVideoKey).getCreatedAt() / 10000;
 
-                if(System.currentTimeMillis() / 1000 - photoTime > 20){
+                Log.d("ddd", "liveVideoListener:photoTime:"+photoTime);
+//                if(System.currentTimeMillis() / 1000 - photoTime > 20){
+//                    Log.d("ddd", "return:"+(System.currentTimeMillis() / 1000 - photoTime));
+//                    return;
+//                }
 
-                    return;
-                }
-
+                ready = true;
+                Log.d("ddd", "liveVideoListener:urlVideo-------------"+urlVideo);
                 Glide.with(DeviceCameraFragment.this).load(urlVideo)
                         .asBitmap()
                         .fitCenter()
@@ -161,6 +167,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
                             public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
                                 // TODO Auto-generated method stub
 
+                                Log.d("ddd", "liveVideoListener:onDataChange3");
                                 if (photoTime > recentPhoto) {
                                     recentPhoto = photoTime;
                                     imageCamera.setImageBitmap(arg0);
@@ -169,6 +176,7 @@ public class DeviceCameraFragment extends DialogFragment implements View.OnClick
 //                                                    long seconds = currentTime % 60;
                                     time.setText(timeAgo + " seconds ago");
 //                                                    time.setText(String.format("%02d:%02d", minutes, seconds));
+                                    ready = false;
                                 }
                             }
                         });

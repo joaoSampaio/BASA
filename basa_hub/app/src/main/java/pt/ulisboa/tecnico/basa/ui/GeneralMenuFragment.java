@@ -25,20 +25,12 @@ import pt.ulisboa.tecnico.basa.ui.secondary.SettingsTemperatureFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.StatisticsFragment;
 import pt.ulisboa.tecnico.basa.util.ViewClicked;
 
-//import android.support.v4.app.DialogFragment;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentTransaction;
-
-
 public class GeneralMenuFragment extends Fragment {
 
 
     View rootView;
-    boolean isOn = true;
     private RecyclerView mRecyclerView;
     private MenuAdapter mAdapter;
-//    private static final int[] CLICK = {R.id.action_ifttt, R.id.action_settings, R.id.action_intruder,
-//            R.id.action_settings_temperature, R.id.action_user, R.id.action_history};
 
     public GeneralMenuFragment() {
         // Required empty public constructor
@@ -54,16 +46,11 @@ public class GeneralMenuFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4, 20, true));
-
         List<GeneralMenuItem> data = new ArrayList<>();
         data.add(new GeneralMenuItem(GeneralMenuItem.IFTTT));
-//        data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS_TEMP));
         data.add(new GeneralMenuItem(GeneralMenuItem.HISTORY));
         data.add(new GeneralMenuItem(GeneralMenuItem.REGISTER));
         data.add(new GeneralMenuItem(GeneralMenuItem.SETTINGS));
-//        data.add(new GeneralMenuItem(GeneralMenuItem.INTRUDER));
         data.add(new GeneralMenuItem(GeneralMenuItem.STATISTICS));
 
         mAdapter = new MenuAdapter(getActivity(), data, new ViewClicked() {

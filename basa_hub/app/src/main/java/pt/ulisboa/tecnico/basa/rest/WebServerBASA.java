@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import pt.ulisboa.tecnico.basa.Global;
 import pt.ulisboa.tecnico.basa.app.AppController;
+import pt.ulisboa.tecnico.basa.exceptions.UserRegistrationException;
 import pt.ulisboa.tecnico.basa.manager.BasaManager;
 import pt.ulisboa.tecnico.basa.model.BasaDeviceConfig;
 import pt.ulisboa.tecnico.basa.model.DeviceStatus;
@@ -194,7 +195,7 @@ public class WebServerBASA {
                                     if(temperature > 0 && manager.getTemperatureManager() != null)
                                         manager.getTemperatureManager().onChangeTargetTemperatureFromClient(temperature);
                                     if(lights != null && lights.length > 0 && manager.getLightingManager() != null)
-                                        manager.getLightingManager().setLightState(lights, true, true);
+                                        manager.getLightingManager().setLightState(lights, true, true, false);
 
                                 }
                             });
@@ -262,23 +263,6 @@ public class WebServerBASA {
         });
 
 
-
-        get(new Route("/users") {
-            @Override
-            public Object handle(Request request, Response response) {
-
-                long id = Thread.currentThread().getId();
-
-                long time1 = System.currentTimeMillis();
-                User user = new User("Joao");
-                Gson gson = new Gson();
-                String json = gson.toJson(user);
-                long time2 = System.currentTimeMillis();
-                Log.d("servico", "thread-> "+id+" |time:"+(time2-time1));
-                return json;
-            }
-        });
-
         get(new Route("/register") {
             @Override
             public Object handle(Request request, Response response) {
@@ -343,9 +327,14 @@ public class WebServerBASA {
                     }.getType());
                     Log.d("servico", "1:" + (getActivity() != null));
                     if(UserRegistrationToken.isTokenValid(userRegistration.getToken())) {
-                        Log.d("servico", "2:");
+                        Log.d("servico", "2:"+(AppController.getInstance().getBasaManager() != null));
                         if(AppController.getInstance().getBasaManager() != null){
-                            AppController.getInstance().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+                            try {
+                                AppController.getInstance().getBasaManager().getUserManager().registerNewUser(userRegistration.getUsername(), userRegistration.getEmail(), userRegistration.getUuid());
+
+                            }catch (UserRegistrationException exception){
+                                //vamos permitir
+                            }
                             UserRegistrationAnswer answer = new UserRegistrationAnswer(AppController.getInstance().getDeviceConfig());
                             Log.d("servico", "3:");
                             response.status(200);
@@ -391,7 +380,7 @@ public class WebServerBASA {
                             @Override
                             public void run() {
                                 Log.d("webserver", "values:"+values.toString());
-                                getActivity().getBasaManager().getLightingManager().setLightState(values, false, true);
+                                getActivity().getBasaManager().getLightingManager().setLightState(values, false, true, false);
                             }
                         });
 //                    }
@@ -434,24 +423,16 @@ public class WebServerBASA {
         @Override
         public void run() {
             // Moves the current Thread into the background
-//            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             Log.d("webserver", "Runnable");
             int port = Global.PORT;
             try {
                 Log.d("servico", "startserver");
                 Spark.setPort(port);
-//                Spark.port(port);
-                Log.d("servico", "port");
-                //Spark.
-//                int maxThreads = 8;
-//                threadPool(maxThreads);
-//                setSecure();
+
                 endpoints();
-                Log.d("servico", "endpoints");
                 WifiManager wm = (WifiManager) AppController.getAppContext().getSystemService(Activity.WIFI_SERVICE);
                 String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-                Log.d("servico", "The server is running in -> " + ip + ":" + port);
                 Log.d("servico", "The server is running in -> " + ip + ":" + port);
 
 

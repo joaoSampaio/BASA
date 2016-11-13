@@ -28,7 +28,6 @@ public class TemperatureFragment extends Fragment {
     private InterestEventAssociation interest;
     private SeekArc mSeekArc;
     private ImageView imageForecast;
-    private View action_increase, action_decrease;
       public TemperatureFragment() {
         // Required empty public constructor
 
@@ -46,21 +45,6 @@ public class TemperatureFragment extends Fragment {
         forecastTemp = (TextView) rootView.findViewById(R.id.forecastTemp);
         forecastSummary = (TextView) rootView.findViewById(R.id.forecastSummary);
         imageForecast = (ImageView) rootView.findViewById(R.id.imageForecast);
-//        action_increase = rootView.findViewById(R.id.action_increase);
-//        action_decrease = rootView.findViewById(R.id.action_decrease);
-//        action_increase.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mSeekArc.setProgress(mSeekArc.getProgress() + 1);
-//            }
-//        });
-//        action_decrease.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mSeekArc.setProgress(mSeekArc.getProgress() - 1);
-//            }
-//        });
-
 
         mSeekArc.setOnSeekArcChangeListener(new SeekArc.OnSeekArcChangeListener() {
 
@@ -76,7 +60,6 @@ public class TemperatureFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekArc seekArc, int progress,
                                           boolean fromUser) {
-                //mSeekArcProgress.setText(String.valueOf(progress));
             }
         });
 
@@ -111,8 +94,6 @@ public class TemperatureFragment extends Fragment {
                 if(event instanceof EventTemperature){
 
                     double temperature = ((EventTemperature)event).getTemperature();
-                    Log.d("servico", "latest temp frag:" + temperature);
-//                    textTemperature.setText("" + temperature);
                     mSeekArc.setCurrentTemperature("" + (int)temperature);
                     int color = (temperature < 18)? Global.COLOR_COLD : Global.COLOR_HEAT;
                     mSeekArc.setBackgroundColor(color);

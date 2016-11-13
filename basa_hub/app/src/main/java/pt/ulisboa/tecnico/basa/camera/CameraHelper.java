@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -11,6 +12,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -41,7 +43,9 @@ import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.detection.IMotionDetection;
 import pt.ulisboa.tecnico.basa.detection.ImageProcessing;
 import pt.ulisboa.tecnico.basa.detection.RgbMotionDetection;
+import pt.ulisboa.tecnico.basa.manager.UserManager;
 import pt.ulisboa.tecnico.basa.manager.VideoManager;
+import pt.ulisboa.tecnico.basa.model.UserLocation;
 import pt.ulisboa.tecnico.basa.ui.Launch2Activity;
 import pt.ulisboa.tecnico.basa.util.BitmapMotionTransfer;
 import pt.ulisboa.tecnico.basa.util.StorageHelper;
@@ -253,7 +257,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
         String storage = StorageHelper.isExternalStorageReadableAndWritable()? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
         File mediaStorageDir = new File(storage + File.separator + "myAssistant/history/");
-//        File mediaStorageDir = new File("/sdcard/myAssistant/");
         if ( !mediaStorageDir.exists() ) {
             if ( !mediaStorageDir.mkdirs() ){
                 Log.d("err", "camera - failed to create directory");
@@ -346,7 +349,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
             mTextureView.requestLayout();
             mCamera.setPreviewTexture(getSurface());
             mCamera.startPreview();
-            mCamera.setPreviewCallback(getPreviewCallback());
+            //mCamera.setPreviewCallback(getPreviewCallback());
             AppController.getInstance().mCameraReady = true;
 
 
@@ -392,24 +395,32 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private Runnable timerVideoFrame = new Runnable() {
         @Override
         public void run() {
-//            long t1 = System.currentTimeMillis();
-//            Bitmap pic = mTextureView.getBitmap();
-//
-//            if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
-//                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-//                final String latestFileNameF = System.currentTimeMillis() / 100 + ".jpeg";
-//                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-//                new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
-//                    @Override
-//                    public void onPhotoBeenSaved(Uri file) {
-//                        if (AppController.getInstance().getBasaManager().getVideoManager() != null) {
-//                            AppController.getInstance().getBasaManager().getVideoManager().addNewLivePhoto(latestFilePathF, latestFileNameF.replace(".jpeg", ""), latestFileNameF);
-//                        }
-//                    }
-//                }).start();
-//            }
-//            processCameraFrame(pic);
-//            handler.postDelayed(this, 1000);
+            long t1 = System.currentTimeMillis();
+            Bitmap pic = mTextureView.getBitmap();
+
+            if(AppController.getInstance().getBasaManager().getVideoManager().isLiveStream()) {
+
+                long time = t1 / 1000;
+                if(time % 2 == 0){
+                    Log.d("cam", "time->" + time);
+                    handler.postDelayed(this, 1000);
+                    return;
+                }
+
+                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
+                final String latestFileNameF = t1 / 100 + ".jpeg";
+                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
+                new SavePhotoThread(latestFilePathF, pic, new SavePhotoThread.PhotoSaved() {
+                    @Override
+                    public void onPhotoBeenSaved(Uri file) {
+                        if (AppController.getInstance().getBasaManager().getVideoManager() != null) {
+                            AppController.getInstance().getBasaManager().getVideoManager().addNewLivePhoto(latestFilePathF, latestFileNameF.replace(".jpeg", ""), latestFileNameF);
+                        }
+                    }
+                }).start();
+            }
+            processCameraFrame(pic);
+            handler.postDelayed(this, 1000);
         }
 
     };
@@ -422,17 +433,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
          */
         @Override
         public void onPreviewFrame(byte[] data, Camera cam) {
-//            boolean doDetection = false;
-//            if(recording && callPreview){
-//                Log.d("camera", "inside preview");
-//                callPreview = false;
-//                doDetection = true;
-//                startRecord();
-//            }
-
-
-            processCameraFrame(data);
-
+            //processCameraFrame(data);
         }
     };
 
@@ -459,13 +460,9 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
     private void processCameraFrame(byte[] data){
         if(timeOld == 0){
             timeOld = System.currentTimeMillis();
-//            timeOldVideo = System.currentTimeMillis();
         }
         timeCurrent = System.currentTimeMillis();
 
-//        if((timeCurrent - timeOldVideo)/1000 >= 0.2){
-//
-//        }
         long elapsedTimeNs = timeCurrent - timeOld;
         if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
             timeOld = timeCurrent;
@@ -476,17 +473,13 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
             AppController.getInstance().widthPreview = size.width;
             AppController.getInstance().heightPreview = size.height;
-//            if (!GlobalData.isPhoneInMotion()) {
             DetectionThread thread = new DetectionThread(data, size.width, size.height);
             thread.start();
 
-
-//            }
         }
     }
 
     private void processCameraFrame(Bitmap data){
-//        Log.d("camera", "processCameraFrame");
         if(timeOld == 0){
             timeOld = System.currentTimeMillis();
         }
@@ -494,10 +487,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         long elapsedTimeNs = timeCurrent - timeOld;
         if (elapsedTimeNs/1000 >= AppController.getInstance().timeScanPeriod) {
             timeOld = timeCurrent;
-            Log.d("camera", "inside preview detection");
             if (data == null) return;
 
-//            ImageProcessing.bitmapToRGB(data);
             AppController.getInstance().widthPreview = data.getWidth();
             AppController.getInstance().heightPreview = data.getHeight();
 
@@ -564,18 +555,24 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
         bitmapMotionTransfer.remove(bitmapMotion);
     }
 
-//    public void setBitmapMotionTransfer(CameraSettingsDialogFragment.BitmapMotionTransfer bitmapMotionTransfer) {
-//        this.bitmapMotionTransfer = bitmapMotionTransfer;
-//    }
-
 
     public void showSimpleDialog(String data) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
         builder.setTitle("Qr-Code");
-        builder.setMessage("Card: " + data );
-        builder.setPositiveButton("OK!!!", new DialogInterface.OnClickListener() {
+
+        UserManager userManager = AppController.getInstance().getBasaManager().getUserManager();
+        if(userManager.getUser(data) == null){
+            builder.setMessage("No user found" );
+        }else{
+            builder.setMessage("Welcome, you are logged in for 2 hours");
+            AppController.getInstance().getBasaManager().getUserManager().addUserHeartbeat(data, new UserLocation(true, UserLocation.TYPE_OFFICE, 2*60*1000));
+        }
+
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 barcodeScanned = false;
@@ -621,8 +618,8 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
             if (!processing.compareAndSet(false, true)) return;
             try {
-                Log.d("camera", " scanner != null)");
                 int[] img = null;
+
                 if(data != null && scanner != null) {
 
 
@@ -633,15 +630,12 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                     barcode.setData(data);
 
                     int result = scanner.scanImage(barcode);
-                    Log.d("camera", " result:" + result);
-                    Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
                     if (result != 0 && !barcodeScanned)
                     {
                         barcodeScanned = true;
                         SymbolSet syms = scanner.getResults();
                         for (Symbol sym : syms)
                         {
-                            Log.d("camera", " getData)" + sym.getData());
                             final String qrCodeString = sym.getData();
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -652,9 +646,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                             break;
                         }
                     }
-
-
-
 
 
                     img = ImageProcessing.decodeYUV420SPtoRGB(data, width, height);
@@ -672,15 +663,12 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                         Image barcode = new Image(width, height, "RGB4");
                         barcode.setData(pixels);
                         int result = scanner.scanImage(barcode.convert("Y800"));
-                        Log.d("camera", " result:" + result);
-                        Log.d("camera", " !barcodeScanned:" + !barcodeScanned);
                         if (result != 0 && !barcodeScanned)
                         {
                             barcodeScanned = true;
                             SymbolSet syms = scanner.getResults();
                             for (Symbol sym : syms)
                             {
-                                Log.d("camera", " getData)" + sym.getData());
                                 final String qrCodeString = sym.getData();
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
@@ -688,9 +676,6 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                                         showSimpleDialog(qrCodeString);
                                     }
                                 });
-
-
-
                                 break;
                             }
                         }
@@ -699,39 +684,25 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
 
 
                 }
-//                Log.d("teste", "width->" + width + " height->" + height);
-//                Log.i(TAG, "img != null ->" + (img != null));
-//                Log.i(TAG, "detector.detect(img, width, height)->" + (detector.detect(img, width, height)) );
-
-
-
 
                 if (img != null && detector.detect(img, width, height)) {
-
                     detected(true);
-
-                    //img foi alterado
-
-
                 }else{
                     detected(false);
-//                    AppController.getInstance().getBasaManager().getEventManager().addEvent(new );
-
-
                 }
 
-//                final Bitmap motionPic = ImageProcessing.rgbToBitmap(img, width, height);
-//
-//                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
-//                final String latestFileNameF = System.currentTimeMillis() / 100 + "_img.jpeg";
-//                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
-//                new SavePhotoThread(latestFilePathF, motionPic, new SavePhotoThread.PhotoSaved() {
-//                    @Override
-//                    public void onPhotoBeenSaved(Uri file) {
-//                        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-//
-//                    }
-//                }).start();
+                final Bitmap motionPic = ImageProcessing.rgbToBitmap(img, width, height);
+
+                String storage = StorageHelper.isExternalStorageReadableAndWritable() ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() : Environment.getDataDirectory().getAbsolutePath();
+                final String latestFileNameF = System.currentTimeMillis() / 100 + "_img.jpeg";
+                final String latestFilePathF = storage + File.separator + "myAssistant/" + latestFileNameF;
+                new SavePhotoThread(latestFilePathF, motionPic, new SavePhotoThread.PhotoSaved() {
+                    @Override
+                    public void onPhotoBeenSaved(Uri file) {
+                        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+
+                    }
+                }).start();
 
 
                 if(!getBitmapMotionTransfer().isEmpty()) {
@@ -767,6 +738,7 @@ public class CameraHelper implements TextureView.SurfaceTextureListener, CameraB
                 }
             });
 
+        //play sound if detect motion
         if(isDetected) {
 //            Log.d("app", "has detected");
 //            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);

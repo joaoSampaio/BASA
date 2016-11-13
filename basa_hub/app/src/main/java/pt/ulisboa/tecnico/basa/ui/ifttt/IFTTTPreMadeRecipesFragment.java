@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,31 +53,7 @@ public class IFTTTPreMadeRecipesFragment extends Fragment {
 
     public void loadUI(){
 
-
-//        rootView.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                new ModelCache<List<Recipe>>().saveModel(new ArrayList<Recipe>(), Global.OFFLINE_RECIPES);
-//                data.clear();
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        });
-
-
-
         data = new ArrayList<>();
-//        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list);
-//        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        mRecyclerView.setLayoutManager(layoutManager);
-//        mRecyclerView.setHasFixedSize(true);
-//
-//        mAdapter = new PreMadeRecipeAdapter(getActivity(), data);
-//        mRecyclerView.setAdapter(mAdapter);
-//        refreshAdapter();
-
-
-
 
         if(mRecyclerView == null) {
 
@@ -114,18 +89,6 @@ public class IFTTTPreMadeRecipesFragment extends Fragment {
     }
 
 
-
-
-
-    private void refreshAdapter(){
-        List<Recipe> recipes = AppController.getInstance().getCustomRecipes();
-        if(recipes != null && recipes.size() > 0 && recipes.get(0) instanceof Recipe) {
-            data.clear();
-            Log.d("recipe", "recipes:"+recipes.size());
-            data.addAll(recipes);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onStart() {

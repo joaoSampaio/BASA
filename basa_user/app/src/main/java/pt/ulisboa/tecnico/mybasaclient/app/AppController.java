@@ -4,6 +4,7 @@ import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.os.RemoteException;
 import android.os.Vibrator;
 import android.util.Log;
 
@@ -11,6 +12,14 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.eddystone.Eddystone;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.Identifier;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+
+import java.util.Collection;
 import java.util.List;
 
 import pt.ulisboa.tecnico.mybasaclient.Global;
@@ -23,7 +32,7 @@ import pt.ulisboa.tecnico.mybasaclient.rest.services.UpdateLocationService;
 import pt.ulisboa.tecnico.mybasaclient.util.ModelCache;
 
 
-public class AppController extends Application {
+public class AppController extends Application implements BeaconConsumer, RangeNotifier {
 
     public static final String TAG = AppController.class.getSimpleName();
     private static Context context;
@@ -42,6 +51,8 @@ public class AppController extends Application {
     private long timeLastBeaconFound;
     private final static long SHUTDOWN_TIMEOUT_BLE = 60*60*1000; //1hour in case it is not shutdown before
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -55,9 +66,31 @@ public class AppController extends Application {
 //        beaconStart();
 
     }
+    private org.altbeacon.beacon.BeaconManager mBeaconManager;
 
 
-    public void beaconStart(){
+    public void altBeaconStart(){
+        if(!isBLEStarted) {
+            isBLEStarted = true;
+            mBeaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this.getApplicationContext());
+            // Detect the main Eddystone-UID frame:
+
+            mBeaconManager.setBackgroundBetweenScanPeriod(2000);
+            mBeaconManager.setBackgroundScanPeriod(2000);
+
+            mBeaconManager.setForegroundBetweenScanPeriod(2000);
+            mBeaconManager.setForegroundScanPeriod(2000);
+
+            mBeaconManager.getBeaconParsers().add(new BeaconParser().
+                    setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
+            // Detect the telemetry Eddystone-TLM frame:
+            mBeaconManager.getBeaconParsers().add(new BeaconParser().
+                    setBeaconLayout("x,s:0-1=feaa,m:2-2=20,d:3-3,d:4-5,d:6-7,d:8-11,d:12-15"));
+            mBeaconManager.bind(this);
+        }
+    }
+
+    public void estimoteBeaconStart(){
         Log.d("temp", "beaconStart:" );
 
 
@@ -146,6 +179,18 @@ public class AppController extends Application {
         }
     }
 
+
+    public void beaconStart(){
+        boolean altbeaconMode = true;
+
+        if(altbeaconMode){
+            altBeaconStart();
+        }else{
+            estimoteBeaconStart();
+        }
+
+    }
+
     public void stopEddystoneScanning(){
         beaconManager.stopEddystoneScanning(idEdge);
     }
@@ -154,6 +199,10 @@ public class AppController extends Application {
         if(beaconManager != null){
             stopEddystoneScanning();
             beaconManager.disconnect();
+        }
+
+        if(mBeaconManager != null){
+            mBeaconManager.unbind(this);
         }
         isBLEStarted = false;
 
@@ -247,6 +296,92 @@ public class AppController extends Application {
         this.currentDevice = null;
         this.currentZone = null;
         this.zones = null;
+    }
+
+    @Override
+    public void onBeaconServiceConnect() {
+        Region region = new Region("all-beacons-region", null, null, null);
+        try {
+            mBeaconManager.startRangingBeaconsInRegion(region);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        mBeaconManager.setRangeNotifier(this);
+    }
+
+
+    @Override
+    public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+
+        Log.d(TAG, "altbeacon list:" + beacons.size());
+
+        for (Beacon beacon: beacons) {
+            if (beacon.getServiceUuid() == 0xfeaa && beacon.getBeaconTypeCode() == 0x00) {
+                // This is a Eddystone-UID frame
+                Identifier namespaceId = beacon.getId1();
+                String namespace = namespaceId.toString().substring(2);
+                Identifier instanceId = beacon.getId2();
+                Log.d(TAG, "I see a beacon transmitting namespace id: "+namespace+
+                        " and instance id: "+instanceId+
+                        " approximately "+beacon.getDistance()+" meters away.");
+
+                // Do we have telemetry data?
+                if (beacon.getExtraDataFields().size() > 0) {
+                    long telemetryVersion = beacon.getExtraDataFields().get(0);
+                    long batteryMilliVolts = beacon.getExtraDataFields().get(1);
+                    long pduCount = beacon.getExtraDataFields().get(3);
+                    long uptime = beacon.getExtraDataFields().get(4);
+
+                    Log.d(TAG, "The above beacon is sending telemetry version "+telemetryVersion+
+                            ", has been up for : "+uptime+" seconds"+
+                            ", has a battery level of "+batteryMilliVolts+" mV"+
+                            ", and has transmitted "+pduCount+" advertisements.");
+
+                }
+
+
+                for (Zone zone : loadZones()) {
+
+                    for (BasaDevice device : zone.getDevices()) {
+                        for (String beaconId : device.getBeaconUuids()) {
+                            Log.d(TAG, ": device:" + beaconId.toLowerCase() + " found:" + namespace.toLowerCase());
+
+                            if (beaconId.toLowerCase().equals(namespace.toLowerCase())) {
+                                //enviar mensagem
+                                Log.d(TAG, ": is near office sending msg...");
+
+                                if(getLoggedUser().isEnableTestRoomLocation()){
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 500 milliseconds
+                                    v.vibrate(500);
+                                }
+
+
+
+                                new UpdateLocationService(device, new UserLocation(true, UserLocation.TYPE_OFFICE), new CallbackFromService() {
+                                    @Override
+                                    public void success(Object response) {}
+                                    @Override
+                                    public void failed(Object error) {}
+                                }).execute();
+                                timeLastBeaconFound = System.currentTimeMillis();
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                if((System.currentTimeMillis() - timeLastBeaconFound) > SHUTDOWN_TIMEOUT_BLE){
+
+                    beaconDisconect();
+
+                }
+
+
+            }
+        }
     }
 
 }

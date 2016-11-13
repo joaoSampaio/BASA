@@ -26,7 +26,6 @@ public class BasaManager {
     private TextToSpeechManager textToSpeechManager;
     private TemperatureManager temperatureManager;
     private DeviceDiscoveryManager deviceDiscoveryManager;
-    private WebServerManager webServerManager;
     private UserManager userManager;
     private Launch2Activity activity;
     private List<ValueEventListener> fireListener;
@@ -168,9 +167,6 @@ public class BasaManager {
         return deviceDiscoveryManager;
     }
 
-    public WebServerManager getWebServerManager() {
-        return webServerManager;
-    }
 
     public UserManager getUserManager() {
         return userManager;

@@ -29,11 +29,6 @@ import pt.ulisboa.tecnico.basa.ui.secondary.CameraSettingsDialogFragment;
 import pt.ulisboa.tecnico.basa.ui.secondary.ScanHVAVDialogFragment;
 import pt.ulisboa.tecnico.basa.util.FirebaseHelper;
 
-//import android.support.v4.app.DialogFragment;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentTransaction;
-//import android.support.v7.preference.Preference;
-//import android.support.v7.preference.PreferenceFragmentCompat;
 
 
 public class PreferencesFragment extends PreferenceFragment implements
@@ -186,20 +181,9 @@ public class PreferencesFragment extends PreferenceFragment implements
             }else{
                 if(isMyLauncherDefault()){
                     Log.d("myapp", "isMyLauncherDefault true");
-//                    p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
                     getActivity().getPackageManager().clearPackagePreferredActivities(getActivity().getPackageName());
-//                    Intent selector = new Intent(Intent.ACTION_MAIN);
-//                    selector.addCategory(Intent.CATEGORY_HOME);
-//                    startActivity(selector);
-                }else{
-
 
                 }
-
-//                Intent startMain = new Intent(Intent.ACTION_MAIN);
-//                startMain.addCategory(Intent.CATEGORY_HOME);
-//                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(startMain);
             }
     }
     }

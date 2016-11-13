@@ -77,13 +77,16 @@ public class SpeechRecognizerManager {
         @Override
         public void run() {
 
+            Log.d(TAG, "!isGoogleRunning && !isPockerSphinxRunning:" + (!isGoogleRunning && !isPockerSphinxRunning));
+            Log.d(TAG, "isGoogleRunning" + (isGoogleRunning ));
+            Log.d(TAG, "isPockerSphinxRunning" + (isPockerSphinxRunning ));
             if(!isGoogleRunning && !isPockerSphinxRunning){
 
                 mGoogleSpeechRecognizer.cancel();
                 mPocketSphinxRecognizer.startListening(KWS_SEARCH);
 
             }
-
+            handler.postDelayed(this, 10000);
 
         }
     };
@@ -194,6 +197,10 @@ public class SpeechRecognizerManager {
 
         mSpeechRecognizerIntent.putExtra("android.speech.extra.DICTATION_MODE", true);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false);
+
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 4000);
+
+
 
     }
 

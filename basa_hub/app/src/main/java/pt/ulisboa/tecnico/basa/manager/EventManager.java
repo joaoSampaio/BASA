@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.basa.manager;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -340,21 +342,6 @@ public class EventManager {
 
                         break;
 
-//                    case TriggerAction.CLAP:
-//                        registerInterestRecipe(new InterestEventAssociation(Event.CLAP, new EventManager.RegisterInterestEvent() {
-//                            @Override
-//                            public void onRegisteredEventTriggered(Event event) {
-//                                if (event instanceof EventClap) {
-//
-//                                    if(areOtherTriggersActive(recipeFinal.getTriggers(), trigger))
-//                                        doAction(recipeFinal);
-//
-//
-//                                }
-//                            }
-//                        }, 0));
-//                        break;
-
                     case TriggerAction.TRIGGER_SPEECH:
                         registerInterestRecipe(new InterestEventAssociation(Event.SPEECH, new EventManager.RegisterInterestEvent() {
                             @Override
@@ -440,9 +427,6 @@ public class EventManager {
                                             doAction(recipeFinal);
 
                                     }
-
-
-
                                 }
                             }
                         }, 0));
@@ -450,8 +434,6 @@ public class EventManager {
                         break;
 
                     case TriggerAction.TRIGGER_TIME:
-
-
 
                         List<Long> timesToRun = ((TimeTrigger)trigger).getTimerDate();
 
@@ -508,77 +490,6 @@ public class EventManager {
 
 
                     break;
-
-
-//                case Trigger.TRIGGER_TEMPERATURE:
-//
-//                    registerInterestRecipe(new InterestEventAssociation(Event.TRIGGER_TEMPERATURE, new EventManager.RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            if (event instanceof EventTemperature) {
-//                                double temp = ((EventTemperature) event).getTemperature();
-//
-//                                if (recipeFinal.isTriggerConditionBigger()) {
-//                                    //Temp ≥ 25
-//                                    if (temp >= Integer.parseInt(recipeFinal.getConditionTrigger())) {
-//                                        doAction(recipeFinal);
-//                                    }
-//
-//                                }
-//                                if (recipeFinal.isTriggerConditionLess()) {
-//                                    //Temp ≤ 25
-//                                    if (temp <= Integer.parseInt(recipeFinal.getConditionTrigger())) {
-//                                        doAction(recipeFinal);
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                    }, 0));
-//
-//                    break;
-//                case Trigger.SWITCH:
-//                    Log.d("initSavedValues", "SWITCH ");
-//
-//                    registerInterestRecipe(new InterestEventAssociation(Event.CUSTOM_SWITCH, new EventManager.RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            Log.d("initSavedValues", "SWITCH onRegisteredEventTriggered");
-//                            if (event instanceof EventCustomSwitchPressed) {
-//                                int id = ((EventCustomSwitchPressed) event).getId();
-//
-//                                //se for o switch pretendido
-//                                if (recipeFinal.getSelectedTrigger().get(0) == id) {
-//                                    doAction(recipeFinal);
-//                                }
-//                            }
-//                        }
-//                    }, 0));
-//                    break;
-//                case Trigger.TRIGGER_SPEECH:
-//                    Log.d("initSavedValues", "TRIGGER_SPEECH ");
-//                    registerInterestRecipe(new InterestEventAssociation(Event.TRIGGER_SPEECH, new RegisterInterestEvent() {
-//                        @Override
-//                        public void onRegisteredEventTriggered(Event event) {
-//                            if (event instanceof EventSpeech) {
-//                                List<String> voices = ((EventSpeech) event).getVoice();
-//
-//                                Log.d("voice", "getConditionTriggerValue: " + recipeFinal.getConditionTriggerValue());
-//                                //se for o switch pretendido
-//                                for (String voice : voices) {
-//                                    if (recipeFinal.getConditionTriggerValue().equals(voice)) {
-//                                        Log.d("voice", "TRIGGER_SPEECH: correct voice ");
-//                                        doAction(recipeFinal);
-//                                    }
-//                                }
-//                            }
-//
-//                        }
-//                    },0));
-//
-//                    break;
-
-
                 }
             }
         }
@@ -594,23 +505,19 @@ public class EventManager {
 
                     break;
                 case TriggerAction.ACTION_LIGHT_ON:
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(AppController.getAppContext());
+                    int numLights = Integer.parseInt(preferences.getString("light_number", "1"));
+                    boolean[] lights = new boolean[numLights];
 
                     if(action.getParametersInt(0) == LightOnAction.LIGHT_ON){
                         for(int i=1; i< action.getParameters().size(); i++){
-                            getBasaManager().getLightingManager().turnONLight(action.getParametersInt(i), true, true);
-                        }
-                    } else{
-                        for(int i=1; i< action.getParameters().size(); i++){
-                            getBasaManager().getLightingManager().turnOFFLight(action.getParametersInt(i), true, true);
+                            lights[action.getParametersInt(i)] = true;
                         }
                     }
 
 
-//
-//                for(int id: re.getSelectedAction()){
-//                    if(getBasaManager().getLightingManager() != null)
-//                        getBasaManager().getLightingManager().turnONLight(id, true, true);
-//                }
+                    getBasaManager().getLightingManager().setLightState(lights, true, true, true);
+
 
                     break;
                 case TriggerAction.ACTION_TALK:
@@ -623,24 +530,6 @@ public class EventManager {
                     getBasaManager().getTemperatureManager().changeTargetTemperatureFromUI(value);
                     break;
 
-
-//            case TriggerAction.LIGHT_OFF:
-//                for(int id: re.getSelectedAction()){
-//                    if(getBasaManager().getLightingManager() != null)
-//                        getBasaManager().getLightingManager().turnOFFLight(id, true, true);
-//                }
-//                break;
-
-//            case TriggerAction.TRIGGER_SPEECH:
-//
-//                String say = re.getConditionEventValue();
-//                getBasaManager().getTextToSpeechManager().speak(say);
-//
-//
-//                break;
-//            case TriggerAction.EMAIL:
-//
-//                break;
             }
         }
     }
@@ -781,34 +670,6 @@ public class EventManager {
     public void setUpdateHistory(EventHistoryFragment.UpdateHistory updateHistory) {
         this.updateHistory = updateHistory;
     }
-
-
-    //    public void setUpCalender(){
-//
-//        Calendar midnightCalendar = Calendar.getInstance();
-//
-//        //set the time to midnight tonight
-//
-//        midnightCalendar.set(Calendar.HOUR_OF_DAY, 21);
-//
-//        midnightCalendar.set(Calendar.MINUTE, 0);
-//
-//        midnightCalendar.set(Calendar.SECOND, 0);
-//
-//        AlarmManager am = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
-//
-//        //create a pending intent to be called at midnight
-//
-//        PendingIntent midnightPI = PendingIntent.getService(getActivity(), 0, new Intent("pt.ulisboa.tecnico.basa.BroadcastReceiver.TimeBroadcastReceiver"), PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        //schedule time for pending intent, and set the interval to day so that this event will repeat at the selected time every day
-//
-//        am.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, midnightPI);
-//
-//
-//
-//
-//    }
 
 
 }

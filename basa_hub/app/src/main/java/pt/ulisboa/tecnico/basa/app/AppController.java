@@ -12,7 +12,6 @@ import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.eddystone.Eddystone;
 import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.http.server.AsyncHttpServer;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -37,13 +36,8 @@ public class AppController extends Application {
     private static AppController mInstance;
     private BeaconManager beaconManager;
     private String idEdge;
-//    private Launch2Activity.InterfaceToActivity interfaceToActivity;
-    public AsyncHttpServer server;
-//    private String namespace = "edd1ebeac04e5defa017";
     private String namespace;
     private int temperature;
-
-    String uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     public int width;
     public int height;
     public int widthPreview;
@@ -67,8 +61,6 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("AppController", "onCreate (mInstance == null->" + (mInstance == null));
-//        Firebase.setAndroidContext(this);
         mInstance = this;
         temperature = -99;
         AppController.context = getApplicationContext();
@@ -104,34 +96,8 @@ public class AppController extends Application {
         if(getDeviceConfig().getTemperatureChoice() == BasaDeviceConfig.TEMPERATURE_TYPE_MONITOR_BEACON) {
 
             beaconManager = new BeaconManager(getApplicationContext());
-        beaconManager.setBackgroundScanPeriod(1300, 25000);
-        beaconManager.setForegroundScanPeriod(13000,1000);
-
-//        beaconManager.setBackgroundScanPeriod(1300, 25000);
-//        beaconManager.setForegroundScanPeriod(1000,5000);
-//
-//        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-//            @Override
-//            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
-//                Log.d("temp", "list:" + beacons.size());
-//                if (beacons.size() != 0) {
-//                    Beacon beacon = beacons.get(0);
-//                    Utils.Proximity proximity = Utils.computeProximity(beacon);
-//                    Log.d("temp", "proximity:" + proximity);
-//                    Log.d("temp", "beacon:" + beacon.toString());
-//                    Log.d("temp", "getProximityUUID:" + beacon.getProximityUUID());
-//                    // ...
-//                }
-//            }
-//        });
-//
-//
-//        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-//            @Override
-//            public void onServiceReady() {
-//                beaconManager.startRanging(new Region("regiao", null, null , null));
-//            }
-//        });
+            beaconManager.setBackgroundScanPeriod(1300, 25000);
+            beaconManager.setForegroundScanPeriod(13000,1000);
 
 
             namespace = getDeviceConfig().getBeaconUuidTemperature();
@@ -141,7 +107,6 @@ public class AppController extends Application {
                 @Override
                 public void onEddystonesFound(List<Eddystone> list) {
                     Log.d(TAG, "list:" + list.size());
-                    Log.d(TAG, namespace + ": wanted namespace:");
                     for (Eddystone eddy : list) {
                         Log.d(TAG, eddy.namespace + ": eddy namespace:");
                         if (eddy.namespace.equals(namespace)) {
@@ -149,12 +114,7 @@ public class AppController extends Application {
                             if (eddy.telemetry != null) {
                                 Log.d(TAG, "temperatura:" + eddy.telemetry.temperature);
                                 Utils.Proximity proximity = Utils.computeProximity(eddy);
-                                Log.d(TAG, "basaManager != null:" + (basaManager != null));
                                 temperature =  (int)eddy.telemetry.temperature;
-//                                if (getBasaManager() != null) {
-//                                    getBasaManager().getEventManager().addEvent(new EventTemperature(Event.TEMPERATURE, eddy.telemetry.temperature, -1));
-//
-//                                }
                                 double accuracy = Utils.computeAccuracy(eddy);
                                 Log.d("temp", "proximity.toString():" + proximity.toString());
                                 Log.d("temp", "accuracy:" + accuracy);
@@ -212,22 +172,6 @@ public class AppController extends Application {
         return AppController.context;
     }
 
-//    public Launch2Activity.InterfaceToActivity getInterfaceToActivity() {
-//        return interfaceToActivity;
-//    }
-//
-//    public void setInterfaceToActivity(Launch2Activity.InterfaceToActivity interfaceToActivity) {
-//        this.interfaceToActivity = interfaceToActivity;
-//    }
-
-    public AsyncHttpServer getServer() {
-        return server;
-    }
-
-    public void setServer(AsyncHttpServer server) {
-        this.server = server;
-    }
-
 
     public BasaManager getBasaManager() {
 
@@ -277,7 +221,6 @@ public class AppController extends Application {
     private String serverKey = null;
     public String getServerKey(){
         if(serverKey == null){
-            serverKey = "AIzaSyCY4HnknljxJX_CoZHuMVO6TEslMs2_tNo";
             serverKey = "AIzaSyCY4HnknljxJX_CoZHuMVO6TEslMs2_tNo";
 //            serverKey = getResources().getString(R.string.google_api_key);
         }

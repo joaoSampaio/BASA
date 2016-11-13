@@ -29,7 +29,6 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
     private int numLights, numCustomSwitches;
     private LinearLayout containerLightSwitch, containerCustomSwitch;
     private Map<Integer, Integer> lightsIds;
-    private Map<Integer, Integer> customSwitchesIds;
 
     public LightsFragment() {
         // Required empty public constructor
@@ -121,8 +120,6 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
             viewId = View.generateViewId();
             btn_light.setId(viewId);
             final int lightId = id;
-            Log.d("app", "light id:" + id);
-            Log.d("app", "light viewId:"+viewId);
 
             viewId = View.generateViewId();
             img_light_state.setId(viewId);
@@ -144,7 +141,6 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
 
 
         ////////*****///////
-        customSwitchesIds = new TreeMap<>();
         numCustomSwitches = Integer.parseInt(preferences.getString("custom_button_number", "0"));
         containerCustomSwitch.removeAllViews();
         for (int id=0; id< numCustomSwitches; id++) {
@@ -179,17 +175,11 @@ public class LightsFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
 
         }
-        Log.d("EVENT","onclick");
         if(lightsIds != null){
             if(lightsIds.containsKey(v.getId())){
                 int lightId = lightsIds.get(v.getId());
-
                 ((Launch2Activity)getActivity()).getBasaManager().getEventManager().addEvent(new EventCustomSwitchPressed(lightId));
-
             }
         }
     }
-
-
-
 }

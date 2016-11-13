@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.basa.manager;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,26 +7,14 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.basa.app.AppController;
 import pt.ulisboa.tecnico.basa.model.SSDP;
-import pt.ulisboa.tecnico.basa.util.NsdHelper;
 import pt.ulisboa.tecnico.basa.util.SSDiscoveryProtocol;
 
 public class DeviceDiscoveryManager implements Manager {
 
-    private Context ctx;
-    private NsdHelper mNsdHelper;
+
     SSDiscoveryProtocol ssDiscoveryProtocol;
-//    private UDPDiscovery udpDiscovery;
 
     public DeviceDiscoveryManager(){
-//        this.udpDiscovery = new UDPDiscovery(ctx, "BASA", 49000);
-
-
-//        mNsdHelper = new NsdHelper(ctx);
-//        mNsdHelper.initializeNsd();
-//        startDiscovery();
-
-
-
 
     }
 
@@ -40,21 +27,14 @@ public class DeviceDiscoveryManager implements Manager {
             }
         });
         ssDiscoveryProtocol.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//        mNsdHelper.discoverServices();
-//        this.udpDiscovery.startMessageReceiver();
-//        this.udpDiscovery.sendMessage("abcde");
+
     }
 
-    public void stopDiscovery(){
-//        mNsdHelper.stopDiscovery();
-//        this.udpDiscovery.stopMessageReceiver();
-    }
 
 
     @Override
     public void destroy() {
-        if(mNsdHelper != null)
-            stopDiscovery();
+
     }
 
     public interface DevicesDiscovery{

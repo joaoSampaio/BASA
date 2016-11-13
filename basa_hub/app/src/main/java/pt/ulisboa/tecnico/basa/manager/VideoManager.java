@@ -79,9 +79,6 @@ public class VideoManager {
         }, 0);
 
         basaManager.getEventManager().registerInterest(interest);
-
-
-
     }
 
     public void destroy(){

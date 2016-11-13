@@ -71,7 +71,7 @@ public class AllStatisticalData {
             getLights().add(statisticalEvent);
         }
 
-        save(this);
+//        save(this);
     }
 
     public void addLightLvlEvent(EventBrightness event){
@@ -82,13 +82,13 @@ public class AllStatisticalData {
             if(event.getmBrightness() != getLightLvl().get(getLightLvl().size()-1).getY()){
                 statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getmBrightness());
                 getLightLvl().add(statisticalEvent);
-                save(this);
+//                save(this);
 
             }
         }else{
             statisticalEvent = new StatisticalEvent(System.currentTimeMillis(), event.getmBrightness());
             getLightLvl().add(statisticalEvent);
-            save(this);
+//            save(this);
         }
     }
 
@@ -141,6 +141,10 @@ public class AllStatisticalData {
 
     public static void save(AllStatisticalData stats){
         new ModelCache<AllStatisticalData>().saveModel(stats, "stats_4");
+    }
+
+    public void onPause(){
+        save(this);
     }
 
 

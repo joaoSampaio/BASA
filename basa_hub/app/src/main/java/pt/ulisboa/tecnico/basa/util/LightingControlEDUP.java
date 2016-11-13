@@ -10,6 +10,8 @@ import android.os.Process;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -255,8 +257,8 @@ public class LightingControlEDUP implements LightingControl {
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Log.d("light", "values:"+values.toString());
-                                        getLightingManager().setLightState(values, false, true);
+                                        Log.d("light", "values:"+ new Gson().toJson(values));
+                                        getLightingManager().setLightState(values, false, true, false);
                                     }
                                 });
                             }

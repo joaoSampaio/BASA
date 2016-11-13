@@ -43,40 +43,6 @@ public class UserManager implements Manager {
         this.buildingLocation = new HashMap<>();
         this.officeLocation = new HashMap<>();
 
-
-
-//        interestLocation = new InterestEventAssociation(Event.TRIGGER_USER_LOCATION, new EventManager.RegisterInterestEvent() {
-//            @Override
-//            public void onRegisteredEventTriggered(Event event) {
-//                if(event instanceof EventUserLocation){
-//                    int type =((EventUserLocation)event).getLocation();
-//                    String userId = ((EventUserLocation) event).getUserId();
-//                    if(type == EventUserLocation.TYPE_OFFICE) {
-//
-//                        if(((EventUserLocation)event).isInBuilding()){
-//                            long time = ((EventUserLocation)event).getTime();
-//                            officeLocation.put(userId, time);
-//                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
-//                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
-//                        }else{
-//                            officeLocation.remove(userId);
-//                        }
-//
-//                    }else if(type == EventUserLocation.TYPE_BUILDING){
-//                        if(((EventUserLocation)event).isInBuilding()){
-//                            long time = ((EventUserLocation)event).getTime();
-//                            buildingLocation.put(userId, time);
-//                            AppController.getInstance().getBasaManager().getLightingManager().turnONLight(0, true, true);
-//                            AppController.getInstance().getBasaManager().getTextToSpeechManager().speak("User detected, turning on light");
-//                        }else{
-//                            buildingLocation.remove(userId);
-//                        }
-//                    }
-//                }
-//            }
-//        }, 0);
-//        AppController.getInstance().getBasaManager().getEventManager().registerInterest(interestLocation);
-
         interestTime = new InterestEventAssociation(Event.TIME, new EventManager.RegisterInterestEvent() {
             @Override
             public void onRegisteredEventTriggered(Event event) {

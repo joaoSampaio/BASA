@@ -60,14 +60,7 @@ public class CameraSettingsDialogFragment extends DialogFragment {
 
         rect = (RectangleView)rootView.findViewById(R.id.rect);
         img_camera = (ImageView)rootView.findViewById(R.id.img_camera);
-//        TextView textViewDescription = (TextView)rootView.findViewById(R.id.textViewDescription);
-//
-//        textViewDescription.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getDialog().dismiss();
-//            }
-//        });
+
         rootView.findViewById(R.id.action_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,27 +137,9 @@ public class CameraSettingsDialogFragment extends DialogFragment {
                     i++;
                 }
 
-
-//                int centerX = balls.get(3).getX() - balls.get(3).getWidthOfBall();
-//                int centerY = balls.get(3).getY() - balls.get(3).getHeightOfBall();
-//                Log.d("Cam", "centerX(0)-> width:"+centerX);
-//                Log.d("Cam", "centerY(0)-> height:"+centerY);
-
             }
         });
 
-
-
-//            IMotionDetection detection = activity.getmHelper().getDetector();
-//            if(detection != null){
-//
-////                Log.d("dialog", "width: " + AppController.getInstance().width + " height: " + AppController.getInstance().height);
-//                Camera.Size size = activity.getmCamera().getParameters().getPreviewSize();
-//                final Bitmap b = ImageProcessing.rgbToBitmap(detection.getPrevious(),
-//                        size.width, size.height);
-//                img_camera.setImageBitmap(b);
-//
-//            }
 
 
 
