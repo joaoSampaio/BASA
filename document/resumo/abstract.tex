@@ -9,11 +9,14 @@
 \hyphenation{op-tical net-works semi-conduc-tor IEEEtran}
 \begin{document}
 
-\title{\LARGE BASA: Building Automation and Security on Android}
+\title{\LARGE BASA: Building Automation and Security on Android
+}
 
 \author{
-  \IEEEauthorblockN{João Miguel Marques Sampaio}\\
-  \IEEEauthorblockA{Instituto Superior Técnico, Universidade de Lisboa\\ joao.mm.sampaio@tecnico.ulisboa.pt}
+  \IEEEauthorblockN{João Miguel Marques Sampaio\\
+  joao.mm.sampaio@tecnico.ulisboa.pt}\\
+  \IEEEauthorblockA{Instituto Superior Técnico, Universidade de Lisboa\\ 
+  November 2016}
 }
 
 
@@ -47,7 +50,7 @@ In this thesis, we preset a BASA (Building Automation and Security on Android) a
 
 We designed BASA with a set of requirements in mind: The system must offer remote control of the room's lighting and \ac{HVAC} systems, allow users to automate tasks, it must be user and motion aware, it must have a affordable cost and offer good usability.
 
-Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user a \ac{IFTTT} system (trigger actions based on events) including voice recognition, for a personalized smart office experience. Finally, it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for latter viewing.
+Our system is user aware and is capable of adjusting the lighting and \ac{HVAC} systems in a energy efficient way. At the same time it offers the user a \ac{IFTTT} system (trigger actions based on events) including voice recognition, for a personalized smart office experience. Finally, it provides the user with a security system. The Android camera is used to detect motion, when movement is detected and no registered person is present in the room a notification is sent to the user and a 30 second video is recorded to the cloud for later viewing.
 
 By using a tablet as a \ac{BAS} we are able to reduce the monetary cost of our system in comparison to traditional alternatives. The tablet offers several sensors, access to \ac{WiFi} and \ac{BT} networks, microphone, sound speaker and a touch screen. We are able to leverage the tablet sensors including illuminance, temperature and camera sensor for automation. If the tablet does not have a temperature sensor it is possible to interact with external sensors to overcome the lack of the sensor.
 
@@ -150,7 +153,7 @@ To achieve building automation, our solution requires a tablet to act as a centr
 
 The tablet is where the Hub app is executed. It provides the sensors, the connectivity, the storage as well as a camera, microphone, speaker and a touch screen. 
 
-The beacon is used for user detection, this will be explained latter in Section~\ref{architecture4}.
+The beacon is used for user detection, this will be explained later in Section~\ref{architecture4}.
 
 To control the lighting and \ac{HVAC} systems we require devices capable of interacting with existing systems that offer a way to remotely control these existing systems. These devices can be for example microcontrollers. A microcontroller allows the digital world to interact with the real world through the use of actuators that convert electric signal into mechanical actions. The microcontroller is connected to the actuators (relay) and is able to switch on/off the lights as well as controlling the HVAC. This component is needed because typically, lighting and HVAC systems do not have any type of connectivity other than the electric wires. 
 
@@ -249,9 +252,9 @@ To allow communication between different components in the system we use the bui
 
 \textbf{HVAC control}: In order for our \ac{BAS} solution to control an \ac{HVAC} system, we need to either communicate with a building central controlling unit or physically control the system like a thermostat does. Since most buildings don't have a central control point running some kind of server where you can control it using the Internet, we went with the thermostat route.
 
-We compared several thermostat alternatives with WiFi capabilities and concluded there was non that fitted the requirement of low cost. We decided to make a Arduino based device with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor. 
+We compared several thermostat alternatives with WiFi capabilities and concluded there was none that fitted the requirement of low cost. We decided to make a Arduino based device with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor. 
 
-Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constrains the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
+Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constraints the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
 
 
 
@@ -282,7 +285,7 @@ Unfortunately the wall socket where the light switch was going to be installed w
 
 From the alternatives seen in Section~\ref{rel}, we  determined that \ac{BLE} beacons are an option to achieve room level location in a building.
 
-There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrolers and commercial beacon products.
+There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrollers and commercial beacon products.
 
 We decided to use an Estimote beacon. One reason it was chosen was because we had access to one and did not need to buy it. This beacon also has the advantage of providing temperature readings if needed. Since it is portable we can position it anywhere in the room, enabling better coverage.
 
@@ -357,12 +360,12 @@ The recipes contain a list of triggers and actions. A recipe can have one or mul
 There are seven triggers available:
 
 \begin{itemize}
-  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
+  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is below or above a value specified.
   \item \textbf{Motion:} The motion sensor is triggered when something changes in the field of view of the Hub or no movement detected in X seconds.
   \item \textbf{Speech:} Say the keyword "my assistant" and after the beep you say the phrase specified in the trigger.  
   \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
   \item \textbf{User location:} Allows actions to be triggered based on the user location
-  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
+  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is below or above the value specified.
   \item \textbf{Light state:} This trigger allows the user to trigger an action when the lights are in a specific state.
   
 \end{itemize}
@@ -408,9 +411,9 @@ The server exposes a Rest API that allows the User app to communicate with the H
 Originally the plan was to only use the web server, but in our building we can't run web servers in the WiFi network. When we tried to contact the Hub it did not receive any request. Then we changed to a private wireless network it all worked normally.
 
 The solution we found for connecting  to the Hub when the User app is outside the \ac{WLAN} was Google Firebase. It is a platform that offers multiple services. We use two services, the real-time database and the storage.
-We use their real-time database to synchronize application data across clients and store it on Firebase's cloud. The application data we store are the temperature, the temperature the thermostat is set to, the light state, the beacon namespaces and MAC addresses for user location and finally data related with live camera view of the office and recorded videos storage location URLs. The storage service is used to upload the recorded videos and live preview images, captured by the security system.
+We use their real-time database to synchronize application data across clients and store it on Firebase cloud. The application data we store are the temperature, the temperature the thermostat is set to, the light state, the beacon namespaces and MAC addresses for user location and finally data related with live camera view of the office and recorded videos storage location URLs. The storage service is used to upload the recorded videos and live preview images, captured by the security system.
 
-Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of it's presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
+Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middleman to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of its presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
 
 \subsubsection{Security - Motion detection, video recording, Live view}\label{imp:security_motion}
 
@@ -421,7 +424,7 @@ With our office being like an extension of our home, we felt the need to have so
 In order for a camera frame pixel to be considered different the RGB value of the pixel must vary more than 50 in a scale between 0 and 255. The percentage of different pixels for a positive detection is user defined, the default is 0.5\%.
 
 
-\textbf{Video recording}: When motion is detected and no user is inside the office we record 30 seconds videos. We do not record constantly, just after motion is detected. These videos are uploaded and stored to Firebase servers, where the user can latter watch them using the user app.
+\textbf{Video recording}: When motion is detected and no user is inside the office we record 30 seconds videos. We do not record constantly, just after motion is detected. These videos are uploaded and stored to Firebase servers, where the user can later watch them using the user app.
 
 \textbf{Live Camera}
 
@@ -436,7 +439,7 @@ The Hub app suffered a few changes from the initial architecture with the additi
 We added two more managers to the Hub app: 
 \textbf{The Speech Recognition Manager} was inspired by Amazon Echo product and offers our users voice recognition. This new feature is currently used with our automation solution to allow the user to trigger recipes using voice commands. 
 
-This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer. When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offers better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. 
+This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer. When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offers better results, the reason the manager uses two different speech recognizers is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. 
 
 \textbf{The Video Manager} does two jobs, it records 30 seconds videos when no user is present in the office and motion is detected. The other job is offering a live preview of the office, an user can use the user app to watch in real time the office.
 
@@ -472,7 +475,7 @@ There is a \textbf{general menu} that contains the other screens that enable add
 
 
 The \textbf{user registration screen} allows the user to register using the user app or an email address.
-If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is latter needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login.
+If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is later needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login.
 
 In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. Figure \ref{screen_completed_recipe} shows one of the screens to create a recipe. 
 
@@ -522,7 +525,7 @@ The lighting and \ac{HVAC} screens are straightforward, they allow the user to r
 
 \section{Evaluation}
 
-In order to evaluate the developed solution, we deployed the BASA system in one office. Our goal was to validate the basic operation  of the system and it's ability to provide energy savings through user detection and automation. Provide it's users with their desired temperature settings. Test the motion detection system developed. Finally evaluate the \ac{UI} of the automation solution developed.
+In order to evaluate the developed solution, we deployed the BASA system in one office. Our goal was to validate the basic operation  of the system and it's ability to provide energy savings through user detection and automation. Provide its users with their desired temperature settings. Test the motion detection system developed. Finally evaluate the \ac{UI} of the automation solution developed.
 
 All the tests were made using an Android Nexus 7 2013 tablet, a motorola Moto G3 Android phone, the Arduino based HVAC with a DHT11 temperature sensor and a Estimote BLE beacon.
 
@@ -608,7 +611,7 @@ To test the external temperature sensor, the HVAC system was turned on and the t
 The users were asked to create two distinct recipes:
 
 \begin{itemize}
-  \item If the user left the office, then tun off all the lights.
+  \item If the user left the office, then turn off all the lights.
   \item If the temperature is above 25 ºC, then set temperature to below 20 ºC. 
 \end{itemize} 
 

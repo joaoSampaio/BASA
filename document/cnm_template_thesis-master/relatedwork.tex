@@ -31,7 +31,7 @@ ZigBee defines three device roles: the coordinator, the router and the ZigBee en
 
 Device networks must use one of two network topologies specified in \ac{IEEE} 802.15.4: star and peer-to-peer. 
 
-In a start topology, Figure \ref{zigbee1}, every device in the network can communicate only with the ZigBee coordinator. The advantage of star topology is that it is simple and packets go through at most two hops to reach their destination, the disadvantage is the coordinator can become a bottleneck.
+In a star topology, Figure \ref{zigbee1}, every device in the network can communicate only with the ZigBee coordinator. The advantage of star topology is that it is simple and packets go through at most two hops to reach their destination, the disadvantage is the coordinator can become a bottleneck.
 
 In a peer-to-peer topology, Figure \ref{zigbee2}, each device can communicate directly with each other if the devices are close enough to establish a link. In a peer-to-peer network, only the coordinator or router devices can relay the messages. However a ZigBee end device can be part of the network and communicate with one device (a coordinator or router) in the network. This topology allows for greater range as packets can be routed across multiple routers.
 
@@ -124,9 +124,9 @@ BACnet defines 40 message types (services), that are divided into six categories
 \subsection{LonWorks}
 
 LonWorks \cite{livro_automation2,livro_automation} is a networking solution for building automation and control networks. It is a proprietary solution developed by the American company Echelon. It can operate in both as a centralized building controller as well as in decentralized building control components.
-LonWorks uses the LonTalk protocol which is a layered, packet-based, peer-to-peer communications protocol. LonTalk was designed to support many communication media and wiring topologies. Transmition media include twisted-pair, coaxial, and fiber-optic cable as well as radio systems that allow scalable transmissions speeds of up to 1.25 Mbit/s.
+LonWorks uses the LonTalk protocol which is a layered, packet-based, peer-to-peer communications protocol. LonTalk was designed to support many communication media and wiring topologies. Transmission media include twisted-pair, coaxial, and fiber-optic cable as well as radio systems that allow scalable transmissions speeds of up to 1.25 Mbit/s.
 
-Figure \ref{fig:lon} describes the  LonTalk protocol architecture that uses the OSI Stack. The Physical Layer uses the above mentioned transmition media. The layers between the Data Link Layer and Presentation Layer are implemented using a Neuron chip.
+Figure \ref{fig:lon} describes the  LonTalk protocol architecture that uses the OSI Stack. The Physical Layer uses the above mentioned transmission media. The layers between the Data Link Layer and Presentation Layer are implemented using a Neuron chip.
 
 Packets are routed using an routing algorithm. They can be addressed to a single device, to any group of devices, or to all devices. To support networks from two devices to tens of thousands of devices
 the following types of addresses were defined:
@@ -242,7 +242,7 @@ Sensors such as the Multi sensor can monitor whether doors, windows, cabinets or
 
 The Nest\footnote{https://nest.com/} Learning Thermostat, shown in Figure~\ref{fig:nest}, is an electronic, programmable, and self-learning \ac{WiFi} thermostat. It uses machine learning algorithm to optimize  heating and cooling of homes. For the first weeks users have to regulate the thermostat in order to provide the reference data set. Nest can then learn people's schedule, at which temperature they are used to and when. 
 
-The Nest Thermostat can be remotely control using a developer \ac{API}, this means we can use this thermostat to control a room \ac{HVAC} system. The negative point to use Nest is the high cost of around 250 euros making it unsuitable for our system since low cost is a requirement. 
+The Nest Thermostat can be remotely controlled using a developer \ac{API}, this means we can use this thermostat to control a room \ac{HVAC} system. The negative point to use Nest is the high cost of around 250 euros making it unsuitable for our system since low cost is a requirement. 
 
 \begin{figure}[h]
 \centering
@@ -308,7 +308,7 @@ The technologies focused on below are the most used and available wireless techn
 
 \subsubsection{Bluetooth (BT)}
 
-\ac{BT} is a wireless communication technology standard, \ac{IEEE} 802.15.1, \cite{std_802.15.1,comunication:bt,comunication:bt_specification}, designed to exchange data over short distances between fixed and mobile devices and build \ac{WPAN}. Originally develop by Ericsson \footnote{http://www.ericsson.com/} in 1994, it was created as an open standard to allow connectivity and collaboration between disparate products and industries.
+\ac{BT} is a wireless communication technology standard, \ac{IEEE} 802.15.1, \cite{std_802.15.1,comunication:bt,comunication:bt_specification}, designed to exchange data over short distances between fixed and mobile devices and build \ac{WPAN}. Originally developed by Ericsson \footnote{http://www.ericsson.com/} in 1994, it was created as an open standard to allow connectivity and collaboration between disparate products and industries.
 
 \ac{BT} runs in the 2.4 GHz Industrial, \ac{ISM} band. \ac{BT} employs frequency hopping techniques with the carrier modulated using one of three available modulations: \ac{GFSK}, \ac{DQPSK} or differential phase-shift keying (8DPSK). The 8DPSK modulation scheme offers the highest bit rate possible of 3  Mbit/s. Many devices use the ISM band from microwave ovens to \ac{WiFi}. To avoid interference BT uses hopping carrier. A Bluetooth transmission only remains on one of its 79 channels for a short time, and if any interference is present the data will be re-sent later when the signal has changed to a different channel which is likely to be clear of other interfering signals.
 
@@ -333,7 +333,7 @@ The range of \ac{BT} varies depending on the device power-class, higher power ra
 \subsubsection{Wireless fidelity (WiFi)}
 
 \ac{WiFi} is a \ac{WLAN} based on the \ac{IEEE} 802.11 standards \cite{IEEE_wifi,std_802.11,report_802.11}. It operates in the 2.4 and 5 Ghz frequency bands and uses CSMA/CA to control the medium access, offering data rates of up to 1.3 Gbp/s with the new \ac{IEEE} 802.11ac revision.
-To establish a network, one device called station (STA) connects to an other device called an \ac{AP}. An example for STA could be  a mobile device with \ac{WiFi} capability and the AP the router that usually delivers internet to the mobile device.
+To establish a network, one device called station (STA) connects to another device called an \ac{AP}. An example for STA could be  a mobile device with \ac{WiFi} capability and the AP the router that usually delivers internet to the mobile device.
 STAs associate and authenticate with the AP to get access to the network, forming a star topology. This topology is called an infrastructure \ac{BSS}.
 
 \ac{WiFi} offer high-throughput at the cost of greater power consumption. Depending on the 802.11 protocol the maximum range in a indoor environment is between 35 (\ac{IEEE} 802.11a, 802.11b, 802.11g, 802.11ac) to 70 meters (\ac{IEEE} 802.11n).

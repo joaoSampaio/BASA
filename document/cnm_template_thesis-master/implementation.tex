@@ -73,7 +73,7 @@ We require a device that offers an  API in order to be controlled by our tablet,
 
 The Nest thermostat is the most popular option in the market, integrated in many home automation systems, but since one of our requirements is keeping the cost low it does not fit our requirements. The path chosen was developing an Arduino based solution, shown in Figure~\ref{arduino_imp}, with built in \ac{WiFi}, a relay to drive the electric wires and a temperature and humidity sensor.
 
-Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constrains the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
+Besides the mentioned Arduino based solution some offices in our University have installed the PerOMAS automation system that allows remote control of the installed HVAC system. Due to time constraints the Arduino base solution was not installed and we used PerOMAS for HVAC control instead.
 
 
 
@@ -122,7 +122,7 @@ Unfortunately the wall socket where the light switch was going to be installed w
 \hline
 \textbf{Name} & \begin{tabular}[c]{@{}l@{}}Edup  - Wireless \\ Smart Home Wifi \\ Lighting Power\\ Switch\end{tabular} & \begin{tabular}[c]{@{}l@{}}Philips Hue Bridge + \\ light bulb +\\  light switch\end{tabular} & \begin{tabular}[c]{@{}l@{}}Wemos D1 \\ mini Arduino +  \\ Solid State Relay \\ 4 Channel + box\end{tabular} & \begin{tabular}[c]{@{}l@{}}DI-O - light \\ module + \\ DI-O double \\ light switch + \\ Wemos D1 \\ mini Arduino +\\  RF Transmitter \\ Receiver Module \\ 433MHz + box\end{tabular} \\ \hline
 \textbf{manual control} & yes & yes & no & yes \\ \hline
-\textbf{Developer API} & yes  (not officialy) & yes & yes & yes (arduino) \\ \hline
+\textbf{Developer API} & yes  (not officially) & yes & yes & yes (arduino) \\ \hline
 Wifi & yes & yes & yes & \begin{tabular}[c]{@{}l@{}}yes (needs arduino \\ to interface with \\ RF signals)\end{tabular} \\ \hline
 \begin{tabular}[c]{@{}l@{}}Already built\\ (no extra work)\end{tabular} & yes & yes & no & \begin{tabular}[c]{@{}l@{}}no (needs arduino \\ and RF components \\ to be built)\end{tabular} \\ \hline
 \begin{tabular}[c]{@{}l@{}}Support for \\ any office \\ (any light bulb)\end{tabular} & yes & no & yes & yes \\ \hline
@@ -155,7 +155,7 @@ We require a way to determine if a user is near a certain point in the building 
 
 From the alternatives seen in Section~\ref{ocupacy_detection}, we  determined that \ac{BLE} beacons are an option to achieve room level location in a building.
 
-There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrolers and commercial beacon products.
+There are many kinds of devices capable of emitting \ac{BLE} packets: android devices( available in version 5.0), some microcontrollers and commercial beacon products.
 
 We decided to use an Estimote beacon. One reason it was chosen was because we had access to one and did not need to buy it. This beacon also has the advantage of providing temperature readings if needed. Since it is portable we can position it anywhere in the room, enabling better coverage.
 
@@ -283,12 +283,12 @@ The recipes contain a list of triggers and actions. A recipe can have one or mul
 There are seven triggers available:
 
 \begin{itemize}
-  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is bellow or above a value specified.
+  \item \textbf{Temperature:} This trigger allows the user to trigger an action when the office temperature is below or above a value specified.
   \item \textbf{Motion:} The motion sensor is triggered when something changes in the field of view of the Hub or no movement detected in X seconds.
   \item \textbf{Speech:} Say the keyword "my assistant" and after the beep you say the phrase specified in the trigger.  
   \item \textbf{Time:} The timer trigger allows the user to run certain actions at a specific time(Scheduler).  
   \item \textbf{User location:} Allows the user to choose from a list of different scenarios ("User is inside office", "User is inside building", "User leaves office", "User leaves building", "User arrives at office", "No user inside building", "No user inside office" and "User arrives at building").
-  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is bellow or above the value specified.
+  \item \textbf{Light sensor:} The light sensor triggers an action if the light level is below or above the value specified.
   \item \textbf{Light state:} This trigger allows the user to trigger an action when the lights are in a specific state.
   
 \end{itemize}
@@ -345,7 +345,7 @@ The server exposes the following Rest API:
 \label{user_location_class}
 \end{figure}
 
-The current implementation of SPARK Framework uses JAVA 8, since Android is compatible with JAVA 7 and partially with JAVA 8 we had to use and older version of the SPARK server that runs JAVA 7.  
+The current implementation of SPARK Framework uses JAVA 8, since Android is compatible with JAVA 7 and partially with JAVA 8 we had to use an older version of the SPARK server that runs JAVA 7.  
 
 \mbox{}\\
 \textbf{Rest client - Hub and User app }
@@ -364,13 +364,13 @@ Originally the plan was to only use the web server, but in our building we can't
 The solution we found for connecting  to the Hub when the User app is outside the \ac{WLAN} was Google Firebase. It is a platform that offers multiple services. We use two services, the real-time database and the storage.
 We use their real-time database to synchronize application data across clients and store it on Firebase's cloud. The application data we store are the temperature, the temperature the thermostat is set to, the light state, the beacon namespaces and MAC addresses for user location and finally data related with live camera view of the office and recorded videos storage location URLs. Using the provided Android library we can store JAVA objects directly in the database. The storage service is used to upload the recorded videos and live preview images, captured by the security system.
 
-Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of it's presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
+Firebase solves us two problems, one is users can access our solution from home and access the live camera, Firebase is used as a middle man to communicate. The second problem it fixed was user detection, since our building is big, the private network where the tablet is connected can't be access in most of the building. A user entering the building could not communicate with our Hub and notify of its presence since they were in different networks. We use Firebase to add our location messages that are then received by the Hub to achieve and building level user detection.
 
 We ended having two ways to communicate with the Hub app. Each has some strong and weak points. 
 
 The negative points with Firebase are that it requires Internet access to work so we had to keep the web server in order for our solution to work inside the office even when no internet connectivity was present. One other problem is the free tier only allows 100 simultaneous connections, which means there can only be a maximum of 100 users and Hub devices connect at each moment.
 
-One weak point of the web server is it's response time varies a lot, some times just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
+One weak point of the web server is it's response time varies a lot, sometimes just a few milliseconds up to a few seconds for simple static content. The server is running in a separate thread but while the APP is in the foreground the response times increase a bit.
 
 
 
@@ -431,7 +431,7 @@ Currently there are eight different events available:
 \begin{itemize}
   \item \textbf{Temperature:} Contain the current temperature and humidity.
   \item \textbf{Motion:} This event contains a boolean to inform if movement is detected, and a long value with the time since the last movement was detected.
-  \item \textbf{Speech:} The phrase of an successful speech recognition.  
+  \item \textbf{Speech:} The phrase of a successful speech recognition.  
   \item \textbf{Time:} If we need to check some task regularly this event is triggered every 2 seconds.  
   \item \textbf{User location:} This event contains the user id, the location type (Office/Building), a boolean to specify if he is in the location or left and finally a boolean to indicate if the user just arrived.
   \item \textbf{Brightness:} The value in Lux of the light sensor.  
@@ -441,14 +441,14 @@ Currently there are eight different events available:
 \end{itemize}
 
 
-The Event Manager is also responsible for the automation. When a event is published all the recipes are examined to see if all triggers conditions are fulfilled. When this happens, all the actions in that particular recipe are executed.
+The Event Manager is also responsible for the automation. When an event is published all the recipes are examined to see if all triggers conditions are fulfilled. When this happens, all the actions in that particular recipe are executed.
 
 
 \subsubsection{Speech Recognition Manager}
 
-The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant and Apple Siri. In order to increase the comfort of our users we added speech recognition into the Hub. This allows the user to trigger a recipe with the power of their voice. For example a user siting in his chair could say "turn on the lights" and the office lighting would trigger. 
+The power to control the office/home with our voice is something increasingly popular with the launch of products like Amazon Echo, Google Assistant and Apple Siri. In order to increase the comfort of our users we added speech recognition into the Hub. This allows the user to trigger a recipe with the power of their voice. For example a user sitting in his chair could say "turn on the lights" and the office lighting would trigger. 
 
-This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer, meaning it will detect one sentance in our case "my assistant". When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offers better results, the reason the manager uses two different speech recognizes is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. The other reason is privacy, we don't know if Google is going to disclose our audio files to third parties.
+This manager uses the CMU Sphinx\footnote{http://cmusphinx.sourceforge.net/wiki/} offline keyword speech recognizer, meaning it will detect one sentence in our case "my assistant". When it detects the keyword, it shuts down and we launch Google online speech recognition. We use this other speech recognition because it offers better results, the reason the manager uses two different speech recognizers is because using only Google recognizer has higher bandwidth cost since we would be constantly sending audio. The other reason is privacy, we don't know if Google is going to disclose our audio files to third parties.
 
 When we successfully say the keyword, a beep sound is played and Google speech recognizer listens to the rest of the voice command, when the results arrive from Google they are published to the Event manager.
 
@@ -459,13 +459,13 @@ Google speech recognizer is plagued with problems since a few version ago, it so
 
 The Sensor Manager is responsible for the light sensor and virtual motion sensor.
 
-The light sensor is built in to the tablet. Every 2 seconds the current light level is published to the Event manager. 
+The light sensor is built into the tablet. Every 2 seconds the current light level is published to the Event manager. 
 
 The motion detection 
 
 Since the tablet does not have a motion sensor, we use the front camera and analyze the frames every second to achieve motion detection explained previously in Section~\ref{imp:security_motion}.
 
-A problem that motion detecting cameras have are the false positives specially when there is a windows to the outside. A strong light can also trigger the sensor. Because of that, we designed the sensor to be able to ignore an area of the camera frame. It is possible to specify the area to ignore in the Hub app settings.
+A problem that motion detecting cameras have are the false positives especially when there is a windows to the outside. A strong light can also trigger the sensor. Because of that, we designed the sensor to be able to ignore an area of the camera frame. It is possible to specify the area to ignore in the Hub app settings.
 
 
 \subsubsection{Video Manager}
@@ -539,7 +539,7 @@ There is a \textbf{general menu} that contains the other screens that enable add
 
 
 The \textbf{user registration screen} allows the user to register using the user app or an email address.
-If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is latter needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send a email to the provided email address with a identification QR-Code for user login, shown in Figure~\ref{email_screenshot}.
+If the user uses the Android user app, a visual registration token is shown in the form of a QR-Code. The QR-Code contains a temporary id and the IP address of the Hub server. This temporary id is later needed when the user registers and exists to ensure only people inside the office can register and not just anyone that knows the IP address. If the user chooses to register with just the email we use Maingun\footnote{http://www.mailgun.com/} API to send an email to the provided email address with a identification QR-Code for user login, shown in Figure~\ref{email_screenshot}.
 
 In the \textbf{recipe screen}, the user can create new recipes, first the trigger/s is selected, only then can the action/s be picked. In Figures \ref{create_recipe}, \ref{screen_triggers}, \ref{screen_actions} and \ref{screen_completed_recipe} the steps needed to create a recipe are shown, the resulting recipe turns on all the room lights if a user is inside the office and the light level is low. 
 

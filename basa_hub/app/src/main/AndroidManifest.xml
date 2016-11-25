@@ -79,16 +79,7 @@
         <service
             android:name=".backgroundServices.ServerService"
             android:exported="false" />
-        <service
-            android:name=".backgroundServices.WifiLocationService"
-            android:exported="false" />
-        <service android:name=".backgroundServices.CameraBackgroundService" />
 
-        <receiver android:name=".BroadcastReceiver.WifiBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".BroadcastReceiver.TimeBroadcastReceiver" >
         </receiver>
 
